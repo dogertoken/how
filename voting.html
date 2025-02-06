@@ -59,6 +59,12 @@
       .pending {
           color: orange;
       }
+      .pagination {
+        margin-top: 20px;
+      }
+      .pagination button {
+        margin: 0 5px;
+      }
     </style>
 </head>
 <body>
@@ -82,6 +88,14 @@
         <h2>Riwayat Sejarah</h2>
         <ul id="historyList"></ul>
         <button onclick="fetchHistory()">Muat Lebih Banyak</button>
+        
+        <!-- Pagination Controls -->
+        <div class="pagination">
+            <button id="firstPage" onclick="goToFirstPage()">First</button>
+            <button id="previousPage" onclick="goToPreviousPage()">⬅️ Left</button>
+            <span id="pageNumbers"></span>
+            <button id="nextPage" onclick="goToNextPage()">➡️ Right</button>
+        </div>
     </div>
 
     <script>
