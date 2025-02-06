@@ -4,67 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>World History on Blockchain</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="stylecss">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <style>
-      body {
-          font-family: Arial, sans-serif;
-          text-align: center;
-          background-color: #f4f4f4;
-          margin: 0;
-          padding: 20px;
-      }
-      .container {
-          background: white;
-          padding: 20px;
-          border-radius: 10px;
-          max-width: 600px;
-          margin: auto;
-          box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      }
-      button {
-          background: #007bff;
-          color: white;
-          border: none;
-          padding: 10px;
-          cursor: pointer;
-          margin-top: 10px;
-      }
-      button:hover {
-          background: #0056b3;
-      }
-      .disconnect {
-          background: red;
-      }
-      input, textarea {
-          width: 100%;
-          padding: 10px;
-          margin: 10px 0;
-          border: 1px solid #ddd;
-      }
-      .history-item {
-          background: #fff;
-          padding: 10px;
-          border: 1px solid #ddd;
-          margin: 10px 0;
-          border-radius: 5px;
-          text-align: left;
-      }
-      .status {
-          font-weight: bold;
-      }
-      .confirmed {
-          color: green;
-      }
-      .pending {
-          color: orange;
-      }
-      .pagination {
-        margin-top: 20px;
-      }
-      .pagination button {
-        margin: 0 5px;
-      }
+        body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+button:hover {
+    background: #0056b3;
+}
+.disconnect {
+    background: red;
+}
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+}
+h1, h2 {
+    color: #333;
+}
+hr {
+    margin: 20px 0;
+    }
+#pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#pagination button {
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+#pagination button:hover {
+    background-color: #45a049;
+}
+
+#pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
     </style>
 </head>
 <body>
@@ -88,99 +96,104 @@
         <h2>Riwayat Sejarah</h2>
         <ul id="historyList"></ul>
         <button onclick="fetchHistory()">Muat Lebih Banyak</button>
-        
-        <!-- Pagination Controls -->
-        <div class="pagination">
-            <button id="firstPage" onclick="goToFirstPage()">First</button>
-            <button id="previousPage" onclick="goToPreviousPage()">⬅️ Left</button>
-            <span id="pageNumbers"></span>
-            <button id="nextPage" onclick="goToNextPage()">➡️ Right</button>
-        </div>
+        <div id="pagination"></div>
+
+        <hr>
+
+        <h2>Konfirmasi Sejarah (Admin)</h2>
+        <input type="number" id="historyIndex" placeholder="Index Sejarah">
+        <button onclick="confirmHistory()">✅ Konfirmasi Sejarah</button>
     </div>
 
+    <script src="appjs"></script>
+
     <script>
-const CONTRACT_ADDRESS = "0xYOUR_CONTRACT_ADDRESS"; // Ganti dengan alamat kontrak
+        const CONTRACT_ADDRESS = "0xYOUR_CONTRACT_ADDRESS"; // Ganti dengan alamat kontrak
 const ABI = [
     // Masukkan ABI kontrak di sini
 ];
 
-let provider, signer, contract, userAddress;
-
 const BASE_MAINNET_PARAMS = {
-          chainId: "0x2105", // Base Mainnet (8453 dalam hexa)
-          chainName: "Base Mainnet",
-          nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-          rpcUrls: ["https://mainnet.base.org"],
-          blockExplorerUrls: ["https://basescan.org"],
-      };
+    chainId: "0x2105",
+    chainName: "Base Mainnet",
+    nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://mainnet.base.org"],
+    blockExplorerUrls: ["https://basescan.org"],
+};
 
-      let provider, signer, contract;
-      let currentPage = 1;
-      const itemsPerPage = 10;
+let provider, signer, contract, adminAddress;
 
-      // **Memaksa pengguna ke jaringan Base Mainnet**
-      async function switchToBase() {
-          try {
-              await window.ethereum.request({
-                  method: "wallet_switchEthereumChain",
-                  params: [{ chainId: BASE_MAINNET_PARAMS.chainId }],
-              });
-          } catch (error) {
-              if (error.code === 4902) {
-                  await window.ethereum.request({
-                      method: "wallet_addEthereumChain",
-                      params: [BASE_MAINNET_PARAMS],
-                  });
-              } else {
-                  console.error("Gagal beralih ke jaringan Base:", error);
-              }
-          }
-      }
+// **Memaksa pengguna ke jaringan Base Mainnet**
+async function switchToBase() {
+    try {
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: BASE_MAINNET_PARAMS.chainId }],
+        });
+    } catch (error) {
+        if (error.code === 4902) {
+            await window.ethereum.request({
+                method: "wallet_addEthereumChain",
+                params: [BASE_MAINNET_PARAMS],
+            });
+        } else {
+            console.error("Gagal beralih ke jaringan Base:", error);
+        }
+    }
+}
 
-      // **Koneksi Wallet dengan Signature**
-      async function connectWallet() {
-          if (!window.ethereum) {
-              alert("Silakan instal MetaMask!");
-              return;
-          }
+// **Koneksi Wallet dengan Signature**
+async function connectWallet() {
+    if (!window.ethereum) {
+        alert("Silakan instal MetaMask!");
+        return;
+    }
 
-          provider = new ethers.providers.Web3Provider(window.ethereum);
-          signer = provider.getSigner();
-          contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+    provider = new ethers.providers.Web3Provider(window.ethereum);
+    signer = provider.getSigner();
+    contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 
-          try {
-              await switchToBase(); // Paksa ke jaringan Base
+    try {
+        await switchToBase(); // Paksa ke jaringan Base
 
-              const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-              const address = accounts[0];
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        const address = accounts[0];
 
-              // **Meminta pengguna menandatangani pesan**
-              const message = `Konfirmasi koneksi ke History on Blockchain pada ${new Date().toLocaleString()}`;
-              await signer.signMessage(message);
+        const message = `Konfirmasi koneksi ke History on Blockchain pada ${new Date().toLocaleString()}`;
+        await signer.signMessage(message);
 
-              document.getElementById("walletAddress").innerText = `Wallet: ${address}`;
-              document.getElementById("networkStatus").innerText = "Jaringan: Base Mainnet";
+        document.getElementById("walletAddress").innerText = `Wallet: ${address}`;
+        document.getElementById("networkStatus").innerText = "Jaringan: Base Mainnet";
 
-              getBalance(); // Perbarui saldo setelah koneksi
-              fetchHistory(); // Muat riwayat sejarah
+        getBalance(); // Perbarui saldo
+        fetchHistory(); // Muat riwayat sejarah
 
-          } catch (error) {
-              console.error("Koneksi gagal:", error);
-          }
-      }
+        // Ambil alamat admin
+        adminAddress = await contract.owner();
 
-      // **Menampilkan saldo token pengguna**
-      async function getBalance() {
-          try {
-              const address = await signer.getAddress();
-              const balance = await contract.balanceOf(address);
-              document.getElementById("balance").innerText = `Saldo: ${ethers.utils.formatUnits(balance, 18)} HIST`;
-          } catch (error) {
-              console.error("Gagal mendapatkan saldo:", error);
-          }
-      }
+        // **Ganti tombol menjadi Diskonek**
+        const connectButton = document.getElementById("connectWallet");
+        connectButton.innerText = "🔌 Diskonek Wallet";
+        connectButton.classList.add("disconnect");
+        connectButton.onclick = disconnectWallet;
 
-// **Tambahkan Sejarah**
+    } catch (error) {
+        console.error("Koneksi gagal:", error);
+    }
+}
+
+// **Menampilkan saldo token pengguna**
+async function getBalance() {
+    try {
+        const address = await signer.getAddress();
+        const balance = await contract.balanceOf(address);
+        document.getElementById("balance").innerText = `Saldo: ${ethers.utils.formatUnits(balance, 18)} HIST`;
+    } catch (error) {
+        console.error("Gagal mendapatkan saldo:", error);
+    }
+}
+
+// **Menambahkan catatan sejarah**
 async function addHistory() {
     const title = document.getElementById("title").value;
     const description = document.getElementById("description").value;
@@ -191,141 +204,128 @@ async function addHistory() {
     }
 
     try {
-        const tx = await contract.createHistory(title, description);
+        const tx = await contract.addHistory(title, description);
         await tx.wait();
         alert("Sejarah berhasil ditambahkan!");
 
-        getBalance();
-        fetchHistory();
+        getBalance(); // Perbarui saldo
+        fetchHistory(); // Muat ulang daftar sejarah
 
     } catch (error) {
         console.error("Gagal menambahkan sejarah:", error);
     }
 }
 
-// **Ambil Riwayat Sejarah**
+// **Mendapatkan riwayat sejarah dari kontrak**
 async function fetchHistory() {
     try {
-        const histories = await contract.getAllHistories();
+        const historiesCount = await contract.historyCount();  // Ambil jumlah total sejarah
         const historyList = document.getElementById("historyList");
         historyList.innerHTML = "";
 
-        histories.forEach(history => {
+        // Tentukan range yang akan ditampilkan berdasarkan halaman saat ini
+        const startIndex = (currentPage - 1) * itemsPerPage + 1;
+        const endIndex = Math.min(currentPage * itemsPerPage, historiesCount);
+
+        // Menampilkan item sejarah untuk halaman saat ini
+        for (let i = startIndex; i <= endIndex; i++) {
+            const history = await contract.histories(i);
             const li = document.createElement("li");
-            li.className = "history-item";
-
-            let statusText = history.confirmed ? "Dikonfirmasi ✅" : "Pending ⏳";
-            let statusClass = history.confirmed ? "confirmed" : "pending";
-
-            li.innerHTML = `
-                <strong>${history.title}</strong><br>
-                ${history.description}<br>
-                <span class="status ${statusClass}">${statusText}</span><br>
-                ⏳ ${new Date(history.timestamp * 1000).toLocaleString()}<br>
-                <button onclick="voteHistory(${history.id}, true)">👍 Setuju (${history.votesFor})</button>
-                <button onclick="voteHistory(${history.id}, false)">👎 Tolak (${history.votesAgainst})</button>
-                ${history.confirmed ? "" : `<button onclick="confirmHistory(${history.id})">✅ Konfirmasi</button>`}
-            `;
-
+            li.innerHTML = `<strong>${history.title}</strong> - ${history.description} <br> ⏳ ${new Date(history.timestamp * 1000).toLocaleString()} 
+                            <br><button onclick="confirmHistory(${i})">✅ Konfirmasi Sejarah</button>`;
             historyList.appendChild(li);
-        });
+        }
+
+        // Menampilkan navigasi pagination
+        showPagination(historiesCount);
 
     } catch (error) {
         console.error("Gagal memuat sejarah:", error);
     }
 }
 
-// **Voting**
-async function voteHistory(id, voteFor) {
-    try {
-        const tx = await contract.voteHistory(id, voteFor);
-        await tx.wait();
-        alert("Voting berhasil!");
+let currentPage = 1;  // Halaman saat ini
+let itemsPerPage = 10;  // Jumlah item per halaman
+
+// **Menampilkan tombol pagination**
+function showPagination(totalItems) {
+    const paginationContainer = document.getElementById("pagination");
+    paginationContainer.innerHTML = "";
+
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Tombol "First"
+    const firstButton = document.createElement("button");
+    firstButton.innerText = "First";
+    firstButton.onclick = () => goToPage(1);
+    paginationContainer.appendChild(firstButton);
+
+    // Tombol "Previous"
+    const prevButton = document.createElement("button");
+    prevButton.innerText = "Previous";
+    prevButton.onclick = () => goToPage(currentPage - 1);
+    paginationContainer.appendChild(prevButton);
+
+    // Tombol angka halaman
+    for (let i = 1; i <= totalPages; i++) {
+        const pageButton = document.createElement("button");
+        pageButton.innerText = i;
+        pageButton.onclick = () => goToPage(i);
+        paginationContainer.appendChild(pageButton);
+    }
+
+    // Tombol "Next"
+    const nextButton = document.createElement("button");
+    nextButton.innerText = "Next";
+    nextButton.onclick = () => goToPage(currentPage + 1);
+    paginationContainer.appendChild(nextButton);
+
+    // Tombol "Last"
+    const lastButton = document.createElement("button");
+    lastButton.innerText = "Last";
+    lastButton.onclick = () => goToPage(totalPages);
+    paginationContainer.appendChild(lastButton);
+}
+
+// **Pindah ke halaman tertentu**
+function goToPage(pageNumber) {
+    const totalPages = Math.ceil(1000 / itemsPerPage); // Ganti 1000 dengan total riwayat sebenarnya
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+        currentPage = pageNumber;
         fetchHistory();
-    } catch (error) {
-        console.error("Gagal voting:", error);
     }
 }
 
-// **Konfirmasi oleh Admin**
-async function confirmHistory(id) {
-    try {
-        const isAdmin = await contract.isAdmin(userAddress);
-        if (!isAdmin) {
-            alert("Hanya admin yang bisa mengonfirmasi!");
-            return;
-        }
+// **Konfirmasi Sejarah (Admin)**
+async function confirmHistory(index) {
+    if (!adminAddress) {
+        alert("Hanya admin yang dapat mengonfirmasi sejarah!");
+        return;
+    }
 
-        const tx = await contract.confirmHistory(id);
+    const address = await signer.getAddress();
+    if (address !== adminAddress) {
+        alert("Anda bukan admin! Hanya admin yang dapat mengonfirmasi sejarah.");
+        return;
+    }
+
+    try {
+        const tx = await contract.confirmHistory(index);
         await tx.wait();
         alert("Sejarah berhasil dikonfirmasi!");
-
-        getBalance();
-        fetchHistory();
-
+        fetchHistory(); // Muat ulang daftar sejarah
     } catch (error) {
-        console.error("Gagal mengonfirmasi:", error);
+        console.error("Gagal mengonfirmasi sejarah:", error);
     }
 }
 
-// **Mendapatkan riwayat sejarah dari kontrak dengan paging**
-      async function fetchHistory() {
-          try {
-              const histories = await contract.getAllHistories();
-              const historyList = document.getElementById("historyList");
-              historyList.innerHTML = "";
-
-              const startIndex = (currentPage - 1) * itemsPerPage;
-              const endIndex = Math.min(startIndex + itemsPerPage, histories.length);
-              const visibleHistories = histories.slice(startIndex, endIndex);
-
-              visibleHistories.forEach(history => {
-                  const li = document.createElement("li");
-                  li.innerHTML = `<strong>${history.title}</strong> - ${history.description} <br> ⏳ ${new Date(history.timestamp * 1000).toLocaleString()}`;
-                  historyList.appendChild(li);
-              });
-
-              updatePagination();
-
-          } catch (error) {
-              console.error("Gagal memuat sejarah:", error);
-          }
-      }
-
-      // **Update tombol pagination**
-      function updatePagination() {
-          const pageNumbers = document.getElementById("pageNumbers");
-          pageNumbers.innerHTML = `Page ${currentPage}`;
-
-          // Disable previous/next buttons if on first/last page
-          document.getElementById("previousPage").disabled = currentPage === 1;
-          document.getElementById("nextPage").disabled = currentPage * itemsPerPage >= histories.length;
-      }
-
-      // **Fungsi navigasi halaman**
-      function goToFirstPage() {
-          currentPage = 1;
-          fetchHistory();
-      }
-
-      function goToPreviousPage() {
-          if (currentPage > 1) {
-              currentPage--;
-              fetchHistory();
-          }
-      }
-
-      function goToNextPage() {
-          currentPage++;
-          fetchHistory();
-      }
-        
 // **Diskonek Wallet**
 function disconnectWallet() {
     document.getElementById("walletAddress").innerText = "Wallet: -";
     document.getElementById("networkStatus").innerText = "Jaringan: -";
     document.getElementById("balance").innerText = "Saldo: 0 HIST";
 
+    // Reset tombol menjadi Konek Wallet
     const connectButton = document.getElementById("connectWallet");
     connectButton.innerText = "🔗 Konek Wallet";
     connectButton.classList.remove("disconnect");
