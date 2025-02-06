@@ -53,38 +53,39 @@
 <body>
 
     <div class="container">
-        <h1>⏳️ World History on Blockchain</h1>
-        <button id="connectWallet">🔗 Konek Wallet</button>
-        <p id="walletAddress">Wallet: -</p>
-        <p id="networkStatus">Jaringan: -</p>
-        <p id="balance">Saldo: 0 HIST</p>
+    <h1>⏳️ World History on Blockchain</h1>
+    <button id="connectWallet">🔗 Konek Wallet</button>
+    <p id="walletAddress">Wallet: -</p>
+    <p id="networkStatus">Jaringan: -</p>
+    <p id="balance">Saldo: 0 HIST</p>
 
-        <hr>
+    <hr>
 
-        <h2>Tambahkan Sejarah</h2>
-        <input type="text" id="title" placeholder="Judul Sejarah">
-        <textarea id="description" placeholder="Deskripsi Sejarah"></textarea>
-        <button onclick="addHistory()">📝 Tambah Sejarah</button>
+    <h2>Tambahkan Sejarah</h2>
+    <input type="text" id="title" placeholder="Judul Sejarah">
+    <textarea id="description" placeholder="Deskripsi Sejarah"></textarea>
+    <button onclick="addHistory()">📝 Tambah Sejarah</button>
 
-        <hr>
+    <hr>
 
-        <h2>Riwayat Sejarah</h2>
-        <ul id="historyList"></ul>
-        <button onclick="fetchHistory()">Muat Lebih Banyak</button>
+    <h2>Riwayat Sejarah</h2>
+    <ul id="historyList"></ul>
+    <button onclick="fetchHistory()">Muat Lebih Banyak</button>
 
-        <!-- Pagination Controls -->
-        <div class="pagination">
-            <button id="firstPage" onclick="goToFirstPage()">First</button>
-            <button id="previousPage" onclick="goToPreviousPage()">⬅️ Left</button>
-            <span id="pageNumbers"></span>
-            <button id="nextPage" onclick="goToNextPage()">➡️ Right</button>
-        </div>
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        <button id="firstPage" onclick="goToFirstPage()">First</button>
+        <button id="previousPage" onclick="goToPreviousPage()">⬅️ Left</button>
+        <span id="pageNumbers"></span>
+        <button id="nextPage" onclick="goToNextPage()">➡️ Right</button>
+    </div>
 
-        <hr>
+    <hr>
 
-        <h2>Konfirmasi Sejarah (Admin)</h2>
-           <input type="number" id="historyIndex" placeholder="Index Sejarah">
-           <button onclick="confirmHistory()">✅ Konfirmasi Sejarah</button>
+    <h2>Konfirmasi & Tolak Sejarah (Admin)</h2>
+    <input type="number" id="historyIndex" placeholder="Index Sejarah">
+    <button onclick="confirmHistory()">✅ Konfirmasi Sejarah</button>
+    <button onclick="rejectHistory()">❌ Tolak Sejarah</button>
     </div>
 
     <script>
@@ -220,7 +221,6 @@ async function confirmHistory() {
         return;
     }
 
-    // Pastikan hanya admin yang bisa mengonfirmasi sejarah
     if (!adminAddress) {
         alert("Hanya admin yang dapat mengonfirmasi sejarah!");
         return;
@@ -236,10 +236,61 @@ async function confirmHistory() {
         const tx = await contract.confirmHistory(index);
         await tx.wait();
         alert("Sejarah berhasil dikonfirmasi!");
-        fetchHistory(); // Muat ulang daftar sejarah
+        fetchHistory();
     } catch (error) {
         console.error("Gagal mengonfirmasi sejarah:", error);
     }
+}
+
+// **Tolak Sejarah (Admin)**
+async function rejectHistory() {
+    const index = document.getElementById("historyIndex").value;
+
+    if (!index) {
+        alert("Pilih sejarah yang ingin ditolak!");
+        return;
+    }
+
+    if (!adminAddress) {
+        alert("Hanya admin yang dapat menolak sejarah!");
+        return;
+    }
+
+    const address = await signer.getAddress();
+    if (address !== adminAddress) {
+        alert("Anda bukan admin! Hanya admin yang dapat menolak sejarah.");
+        return;
+    }
+
+    try {
+        const tx = await contract.rejectHistory(index);
+        await tx.wait();
+        alert("Sejarah berhasil ditolak!");
+        fetchHistory();
+    } catch (error) {
+        console.error("Gagal menolak sejarah:", error);
+    }
+}
+
+// **Konfirmasi Sejarah Paling Lama (Admin)**
+async function confirmOldestHistory() {
+    const count = await contract.historyCount();
+
+    for (let i = 1; i <= count; i++) {
+        const history = await contract.histories(i);
+        if (!history.isConfirmed) {
+            try {
+                const tx = await contract.confirmHistory(i);
+                await tx.wait();
+                alert(`Sejarah ID ${i} berhasil dikonfirmasi!`);
+                return;
+            } catch (error) {
+                console.error("Gagal mengonfirmasi sejarah:", error);
+            }
+        }
+    }
+
+    alert("Tidak ada sejarah yang perlu dikonfirmasi.");
 }
 
 // **Update tombol pagination**
