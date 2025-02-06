@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World History on Blockchain</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <style>
+      body {
+          font-family: Arial, sans-serif;
+          text-align: center;
+          background-color: #f4f4f4;
+          margin: 0;
+          padding: 20px;
+      }
+      .container {
+          background: white;
+          padding: 20px;
+          border-radius: 10px;
+          max-width: 600px;
+          margin: auto;
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+      button {
+          background: #007bff;
+          color: white;
+          border: none;
+          padding: 10px;
+          cursor: pointer;
+          margin-top: 10px;
+      }
+      button:hover {
+          background: #0056b3;
+      }
+      .disconnect {
+          background: red;
+      }
+      input, textarea {
+          width: 100%;
+          padding: 10px;
+          margin: 10px 0;
+          border: 1px solid #ddd;
+      }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>⏳️ World History on Blockchain</h1>
+        <button id="connectWallet">🔗 Konek Wallet</button>
+        <p id="walletAddress">Wallet: -</p>
+        <p id="networkStatus">Jaringan: -</p>
+        <p id="balance">Saldo: 0 HIST</p>
+
+        <hr>
+
+        <h2>Tambahkan Sejarah</h2>
+        <input type="text" id="title" placeholder="Judul Sejarah">
+        <textarea id="description" placeholder="Deskripsi Sejarah"></textarea>
+        <button onclick="addHistory()">📝 Tambah Sejarah</button>
+
+        <hr>
+
+        <h2>Riwayat Sejarah</h2>
+        <ul id="historyList"></ul>
+        <button onclick="fetchHistory()">Muat Lebih Banyak</button>
+    </div>
+
+    <script>
+const CONTRACT_ADDRESS = "0xYOUR_CONTRACT_ADDRESS"; // Ganti dengan alamat kontrak
+const ABI = [
+    // Masukkan ABI kontrak di sini
+];
+
+const BASE_MAINNET_PARAMS = {
+    chainId: "0x2105",
+    chainName: "Base Mainnet",
+    nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://mainnet.base.org"],
+    blockExplorerUrls: ["https://basescan.org"],
+};
+
+let provider, signer, contract;
+
+// **Memaksa pengguna ke jaringan Base Mainnet**
+async function switchToBase() {
+    try {
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: BASE_MAINNET_PARAMS.chainId }],
+        });
+    } catch (error) {
+        if (error.code === 4902) {
+            await window.ethereum.request({
+                method: "wallet_addEthereumChain",
+                params: [BASE_MAINNET_PARAMS],
+            });
+        } else {
+            console.error("Gagal beralih ke jaringan Base:", error);
+        }
+    }
+}
+
+// **Koneksi Wallet dengan Signature**
+async function connectWallet() {
+    if (!window.ethereum) {
+        alert("Silakan instal MetaMask!");
+        return;
+    }
+
+    provider = new ethers.providers.Web3Provider(window.ethereum);
+    signer = provider.getSigner();
+    contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+    try {
+        await switchToBase(); // Paksa ke jaringan Base
+
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        const address = accounts[0];
+
+        const message = `Konfirmasi koneksi ke History on Blockchain pada ${new Date().toLocaleString()}`;
+        await signer.signMessage(message);
+
+        document.getElementById("walletAddress").innerText = `Wallet: ${address}`;
+        document.getElementById("networkStatus").innerText = "Jaringan: Base Mainnet";
+
+        getBalance(); // Perbarui saldo
+        fetchHistory(); // Muat riwayat sejarah
+
+        // **Ganti tombol menjadi Diskonek**
+        const connectButton = document.getElementById("connectWallet");
+        connectButton.innerText = "🔌 Diskonek Wallet";
+        connectButton.classList.add("disconnect");
+        connectButton.onclick = disconnectWallet;
+
+    } catch (error) {
+        console.error("Koneksi gagal:", error);
+    }
+}
+
+// **Menampilkan saldo token pengguna**
+async function getBalance() {
+    try {
+        const address = await signer.getAddress();
+        const balance = await contract.balanceOf(address);
+        document.getElementById("balance").innerText = `Saldo: ${ethers.utils.formatUnits(balance, 18)} HIST`;
+    } catch (error) {
+        console.error("Gagal mendapatkan saldo:", error);
+    }
+}
+
+// **Menambahkan catatan sejarah**
+async function addHistory() {
+    const title = document.getElementById("title").value;
+    const description = document.getElementById("description").value;
+
+    if (!title || !description) {
+        alert("Judul dan Deskripsi harus diisi!");
+        return;
+    }
+
+    try {
+        const tx = await contract.addHistory(title, description);
+        await tx.wait();
+        alert("Sejarah berhasil ditambahkan!");
+
+        getBalance(); // Perbarui saldo
+        fetchHistory(); // Muat ulang daftar sejarah
+
+    } catch (error) {
+        console.error("Gagal menambahkan sejarah:", error);
+    }
+}
+
+// **Mendapatkan riwayat sejarah dari kontrak**
+async function fetchHistory() {
+    try {
+        const histories = await contract.getAllHistories();
+        const historyList = document.getElementById("historyList");
+        historyList.innerHTML = "";
+
+        histories.forEach(history => {
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${history.title}</strong> - ${history.description} <br> ⏳ ${new Date(history.timestamp * 1000).toLocaleString()}`;
+            historyList.appendChild(li);
+        });
+
+    } catch (error) {
+        console.error("Gagal memuat sejarah:", error);
+    }
+}
+
+// **Diskonek Wallet**
+function disconnectWallet() {
+    document.getElementById("walletAddress").innerText = "Wallet: -";
+    document.getElementById("networkStatus").innerText = "Jaringan: -";
+    document.getElementById("balance").innerText = "Saldo: 0 HIST";
+
+    // Reset tombol menjadi Konek Wallet
+    const connectButton = document.getElementById("connectWallet");
+    connectButton.innerText = "🔗 Konek Wallet";
+    connectButton.classList.remove("disconnect");
+    connectButton.onclick = connectWallet;
+}
+
+// **Event Listener untuk Koneksi Wallet**
+document.getElementById("connectWallet").addEventListener("click", connectWallet);
+    </script>
+</body>
+</html>
