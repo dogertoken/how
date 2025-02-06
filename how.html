@@ -83,8 +83,8 @@
         <hr>
 
         <h2>Konfirmasi Sejarah (Admin)</h2>
-        <input type="number" id="historyIndex" placeholder="Index Sejarah">
-        <button onclick="confirmHistory()">✅ Konfirmasi Sejarah</button>
+           <input type="number" id="historyIndex" placeholder="Index Sejarah">
+           <button onclick="confirmHistory()">✅ Konfirmasi Sejarah</button>
     </div>
 
     <script>
@@ -212,7 +212,15 @@ async function fetchHistory() {
 }
 
 // **Konfirmasi Sejarah (Admin)**
-async function confirmHistory(index) {
+async function confirmHistory() {
+    const index = document.getElementById("historyIndex").value;
+
+    if (!index) {
+        alert("Masukkan index sejarah yang valid!");
+        return;
+    }
+
+    // Pastikan hanya admin yang bisa mengonfirmasi sejarah
     if (!adminAddress) {
         alert("Hanya admin yang dapat mengonfirmasi sejarah!");
         return;
