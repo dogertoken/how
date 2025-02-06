@@ -42,6 +42,12 @@
           margin: 10px 0;
           border: 1px solid #ddd;
       }
+    .pagination {
+        margin-top: 20px;
+      }
+      .pagination button {
+        margin: 0 5px;
+      }
     </style>
 </head>
 <body>
@@ -65,6 +71,20 @@
         <h2>Riwayat Sejarah</h2>
         <ul id="historyList"></ul>
         <button onclick="fetchHistory()">Muat Lebih Banyak</button>
+
+        <!-- Pagination Controls -->
+        <div class="pagination">
+            <button id="firstPage" onclick="goToFirstPage()">First</button>
+            <button id="previousPage" onclick="goToPreviousPage()">⬅️ Left</button>
+            <span id="pageNumbers"></span>
+            <button id="nextPage" onclick="goToNextPage()">➡️ Right</button>
+        </div>
+
+        <hr>
+
+        <h2>Konfirmasi Sejarah (Admin)</h2>
+        <input type="number" id="historyIndex" placeholder="Index Sejarah">
+        <button onclick="confirmHistory()">✅ Konfirmasi Sejarah</button>
     </div>
 
     <script>
@@ -191,6 +211,57 @@ async function fetchHistory() {
     }
 }
 
+// **Konfirmasi Sejarah (Admin)**
+async function confirmHistory(index) {
+    if (!adminAddress) {
+        alert("Hanya admin yang dapat mengonfirmasi sejarah!");
+        return;
+    }
+
+    const address = await signer.getAddress();
+    if (address !== adminAddress) {
+        alert("Anda bukan admin! Hanya admin yang dapat mengonfirmasi sejarah.");
+        return;
+    }
+
+    try {
+        const tx = await contract.confirmHistory(index);
+        await tx.wait();
+        alert("Sejarah berhasil dikonfirmasi!");
+        fetchHistory(); // Muat ulang daftar sejarah
+    } catch (error) {
+        console.error("Gagal mengonfirmasi sejarah:", error);
+    }
+}
+
+// **Update tombol pagination**
+      function updatePagination() {
+          const pageNumbers = document.getElementById("pageNumbers");
+          pageNumbers.innerHTML = `Page ${currentPage}`;
+
+          // Disable previous/next buttons if on first/last page
+          document.getElementById("previousPage").disabled = currentPage === 1;
+          document.getElementById("nextPage").disabled = currentPage * itemsPerPage >= histories.length;
+      }
+
+      // **Fungsi navigasi halaman**
+      function goToFirstPage() {
+          currentPage = 1;
+          fetchHistory();
+      }
+
+      function goToPreviousPage() {
+          if (currentPage > 1) {
+              currentPage--;
+              fetchHistory();
+          }
+      }
+
+      function goToNextPage() {
+          currentPage++;
+          fetchHistory();
+      }
+        
 // **Diskonek Wallet**
 function disconnectWallet() {
     document.getElementById("walletAddress").innerText = "Wallet: -";
