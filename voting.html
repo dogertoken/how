@@ -92,47 +92,79 @@ const ABI = [
 
 let provider, signer, contract, userAddress;
 
-// **Koneksi Wallet**
-async function connectWallet() {
-    if (!window.ethereum) {
-        alert("Silakan instal MetaMask!");
-        return;
-    }
+const BASE_MAINNET_PARAMS = {
+          chainId: "0x2105", // Base Mainnet (8453 dalam hexa)
+          chainName: "Base Mainnet",
+          nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+          rpcUrls: ["https://mainnet.base.org"],
+          blockExplorerUrls: ["https://basescan.org"],
+      };
 
-    provider = new ethers.providers.Web3Provider(window.ethereum);
-    signer = provider.getSigner();
-    contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      let provider, signer, contract;
+      let currentPage = 1;
+      const itemsPerPage = 10;
 
-    try {
-        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-        userAddress = accounts[0];
+      // **Memaksa pengguna ke jaringan Base Mainnet**
+      async function switchToBase() {
+          try {
+              await window.ethereum.request({
+                  method: "wallet_switchEthereumChain",
+                  params: [{ chainId: BASE_MAINNET_PARAMS.chainId }],
+              });
+          } catch (error) {
+              if (error.code === 4902) {
+                  await window.ethereum.request({
+                      method: "wallet_addEthereumChain",
+                      params: [BASE_MAINNET_PARAMS],
+                  });
+              } else {
+                  console.error("Gagal beralih ke jaringan Base:", error);
+              }
+          }
+      }
 
-        document.getElementById("walletAddress").innerText = `Wallet: ${userAddress}`;
-        document.getElementById("networkStatus").innerText = "Jaringan: Base Mainnet";
+      // **Koneksi Wallet dengan Signature**
+      async function connectWallet() {
+          if (!window.ethereum) {
+              alert("Silakan instal MetaMask!");
+              return;
+          }
 
-        getBalance();
-        fetchHistory();
+          provider = new ethers.providers.Web3Provider(window.ethereum);
+          signer = provider.getSigner();
+          contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 
-        // Ubah tombol ke Diskonek
-        const connectButton = document.getElementById("connectWallet");
-        connectButton.innerText = "🔌 Diskonek Wallet";
-        connectButton.classList.add("disconnect");
-        connectButton.onclick = disconnectWallet;
+          try {
+              await switchToBase(); // Paksa ke jaringan Base
 
-    } catch (error) {
-        console.error("Koneksi gagal:", error);
-    }
-}
+              const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+              const address = accounts[0];
 
-// **Cek Saldo**
-async function getBalance() {
-    try {
-        const balance = await contract.balanceOf(userAddress);
-        document.getElementById("balance").innerText = `Saldo: ${ethers.utils.formatUnits(balance, 18)} HIST`;
-    } catch (error) {
-        console.error("Gagal mendapatkan saldo:", error);
-    }
-}
+              // **Meminta pengguna menandatangani pesan**
+              const message = `Konfirmasi koneksi ke History on Blockchain pada ${new Date().toLocaleString()}`;
+              await signer.signMessage(message);
+
+              document.getElementById("walletAddress").innerText = `Wallet: ${address}`;
+              document.getElementById("networkStatus").innerText = "Jaringan: Base Mainnet";
+
+              getBalance(); // Perbarui saldo setelah koneksi
+              fetchHistory(); // Muat riwayat sejarah
+
+          } catch (error) {
+              console.error("Koneksi gagal:", error);
+          }
+      }
+
+      // **Menampilkan saldo token pengguna**
+      async function getBalance() {
+          try {
+              const address = await signer.getAddress();
+              const balance = await contract.balanceOf(address);
+              document.getElementById("balance").innerText = `Saldo: ${ethers.utils.formatUnits(balance, 18)} HIST`;
+          } catch (error) {
+              console.error("Gagal mendapatkan saldo:", error);
+          }
+      }
 
 // **Tambahkan Sejarah**
 async function addHistory() {
@@ -222,6 +254,58 @@ async function confirmHistory(id) {
     }
 }
 
+// **Mendapatkan riwayat sejarah dari kontrak dengan paging**
+      async function fetchHistory() {
+          try {
+              const histories = await contract.getAllHistories();
+              const historyList = document.getElementById("historyList");
+              historyList.innerHTML = "";
+
+              const startIndex = (currentPage - 1) * itemsPerPage;
+              const endIndex = Math.min(startIndex + itemsPerPage, histories.length);
+              const visibleHistories = histories.slice(startIndex, endIndex);
+
+              visibleHistories.forEach(history => {
+                  const li = document.createElement("li");
+                  li.innerHTML = `<strong>${history.title}</strong> - ${history.description} <br> ⏳ ${new Date(history.timestamp * 1000).toLocaleString()}`;
+                  historyList.appendChild(li);
+              });
+
+              updatePagination();
+
+          } catch (error) {
+              console.error("Gagal memuat sejarah:", error);
+          }
+      }
+
+      // **Update tombol pagination**
+      function updatePagination() {
+          const pageNumbers = document.getElementById("pageNumbers");
+          pageNumbers.innerHTML = `Page ${currentPage}`;
+
+          // Disable previous/next buttons if on first/last page
+          document.getElementById("previousPage").disabled = currentPage === 1;
+          document.getElementById("nextPage").disabled = currentPage * itemsPerPage >= histories.length;
+      }
+
+      // **Fungsi navigasi halaman**
+      function goToFirstPage() {
+          currentPage = 1;
+          fetchHistory();
+      }
+
+      function goToPreviousPage() {
+          if (currentPage > 1) {
+              currentPage--;
+              fetchHistory();
+          }
+      }
+
+      function goToNextPage() {
+          currentPage++;
+          fetchHistory();
+      }
+        
 // **Diskonek Wallet**
 function disconnectWallet() {
     document.getElementById("walletAddress").innerText = "Wallet: -";
