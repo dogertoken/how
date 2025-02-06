@@ -8,37 +8,43 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <style>
       body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
-}
-.container {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 600px;
-    margin: auto;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-button:hover {
-    background: #0056b3;
-}
-input, textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-                              }
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 600px;
+        margin: auto;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      input, textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+      }
+      .pagination {
+        margin-top: 20px;
+      }
+      .pagination button {
+        margin: 0 5px;
+      }
     </style>
 </head>
 <body>
@@ -62,130 +68,174 @@ input, textarea {
         <h2>Riwayat Sejarah</h2>
         <ul id="historyList"></ul>
         <button onclick="fetchHistory()">Muat Lebih Banyak</button>
+
+        <!-- Pagination Controls -->
+        <div class="pagination">
+            <button id="firstPage" onclick="goToFirstPage()">First</button>
+            <button id="previousPage" onclick="goToPreviousPage()">⬅️ Left</button>
+            <span id="pageNumbers"></span>
+            <button id="nextPage" onclick="goToNextPage()">➡️ Right</button>
+        </div>
     </div>
 
     <script src="scriptjs"></script>
     <script>
       const CONTRACT_ADDRESS = "0xYOUR_CONTRACT_ADDRESS"; // Ganti dengan alamat kontrak yang dideploy
-const ABI = [
-    // Masukkan ABI kontrak di sini
-];
+      const ABI = [
+        // Masukkan ABI kontrak di sini
+      ];
 
-const BASE_MAINNET_PARAMS = {
-    chainId: "0x2105", // Base Mainnet (8453 dalam hexa)
-    chainName: "Base Mainnet",
-    nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-    rpcUrls: ["https://mainnet.base.org"],
-    blockExplorerUrls: ["https://basescan.org"],
-};
+      const BASE_MAINNET_PARAMS = {
+          chainId: "0x2105", // Base Mainnet (8453 dalam hexa)
+          chainName: "Base Mainnet",
+          nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+          rpcUrls: ["https://mainnet.base.org"],
+          blockExplorerUrls: ["https://basescan.org"],
+      };
 
-let provider, signer, contract;
+      let provider, signer, contract;
+      let currentPage = 1;
+      const itemsPerPage = 10;
 
-// **Memaksa pengguna ke jaringan Base Mainnet**
-async function switchToBase() {
-    try {
-        await window.ethereum.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: BASE_MAINNET_PARAMS.chainId }],
-        });
-    } catch (error) {
-        if (error.code === 4902) {
-            await window.ethereum.request({
-                method: "wallet_addEthereumChain",
-                params: [BASE_MAINNET_PARAMS],
-            });
-        } else {
-            console.error("Gagal beralih ke jaringan Base:", error);
-        }
-    }
-}
+      // **Memaksa pengguna ke jaringan Base Mainnet**
+      async function switchToBase() {
+          try {
+              await window.ethereum.request({
+                  method: "wallet_switchEthereumChain",
+                  params: [{ chainId: BASE_MAINNET_PARAMS.chainId }],
+              });
+          } catch (error) {
+              if (error.code === 4902) {
+                  await window.ethereum.request({
+                      method: "wallet_addEthereumChain",
+                      params: [BASE_MAINNET_PARAMS],
+                  });
+              } else {
+                  console.error("Gagal beralih ke jaringan Base:", error);
+              }
+          }
+      }
 
-// **Koneksi Wallet dengan Signature**
-async function connectWallet() {
-    if (!window.ethereum) {
-        alert("Silakan instal MetaMask!");
-        return;
-    }
+      // **Koneksi Wallet dengan Signature**
+      async function connectWallet() {
+          if (!window.ethereum) {
+              alert("Silakan instal MetaMask!");
+              return;
+          }
 
-    provider = new ethers.providers.Web3Provider(window.ethereum);
-    signer = provider.getSigner();
-    contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+          provider = new ethers.providers.Web3Provider(window.ethereum);
+          signer = provider.getSigner();
+          contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 
-    try {
-        await switchToBase(); // Paksa ke jaringan Base
+          try {
+              await switchToBase(); // Paksa ke jaringan Base
 
-        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-        const address = accounts[0];
+              const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+              const address = accounts[0];
 
-        // **Meminta pengguna menandatangani pesan**
-        const message = `Konfirmasi koneksi ke History on Blockchain pada ${new Date().toLocaleString()}`;
-        await signer.signMessage(message);
+              // **Meminta pengguna menandatangani pesan**
+              const message = `Konfirmasi koneksi ke History on Blockchain pada ${new Date().toLocaleString()}`;
+              await signer.signMessage(message);
 
-        document.getElementById("walletAddress").innerText = `Wallet: ${address}`;
-        document.getElementById("networkStatus").innerText = "Jaringan: Base Mainnet";
+              document.getElementById("walletAddress").innerText = `Wallet: ${address}`;
+              document.getElementById("networkStatus").innerText = "Jaringan: Base Mainnet";
 
-        getBalance(); // Perbarui saldo setelah koneksi
-        fetchHistory(); // Muat riwayat sejarah
+              getBalance(); // Perbarui saldo setelah koneksi
+              fetchHistory(); // Muat riwayat sejarah
 
-    } catch (error) {
-        console.error("Koneksi gagal:", error);
-    }
-}
+          } catch (error) {
+              console.error("Koneksi gagal:", error);
+          }
+      }
 
-// **Menampilkan saldo token pengguna**
-async function getBalance() {
-    try {
-        const address = await signer.getAddress();
-        const balance = await contract.balanceOf(address);
-        document.getElementById("balance").innerText = `Saldo: ${ethers.utils.formatUnits(balance, 18)} HIST`;
-    } catch (error) {
-        console.error("Gagal mendapatkan saldo:", error);
-    }
-}
+      // **Menampilkan saldo token pengguna**
+      async function getBalance() {
+          try {
+              const address = await signer.getAddress();
+              const balance = await contract.balanceOf(address);
+              document.getElementById("balance").innerText = `Saldo: ${ethers.utils.formatUnits(balance, 18)} HIST`;
+          } catch (error) {
+              console.error("Gagal mendapatkan saldo:", error);
+          }
+      }
 
-// **Menambahkan catatan sejarah**
-async function addHistory() {
-    const title = document.getElementById("title").value;
-    const description = document.getElementById("description").value;
+      // **Menambahkan catatan sejarah**
+      async function addHistory() {
+          const title = document.getElementById("title").value;
+          const description = document.getElementById("description").value;
 
-    if (!title || !description) {
-        alert("Judul dan Deskripsi harus diisi!");
-        return;
-    }
+          if (!title || !description) {
+              alert("Judul dan Deskripsi harus diisi!");
+              return;
+          }
 
-    try {
-        const tx = await contract.addHistory(title, description);
-        await tx.wait();
-        alert("Sejarah berhasil ditambahkan!");
+          try {
+              const tx = await contract.addHistory(title, description);
+              await tx.wait();
+              alert("Sejarah berhasil ditambahkan!");
 
-        getBalance(); // Perbarui saldo
-        fetchHistory(); // Muat ulang daftar sejarah
+              getBalance(); // Perbarui saldo
+              fetchHistory(); // Muat ulang daftar sejarah
 
-    } catch (error) {
-        console.error("Gagal menambahkan sejarah:", error);
-    }
-}
+          } catch (error) {
+              console.error("Gagal menambahkan sejarah:", error);
+          }
+      }
 
-// **Mendapatkan riwayat sejarah dari kontrak**
-async function fetchHistory() {
-    try {
-        const histories = await contract.getAllHistories();
-        const historyList = document.getElementById("historyList");
-        historyList.innerHTML = "";
+      // **Mendapatkan riwayat sejarah dari kontrak dengan paging**
+      async function fetchHistory() {
+          try {
+              const histories = await contract.getAllHistories();
+              const historyList = document.getElementById("historyList");
+              historyList.innerHTML = "";
 
-        histories.forEach(history => {
-            const li = document.createElement("li");
-            li.innerHTML = `<strong>${history.title}</strong> - ${history.description} <br> ⏳ ${new Date(history.timestamp * 1000).toLocaleString()}`;
-            historyList.appendChild(li);
-        });
+              const startIndex = (currentPage - 1) * itemsPerPage;
+              const endIndex = Math.min(startIndex + itemsPerPage, histories.length);
+              const visibleHistories = histories.slice(startIndex, endIndex);
 
-    } catch (error) {
-        console.error("Gagal memuat sejarah:", error);
-    }
-}
+              visibleHistories.forEach(history => {
+                  const li = document.createElement("li");
+                  li.innerHTML = `<strong>${history.title}</strong> - ${history.description} <br> ⏳ ${new Date(history.timestamp * 1000).toLocaleString()}`;
+                  historyList.appendChild(li);
+              });
 
-// **Event Listener untuk Koneksi Wallet**
-document.getElementById("connectWallet").addEventListener("click", connectWallet);
+              updatePagination();
+
+          } catch (error) {
+              console.error("Gagal memuat sejarah:", error);
+          }
+      }
+
+      // **Update tombol pagination**
+      function updatePagination() {
+          const pageNumbers = document.getElementById("pageNumbers");
+          pageNumbers.innerHTML = `Page ${currentPage}`;
+
+          // Disable previous/next buttons if on first/last page
+          document.getElementById("previousPage").disabled = currentPage === 1;
+          document.getElementById("nextPage").disabled = currentPage * itemsPerPage >= histories.length;
+      }
+
+      // **Fungsi navigasi halaman**
+      function goToFirstPage() {
+          currentPage = 1;
+          fetchHistory();
+      }
+
+      function goToPreviousPage() {
+          if (currentPage > 1) {
+              currentPage--;
+              fetchHistory();
+          }
+      }
+
+      function goToNextPage() {
+          currentPage++;
+          fetchHistory();
+      }
+
+      // **Event Listener untuk Koneksi Wallet**
+      document.getElementById("connectWallet").addEventListener("click", connectWallet);
     </script>
 </body>
 </html>
