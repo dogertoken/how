@@ -117,6 +117,26 @@ input:focus, textarea:focus {
     font-size: 20px;
     cursor: pointer;
 }
+/* Inputs and Textarea */
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #f7f7f7;
+    box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.1), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+    text-align: center; /* Menambahkan ini untuk memusatkan teks */
+    line-height: 24px; /* Menambahkan ini untuk membuat baris teks lebih terpusat */
+}
+
+/* Placeholder Styles */
+input::placeholder, textarea::placeholder {
+    text-align: center; /* Memastikan placeholder terpusat */
+    color: #888; /* Mengatur warna placeholder */
+    line-height: 24px; /* Mengatur baris placeholder agar lebih terpusat */
+}
     </style>
 </head>
 <body>
