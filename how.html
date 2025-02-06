@@ -119,24 +119,12 @@ input:focus, textarea:focus {
 }
 /* Inputs and Textarea */
 input, textarea {
-    width: 100%;
+    width: 80%; /* Menentukan lebar elemen */
+    max-width: 500px; /* Membatasi lebar maksimum */
     padding: 12px;
-    margin: 10px 0;
+    margin: 10px auto; /* Menyentralkan kolom secara horizontal */
     border: 1px solid #ddd;
     border-radius: 12px;
-    background: #f7f7f7;
-    box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.1), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
-    transition: all 0.3s ease;
-    text-align: center; /* Menambahkan ini untuk memusatkan teks */
-    line-height: 24px; /* Menambahkan ini untuk membuat baris teks lebih terpusat */
-}
-
-/* Placeholder Styles */
-input::placeholder, textarea::placeholder {
-    text-align: center; /* Memastikan placeholder terpusat */
-    color: #888; /* Mengatur warna placeholder */
-    line-height: 24px; /* Mengatur baris placeholder agar lebih terpusat */
-}
     </style>
 </head>
 <body>
