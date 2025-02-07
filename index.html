@@ -48,7 +48,7 @@
     .footer {
     text-align: center;
     padding: 20px;
-    background: #e0e0e0;
+    background: #fff;
     box-shadow: inset 8px 8px 16px #bebebe, inset -8px -8px 16px #ffffff;
     border-radius: 12px;
 }
@@ -90,30 +90,53 @@
     box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff;
 }
 
-/* Responsive Navbar */
-@media screen and (max-width: 768px) {
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 60px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #e0e0e0;
-        border-radius: 12px;
-        box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
-        width: 80%;
-        text-align: center;
-    }
-
-    .nav-links.active {
-        display: flex;
-    }
-
-    .menu-toggle {
-        display: block;
-    }
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: #fff;
+    box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
+    border-radius: 12px;
 }
+
+.navbar .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    text-shadow: 2px 2px 4px #bebebe;
+}
+
+/* Menu Links */
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    display: inline-block;
+}
+
+.nav-links a {
+    text-decoration: none;
+    font-size: 18px;
+    color: #555;
+    padding: 10px 15px;
+    border-radius: 10px;
+    background: #e0e0e0;
+    box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+    transition: all 0.3s ease;
+}
+
+/* Hover Effect */
+.nav-links a:hover {
+    box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+    color: #333;
+        }
     </style>
 </head>
 <body>
