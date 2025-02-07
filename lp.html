@@ -64,62 +64,7 @@ nav ul li a {
 
 nav ul li a:hover {
     background: rgba(0, 0, 0, 0.1);
-}
-        
-@media (max-width: 768px) {
-    nav {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 15px;
-    }
-
-    nav ul {
-        flex-direction: column;
-        gap: 10px;
-        width: 100%;
-        display: none; /* Sembunyikan awalnya */
-    }
-
-    nav ul.active {
-        display: flex; /* Tampilkan jika aktif */
-    }
-
-    /* Tombol Toggle untuk HP */
-.menu-toggle {
-    font-size: 24px;
-    cursor: pointer;
-    display: none;
-}
-
-/* Menu Default */
-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-}
-
-/* Tampilan untuk Mobile */
-@media (max-width: 768px) {
-    .menu-toggle {
-        display: block;
-    }
-
-    nav ul {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 60px;
-        right: 20px;
-        background: #e0e0e0;
-        padding: 10px;
-        box-shadow: 4px 4px 10px #b8b8b8, -4px -4px 10px #ffffff;
-        border-radius: 8px;
-    }
-
-    nav ul.active {
-        display: flex;
-    }
-}
+}       
         
 /* HERO SECTION */
 header {
@@ -240,6 +185,31 @@ footer {
     transform: scale(1.1);
     color: #007bff;
         }
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        display: none; /* Sembunyikan awalnya */
+    }
+
+    nav ul.active {
+        display: flex; /* Tampilkan jika aktif */
+    }
+
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+        font-size: 24px;
+        padding: 10px;
+    }
+}
     </style>
 </head>
 <body>
