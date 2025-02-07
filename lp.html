@@ -7,41 +7,89 @@
     <link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="stylecss">
     <style>
-      /* Efek Neumorphism */
-.neu {
+      /* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Anonymous Pro', monospace;
+}
+
+/* BODY */
+body {
+    background: #f2f2f2;
+    color: #333;
+    text-align: center;
+    padding-top: 70px;
+}
+
+/* NAVBAR */
+nav {
+    position: fixed;
+    width: 100%;
     background: #e0e0e0;
-    border-radius: 12px;
-    box-shadow: 8px 8px 15px #b8b8b8, -8px -8px 15px #ffffff;
-    padding: 20px;
-    transition: all 0.3s ease-in-out;
+    box-shadow: 4px 4px 10px #b8b8b8, -4px -4px 10px #ffffff;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    top: 0;
+    z-index: 1000;
 }
 
-/* Hover efek */
-.neu:hover {
-    box-shadow: inset 4px 4px 10px #b8b8b8, inset -4px -4px 10px #ffffff;
+nav .logo {
+    font-size: 20px;
+    font-weight: bold;
 }
 
-/* Efek pada fitur */
-.feature {
-    background: #e0e0e0;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 8px 8px 15px #b8b8b8, -8px -8px 15px #ffffff;
-    transition: transform 0.2s ease-in-out;
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
 }
 
-.feature:hover {
-    transform: scale(1.05);
-    box-shadow: inset 4px 4px 10px #b8b8b8, inset -4px -4px 10px #ffffff;
+nav ul li {
+    display: inline;
 }
 
-/* Tombol CTA */
-.cta-button {
-    background: #e0e0e0;
-    border-radius: 20px;
-    padding: 15px 25px;
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+
+nav ul li a:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* HERO SECTION */
+header {
+    padding: 100px 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+header h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+header p {
     font-size: 18px;
-    box-shadow: 6px 6px 10px #b8b8b8, -6px -6px 10px #ffffff;
+    margin-bottom: 20px;
+}
+
+/* BUTTON */
+.cta-button {
+    display: inline-block;
+    background: #e0e0e0;
+    padding: 15px 25px;
+    border-radius: 10px;
+    font-size: 18px;
+    box-shadow: 4px 4px 10px #b8b8b8, -4px -4px 10px #ffffff;
     text-decoration: none;
     color: #333;
     font-weight: bold;
@@ -49,33 +97,87 @@
 }
 
 .cta-button:hover {
-    box-shadow: inset 6px 6px 10px #b8b8b8, inset -6px -6px 10px #ffffff;
-  }
-/* Efek muncul saat scroll */
-.reveal {
-    opacity: 0;
-    transform: translateY(50px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    box-shadow: inset 4px 4px 10px #b8b8b8, inset -4px -4px 10px #ffffff;
 }
 
-.reveal.active {
-    opacity: 1;
-    transform: translateY(0);
-      }
+/* FEATURES */
+#features {
+    padding: 60px 20px;
+}
+
+.features-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.feature {
+    width: 300px;
+    background: #e0e0e0;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 8px 8px 15px #b8b8b8, -8px -8px 15px #ffffff;
+    transition: transform 0.2s ease-in-out;
+}
+
+.feature:hover {
+    transform: scale(1.05);
+}
+
+/* HOW IT WORKS */
+#how-it-works {
+    padding: 60px 20px;
+}
+
+.steps {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.step {
+    width: 200px;
+    background: #e0e0e0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 6px 6px 12px #b8b8b8, -6px -6px 12px #ffffff;
+    font-size: 16px;
+}
+
+/* CONTACT */
+#contact {
+    padding: 60px 20px;
+}
+
+#contact a {
+    color: #333;
+    font-weight: bold;
+}
+
+/* FOOTER */
+footer {
+    padding: 20px;
+    background: #e0e0e0;
+    box-shadow: 4px 4px 10px #b8b8b8, -4px -4px 10px #ffffff;
+    text-align: center;
+    font-size: 14px;
+}
     </style>
 </head>
 <body>
 
     <!-- Navbar -->
     <nav>
-        <div class="logo">🌍 World History on Blockchain</div>
-        <ul>
-            <li><a href="#features">Fitur</a></li>
-            <li><a href="#how-it-works">Cara Kerja</a></li>
-            <li><a href="#contact">Kontak</a></li>
-            <li><a href="app.html" class="btn">🚀 Mulai Sekarang</a></li>
-        </ul>
-    </nav>
+    <div class="logo">🌍 World History on Blockchain</div>
+    <ul>
+        <li><a href="#features">Fitur</a></li>
+        <li><a href="#how-it-works">Cara Kerja</a></li>
+        <li><a href="#contact">Kontak</a></li>
+        <li><a href="app.html" class="cta-button">🚀 Mulai Sekarang</a></li>
+    </ul>
+ </nav>
 
     <!-- Hero Section -->
     <header>
@@ -125,8 +227,7 @@
     </footer>
 
     <script>
-      // Animasi saat scroll
-document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener("DOMContentLoaded", function () {
     let revealElements = document.querySelectorAll(".reveal");
 
     function reveal() {
@@ -134,30 +235,6 @@ document.addEventListener("DOMContentLoaded", function () {
         revealElements.forEach((el) => {
             let elementTop = el.getBoundingClientRect().top;
             if (elementTop < windowHeight - 50) {
-                el.classList.add("active");
-            } else {
-                el.classList.remove("active");
-            }
-        });
-    }
-
-    window.addEventListener("scroll", reveal);
-    reveal(); // Panggil langsung saat halaman dimuat
-});
-
-// Smooth scrolling
-document.querySelectorAll('nav a').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        let targetId = this.getAttribute('href').substring(1);
-        let targetSection = document.getElementById(targetId);
-
-        window.scrollTo({
-            top: targetSection.offsetTop - 50,
-            behavior: "smooth"
-        });
-    });
-});
     </script>
 
 </body>
