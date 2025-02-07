@@ -140,12 +140,12 @@
     /* Menu Toggle (Mobile) */
 .menu-toggle {
     display: none;
-    font-size: 24px;
+    font-size: 20px; /* Ukuran lebih kecil */
     cursor: pointer;
-    padding: 10px;
+    padding: 6px 10px; /* Padding lebih kecil */
     background: #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff;
+    border-radius: 6px; /* Sedikit lebih kecil */
+    box-shadow: 3px 3px 6px #bebebe, -3px -3px 6px #ffffff;
 }
 
 /* Responsive Navbar */
@@ -154,14 +154,15 @@
         display: none;
         flex-direction: column;
         position: absolute;
-        top: 60px;
+        top: 50px; /* Sedikit lebih tinggi */
         left: 50%;
         transform: translateX(-50%);
         background: #e0e0e0;
-        border-radius: 12px;
-        box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
-        width: 80%;
+        border-radius: 10px;
+        box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+        width: 85%;
         text-align: center;
+        padding: 8px 0;
     }
 
     .nav-links.active {
@@ -170,8 +171,11 @@
 
     .menu-toggle {
         display: block;
+        position: absolute;
+        right: 15px;
+        top: 15px;
     }
-}
+    }
     </style>
 </head>
 <body>
