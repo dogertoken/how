@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World History on Blockchain</title>
+    <link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="stylecss">
+    <style>
+      /* Efek Neumorphism */
+.neu {
+    background: #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 8px 8px 15px #b8b8b8, -8px -8px 15px #ffffff;
+    padding: 20px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover efek */
+.neu:hover {
+    box-shadow: inset 4px 4px 10px #b8b8b8, inset -4px -4px 10px #ffffff;
+}
+
+/* Efek pada fitur */
+.feature {
+    background: #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 8px 8px 15px #b8b8b8, -8px -8px 15px #ffffff;
+    transition: transform 0.2s ease-in-out;
+}
+
+.feature:hover {
+    transform: scale(1.05);
+    box-shadow: inset 4px 4px 10px #b8b8b8, inset -4px -4px 10px #ffffff;
+}
+
+/* Tombol CTA */
+.cta-button {
+    background: #e0e0e0;
+    border-radius: 20px;
+    padding: 15px 25px;
+    font-size: 18px;
+    box-shadow: 6px 6px 10px #b8b8b8, -6px -6px 10px #ffffff;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.cta-button:hover {
+    box-shadow: inset 6px 6px 10px #b8b8b8, inset -6px -6px 10px #ffffff;
+  }
+/* Efek muncul saat scroll */
+.reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+      }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">🌍 World History on Blockchain</div>
+        <ul>
+            <li><a href="#features">Fitur</a></li>
+            <li><a href="#how-it-works">Cara Kerja</a></li>
+            <li><a href="#contact">Kontak</a></li>
+            <li><a href="app.html" class="btn">🚀 Mulai Sekarang</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <header>
+        <h1>Masa Lalu Tidak Bisa Hilang, <br> Abadikan Sejarah di Blockchain</h1>
+        <p>Catat peristiwa penting di blockchain untuk memastikan keasliannya selamanya.</p>
+        <a href="app.html" class="cta-button">🚀 Coba Sekarang</a>
+    </header>
+
+    <!-- Features Section -->
+    <section id="features">
+        <h2>🔍 Fitur Utama</h2>
+        <div class="features-container">
+            <div class="feature">
+                <h3>⏳ Permanen</h3>
+                <p>Data sejarah yang dicatat tidak bisa dihapus atau diubah.</p>
+            </div>
+            <div class="feature">
+                <h3>🔗 Transparan</h3>
+                <p>Semua orang bisa melihat catatan sejarah yang disimpan di blockchain.</p>
+            </div>
+            <div class="feature">
+                <h3>📜 Otentik</h3>
+                <p>Sejarah diverifikasi dengan sistem smart contract yang aman.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works">
+        <h2>⚙️ Cara Kerja</h2>
+        <div class="steps">
+            <div class="step">1️⃣ Hubungkan Wallet</div>
+            <div class="step">2️⃣ Masukkan Peristiwa Sejarah</div>
+            <div class="step">3️⃣ Konfirmasi dan Simpan di Blockchain</div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <h2>📞 Hubungi Kami</h2>
+        <p>Jika ada pertanyaan, silakan hubungi kami di <a href="mailto:info@worldhistoryblockchain.com">info@worldhistoryblockchain.com</a></p>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 World History on Blockchain. Semua Hak Dilindungi.</p>
+    </footer>
+
+    <script>
+      // Animasi saat scroll
+document.addEventListener("DOMContentLoaded", function () {
+    let revealElements = document.querySelectorAll(".reveal");
+
+    function reveal() {
+        let windowHeight = window.innerHeight;
+        revealElements.forEach((el) => {
+            let elementTop = el.getBoundingClientRect().top;
+            if (elementTop < windowHeight - 50) {
+                el.classList.add("active");
+            } else {
+                el.classList.remove("active");
+            }
+        });
+    }
+
+    window.addEventListener("scroll", reveal);
+    reveal(); // Panggil langsung saat halaman dimuat
+});
+
+// Smooth scrolling
+document.querySelectorAll('nav a').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        let targetId = this.getAttribute('href').substring(1);
+        let targetSection = document.getElementById(targetId);
+
+        window.scrollTo({
+            top: targetSection.offsetTop - 50,
+            behavior: "smooth"
+        });
+    });
+});
+    </script>
+
+</body>
+</html>
