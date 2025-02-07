@@ -65,7 +65,33 @@ nav ul li a {
 nav ul li a:hover {
     background: rgba(0, 0, 0, 0.1);
 }
+        
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
 
+    nav ul {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        display: none; /* Sembunyikan awalnya */
+    }
+
+    nav ul.active {
+        display: flex; /* Tampilkan jika aktif */
+    }
+
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+        font-size: 24px;
+        padding: 10px;
+    }
+}
+        
 /* HERO SECTION */
 header {
     padding: 100px 20px;
@@ -192,6 +218,7 @@ footer {
     <!-- Navbar -->
     <nav>
     <div class="logo">🌍 World History</div>
+    <div class="menu-toggle">☰</div>
     <ul>
         <li><a href="#features">Fitur</a></li>
         <li><a href="#how-it-works">Cara</a></li>
@@ -269,6 +296,10 @@ footer {
         revealElements.forEach((el) => {
             let elementTop = el.getBoundingClientRect().top;
             if (elementTop < windowHeight - 50) {
+
+     document.querySelector(".menu-toggle").addEventListener("click", function () {
+    document.querySelector("nav ul").classList.toggle("active");
+});
     </script>
 
 </body>
