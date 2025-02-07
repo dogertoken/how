@@ -84,11 +84,40 @@ nav ul li a:hover {
         display: flex; /* Tampilkan jika aktif */
     }
 
+    /* Tombol Toggle untuk HP */
+.menu-toggle {
+    font-size: 24px;
+    cursor: pointer;
+    display: none;
+}
+
+/* Menu Default */
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+/* Tampilan untuk Mobile */
+@media (max-width: 768px) {
     .menu-toggle {
         display: block;
-        cursor: pointer;
-        font-size: 24px;
+    }
+
+    nav ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        background: #e0e0e0;
         padding: 10px;
+        box-shadow: 4px 4px 10px #b8b8b8, -4px -4px 10px #ffffff;
+        border-radius: 8px;
+    }
+
+    nav ul.active {
+        display: flex;
     }
 }
         
@@ -288,17 +317,13 @@ footer {
     </footer>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-    let revealElements = document.querySelectorAll(".reveal");
+        document.addEventListener("DOMContentLoaded", function () {
+    const menuToggle = document.querySelector(".menu-toggle");
+    const navUl = document.querySelector("nav ul");
 
-    function reveal() {
-        let windowHeight = window.innerHeight;
-        revealElements.forEach((el) => {
-            let elementTop = el.getBoundingClientRect().top;
-            if (elementTop < windowHeight - 50) {
-
-     document.querySelector(".menu-toggle").addEventListener("click", function () {
-    document.querySelector("nav ul").classList.toggle("active");
+    menuToggle.addEventListener("click", function () {
+        navUl.classList.toggle("active");
+    });
 });
     </script>
 
