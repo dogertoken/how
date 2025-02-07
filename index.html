@@ -132,21 +132,41 @@
     transition: all 0.3s ease;
 }
 
-/* Hover Effect */
-.nav-links a:hover {
-    box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
-    color: #333;
-        }
-    /* Menu Toggle (Mobile) */
+/* Menu Toggle (Mobile) */
 .menu-toggle {
     display: none;
-    font-size: 20px; /* Ukuran lebih kecil */
+    font-size: 24px;
     cursor: pointer;
-    padding: 6px 10px; /* Padding lebih kecil */
+    padding: 10px;
     background: #e0e0e0;
-    border-radius: 6px; /* Sedikit lebih kecil */
-    box-shadow: 3px 3px 6px #bebebe, -3px -3px 6px #ffffff;
+    border-radius: 8px;
+    box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff;
 }
+
+/* Responsive Navbar */
+@media screen and (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #e0e0e0;
+        border-radius: 12px;
+        box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
+        width: 80%;
+        text-align: center;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+    }
 
     </style>
 </head>
