@@ -137,6 +137,41 @@
     box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
     color: #333;
         }
+    /* Menu Toggle (Mobile) */
+.menu-toggle {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+    background: #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff;
+}
+
+/* Responsive Navbar */
+@media screen and (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #e0e0e0;
+        border-radius: 12px;
+        box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
+        width: 80%;
+        text-align: center;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+}
     </style>
 </head>
 <body>
