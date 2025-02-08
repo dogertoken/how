@@ -310,7 +310,6 @@ input, textarea {
     
 <h2>Riwayat Sejarah</h2>
 <ul id="historyList"></ul>
-<button onclick="addHistory()">Tambah Riwayat</button>
 
 
     <!-- Modal untuk menampilkan deskripsi -->
@@ -553,21 +552,6 @@ async function fetchHistory() {
     }
 }
 
-const maxHistory = 10; // Maksimal jumlah riwayat yang ditampilkan
-
-function addHistory() {
-    const historyList = document.getElementById("historyList");
-    const newItem = document.createElement("li");
-    newItem.textContent = "Peristiwa baru pada " + new Date().toLocaleDateString();
-    
-    // Tambahkan item baru di awal daftar
-    historyList.prepend(newItem);
-    
-    // Hapus item terakhir jika melebihi batas
-    if (historyList.children.length > maxHistory) {
-        historyList.removeChild(historyList.lastChild);
-    }
-}
 
 // Fungsi untuk menampilkan modal
 function openModal(title, description, timestamp) {
