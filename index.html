@@ -295,13 +295,15 @@ input, textarea {
 
 
 
-    <h2>Tambahkan Sejarah</h2>
-
-    <input type="text" id="title" placeholder="Judul Sejarah">
-
-    <textarea id="description" placeholder="Deskripsi Sejarah" maxlength="250"></textarea>
-
-    <button onclick="addHistory()">📝 Tambah Sejarah</button>
+    <h2>Riwayat Sejarah</h2>
+<ul id="historyList"></ul>
+<div id="pagination">
+    <button id="firstPage" onclick="goToPage(1)">⏮️ First</button>
+    <button id="prevPage" onclick="changePage(-1)">⬅️ Previous</button>
+    <span id="pageInfo"></span>
+    <button id="nextPage" onclick="changePage(1)">Next ➡️</button>
+    <button id="lastPage" onclick="goToPage('last')">⏭️ Last</button>
+</div>
 
 
 
@@ -533,7 +535,7 @@ async function addHistory() {
 // **Mendapatkan riwayat sejarah dari kontrak**
 
 let currentPage = 1;
-const itemsPerPage = 5; // Jumlah item per halaman
+const itemsPerPage = 5;
 let historyData = [];
 
 async function fetchHistory() {
@@ -554,6 +556,7 @@ function displayPage(page) {
     let list = document.getElementById("historyList");
     list.innerHTML = "";
 
+    let totalPages = Math.ceil(historyData.length / itemsPerPage);
     let start = (page - 1) * itemsPerPage;
     let end = start + itemsPerPage;
     let paginatedItems = historyData.slice(start, end);
@@ -567,19 +570,33 @@ function displayPage(page) {
         list.appendChild(li);
     });
 
-    document.getElementById("pageInfo").innerText = `Page ${page} of ${Math.ceil(historyData.length / itemsPerPage)}`;
+    document.getElementById("pageInfo").innerText = `Page ${page} of ${totalPages}`;
+    document.getElementById("firstPage").disabled = page === 1;
     document.getElementById("prevPage").disabled = page === 1;
-    document.getElementById("nextPage").disabled = end >= historyData.length;
+    document.getElementById("nextPage").disabled = page === totalPages;
+    document.getElementById("lastPage").disabled = page === totalPages;
 }
 
 function changePage(direction) {
     let newPage = currentPage + direction;
-    if (newPage > 0 && newPage <= Math.ceil(historyData.length / itemsPerPage)) {
+    let totalPages = Math.ceil(historyData.length / itemsPerPage);
+
+    if (newPage >= 1 && newPage <= totalPages) {
         currentPage = newPage;
         displayPage(currentPage);
     }
 }
 
+function goToPage(page) {
+    let totalPages = Math.ceil(historyData.length / itemsPerPage);
+
+    if (page === "last") {
+        currentPage = totalPages;
+    } else {
+        currentPage = 1;
+    }
+    displayPage(currentPage);
+}
 
 // Fungsi untuk menampilkan modal
 function openModal(title, description, timestamp) {
