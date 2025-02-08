@@ -136,12 +136,18 @@ input:focus, textarea:focus {
 
 
 
-/* Pagination */
+.historyPage {
+    display: none;
+    list-style: none;
+    padding: 0;
+}
+
+.historyPage.active {
+    display: block;
+}
 
 .pagination {
-
-    margin-top: 20px;
-
+    margin-top: 10px;
 }
 
 
@@ -303,15 +309,40 @@ input, textarea {
 
     
 <h2>Riwayat Sejarah</h2>
-<ul id="historyList"></ul>
-<button id="loadMoreButton" onclick="goToNextPage()">Muat Lebih Banyak</button>
 
-<!-- Pagination Controls -->
+<!-- Halaman 1 -->
+<ul class="historyPage active">
+    <li><b>Judul 10</b> (Tanggal 10)<br><i>Deskripsi 10</i></li>
+    <li><b>Judul 9</b> (Tanggal 9)<br><i>Deskripsi 9</i></li>
+    <li><b>Judul 8</b> (Tanggal 8)<br><i>Deskripsi 8</i></li>
+    <li><b>Judul 7</b> (Tanggal 7)<br><i>Deskripsi 7</i></li>
+    <li><b>Judul 6</b> (Tanggal 6)<br><i>Deskripsi 6</i></li>
+    <li><b>Judul 5</b> (Tanggal 5)<br><i>Deskripsi 5</i></li>
+    <li><b>Judul 4</b> (Tanggal 4)<br><i>Deskripsi 4</i></li>
+    <li><b>Judul 3</b> (Tanggal 3)<br><i>Deskripsi 3</i></li>
+    <li><b>Judul 2</b> (Tanggal 2)<br><i>Deskripsi 2</i></li>
+    <li><b>Judul 1</b> (Tanggal 1)<br><i>Deskripsi 1</i></li>
+</ul>
+
+<!-- Halaman 2 -->
+<ul class="historyPage">
+    <li><b>Judul 20</b> (Tanggal 20)<br><i>Deskripsi 20</i></li>
+    <li><b>Judul 19</b> (Tanggal 19)<br><i>Deskripsi 19</i></li>
+    <li><b>Judul 18</b> (Tanggal 18)<br><i>Deskripsi 18</i></li>
+    <li><b>Judul 17</b> (Tanggal 17)<br><i>Deskripsi 17</i></li>
+    <li><b>Judul 16</b> (Tanggal 16)<br><i>Deskripsi 16</i></li>
+    <li><b>Judul 15</b> (Tanggal 15)<br><i>Deskripsi 15</i></li>
+    <li><b>Judul 14</b> (Tanggal 14)<br><i>Deskripsi 14</i></li>
+    <li><b>Judul 13</b> (Tanggal 13)<br><i>Deskripsi 13</i></li>
+    <li><b>Judul 12</b> (Tanggal 12)<br><i>Deskripsi 12</i></li>
+    <li><b>Judul 11</b> (Tanggal 11)<br><i>Deskripsi 11</i></li>
+</ul>
+
+<!-- Kontrol Paginasi -->
 <div class="pagination">
-    <button id="firstPage" onclick="goToFirstPage()">First</button>
-    <button id="previousPage" onclick="goToPreviousPage()">⬅️ Left</button>
-    <span id="pageNumbers"></span>
-    <button id="nextPage" onclick="goToNextPage()">➡️ Right</button>
+    <button id="prevBtn">⬅️ Left</button>
+    <span id="pageIndicator">1 / 2</span>
+    <button id="nextBtn">➡️ Right</button>
 </div>
        
 
@@ -763,59 +794,34 @@ window.onclick = function(event) {
 
 // **Update tombol pagination**
 
-      function updatePagination() {
+document.addEventListener("DOMContentLoaded", function() {
+    let pages = document.querySelectorAll(".historyPage");
+    let currentPage = 0;
 
-          const pageNumbers = document.getElementById("pageNumbers");
+    function updatePagination() {
+        pages.forEach((page, index) => {
+            page.classList.toggle("active", index === currentPage);
+        });
+        document.getElementById("pageIndicator").textContent = (currentPage + 1) + " / " + pages.length;
+    }
 
-          pageNumbers.innerHTML = `Page ${currentPage}`;
+    document.getElementById("nextBtn").addEventListener("click", function() {
+        if (currentPage < pages.length - 1) {
+            currentPage++;
+            updatePagination();
+        }
+    });
 
+    document.getElementById("prevBtn").addEventListener("click", function() {
+        if (currentPage > 0) {
+            currentPage--;
+            updatePagination();
+        }
+    });
 
-
-          // Disable previous/next buttons if on first/last page
-
-          document.getElementById("previousPage").disabled = currentPage === 1;
-
-          document.getElementById("nextPage").disabled = currentPage * itemsPerPage >= histories.length;
-
-      }
-
-
-
-      // **Fungsi navigasi halaman**
-
-      function goToFirstPage() {
-
-          currentPage = 1;
-
-          fetchHistory();
-
-      }
-
-
-
-      function goToPreviousPage() {
-
-          if (currentPage > 1) {
-
-              currentPage--;
-
-              fetchHistory();
-
-          }
-
-      }
-
-
-
-      function goToNextPage() {
-
-          currentPage++;
-
-          fetchHistory();
-
-      }
-
-        
+    // Set halaman pertama sebagai aktif
+    updatePagination();
+});
 
 // **Diskonek Wallet**
 
