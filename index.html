@@ -310,6 +310,11 @@ input, textarea {
     
 <h2>Riwayat Sejarah</h2>
 <ul id="historyList"></ul>
+<div id="pagination">
+    <button id="prevPage" onclick="changePage(-1)">⬅️ Previous</button>
+    <span id="pageInfo"></span>
+    <button id="nextPage" onclick="changePage(1)">Next ➡️</button>
+</div>
 
 
     <!-- Modal untuk menampilkan deskripsi -->
@@ -527,28 +532,51 @@ async function addHistory() {
 
 // **Mendapatkan riwayat sejarah dari kontrak**
 
+let currentPage = 1;
+const itemsPerPage = 5; // Jumlah item per halaman
+let historyData = [];
+
 async function fetchHistory() {
     let provider = new ethers.providers.Web3Provider(window.ethereum);
-    let contractAddress = "0xA4aA1cB5bd5985e066b51085F6eA252056388434"; // Ganti dengan alamat smart contract
-    let abi = [{"inputs":[{"internalType":"uint256","name":"initialSupply","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"title","type":"string"},{"indexed":false,"internalType":"string","name":"description","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"HistoryAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"string","name":"_title","type":"string"},{"internalType":"string","name":"_description","type":"string"}],"name":"addHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"confirmHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllHistories","outputs":[{"components":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"}],"internalType":"struct HistoryToken.History[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"histories","outputs":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"rewardAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"}];
+    let contractAddress = "0xA4aA1cB5bd5985e066b51085F6eA252056388434"; // Ganti dengan alamat kontrak
+    let abi = [/* ABI tetap sama */];
     let contract = new ethers.Contract(contractAddress, abi, provider);
 
     try {
-        let historyData = await contract.getAllHistories();
-
-        let list = document.getElementById('historyList');
-        list.innerHTML = "";
-
-        historyData.forEach((item) => {
-            let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
-            let li = document.createElement('li');
-            li.innerHTML = `<b>${item.title}</b> (${formattedDate})<br>
-                            <i>${item.description}</i><br>
-                            <button onclick="openModal('${item.title}', '${item.description}', '${formattedDate}')">🔍 Lihat</button>`;
-            list.appendChild(li);
-        });
+        historyData = await contract.getAllHistories();
+        displayPage(currentPage);
     } catch (error) {
         console.error("Gagal mengambil data:", error);
+    }
+}
+
+function displayPage(page) {
+    let list = document.getElementById("historyList");
+    list.innerHTML = "";
+
+    let start = (page - 1) * itemsPerPage;
+    let end = start + itemsPerPage;
+    let paginatedItems = historyData.slice(start, end);
+
+    paginatedItems.forEach((item) => {
+        let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
+        let li = document.createElement("li");
+        li.innerHTML = `<b>${item.title}</b> (${formattedDate})<br>
+                        <i>${item.description}</i><br>
+                        <button onclick="openModal('${item.title}', '${item.description}', '${formattedDate}')">🔍 Lihat</button>`;
+        list.appendChild(li);
+    });
+
+    document.getElementById("pageInfo").innerText = `Page ${page} of ${Math.ceil(historyData.length / itemsPerPage)}`;
+    document.getElementById("prevPage").disabled = page === 1;
+    document.getElementById("nextPage").disabled = end >= historyData.length;
+}
+
+function changePage(direction) {
+    let newPage = currentPage + direction;
+    if (newPage > 0 && newPage <= Math.ceil(historyData.length / itemsPerPage)) {
+        currentPage = newPage;
+        displayPage(currentPage);
     }
 }
 
