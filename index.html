@@ -557,7 +557,7 @@ function displayPage(page) {
         let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
         let li = document.createElement("li");
         li.innerHTML = `<b>${item.title}</b> (${new Date(item.timestamp * 1000).toLocaleDateString("id-ID")})<br><br>
-                        <b><i>${item.description}</i><b><br><br>
+                        <i><b>${item.description}<b></i><br><br>
                         <small>Creator: ${item.creator}</small><br>
                         <small>Block: ${item.blockNumber}</small><br>
                         <small>Tx Hash: ${item.txHash}</small><br>
