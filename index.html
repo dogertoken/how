@@ -558,34 +558,6 @@ async function addHistory() {
 
 }
 
-
-
- // **Menampilkan Modal**
-
-function showModal(title, description, timestamp) {
-
-    document.getElementById("modalTitle").innerText = title;
-
-    document.getElementById("modalDescription").innerText = description;
-
-    document.getElementById("modalTimestamp").innerText = new Date(timestamp * 1000).toLocaleString();
-
-    document.getElementById("historyModal").style.display = "block";
-
-}
-
-
-
-// **Menutup Modal**
-
-function closeModal() {
-
-    document.getElementById("historyModal").style.display = "none";
-
-}
-
-
-
 // **Mendapatkan riwayat sejarah dari kontrak**
         
 async function fetchHistory() {
@@ -773,7 +745,26 @@ async function confirmOldestHistory() {
 
 }
 
+// Fungsi untuk menampilkan modal
+function openModal(title, description, timestamp) {
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('modalDescription').innerText = description;
+    document.getElementById('modalTimestamp').innerText = new Date(timestamp * 1000).toLocaleString();
+    document.getElementById('historyModal').style.display = "block";
+}
 
+// Fungsi untuk menutup modal
+function closeModal() {
+    document.getElementById('historyModal').style.display = "none";
+}
+
+// Pastikan modal bisa ditutup dengan klik di luar modal
+window.onclick = function(event) {
+    let modal = document.getElementById('historyModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+};
 
 // **Update tombol pagination**
 
