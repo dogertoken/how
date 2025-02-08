@@ -545,7 +545,7 @@ async function fetchHistory() {
 }
 
 function displayPage(page) {
-    let list = document.getElementById("historyList");
+    let list = document.getElementById("historyLis");
     list.innerHTML = "";
 
     let totalPages = Math.ceil(historyData.length / itemsPerPage);
