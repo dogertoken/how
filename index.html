@@ -557,17 +557,11 @@ async function fetchHistory() {
 
     try {
         let historyData = await contract.getAllHistories();
-        
-        // Urutkan dari yang terbaru
-        historyData.sort((a, b) => b.timestamp - a.timestamp);
-        
-        // Ambil 10 item terbaru
-        let latestHistory = historyData.slice(0, 10);
 
         let list = document.getElementById('historyList');
         list.innerHTML = "";
 
-        latestHistory.forEach((item) => {
+        historyData.forEach((item) => {
             let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
             let li = document.createElement('li');
             li.innerHTML = `<b>${item.title}</b> (${formattedDate})<br>
@@ -579,7 +573,7 @@ async function fetchHistory() {
         console.error("Gagal mengambil data:", error);
     }
 }
-        
+
 
 // **Konfirmasi Sejarah (Admin)**
 
