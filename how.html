@@ -183,9 +183,9 @@ const ABI = [
 
 const BASE_MAINNET_PARAMS = {
     chainId: "0x2105",
-    chainName: "Base Mainnet",
+    chainName: "Base Sepolia Testnet",
     nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-    rpcUrls: ["https://mainnet.base.org"],
+    rpcUrls: ["https://sepolia.base.org"],
     blockExplorerUrls: ["https://basescan.org"],
 };
 
@@ -300,6 +300,9 @@ async function fetchHistory() {
         const histories = await contract.getAllHistories();
         const historyList = document.getElementById("historyList");
         historyList.innerHTML = "";
+
+        // Balik urutan data agar yang terbaru muncul di atas
+        histories.reverse();
 
         histories.forEach(history => {
             const li = document.createElement("li");
