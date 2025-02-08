@@ -291,6 +291,7 @@ input, textarea {
     <textarea id="description" placeholder="Deskripsi Sejarah" maxlength="250"></textarea>
     <br>
     <button onclick="addHistory()">📝 Tambah Sejarah</button>
+    <br><p id="status"></p>
 
     <hr>
 
@@ -604,6 +605,9 @@ function openModal(title, description, timestamp) {
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalDescription').textContent = truncatedDescription;
     document.getElementById('modalTimestamp').textContent = new Date(timestamp * 1000).toLocaleString();
+    document.getElementById('modalCreator').textContent = "Creator: " + creator;
+    document.getElementById('modalBlockNumber').textContent = "Block: " + blockNumber;
+    document.getElementById('modalTxHash').innerHTML = `Tx Hash: <a href="https://sepolia.basescan.org/tx/${txHash}" target="_blank">${txHash.substring(0, 10)}...</a>`;
     document.getElementById('historyModal').style.display = "block";
 }
 
@@ -620,6 +624,51 @@ window.onclick = function(event) {
     }
 };
 
+async function addHistory() {
+        let title = document.getElementById("title").value.trim();
+        let description = document.getElementById("description").value.trim();
+        let status = document.getElementById("status");
+
+        if (title === "" || description === "") {
+            status.textContent = "⚠️ Mohon isi semua kolom!";
+            status.style.color = "red";
+            return;
+        }
+
+        if (!window.ethereum) {
+            status.textContent = "❌ Metamask tidak ditemukan!";
+            status.style.color = "red";
+            return;
+        }
+
+        try {
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            const contract = new ethers.Contract(contractAddress, abi, signer);
+
+            status.textContent = "⏳ Mengirim transaksi ke blockchain...";
+            status.style.color = "blue";
+
+            // Kirim transaksi ke smart contract
+            let tx = await contract.addHistory(title, description);
+            status.textContent = `⏳ Transaksi dikirim: ${tx.hash} (Menunggu konfirmasi...)`;
+
+            // Tunggu konfirmasi transaksi
+            await tx.wait();
+            
+            status.textContent = "✅ Sejarah berhasil ditambahkan ke blockchain!";
+            status.style.color = "green";
+
+            // Reset input setelah sukses
+            document.getElementById("title").value = "";
+            document.getElementById("description").value = "";
+
+        } catch (error) {
+            status.textContent = "❌ Gagal mengirim transaksi: " + error.message;
+            status.style.color = "red";
+        }
+}
+        
 
 // **Diskonek Wallet**
 
