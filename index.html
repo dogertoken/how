@@ -145,42 +145,34 @@ input:focus, textarea:focus {
 .historyPage.active {
     display: block;
 }
+#pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        margin-top: 10px;
+    }
+    
+    #pagination button {
+        padding: 5px 8px;
+        font-size: 14px;
+        min-width: 35px;
+        border: none;
+        border-radius: 5px;
+        background: #007bff;
+        color: white;
+        cursor: pointer;
+    }
 
-.pagination {
-    margin-top: 10px;
-}
+    #pagination button:disabled {
+        background: #aaa;
+        cursor: not-allowed;
+    }
 
-
-
-.pagination button {
-
-    margin: 0 5px;
-
-    border-radius: 50%;
-
-    background: #e0e0e0;
-
-    padding: 8px 12px;
-
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1), -2px -2px 6px rgba(255, 255, 255, 0.8);
-
-    transition: all 0.3s ease;
-
-}
-
-
-
-.pagination button:hover {
-
-    background: #007bff;
-
-    color: white;
-
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.7);
-
-}
-
-
+    #pageInfo {
+        font-size: 14px;
+        font-weight: bold;
+    }
 
 /* Modal Styles */
 
