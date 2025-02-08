@@ -288,7 +288,7 @@ input, textarea {
 
     <h2>Tambahkan Sejarah</h2>
     <input type="text" id="title" placeholder="Judul Sejarah">
-    <textarea id="description" placeholder="Deskripsi Sejarah" maxlength="250"></textarea>
+    <textarea id="description" placeholder="Deskripsi Sejarah" maxlength="500"></textarea>
     <br>
     <button onclick="addHistory()">📝 Tambah Sejarah</button>
 
@@ -557,7 +557,7 @@ function displayPage(page) {
         let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
         let li = document.createElement("li");
         li.innerHTML = `<b>${item.title}</b> (${new Date(item.timestamp * 1000).toLocaleDateString("id-ID")})<br><br>
-                        <i><b>${item.description}<b></i><br><br>
+                        <i>${item.description}</i><br><br>
                         <small>Creator: ${item.creator}</small><br>
                         <small>Block: ${item.blockNumber}</small><br>
                         <small>Tx Hash: <a href="https://sepolia.basescan.org/tx/${item.txHash}" target="_blank">
