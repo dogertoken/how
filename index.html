@@ -304,12 +304,8 @@ input, textarea {
 
 
     <h2>Riwayat Sejarah</h2>
-
-    <ul id="historyList"></ul>
-
-    <button onclick="fetchHistory()">Muat Lebih Banyak</button>
-
-
+<ul id="historyList"></ul>
+<button id="loadMoreButton" onclick="renderHistory()">Muat Lebih Banyak</button>
 
     <!-- Pagination Controls -->
 
@@ -343,16 +339,14 @@ input, textarea {
 
 
 
-    <!-- Modal Popup -->
-
-    <div id="historyModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2 id="modalTitle"></h2>
-        <p id="modalDescription"></p>
-        <small id="modalTimestamp"></small>
-    </div>
-  </div>
+    <!-- Modal untuk menampilkan deskripsi -->
+<div id="historyModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+    background:white; padding:20px; border:1px solid #000;">
+    <h3 id="modalTitle"></h3>
+    <p id="modalDescription"></p>
+    <small id="modalTimestamp"></small><br>
+    <button onclick="closeModal()">Tutup</button>
+</div>
 
     <script>
 
@@ -562,9 +556,9 @@ async function addHistory() {
 
 // **Mendapatkan riwayat sejarah dari kontrak**
         
-let historyData = []; // Menyimpan semua data sejarah
-let displayedCount = 0; // Jumlah item yang sudah ditampilkan
-const itemsPerLoad = 10; // Jumlah item per sekali pemuatan
+let historyData = [];
+let displayedCount = 0;
+const itemsPerLoad = 10;
 
 async function fetchHistory() {
     let provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -574,9 +568,10 @@ async function fetchHistory() {
 
     try {
         historyData = await contract.getAllHistories();
-        historyData.reverse(); // Membalik urutan agar yang terbaru ada di atas
+        historyData.reverse(); // Menampilkan riwayat terbaru di atas
         displayedCount = 0;
-        renderHistory(); // Menampilkan 10 data pertama
+        document.getElementById('historyList').innerHTML = ""; // Bersihkan sebelum render ulang
+        renderHistory();
     } catch (error) {
         console.error("Gagal mengambil data:", error);
     }
@@ -592,19 +587,33 @@ function renderHistory() {
 
         let li = document.createElement('li');
         li.innerHTML = `<b>${item.title}</b> (${formattedDate}) 
-            <button onclick="openModal('${item.title}', '${item.description}', '${formattedDate}')">🔍 Lihat</button>`;
+            <button onclick="openModal('${escapeHtml(item.title)}', '${escapeHtml(item.description)}', '${formattedDate}')">🔍 Lihat</button>`;
         list.appendChild(li);
     }
 
     displayedCount += itemsPerLoad;
 
-    // Sembunyikan tombol jika semua data sudah ditampilkan
-    if (displayedCount >= historyData.length) {
-        loadMoreButton.style.display = 'none';
-    } else {
-        loadMoreButton.style.display = 'block';
-    }
+    loadMoreButton.style.display = (displayedCount >= historyData.length) ? 'none' : 'block';
 }
+
+function openModal(title, description, timestamp) {
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('modalDescription').innerText = description;
+    document.getElementById('modalTimestamp').innerText = timestamp;
+    document.getElementById('historyModal').style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById('historyModal').style.display = "none";
+}
+
+function escapeHtml(text) {
+    let div = document.createElement("div");
+    div.innerText = text;
+    return div.innerHTML;
+}
+
+fetchHistory();
 
 // **Konfirmasi Sejarah (Admin)**
 
