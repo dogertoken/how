@@ -556,8 +556,8 @@ function displayPage(page) {
     paginatedItems.forEach((item) => {
         let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
         let li = document.createElement("li");
-        li.innerHTML = `<b>${item.title}</b> (${new Date(item.timestamp * 1000).toLocaleDateString("id-ID")})<br>
-                        <i>${item.description}</i><br>
+        li.innerHTML = `<b>${item.title}</b> (${new Date(item.timestamp * 1000).toLocaleDateString("id-ID")})<br><br>
+                        <b><i>${item.description}</i><b><br><br>
                         <small>Creator: ${item.creator}</small><br>
                         <small>Block: ${item.blockNumber}</small><br>
                         <small>Tx Hash: ${item.txHash}</small><br>
@@ -642,24 +642,6 @@ function disconnectWallet() {
 
     connectButton.onclick = connectWallet;
 
-}
-
-let list = document.getElementById("historyList");
-
-// Pastikan historyData adalah array
-if (!Array.isArray(historyData) || historyData.length === 0) {
-    console.warn("Tidak ada data yang tersedia.");
-} else {
-    historyData.forEach((item) => {
-        let li = document.createElement('li');
-        li.innerHTML = `<b>${item.title}</b> (${new Date(item.timestamp * 1000).toLocaleDateString("id-ID")})<br>
-                        <i>${item.description}</i><br>
-                        <small>Creator: ${item.creator}</small><br>
-                        <small>Block: ${item.blockNumber}</small><br>
-                        <small>Tx Hash: ${item.txHash}</small><br>
-                        <button onclick="openModal('${item.title}', '${item.description}', '${item.creator}', '${item.blockNumber}', '${item.txHash}')">🔍 Lihat</button>`;
-        list.appendChild(li);
-    });
 }
 
 // **Event Listener untuk Koneksi Wallet**
