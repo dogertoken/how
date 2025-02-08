@@ -298,16 +298,7 @@ async function fetchHistory() {
         const histories = await contract.getAllHistories();
         const historyList = document.getElementById("historyList");
         historyList.innerHTML = "";
-
-        // Balik urutan data agar yang terbaru muncul di atas
-        histories.reverse();
-
-        histories.forEach(history => {
-            const li = document.createElement("li");
-            li.innerHTML = `<strong>${history.title}</strong> - ${history.description} <br> ⏳ ${new Date(history.timestamp * 1000).toLocaleString()}`;
-            historyList.appendChild(li);
-        });
-
+        
     } catch (error) {
         console.error("Gagal memuat sejarah:", error);
     }
