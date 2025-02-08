@@ -310,17 +310,11 @@ input, textarea {
     
 <h2>Riwayat Sejarah</h2>
     <ul id="historyList"></ul>
-    <button onclick="fetchHistory()">Muat Lebih Banyak</button>
-
-    <!-- Pagination Controls -->
-    <div class="pagination">
-        <button id="firstPage" onclick="goToFirstPage()">First</button>
-        <button id="previousPage" onclick="goToPreviousPage()">⬅️ Left</button>
-        <span id="pageNumbers"></span>
-        <button id="nextPage" onclick="goToNextPage()">➡️ Right</button>
-    </div>
-       
-
+    
+    <button onclick="goToFirstPage()">First</button>
+<button onclick="goToPreviousPage()">⬅️ Left</button>
+<span id="pageNumbers"></span>
+<button onclick="goToNextPage()">➡️ Right</button>
 
     <hr>
 
@@ -767,34 +761,62 @@ window.onclick = function(event) {
 
 // **Update tombol pagination**
 
-document.addEventListener("DOMContentLoaded", function() {
-    let pages = document.querySelectorAll(".historyPage");
-    let currentPage = 0;
+let currentPage = 1;
+const itemsPerPage = 10;
+let historyData = []; // Data riwayat sejarah akan disimpan di sini
 
-    function updatePagination() {
-        pages.forEach((page, index) => {
-            page.classList.toggle("active", index === currentPage);
-        });
-        document.getElementById("pageIndicator").textContent = (currentPage + 1) + " / " + pages.length;
-    }
+function displayHistory() {
+    const historyList = document.getElementById("historyList");
+    historyList.innerHTML = ""; // Bersihkan daftar sebelum mengisi ulang
 
-    document.getElementById("nextBtn").addEventListener("click", function() {
-        if (currentPage < pages.length - 1) {
-            currentPage++;
-            updatePagination();
-        }
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const paginatedData = historyData.slice(start, end);
+
+    paginatedData.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<strong>${item.title}</strong> - ${item.description}`;
+        historyList.appendChild(li);
     });
 
-    document.getElementById("prevBtn").addEventListener("click", function() {
-        if (currentPage > 0) {
-            currentPage--;
-            updatePagination();
-        }
-    });
-
-    // Set halaman pertama sebagai aktif
     updatePagination();
-});
+}
+
+function updatePagination() {
+    document.getElementById("pageNumbers").innerText = `Page ${currentPage} of ${Math.ceil(historyData.length / itemsPerPage)}`;
+}
+
+function goToNextPage() {
+    if (currentPage * itemsPerPage < historyData.length) {
+        currentPage++;
+        displayHistory();
+    }
+}
+
+function goToPreviousPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        displayHistory();
+    }
+}
+
+function goToFirstPage() {
+    currentPage = 1;
+    displayHistory();
+}
+
+function fetchHistory() {
+    // Contoh data dummy, ganti dengan fetch dari blockchain
+    historyData = [
+        { title: "Peristiwa A", description: "Deskripsi A" },
+        { title: "Peristiwa B", description: "Deskripsi B" },
+        { title: "Peristiwa C", description: "Deskripsi C" },
+        // ... Data lain
+    ];
+    displayHistory();
+}
+
+fetchHistory();
 
 // **Diskonek Wallet**
 
