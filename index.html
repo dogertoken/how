@@ -319,18 +319,6 @@ function closeModal() {
     document.getElementById("historyModal").style.display = "none";
 }
 
-// **Mendapatkan riwayat sejarah dari kontrak**
-async function fetchHistory() {
-    try {
-        const histories = await contract.getAllHistories();
-        const historyList = document.getElementById("historyList");
-        historyList.innerHTML = "";
-        
-    } catch (error) {
-        console.error("Gagal memuat sejarah:", error);
-    }
-}
-
 // **Konfirmasi Sejarah (Admin)**
 async function confirmHistory() {
     const index = document.getElementById("historyIndex").value;
