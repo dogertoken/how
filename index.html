@@ -588,39 +588,29 @@ function closeModal() {
 
 // **Mendapatkan riwayat sejarah dari kontrak**
 
-async function fetchHistory() {
-
-    try {
-
-        const histories = await contract.getAllHistories();
-
-        const historyList = document.getElementById("historyList");
-
-        historyList.innerHTML = "";
 
 
+function fetchHistory() {
+    let historyData = []; // Nantinya ini diisi dari smart contract
 
-        histories.forEach(history => {
+    let list = document.getElementById('historyList');
+    list.innerHTML = "";
 
-            const li = document.createElement("li");
-
-            li.innerHTML = `<strong>${history.title}</strong> - ${history.description} <br> ⏳ ${new Date(history.timestamp * 1000).toLocaleString()}`;
-
-            historyList.appendChild(li);
-
-        });
-
-
-
-    } catch (error) {
-
-        console.error("Gagal memuat sejarah:", error);
-
+    // Jika data masih kosong, tambahkan contoh sementara
+    if (historyData.length === 0) {
+        historyData.push({title: "Perang Dunia II", description: "Perang besar di abad ke-20.", timestamp: 1609459200});
     }
 
+    historyData.forEach((item) => {
+        let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
+        let safeTitle = encodeURIComponent(item.title);
+        let safeDescription = encodeURIComponent(item.description);
+
+        let li = document.createElement('li');
+        li.innerHTML = `<b>${item.title}</b> (${formattedDate}) <button onclick="openModal('${safeTitle}', '${safeDescription}', '${formattedDate}')">🔍 Lihat</button>`;
+        list.appendChild(li);
+    });
 }
-
-
 
 // **Konfirmasi Sejarah (Admin)**
 
