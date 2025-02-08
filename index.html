@@ -279,6 +279,20 @@ async function addHistory() {
     }
 }
 
+  function fetchHistory() {
+    // Contoh data (gantilah ini dengan pemanggilan ke smart contract)
+    let historyData = 0x9fF6BE3f45Dae17E6741d668E0D244Da3961aa73;
+
+    let list = document.getElementById('historyList');
+    list.innerHTML = "";
+
+    historyData.forEach((item, index) => {
+        let li = document.createElement('li');
+        li.innerHTML = `<b>${item.title}</b> <button onclick="openModal('${item.title}', '${item.description}', ${item.timestamp})">🔍 Lihat</button>`;
+        list.appendChild(li);
+    });
+}
+
  // **Menampilkan Modal**
 function showModal(title, description, timestamp) {
     document.getElementById("modalTitle").innerText = title;
