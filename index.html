@@ -515,17 +515,6 @@ async function addHistory() {
 
 }
 
-historyData.forEach((item) => {
-    let li = document.createElement('li');
-    li.innerHTML = `<b>${item.title}</b> (${new Date(item.timestamp * 1000).toLocaleDateString("id-ID")})<br>
-                    <i>${item.description}</i><br>
-                    <small>Creator: ${item.creator}</small><br>
-                    <small>Block: ${item.blockNumber}</small><br>
-                    <small>Tx Hash: ${item.txHash}</small><br>
-                    <button onclick="openModal('${item.title}', '${item.description}', '${item.creator}', '${item.blockNumber}', '${item.txHash}')">🔍 Lihat</button>`;
-    list.appendChild(li);
-});
-
 // **Mendapatkan riwayat sejarah dari kontrak**
 
 let currentPage = 1;
@@ -618,7 +607,6 @@ window.onclick = function(event) {
     }
 };
 
-// **Update tombol pagination**
 
 // **Diskonek Wallet**
 
