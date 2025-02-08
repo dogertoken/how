@@ -312,29 +312,11 @@ async function fetchHistory() {
         const histories = await contract.getAllHistories();
         const historyList = document.getElementById("historyList");
         historyList.innerHTML = "";
-
-        // Urutkan berdasarkan timestamp terbaru
-        histories.sort((a, b) => b.timestamp - a.timestamp);
-
-        histories.forEach(history => {
-            const li = document.createElement("li");
-            li.style.borderBottom = "1px solid #ddd"; // Garis pemisah antar postingan
-            li.style.padding = "10px 0"; // Spasi antar elemen agar tidak berdempetan
-            li.innerHTML = `
-                <div>
-                    <strong style="font-size: 16px; color: #333;">${history.title}</strong>
-                    <p style="margin: 5px 0; color: #666;">${history.description}</p>
-                    <small style="color: #999;">⏳ ${new Date(history.timestamp * 1000).toLocaleString()}</small>
-                </div>
-            `;
-            historyList.appendChild(li);
-        });
-
+        
     } catch (error) {
         console.error("Gagal memuat sejarah:", error);
     }
 }
-
 
 // **Konfirmasi Sejarah (Admin)**
 async function confirmHistory() {
