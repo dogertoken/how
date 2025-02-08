@@ -587,31 +587,32 @@ function closeModal() {
 
 
 // **Mendapatkan riwayat sejarah dari kontrak**
+        
+async function fetchHistory() {
+    let provider = new ethers.providers.Web3Provider(window.ethereum);
+    let contractAddress = "0x9fF6BE3f45Dae17E6741d668E0D244Da3961aa73"; // Ganti dengan alamat smart contract
+    let abi = [ 
+        "function getAllHistories() public view returns (tuple(string title, string description, uint256 timestamp, bool isConfirmed)[])" 
+    ];
+    let contract = new ethers.Contract(contractAddress, abi, provider);
 
+    try {
+        let historyData = await contract.getAllHistories();
 
+        let list = document.getElementById('historyList');
+        list.innerHTML = "";
 
-function fetchHistory() {
-    let historyData = []; // Nantinya ini diisi dari smart contract
-
-    let list = document.getElementById('historyList');
-    list.innerHTML = "";
-
-    // Jika data masih kosong, tambahkan contoh sementara
-    if (historyData.length === 0) {
-        historyData.push({title: "Perang Dunia II", description: "Perang besar di abad ke-20.", timestamp: 1609459200});
+        historyData.forEach((item) => {
+            let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
+            let li = document.createElement('li');
+            li.innerHTML = `<b>${item.title}</b> (${formattedDate}) 
+                <button onclick="openModal('${item.title}', '${item.description}', '${formattedDate}')">🔍 Lihat</button>`;
+            list.appendChild(li);
+        });
+    } catch (error) {
+        console.error("Gagal mengambil data:", error);
     }
-
-    historyData.forEach((item) => {
-        let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
-        let safeTitle = encodeURIComponent(item.title);
-        let safeDescription = encodeURIComponent(item.description);
-
-        let li = document.createElement('li');
-        li.innerHTML = `<b>${item.title}</b> (${formattedDate}) <button onclick="openModal('${safeTitle}', '${safeDescription}', '${formattedDate}')">🔍 Lihat</button>`;
-        list.appendChild(li);
-    });
 }
-
 // **Konfirmasi Sejarah (Admin)**
 
 async function confirmHistory() {
