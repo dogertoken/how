@@ -1,439 +1,877 @@
 <!DOCTYPE html>
+
 <html lang="id">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>World History on Blockchain</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+
     <style>
+
       /* General Styling */
+
 body {
+
     font-family: 'Anonymous Pro', monospace;
+
     text-align: center;
+
     background-color: #ffffff;
+
     margin: 0;
+
     padding: 20px;
+
     color: #333;
+
 }
+
+
 
 /* Container */
+
 .container {
+
     background: #ffffff;
+
     padding: 20px;
+
     border-radius: 12px;
+
     max-width: 900px;
+
     margin: auto;
+
     box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.1), -8px -8px 15px rgba(255, 255, 255, 0.9);
+
 }
+
+
 
 /* Buttons */
+
 button {
+
     background: #007bff;
+
     color: white;
+
     border: none;
+
     padding: 10px 20px;
+
     cursor: pointer;
+
     margin-top: 10px;
+
     border-radius: 12px;
+
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1), -4px -4px 10px rgba(255, 255, 255, 0.7);
+
     transition: all 0.3s ease-in-out;
+
 }
+
+
 
 button:hover {
+
     background: #0056b3;
+
     box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.2), -8px -8px 15px rgba(255, 255, 255, 0.8);
+
 }
+
+
 
 /* Disconnect Button */
+
 button.disconnect {
+
     background: #dc3545;
+
 }
 
+
+
 /* Inputs and Textarea */
+
 input, textarea {
+
     width: 100%;
+
     padding: 12px;
+
     margin: 10px 0;
+
     border: 1px solid #ddd;
+
     border-radius: 12px;
+
     background: #f7f7f7;
+
     box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.1), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+
     transition: all 0.3s ease;
+
 }
+
+
 
 input:focus, textarea:focus {
+
     box-shadow: inset 6px 6px 12px rgba(0, 0, 0, 0.1), inset -6px -6px 12px rgba(255, 255, 255, 0.7);
+
 }
+
+
 
 /* Pagination */
+
 .pagination {
+
     margin-top: 20px;
+
 }
+
+
 
 .pagination button {
+
     margin: 0 5px;
+
     border-radius: 50%;
+
     background: #e0e0e0;
+
     padding: 8px 12px;
+
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1), -2px -2px 6px rgba(255, 255, 255, 0.8);
+
     transition: all 0.3s ease;
+
 }
+
+
 
 .pagination button:hover {
+
     background: #007bff;
+
     color: white;
+
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.7);
+
 }
+
+
 
 /* Modal Styles */
+
 .modal {
+
     display: none;
+
     position: fixed;
+
     z-index: 1000;
+
     left: 0;
+
     top: 0;
+
     width: 100%;
+
     height: 100%;
+
     background: rgba(0, 0, 0, 0.5);
+
 }
+
+
 
 .modal-content {
+
     background: #ffffff;
+
     padding: 20px;
+
     border-radius: 12px;
+
     max-width: 500px;
+
     margin: 100px auto;
+
     position: relative;
+
     box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.1), -8px -8px 15px rgba(255, 255, 255, 0.9);
+
 }
+
+
 
 /* Close Button */
+
 .close {
+
     position: absolute;
+
     top: 10px;
+
     right: 15px;
+
     font-size: 20px;
+
     cursor: pointer;
+
 }
+
 /* Inputs and Textarea */
+
 input, textarea {
+
     width: 80%; /* Menentukan lebar elemen */
+
     max-width: 500px; /* Membatasi lebar maksimum */
+
     padding: 12px;
+
     margin: 10px auto; /* Menyentralkan kolom secara horizontal */
+
     border: 1px solid #ddd;
+
     border-radius: 12px;
+
     </style>
+
 </head>
+
 <body>
 
+
+
     <div class="container">
+
     <h1>⏳️ World History on Blockchain</h1>
+
     <button id="connectWallet">🔗 Konek Wallet</button>
+
     <p id="walletAddress">Wallet: -</p>
+
     <p id="networkStatus">Jaringan: -</p>
+
     <p id="balance">Saldo: 0 HIST</p>
 
+
+
     <hr>
+
+
 
     <h2>Tambahkan Sejarah</h2>
+
     <input type="text" id="title" placeholder="Judul Sejarah">
+
     <textarea id="description" placeholder="Deskripsi Sejarah" maxlength="5000"></textarea>
+
     <button onclick="addHistory()">📝 Tambah Sejarah</button>
 
+
+
     <hr>
+
+
 
     <h2>Riwayat Sejarah</h2>
+
     <ul id="historyList"></ul>
+
     <button onclick="fetchHistory()">Muat Lebih Banyak</button>
 
+
+
     <!-- Pagination Controls -->
+
     <div class="pagination">
+
         <button id="firstPage" onclick="goToFirstPage()">First</button>
+
         <button id="previousPage" onclick="goToPreviousPage()">⬅️ Left</button>
+
         <span id="pageNumbers"></span>
+
         <button id="nextPage" onclick="goToNextPage()">➡️ Right</button>
+
     </div>
+
+
 
     <hr>
 
+
+
     <h2>Konfirmasi & Tolak Sejarah (Admin)</h2>
+
     <input type="number" id="historyIndex" placeholder="Index Sejarah">
+
     <button onclick="confirmHistory()">✅ Konfirmasi Sejarah</button>
+
     <button onclick="rejectHistory()">❌ Tolak Sejarah</button>
+
     </div>
+
+
 
     <!-- Modal Popup -->
+
     <div id="historyModal" class="modal">
+
     <div class="modal-content">
+
         <span class="close" onclick="closeModal()">&times;</span>
+
         <h2 id="modalTitle"></h2>
+
         <p id="modalDescription"></p>
+
         <p><strong>Waktu:</strong> <span id="modalTimestamp"></span></p>
+
     </div>
+
 </div>
 
+
+
     <script>
+
 const CONTRACT_ADDRESS = "0x9fF6BE3f45Dae17E6741d668E0D244Da3961aa73"; // Ganti dengan alamat kontrak
+
 const ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"burner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Burn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"FeeCollected","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"historyId","type":"uint256"},{"indexed":false,"internalType":"string","name":"title","type":"string"},{"indexed":false,"internalType":"string","name":"description","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"address","name":"creator","type":"address"}],"name":"HistoryAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"historyId","type":"uint256"},{"indexed":false,"internalType":"address","name":"admin","type":"address"}],"name":"HistoryConfirmed","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"historyId","type":"uint256"},{"indexed":false,"internalType":"address","name":"admin","type":"address"}],"name":"HistoryRejected","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"reward","type":"uint256"}],"name":"RewardDistributed","type":"event"},{"inputs":[{"internalType":"string","name":"_title","type":"string"},{"internalType":"string","name":"_description","type":"string"}],"name":"addHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balances","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_historyId","type":"uint256"}],"name":"confirmHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"distributeReward","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAllHistories","outputs":[{"components":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"uint256","name":"reward","type":"uint256"},{"internalType":"address","name":"creator","type":"address"}],"internalType":"struct Hist.History[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_historyId","type":"uint256"}],"name":"getHistory","outputs":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"uint256","name":"reward","type":"uint256"},{"internalType":"address","name":"creator","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"getHistoryByIndex","outputs":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"uint256","name":"reward","type":"uint256"},{"internalType":"address","name":"creator","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getHistoryCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"histories","outputs":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"uint256","name":"reward","type":"uint256"},{"internalType":"address","name":"creator","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"historyCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_historyId","type":"uint256"}],"name":"rejectHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalRewardAllocation","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalRewardDistributed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}];
+
         
+
 const BASE_SEPOLIA_PARAMS = {
+
     chainId: "0x14a34",
+
     chainName: "Base Sepolia Testnet",
+
     nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+
     rpcUrls: ["https:/sepolia.base.org"],
+
     blockExplorerUrls: ["https://sepolia.basescan.org"],
+
 };
+
+
 
 let provider, signer, contract;
 
+
+
 // **Memaksa pengguna ke jaringan Base Mainnet**
+
 async function switchToBase() {
+
     try {
+
         await window.ethereum.request({
+
             method: "wallet_switchEthereumChain",
+
             params: [{ chainId: BASE_SEPOLIA_PARAMS.chainId }],
+
         });
+
     } catch (error) {
+
         if (error.code === 4902) {
+
             await window.ethereum.request({
+
                 method: "wallet_addEthereumChain",
+
                 params: [BASE_SEPOLIA_PARAMS],
+
             });
+
         } else {
+
             console.error("Gagal beralih ke jaringan Base:", error);
+
         }
+
     }
+
 }
+
+
 
 // **Koneksi Wallet dengan Signature**
+
 async function connectWallet() {
+
     if (!window.ethereum) {
+
         alert("Silakan instal MetaMask!");
+
         return;
+
     }
+
+
 
     provider = new ethers.providers.Web3Provider(window.ethereum);
+
     signer = provider.getSigner();
+
     contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 
+
+
     try {
+
         await switchToBase(); // Paksa ke jaringan Base
 
+
+
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+
         const address = accounts[0];
 
-        const message = Konfirmasi koneksi ke History on Blockchain pada ${new Date().toLocaleString()};
+
+
+        const message = `Konfirmasi koneksi ke History on Blockchain pada ${new Date().toLocaleString()}`;
+
         await signer.signMessage(message);
 
-        document.getElementById("walletAddress").innerText = Wallet: ${address};
+
+
+        document.getElementById("walletAddress").innerText = `Wallet: ${address}`;
+
         document.getElementById("networkStatus").innerText = "Jaringan: Base Sepolia Testnet";
 
+
+
         getBalance(); // Perbarui saldo
+
         fetchHistory(); // Muat riwayat sejarah
 
+
+
         // **Ganti tombol menjadi Diskonek**
+
         const connectButton = document.getElementById("connectWallet");
+
         connectButton.innerText = "🔌 Diskonek Wallet";
+
         connectButton.classList.add("disconnect");
+
         connectButton.onclick = disconnectWallet;
 
+
+
     } catch (error) {
+
         console.error("Koneksi gagal:", error);
+
     }
+
 }
+
+
 
 // **Menampilkan saldo token pengguna**
+
 async function getBalance() {
+
     try {
+
         const address = await signer.getAddress();
+
         const balance = await contract.balanceOf(address);
-        document.getElementById("balance").innerText = Saldo: ${ethers.utils.formatUnits(balance, 18)} HIST;
+
+        document.getElementById("balance").innerText = `Saldo: ${ethers.utils.formatUnits(balance, 18)} HIST`;
+
     } catch (error) {
+
         console.error("Gagal mendapatkan saldo:", error);
+
     }
+
 }
+
+
 
 // **Menambahkan catatan sejarah**
+
 async function addHistory() {
+
     const title = document.getElementById("title").value;
+
     const description = document.getElementById("description").value;
 
+
+
     if (!title || !description) {
+
         alert("Judul dan Deskripsi harus diisi!");
+
         return;
+
     }
 
+
+
     try {
+
         const tx = await contract.addHistory(title, description);
+
         await tx.wait();
+
         alert("Sejarah berhasil ditambahkan!");
 
+
+
         getBalance(); // Perbarui saldo
+
         fetchHistory(); // Muat ulang daftar sejarah
 
+
+
     } catch (error) {
+
         console.error("Gagal menambahkan sejarah:", error);
+
     }
+
 }
+
+
 
  // **Menampilkan Modal**
+
 function showModal(title, description, timestamp) {
+
     document.getElementById("modalTitle").innerText = title;
+
     document.getElementById("modalDescription").innerText = description;
+
     document.getElementById("modalTimestamp").innerText = new Date(timestamp * 1000).toLocaleString();
+
     document.getElementById("historyModal").style.display = "block";
+
 }
+
+
 
 // **Menutup Modal**
+
 function closeModal() {
+
     document.getElementById("historyModal").style.display = "none";
+
 }
+
+
 
 // **Mendapatkan riwayat sejarah dari kontrak**
+
 async function fetchHistory() {
+
     try {
+
         const histories = await contract.getAllHistories();
+
         const historyList = document.getElementById("historyList");
+
         historyList.innerHTML = "";
 
+
+
         histories.forEach(history => {
+
             const li = document.createElement("li");
-            li.innerHTML = <strong>${history.title}</strong> - ${history.description} <br> ⏳ ${new Date(history.timestamp * 1000).toLocaleString()};
+
+            li.innerHTML = `<strong>${history.title}</strong> - ${history.description} <br> ⏳ ${new Date(history.timestamp * 1000).toLocaleString()}`;
+
             historyList.appendChild(li);
+
         });
 
+
+
     } catch (error) {
+
         console.error("Gagal memuat sejarah:", error);
+
     }
+
 }
+
+
 
 // **Konfirmasi Sejarah (Admin)**
+
 async function confirmHistory() {
+
     const index = document.getElementById("historyIndex").value;
 
+
+
     if (!index) {
+
         alert("Masukkan index sejarah yang valid!");
+
         return;
+
     }
+
+
 
     if (!adminAddress) {
+
         alert("Hanya admin yang dapat mengonfirmasi sejarah!");
+
         return;
+
     }
+
+
 
     const address = await signer.getAddress();
+
     if (address !== adminAddress) {
+
         alert("Anda bukan admin! Hanya admin yang dapat mengonfirmasi sejarah.");
+
         return;
+
     }
 
+
+
     try {
+
         const tx = await contract.confirmHistory(index);
+
         await tx.wait();
+
         alert("Sejarah berhasil dikonfirmasi!");
+
         fetchHistory();
+
     } catch (error) {
+
         console.error("Gagal mengonfirmasi sejarah:", error);
+
     }
+
 }
+
+
 
 // **Tolak Sejarah (Admin)**
+
 async function rejectHistory() {
+
     const index = document.getElementById("historyIndex").value;
 
+
+
     if (!index) {
+
         alert("Pilih sejarah yang ingin ditolak!");
+
         return;
+
     }
+
+
 
     if (!adminAddress) {
+
         alert("Hanya admin yang dapat menolak sejarah!");
+
         return;
+
     }
+
+
 
     const address = await signer.getAddress();
+
     if (address !== adminAddress) {
+
         alert("Anda bukan admin! Hanya admin yang dapat menolak sejarah.");
+
         return;
+
     }
+
+
 
     try {
+
         const tx = await contract.rejectHistory(index);
+
         await tx.wait();
+
         alert("Sejarah berhasil ditolak!");
+
         fetchHistory();
+
     } catch (error) {
+
         console.error("Gagal menolak sejarah:", error);
+
     }
+
 }
+
+
 
 // **Konfirmasi Sejarah Paling Lama (Admin)**
+
 async function confirmOldestHistory() {
+
     const count = await contract.historyCount();
 
+
+
     for (let i = 1; i <= count; i++) {
+
         const history = await contract.histories(i);
+
         if (!history.isConfirmed) {
+
             try {
+
                 const tx = await contract.confirmHistory(i);
+
                 await tx.wait();
-                alert(Sejarah ID ${i} berhasil dikonfirmasi!);
+
+                alert(`Sejarah ID ${i} berhasil dikonfirmasi!`);
+
                 return;
+
             } catch (error) {
+
                 console.error("Gagal mengonfirmasi sejarah:", error);
+
             }
+
         }
+
     }
 
+
+
     alert("Tidak ada sejarah yang perlu dikonfirmasi.");
+
 }
+
+
 
 // **Update tombol pagination**
+
       function updatePagination() {
+
           const pageNumbers = document.getElementById("pageNumbers");
-          pageNumbers.innerHTML = Page ${currentPage};
+
+          pageNumbers.innerHTML = `Page ${currentPage}`;
+
+
 
           // Disable previous/next buttons if on first/last page
+
           document.getElementById("previousPage").disabled = currentPage === 1;
+
           document.getElementById("nextPage").disabled = currentPage * itemsPerPage >= histories.length;
+
       }
+
+
 
       // **Fungsi navigasi halaman**
+
       function goToFirstPage() {
+
           currentPage = 1;
+
           fetchHistory();
+
       }
+
+
 
       function goToPreviousPage() {
+
           if (currentPage > 1) {
+
               currentPage--;
+
               fetchHistory();
+
           }
+
       }
+
+
 
       function goToNextPage() {
+
           currentPage++;
+
           fetchHistory();
+
       }
+
         
+
 // **Diskonek Wallet**
+
 function disconnectWallet() {
+
     document.getElementById("walletAddress").innerText = "Wallet: -";
+
     document.getElementById("networkStatus").innerText = "Jaringan: -";
+
     document.getElementById("balance").innerText = "Saldo: 0 HIST";
 
+
+
     // Reset tombol menjadi Konek Wallet
+
     const connectButton = document.getElementById("connectWallet");
+
     connectButton.innerText = "🔗 Konek Wallet";
+
     connectButton.classList.remove("disconnect");
+
     connectButton.onclick = connectWallet;
+
 }
 
+
+
 // **Event Listener untuk Koneksi Wallet**
+
 document.getElementById("connectWallet").addEventListener("click", connectWallet);
+
     </script>
+
 </body>
+
 </html>
