@@ -252,6 +252,12 @@ input, textarea {
 
     border-radius: 12px;
 
+.modal-content {
+    max-height: 80vh; /* Maksimum 80% dari tinggi layar */
+    overflow-y: auto; /* Aktifkan scroll jika konten terlalu panjang */
+    word-wrap: break-word; /* Pastikan teks tidak keluar batas */
+}
+
     </style>
 
 </head>
@@ -747,8 +753,14 @@ async function confirmOldestHistory() {
 
 // Fungsi untuk menampilkan modal
 function openModal(title, description, timestamp) {
+    // Batasi deskripsi maksimal 5000 karakter
+    let maxLength = 5000;
+    let shortDescription = description.length > maxLength 
+        ? description.substring(0, maxLength) + "..." 
+        : description;
+
     document.getElementById('modalTitle').innerText = title;
-    document.getElementById('modalDescription').innerText = description;
+    document.getElementById('modalDescription').innerText = shortDescription;
     document.getElementById('modalTimestamp').innerText = new Date(timestamp * 1000).toLocaleString();
     document.getElementById('historyModal').style.display = "block";
 }
