@@ -253,11 +253,16 @@ input, textarea {
     border-radius: 12px;
 
 .modal-content {
-    max-height: 80vh; /* Maksimum 80% dari tinggi layar */
-    overflow-y: auto; /* Aktifkan scroll jika konten terlalu panjang */
-    word-wrap: break-word; /* Pastikan teks tidak keluar batas */
+    max-height: 80vh; /* Maksimal tinggi modal 80% dari viewport */
+    overflow-y: auto; /* Aktifkan scroll jika konten melebihi batas */
+    padding: 20px;
+    word-wrap: break-word;
+    white-space: pre-wrap; /* Menjaga format teks dengan newline */
 }
-
+#modalDescription {
+    max-height: 60vh; /* Atur tinggi maksimum untuk deskripsi */
+    overflow-y: auto; /* Aktifkan scroll jika deskripsi panjang */
+}
     </style>
 
 </head>
@@ -341,22 +346,13 @@ input, textarea {
     <!-- Modal Popup -->
 
     <div id="historyModal" class="modal">
-
     <div class="modal-content">
-
         <span class="close" onclick="closeModal()">&times;</span>
-
         <h2 id="modalTitle"></h2>
-
         <p id="modalDescription"></p>
-
-        <p><strong>Waktu:</strong> <span id="modalTimestamp"></span></p>
-
+        <small id="modalTimestamp"></small>
     </div>
-
-</div>
-
-
+  </div>
 
     <script>
 
@@ -753,15 +749,14 @@ async function confirmOldestHistory() {
 
 // Fungsi untuk menampilkan modal
 function openModal(title, description, timestamp) {
-    // Batasi deskripsi maksimal 5000 karakter
     let maxLength = 5000;
-    let shortDescription = description.length > maxLength 
+    let truncatedDescription = description.length > maxLength 
         ? description.substring(0, maxLength) + "..." 
         : description;
 
-    document.getElementById('modalTitle').innerText = title;
-    document.getElementById('modalDescription').innerText = shortDescription;
-    document.getElementById('modalTimestamp').innerText = new Date(timestamp * 1000).toLocaleString();
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalDescription').textContent = truncatedDescription;
+    document.getElementById('modalTimestamp').textContent = new Date(timestamp * 1000).toLocaleString();
     document.getElementById('historyModal').style.display = "block";
 }
 
