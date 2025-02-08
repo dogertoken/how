@@ -278,30 +278,21 @@ async function addHistory() {
     }
 }
 
-  // **Mengambil dan menampilkan catatan sejarah**
+  // **Mendapatkan riwayat sejarah dari kontrak**
 async function fetchHistory() {
     try {
-        const historyCount = await contract.histories.length();
-        const historyContainer = document.getElementById("historyList");
-        historyContainer.innerHTML = ""; // Kosongkan daftar sebelum mengisi ulang
+        const histories = await contract.getAllHistories();
+        const historyList = document.getElementById("historyList");
+        historyList.innerHTML = "";
 
-        for (let i = 0; i < historyCount; i++) {
-            const history = await contract.histories(i);
-
-            const historyItem = document.createElement("div");
-            historyItem.classList.add("history-item");
-            historyItem.innerHTML = `
-                <h3>${history.title}</h3>
-                <p>${history.description}</p>
-                <small>${new Date(history.timestamp * 1000).toLocaleString()}</small>
-                <p>Status: ${history.isConfirmed ? "✅ Dikonfirmasi" : "❌ Belum dikonfirmasi"}</p>
-            `;
-
-            historyContainer.appendChild(historyItem);
-        }
+        histories.forEach(history => {
+            const li = document.createElement("li");
+            li.innerHTML = <strong>${history.title}</strong> - ${history.description} <br> ⏳ ${new Date(history.timestamp * 1000).toLocaleString()};
+            historyList.appendChild(li);
+        });
 
     } catch (error) {
-        console.error("Gagal mengambil sejarah:", error);
+        console.error("Gagal memuat sejarah:", error);
     }
 }
 
