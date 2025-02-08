@@ -560,7 +560,8 @@ function displayPage(page) {
                         <i><b>${item.description}<b></i><br><br>
                         <small>Creator: ${item.creator}</small><br>
                         <small>Block: ${item.blockNumber}</small><br>
-                        <small>Tx Hash: ${item.txHash}</small><br>
+                        <small>Tx Hash: <a href="https://sepolia.basescan.org/tx/${item.txHash}" target="_blank">
+${item.txHash.substring(0, 10)}...</a></small><br>
                         <button onclick="openModal('${item.title}', '${item.description}', '${item.creator}', '${item.blockNumber}', '${item.txHash}')">🔍 Lihat</button>`;
         list.appendChild(li);
     });
