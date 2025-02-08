@@ -604,9 +604,6 @@ function openModal(title, description, timestamp) {
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalDescription').textContent = truncatedDescription;
     document.getElementById('modalTimestamp').textContent = new Date(timestamp * 1000).toLocaleString();
-    document.getElementById('modalCreator').textContent = "Creator: " + creator;
-    document.getElementById('modalBlockNumber').textContent = "Block: " + blockNumber;
-    document.getElementById('modalTxHash').innerHTML = `Tx Hash: <a href="https://sepolia.basescan.org/tx/${txHash}" target="_blank">${txHash.substring(0, 10)}...</a>`;
     document.getElementById('historyModal').style.display = "block";
 }
 
