@@ -256,7 +256,6 @@ async function getBalance() {
     }
 }
 
-// **Menambahkan catatan sejarah**
 async function addHistory() {
     const title = document.getElementById("title").value;
     const description = document.getElementById("description").value;
@@ -270,27 +269,32 @@ async function addHistory() {
         const tx = await contract.addHistory(title, description);
         await tx.wait();
         alert("Sejarah berhasil ditambahkan!");
-
-        getBalance(); // Perbarui saldo
-        fetchHistory(); // Muat ulang daftar sejarah
-
+        fetchHistory();
     } catch (error) {
         console.error("Gagal menambahkan sejarah:", error);
     }
 }
 
- // **Menampilkan Modal**
-function showModal(title, description, timestamp) {
-    document.getElementById("modalTitle").innerText = title;
-    document.getElementById("modalDescription").innerText = description;
-    document.getElementById("modalTimestamp").innerText = new Date(timestamp * 1000).toLocaleString();
-    document.getElementById("historyModal").style.display = "block";
+ // Fungsi untuk menampilkan modal
+function openModal(title, description, timestamp) {
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('modalDescription').innerText = description;
+    document.getElementById('modalTimestamp').innerText = new Date(timestamp * 1000).toLocaleString();
+    document.getElementById('historyModal').style.display = "block";
 }
 
-// **Menutup Modal**
+// Fungsi untuk menutup modal
 function closeModal() {
-    document.getElementById("historyModal").style.display = "none";
+    document.getElementById('historyModal').style.display = "none";
 }
+
+// Pastikan modal bisa ditutup dengan klik di luar modal
+window.onclick = function(event) {
+    let modal = document.getElementById('historyModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+};
 
 // **Mendapatkan riwayat sejarah dari kontrak**
 async function fetchHistory() {
@@ -309,6 +313,30 @@ async function fetchHistory() {
         console.error("Gagal memuat sejarah:", error);
     }
 }
+
+function fetchHistory() {
+            // Contoh data (gantilah ini dengan pemanggilan ke smart contract)
+            let historyData = [
+                {title: "Perang Dunia II", description: "Perang besar di abad ke-20.", timestamp: 1609459200}
+            ];
+
+            let list = document.getElementById('historyList');
+            list.innerHTML = "";
+
+            historyData.forEach((item, index) => {
+                let li = document.createElement('li');
+                li.innerHTML = `<b>${item.title}</b> 
+                    <button onclick="openModal('${item.title}', '${item.description}', ${item.timestamp})">🔍 Lihat</button>`;
+                list.appendChild(li);
+            });
+        }
+
+        function openModal(title, description, timestamp) {
+            alert(`Judul: ${title}\nDeskripsi: ${description}\nTimestamp: ${timestamp}`);
+        }
+
+        // Panggil fetchHistory saat halaman dimuat
+        window.onload = fetchHistory;
 
 // **Konfirmasi Sejarah (Admin)**
 async function confirmHistory() {
