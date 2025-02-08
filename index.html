@@ -309,7 +309,8 @@ input, textarea {
 
     
 <h2>Riwayat Sejarah</h2>
-    <ul id="historyList"></ul>
+<ul id="historyList"></ul>
+<button onclick="addHistory()">Tambah Riwayat</button>
 
 
     <!-- Modal untuk menampilkan deskripsi -->
@@ -552,165 +553,20 @@ async function fetchHistory() {
     }
 }
 
+const maxHistory = 10; // Maksimal jumlah riwayat yang ditampilkan
 
-// **Konfirmasi Sejarah (Admin)**
-
-async function confirmHistory() {
-
-    const index = document.getElementById("historyIndex").value;
-
-
-
-    if (!index) {
-
-        alert("Masukkan index sejarah yang valid!");
-
-        return;
-
+function addHistory() {
+    const historyList = document.getElementById("historyList");
+    const newItem = document.createElement("li");
+    newItem.textContent = "Peristiwa baru pada " + new Date().toLocaleDateString();
+    
+    // Tambahkan item baru di awal daftar
+    historyList.prepend(newItem);
+    
+    // Hapus item terakhir jika melebihi batas
+    if (historyList.children.length > maxHistory) {
+        historyList.removeChild(historyList.lastChild);
     }
-
-
-
-    if (!adminAddress) {
-
-        alert("Hanya admin yang dapat mengonfirmasi sejarah!");
-
-        return;
-
-    }
-
-
-
-    const address = await signer.getAddress();
-
-    if (address !== adminAddress) {
-
-        alert("Anda bukan admin! Hanya admin yang dapat mengonfirmasi sejarah.");
-
-        return;
-
-    }
-
-
-
-    try {
-
-        const tx = await contract.confirmHistory(index);
-
-        await tx.wait();
-
-        alert("Sejarah berhasil dikonfirmasi!");
-
-        fetchHistory();
-
-    } catch (error) {
-
-        console.error("Gagal mengonfirmasi sejarah:", error);
-
-    }
-
-}
-
-
-
-// **Tolak Sejarah (Admin)**
-
-async function rejectHistory() {
-
-    const index = document.getElementById("historyIndex").value;
-
-
-
-    if (!index) {
-
-        alert("Pilih sejarah yang ingin ditolak!");
-
-        return;
-
-    }
-
-
-
-    if (!adminAddress) {
-
-        alert("Hanya admin yang dapat menolak sejarah!");
-
-        return;
-
-    }
-
-
-
-    const address = await signer.getAddress();
-
-    if (address !== adminAddress) {
-
-        alert("Anda bukan admin! Hanya admin yang dapat menolak sejarah.");
-
-        return;
-
-    }
-
-
-
-    try {
-
-        const tx = await contract.rejectHistory(index);
-
-        await tx.wait();
-
-        alert("Sejarah berhasil ditolak!");
-
-        fetchHistory();
-
-    } catch (error) {
-
-        console.error("Gagal menolak sejarah:", error);
-
-    }
-
-}
-
-
-
-// **Konfirmasi Sejarah Paling Lama (Admin)**
-
-async function confirmOldestHistory() {
-
-    const count = await contract.historyCount();
-
-
-
-    for (let i = 1; i <= count; i++) {
-
-        const history = await contract.histories(i);
-
-        if (!history.isConfirmed) {
-
-            try {
-
-                const tx = await contract.confirmHistory(i);
-
-                await tx.wait();
-
-                alert(`Sejarah ID ${i} berhasil dikonfirmasi!`);
-
-                return;
-
-            } catch (error) {
-
-                console.error("Gagal mengonfirmasi sejarah:", error);
-
-            }
-
-        }
-
-    }
-
-
-
-    alert("Tidak ada sejarah yang perlu dikonfirmasi.");
-
 }
 
 // Fungsi untuk menampilkan modal
