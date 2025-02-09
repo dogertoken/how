@@ -519,48 +519,13 @@ document.getElementById("description").addEventListener("input", function () {
     this.value = formattedText; // Set teks yang sudah diformat
 });
 
-// **Cek waktu reset setiap 00:00 UTC**
-function getResetTimeUTC() {
-    let now = new Date();
-    let resetTime = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0)); // 00:00 UTC keesokan hari
-    return resetTime.getTime();
-}
-
-// **Fungsi untuk mendapatkan waktu reset (00:00 UTC)**
-function getResetTimeUTC() {
-    let now = new Date();
-    let resetTime = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0)); // 00:00 UTC keesokan hari
-    return resetTime.getTime();
-}
-
-// **Update tampilan countdown setiap detik**
-function updateCountdown() {
-    let now = new Date().getTime();
-    let resetTime = localStorage.getItem("historyResetTime") || getResetTimeUTC();
-    let timeLeft = resetTime - now;
-
-    if (timeLeft > 0) {
-        let hours = Math.floor(timeLeft / (1000 * 60 * 60));
-        let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-        let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-        document.getElementById("addHistoryBtn").innerHTML = `⏳ ${hours}h ${minutes}m ${seconds}s`;
-        document.getElementById("addHistoryBtn").disabled = true;
-        document.getElementById("countdownTimer").innerText = "Anda hanya bisa menambah sejarah sekali per hari.";
-
-        setTimeout(updateCountdown, 1000);
-    } else {
-        document.getElementById("addHistoryBtn").innerHTML = "📝 Tambah Sejarah";
-        document.getElementById("addHistoryBtn").disabled = false;
-        document.getElementById("countdownTimer").innerText = "";
-        localStorage.removeItem("historyResetTime"); // Hapus waktu reset setelah habis
-    }
-}
-
-// **Menambahkan catatan sejarah**
+// countdown date
+        
 async function addHistory() {
     const title = document.getElementById("title").value;
     const description = document.getElementById("description").value;
+    const addHistoryBtn = document.getElementById("addHistoryBtn");
+    const countdownTimer = document.getElementById("countdownTimer");
 
     if (!title || !description) {
         alert("Judul dan Deskripsi harus diisi!");
@@ -572,25 +537,60 @@ async function addHistory() {
         await tx.wait();
         alert("Sejarah berhasil ditambahkan!");
 
-        getBalance(); // Perbarui saldo
-        fetchHistory(); // Muat ulang daftar sejarah
+        // Ambil waktu reset ke UTC 00:00
+        let now = new Date();
+        let resetTime = new Date(now);
+        resetTime.setUTCHours(0, 0, 0, 0); // Set ke 00:00 UTC
+        if (now > resetTime) {
+            resetTime.setUTCDate(resetTime.getUTCDate() + 1); // Tambah 1 hari jika sudah lewat
+        }
+        
+        let timeLeft = Math.floor((resetTime - now) / 1000); // Sisa waktu dalam detik
+        localStorage.setItem("historyCooldown", timeLeft); // Simpan di lokal
 
-        // Simpan waktu reset di localStorage
-        let resetTime = getResetTimeUTC();
-        localStorage.setItem("historyResetTime", resetTime);
-
-        updateCountdown(); // Jalankan countdown
-
+        startCountdown(timeLeft); // Mulai countdown
+        
     } catch (error) {
         console.error("Gagal menambahkan sejarah:", error);
     }
 }
 
-// **Cek status tombol saat halaman dimuat**
-window.onload = function () {
-    updateCountdown();
-};
+function startCountdown(timeLeft) {
+    const addHistoryBtn = document.getElementById("addHistoryBtn");
+    const countdownTimer = document.getElementById("countdownTimer");
 
+    addHistoryBtn.disabled = true; // Nonaktifkan tombol
+
+    function updateCountdown() {
+        if (timeLeft <= 0) {
+            addHistoryBtn.disabled = false;
+            addHistoryBtn.innerHTML = "📝 Tambah Sejarah";
+            countdownTimer.innerHTML = "";
+            return;
+        }
+
+        let hours = Math.floor(timeLeft / 3600);
+        let minutes = Math.floor((timeLeft % 3600) / 60);
+        let seconds = timeLeft % 60;
+
+        addHistoryBtn.innerHTML = `⏳ ${hours}h ${minutes}m ${seconds}s`;
+        countdownTimer.innerHTML = `Tunggu hingga reset 00:00 UTC`;
+        
+        timeLeft--;
+        setTimeout(updateCountdown, 1000);
+    }
+
+    updateCountdown();
+}
+
+// Saat halaman dimuat, cek cooldown
+window.onload = function () {
+    let timeLeft = localStorage.getItem("historyCooldown");
+    if (timeLeft && timeLeft > 0) {
+        startCountdown(parseInt(timeLeft));
+    }
+};
+        
 // **Mendapatkan riwayat sejarah dari kontrak**
 
 let currentPage = 1;
