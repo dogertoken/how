@@ -163,34 +163,6 @@ input:focus, textarea:focus {
     max-height: 60vh;
     overflow-y: auto;
 }
-/* Pastikan kontainer tidak melebihi batas */
-.history-container {
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-}
-
-/* Styling untuk deskripsi */
-.description-container {
-    max-width: 100%;
-    max-height: 200px;
-    overflow-y: auto; /* Tambahkan scrollbar jika teks terlalu panjang */
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    padding: 15px;
-    background: #e0e5ec; /* Warna dasar khas Neumorphism */
-    border-radius: 12px;
-    
-    /* Efek Neumorphism (Timbul) */
-    box-shadow: 8px 8px 15px rgba(163, 177, 198, 0.6), 
-                -8px -8px 15px rgba(255, 255, 255, 1);
-}
-
-/* Efek saat Hover */
-.description-container:hover {
-    box-shadow: 4px 4px 10px rgba(163, 177, 198, 0.6), 
-                -4px -4px 10px rgba(255, 255, 255, 1);
-}
     </style>
 
 </head>
@@ -222,11 +194,8 @@ input:focus, textarea:focus {
     <textarea id="description" placeholder="Deskripsi Sejarah" maxlength="500"></textarea>
     <br>
     <button onclick="addHistory()">📝 Tambah Sejarah</button>
-
-    <div class="description-container">
-        <i>${item.description}</i>
     </div>
-</div>
+
     <hr>
 
 
