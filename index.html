@@ -554,17 +554,30 @@ function displayPage(page) {
     let paginatedItems = historyData.slice(start, end);
 
     paginatedItems.forEach((item) => {
-        let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
-        let li = document.createElement("li");
-        li.innerHTML = `<b>${item.title}</b> (${new Date(item.timestamp * 1000).toLocaleDateString("id-ID")})<br><br>
-                        <i>${item.description}</i><br><br>
-                        <small>Creator: ${item.creator}</small><br>
-                        <small>Block: ${item.blockNumber}</small><br>
-                        <small>Tx Hash: <a href="https://sepolia.basescan.org/tx/${txHash}" target="_blank">
-                    ${txHash.substring(0, 10)}...</a></small><br>
-                        <button onclick="openModal('${item.title}', '${item.description}', '${item.creator}', '${item.blockNumber}', '${item.txHash}')">🔍 Lihat</button>`;
-        list.appendChild(li);
-    });
+    let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
+    let li = document.createElement("li");
+
+    li.innerHTML = `
+        <b>${item.title}</b> (${formattedDate})<br><br>
+        <i>${item.description}</i><br><br>
+        <small>Creator: ${item.creator}</small><br>
+        <small>Block: ${item.blockNumber}</small><br>
+        <small>Tx Hash: 
+            <a href="https://sepolia.basescan.org/tx/${item.txHash}" target="_blank">
+                ${item.txHash.substring(0, 10)}...
+            </a>
+        </small><br>
+        <button onclick="openModal(
+            '${item.title}', 
+            '${item.description}', 
+            '${item.creator}', 
+            '${item.blockNumber}', 
+            '${item.txHash}'
+        )">🔍 Lihat</button>
+    `;
+
+    list.appendChild(li);
+});
 
     document.getElementById("pageInfo").innerText = `Page ${page} of ${totalPages}`;
     document.getElementById("firstPage").disabled = page === 1;
