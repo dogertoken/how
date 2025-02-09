@@ -554,22 +554,27 @@ function displayPage(page) {
     let paginatedItems = historyData.slice(start, end);
 
     paginatedItems.forEach((item) => {
-    console.log("Tx Hash dari data:", item.txHash); // Debugging output
-    console.log("ID unik dari data:", item.id); // Debugging output
-    console.log("Data item:", item); // Lihat seluruh objek item
+    console.log(`Block: ${item.blockNumber}, Tx Hash: ${item.txHash}`); // Debug untuk melihat apakah txHash sesuai block
 
     let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
     let li = document.createElement("li");
+
     li.innerHTML = `<b>${item.title}</b> (${formattedDate})<br><br>
                     <i>${item.description}</i><br><br>
                     <small>ID Unik: ${item.id ? item.id : "Tidak Ada"}</small><br>
                     <small>Creator: ${item.creator}</small><br>
                     <small>Block: ${item.blockNumber}</small><br>
-                    <small>Tx Hash: <a href="https://sepolia.basescan.org/tx/${item.txHash}" target="_blank">
-                    ${item.txHash ? item.txHash.substring(0, 10) : "Tidak Ada"}...</a></small><br>
-                    <button onclick="openModal('${item.title}', '${item.description}', '${item.creator}', '${item.blockNumber}', '${item.txHash}', '${item.id}')">🔍 Lihat</button>`;
+                    <small>Tx Hash: <a href="https://sepolia.basescan.org/tx/${getTxHashByBlock(item.blockNumber, paginatedItems)}" target="_blank">
+                    ${getTxHashByBlock(item.blockNumber, paginatedItems).substring(0, 10)}...</a></small><br>
+                    <button onclick="openModal('${item.title}', '${item.description}', '${item.creator}', '${item.blockNumber}', '${getTxHashByBlock(item.blockNumber, paginatedItems)}', '${item.id}')">🔍 Lihat</button>`;
     list.appendChild(li);
 });
+
+// Fungsi untuk mencocokkan Tx Hash berdasarkan Block Number
+function getTxHashByBlock(blockNumber, items) {
+    let foundItem = items.find(i => i.blockNumber === blockNumber);
+    return foundItem ? foundItem.txHash : "Tidak Ada";
+}
 
     document.getElementById("pageInfo").innerText = `Page ${page} of ${totalPages}`;
     document.getElementById("firstPage").disabled = page === 1;
