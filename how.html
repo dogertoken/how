@@ -457,8 +457,7 @@ function displayPage(page) {
     let end = start + itemsPerPage;
     let paginatedItems = historyData.slice(start, end);
 
-
-    document.getElementById("pageInfo").innerText = `Page $paginatedItems.forEach((item) => {
+paginatedItems.forEach((item) => {
     let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
     let li = document.createElement("li");
 
@@ -482,7 +481,9 @@ function displayPage(page) {
     `;
 
     list.appendChild(li);
-});{page} of ${totalPages}`;
+});
+
+    document.getElementById("pageInfo").innerText = `Page ${page} of ${totalPages}`;
     document.getElementById("firstPage").disabled = page === 1;
     document.getElementById("prevPage").disabled = page === 1;
     document.getElementById("nextPage").disabled = page === totalPages;
