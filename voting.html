@@ -315,7 +315,9 @@ textarea {
     <input type="text" id="title" placeholder="Judul Sejarah">
     <textarea id="description" placeholder="Deskripsi Sejarah" maxlength="500"></textarea>
     <br>
-    <button onclick="addHistory()">📝 Tambah Sejarah</button>
+    <button id="addHistoryBtn" onclick="addHistory()">📝 Tambah Sejarah</button>
+    <small id="countdownTimer"></small> <!-- Tempat countdown -->
+
 
     <hr>
 
@@ -524,7 +526,14 @@ function getResetTimeUTC() {
     return resetTime.getTime();
 }
 
-// **Update tampilan countdown**
+// **Fungsi untuk mendapatkan waktu reset (00:00 UTC)**
+function getResetTimeUTC() {
+    let now = new Date();
+    let resetTime = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0)); // 00:00 UTC keesokan hari
+    return resetTime.getTime();
+}
+
+// **Update tampilan countdown setiap detik**
 function updateCountdown() {
     let now = new Date().getTime();
     let resetTime = localStorage.getItem("historyResetTime") || getResetTimeUTC();
