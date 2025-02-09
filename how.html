@@ -554,7 +554,7 @@ function displayPage(page) {
     let paginatedItems = historyData.slice(start, end);
 
     paginatedItems.forEach((item) => {
-    console.log(`Block: ${item.blockNumber}, Tx Hash: ${item.txHash}`); // Debugging
+    let txHash = item.transactionHash; // Pastikan ini diambil dari event blockchain
 
     let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
     let li = document.createElement("li");
@@ -564,9 +564,9 @@ function displayPage(page) {
                     <small>ID Unik: ${item.id ? item.id : "Tidak Ada"}</small><br>
                     <small>Creator: ${item.creator}</small><br>
                     <small>Block: ${item.blockNumber}</small><br>
-                    <small>Tx Hash: <a href="https://sepolia.basescan.org/tx/${item.txHash}" target="_blank">
-                    ${item.txHash ? item.txHash.substring(0, 10) : "Tidak Ada"}...</a></small><br>
-                    <button onclick="openModal('${item.title}', '${item.description}', '${item.creator}', '${item.blockNumber}', '${item.txHash}', '${item.id}')">🔍 Lihat</button>`;
+                    <small>Tx Hash: <a href="https://sepolia.basescan.org/tx/${txHash}" target="_blank">
+                    ${txHash.substring(0, 10)}...</a></small><br>
+                    <button onclick="openModal('${item.title}', '${item.description}', '${item.creator}', '${item.blockNumber}', '${txHash}', '${item.id}')">🔍 Lihat</button>`;
     list.appendChild(li);
 });
 
