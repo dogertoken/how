@@ -650,10 +650,13 @@ function goToPage(page) {
 
 // Fungsi untuk menampilkan modal
 function openModal(title, description, timestamp) {
-    let maxLength = 5000;
+    let maxLength = 500;
     let truncatedDescription = description.length > maxLength 
-        ? description.substring(0, maxLength) + "..." 
+        ? description.substring(0, maxLength) + "..."  
         : description;
+
+    // Ganti newline dengan <br> agar tetap ditampilkan di modal
+    truncatedDescription = truncatedDescription.replace(/\n/g, "<br>");
 
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalDescription').textContent = truncatedDescription;
