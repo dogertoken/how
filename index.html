@@ -277,6 +277,12 @@ textarea {
     overflow-y: auto;
     resize: none; /* Agar ukuran textarea tidak bisa diubah */
 }
+.scrollable-id {
+    display: inline-block;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+}
     </style>
 
 </head>
@@ -588,7 +594,7 @@ function displayPage(page) {
     li.innerHTML = `
         <b>${item.title}</b> (${formattedDate})<br><br>
         <b>${item.description}</b><br><br>
-        <small>ID: ${item.postId ? item.postId : "Tidak Ada"}</small><br>
+        <small class="scrollable-id">ID: ${item.postId ? item.postId : "Tidak Ada"}</small><br>
         <small>Confirmed: ${item.isConfirmed}</small><br>
         <small>Creator: ${item.creator}</small><br>
         <small>Block: ${item.blockNumber}</small><br>
