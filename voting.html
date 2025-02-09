@@ -91,23 +91,6 @@ input:focus, textarea:focus {
     box-shadow: inset 6px 6px 12px rgba(163, 177, 198, 0.6), 
                 inset -6px -6px 12px rgba(255, 255, 255, 1);
 }
-
-textarea {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 12px;
-    background: #e0e5ec;
-    box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), 
-                inset -4px -4px 8px rgba(255, 255, 255, 1);
-    transition: all 0.3s ease;
-    
-    /* Memastikan teks turun jika sudah melebihi batas */
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    overflow-y: auto;
-    resize: none; /* Agar ukuran textarea tidak bisa diubah */
-}
         
 /* Pagination */
 #pagination {
@@ -173,12 +156,21 @@ textarea {
     cursor: pointer;
 }
 
-/* Modal Description: Menjaga format teks */
-#modalDescription {
-    max-height: 60vh;
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: #e0e5ec;
+    box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), 
+                inset -4px -4px 8px rgba(255, 255, 255, 1);
+    transition: all 0.3s ease;
+    
+    /* Memastikan teks turun jika sudah melebihi batas */
+    word-wrap: break-word;
+    white-space: pre-wrap;
     overflow-y: auto;
-    white-space: pre-wrap; /* Mempertahankan format newline */
-    word-wrap: break-word; /* Agar teks panjang tetap di dalam box */
+    resize: none; /* Agar ukuran textarea tidak bisa diubah */
 }
     </style>
 
