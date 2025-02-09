@@ -558,11 +558,8 @@ function displayPage(page) {
 }
 
 paginatedItems.forEach((item) => {
-    let txHash = item.transactionHash; // Pastikan ini benar
-    let blockNumber = item.blockNumber;
-
-    let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
-    let li = document.createElement("li");
+        let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
+        let li = document.createElement("li");
 
     li.innerHTML = `<b>${item.title}</b> (${formattedDate})<br><br>
                     <i>${item.description}</i><br><br>
