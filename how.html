@@ -457,21 +457,32 @@ function displayPage(page) {
     let end = start + itemsPerPage;
     let paginatedItems = historyData.slice(start, end);
 
-paginatedItems.forEach((item) => {
-        let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
-        let li = document.createElement("li");
-        li.innerHTML = `<b>${item.title}</b> (${new Date(item.timestamp * 1000).toLocaleDateString("id-ID")})<br><br>
-                        <i>${item.description}</i><br><br>
-                        <small>ID Unik: ${item.id ? item.id : "Tidak Ada"}</small><br>
-                        <small>Creator: ${item.creator}</small><br>
-                        <small>Block: <a href="https://sepolia.basescan.org/block/${blockNumber}" target="_blank">${blockNumber}</a></small><br> <!-- Link ke block -->
-                        <small>Tx Hash: <a href="https://sepolia.basescan.org/tx/${item.txHash}" target="_blank">
-${item.txHash.substring(0, 10)}...</a></small><br>
-                        <button onclick="openModal('${item.title}', '${item.description}', '${item.creator}', '${item.blockNumber}', '${item.txHash}')">🔍 Lihat</button>`;
-        list.appendChild(li);
-    });
 
-    document.getElementById("pageInfo").innerText = `Page ${page} of ${totalPages}`;
+    document.getElementById("pageInfo").innerText = `Page $paginatedItems.forEach((item) => {
+    let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
+    let li = document.createElement("li");
+
+    li.innerHTML = `
+        <b>${item.title}</b> (${formattedDate})<br><br>
+        <i>${item.description}</i><br><br>
+        <small>Creator: ${item.creator}</small><br>
+        <small>Block: ${item.blockNumber}</small><br>
+        <small>Tx Hash: 
+            <a href="https://sepolia.basescan.org/block/${item.blockNumber}" target="_blank">
+                ${item.txHash.substring(0, 10)}...
+            </a>
+        </small><br>
+        <button onclick="openModal(
+            '${item.title}', 
+            '${item.description}', 
+            '${item.creator}', 
+            '${item.blockNumber}', 
+            '${item.txHash}'
+        )">🔍 Lihat</button><br>
+    `;
+
+    list.appendChild(li);
+});{page} of ${totalPages}`;
     document.getElementById("firstPage").disabled = page === 1;
     document.getElementById("prevPage").disabled = page === 1;
     document.getElementById("nextPage").disabled = page === totalPages;
