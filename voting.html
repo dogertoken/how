@@ -1,339 +1,470 @@
 <!DOCTYPE html>
-<html lang="id">
+
+<html lang="eng">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>World History on Blockchain</title>
-    <link rel="stylesheet" href="stylecss">
+
+    <link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+
     <style>
-        body {
-    font-family: Arial, sans-serif;
+    /* General Styling */
+body {
+    font-family: 'Anonymous Pro', monospace;
     text-align: center;
-    background-color: #f4f4f4;
+    background: #e0e5ec;
     margin: 0;
     padding: 20px;
-}
-.container {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 900px;
-    margin: auto;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-button:hover {
-    background: #0056b3;
-}
-.disconnect {
-    background: red;
-}
-input, textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-}
-h1, h2 {
     color: #333;
 }
-hr {
-    margin: 20px 0;
-    }
+
+/* Container */
+.container {
+    background: #e0e5ec;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 900px;
+    margin: auto;
+    box-shadow: 8px 8px 15px rgba(163, 177, 198, 0.6), 
+                -8px -8px 15px rgba(255, 255, 255, 1);
+}
+
+/* Buttons */
+button {
+    background: #e0e5ec;
+    color: #007bff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 12px;
+    box-shadow: 4px 4px 10px rgba(163, 177, 198, 0.6), 
+                -4px -4px 10px rgba(255, 255, 255, 1);
+    transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+    background: #d1d9e6;
+    box-shadow: inset 4px 4px 10px rgba(163, 177, 198, 0.6), 
+                inset -4px -4px 10px rgba(255, 255, 255, 1);
+}
+
+/* Disconnect Button */
+button.disconnect {
+    background: #e0e5ec;
+    color: #dc3545;
+}
+
+/* Wrapper untuk menyentralisasi kolom */
+.history-container {
+    display: flex;
+    flex-direction: column; /* Susun elemen secara vertikal */
+    align-items: center; /* Pusatkan elemen secara horizontal */
+    width: 100%;
+}
+
+/* Input & Textarea */
+input, textarea {
+    width: 80%; /* Gunakan 80% dari parent agar tetap responsif */
+    max-width: 500px; /* Batasi lebar maksimal */
+    padding: 12px;
+    margin: 10px 0; /* Jarak antar elemen */
+    border: none;
+    border-radius: 12px;
+    background: #e0e5ec;
+    box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), 
+                inset -4px -4px 8px rgba(255, 255, 255, 1);
+    transition: all 0.3s ease;
+}
+
+/* Efek saat Fokus */
+input:focus, textarea:focus {
+    box-shadow: inset 6px 6px 12px rgba(163, 177, 198, 0.6), 
+                inset -6px -6px 12px rgba(255, 255, 255, 1);
+}
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: #e0e5ec;
+    box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), 
+                inset -4px -4px 8px rgba(255, 255, 255, 1);
+    transition: all 0.3s ease;
+    
+    /* Memastikan teks turun jika sudah melebihi batas */
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    resize: none; /* Agar ukuran textarea tidak bisa diubah */
+}
+        
+/* Pagination */
 #pagination {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
 }
 
 #pagination button {
-    padding: 5px 10px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: #4CAF50;
-    color: white;
+    padding: 5px 8px;
+    font-size: 14px;
+    min-width: 35px;
     border: none;
     border-radius: 5px;
-}
-
-#pagination button:hover {
-    background-color: #45a049;
+    background: #e0e5ec;
+    color: #007bff;
+    box-shadow: 4px 4px 10px rgba(163, 177, 198, 0.6), 
+                -4px -4px 10px rgba(255, 255, 255, 1);
 }
 
 #pagination button:disabled {
-    background-color: #ccc;
+    background: #d1d9e6;
+    color: #aaa;
     cursor: not-allowed;
 }
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    overflow: auto; /* Tambahkan overflow untuk tampilan mobile */
+}
+
+/* Modal Box */
+.modal-content {
+    background: #e0e5ec;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 500px;
+    margin: 10% auto; /* Lebih responsif */
+    position: relative;
+    box-shadow: 8px 8px 15px rgba(163, 177, 198, 0.6), 
+                -8px -8px 15px rgba(255, 255, 255, 1);
+    max-height: 80vh; /* Batasi tinggi agar modal tidak keluar layar */
+    overflow-y: auto;
+    word-wrap: break-word;
+}
+
+/* Close Button */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Modal Description: Menjaga format teks */
+#modalDescription {
+    max-height: 60vh;
+    overflow-y: auto;
+    white-space: pre-wrap; /* Mempertahankan format newline */
+    word-wrap: break-word; /* Agar teks panjang tetap di dalam box */
+}
     </style>
+
 </head>
+
 <body>
 
+
+
     <div class="container">
-        <h1>⏳️ World History on Blockchain</h1>
-        <button id="connectWallet">🔗 Konek Wallet</button>
-        <p id="walletAddress">Wallet: -</p>
-        <p id="networkStatus">Jaringan: -</p>
-        <p id="balance">Saldo: 0 HIST</p>
 
-        <hr>
+    <h1>⏳️ World History on Blockchain</h1>
 
-        <h2>Tambahkan Sejarah</h2>
-        <input type="text" id="title" placeholder="Judul Sejarah">
-        <textarea id="description" placeholder="Deskripsi Sejarah"></textarea>
-        <button onclick="addHistory()">📝 Tambah Sejarah</button>
+    <button id="connectWallet">🔗 Konek Wallet</button>
 
-        <hr>
+    <p id="walletAddress">Wallet: -</p>
 
-        <h2>Riwayat Sejarah</h2>
-        <ul id="historyList"></ul>
-        <button onclick="fetchHistory()">Muat Lebih Banyak</button>
-        <div id="pagination"></div>
+    <p id="networkStatus">Jaringan: -</p>
 
-        <hr>
+    <p id="balance">Saldo: 0 HIST</p>
 
-        <h2>Konfirmasi Sejarah (Admin)</h2>
-        <input type="number" id="historyIndex" placeholder="Index Sejarah">
-        <button onclick="confirmHistory()">✅ Konfirmasi Sejarah</button>
+
+
+    <hr>
+
+        
+<div class="history-container">
+    <h2>Tambahkan Sejarah</h2>
+    <input type="text" id="title" placeholder="Judul Sejarah">
+    <textarea id="description" placeholder="Deskripsi Sejarah" maxlength="500"></textarea>
+    <br>
+    <button onclick="addHistory()">📝 Tambah Sejarah</button>
     </div>
 
-    <script src="appjs"></script>
+    <hr>
+
+
+
+    <h2>Riwayat Sejarah</h2>
+<ul id="historyList"></ul>
+<div id="pagination">
+    <button id="firstPage" onclick="goToPage(1)">⏮️</button>
+    <button id="prevPage" onclick="changePage(-1)">⬅️</button>
+    <span id="pageInfo"></span>
+    <button id="nextPage" onclick="changePage(1)">➡️</button>
+    <button id="lastPage" onclick="goToPage('last')">⏭️</button>
+</div>
+
+
+
+    <hr>
+
+    
+    <!-- Modal untuk menampilkan deskripsi -->
+<div id="historyModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+    background:white; padding:20px; border:1px solid #000;">
+    <h3 id="modalTitle"></h3>
+    <p id="modalDescription"></p>
+    <small id="modalTimestamp"></small><br>
+    <button onclick="closeModal()">Tutup</button>
+</div>
 
     <script>
-        const CONTRACT_ADDRESS = "0xYOUR_CONTRACT_ADDRESS"; // Ganti dengan alamat kontrak
-const ABI = [
-    // Masukkan ABI kontrak di sini
-];
 
-const BASE_MAINNET_PARAMS = {
-    chainId: "0x2105",
-    chainName: "Base Mainnet",
+const CONTRACT_ADDRESS = "0x4be484c6Af5c6d28477B9f2d3ba3C11667A7512c"; // Ganti dengan alamat kontrak
+
+const ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"title","type":"string"},{"indexed":false,"internalType":"string","name":"description","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"HistoryAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_title","type":"string"},{"internalType":"string","name":"_description","type":"string"}],"name":"addHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"value","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"confirmHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllHistories","outputs":[{"components":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"internalType":"struct Token.History[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"histories","outputs":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"rewardAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"withdrawEther","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
+    
+const BASE_SEPOLIA_PARAMS = {
+
+    chainId: "0x14a34",
+
+    chainName: "Base Sepolia Testnet",
+
     nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-    rpcUrls: ["https://mainnet.base.org"],
-    blockExplorerUrls: ["https://basescan.org"],
+
+    rpcUrls: ["https://sepolia.base.org"],
+
+    blockExplorerUrls: ["https://sepolia.basescan.org"],
+
 };
 
-let provider, signer, contract, adminAddress;
+
+
+let provider, signer, contract;
+
+
 
 // **Memaksa pengguna ke jaringan Base Mainnet**
+
 async function switchToBase() {
+
     try {
+
         await window.ethereum.request({
+
             method: "wallet_switchEthereumChain",
-            params: [{ chainId: BASE_MAINNET_PARAMS.chainId }],
+
+            params: [{ chainId: BASE_SEPOLIA_PARAMS.chainId }],
+
         });
+
     } catch (error) {
+
         if (error.code === 4902) {
+
             await window.ethereum.request({
+
                 method: "wallet_addEthereumChain",
-                params: [BASE_MAINNET_PARAMS],
+
+                params: [BASE_SEPOLIA_PARAMS],
+
             });
+
         } else {
+
             console.error("Gagal beralih ke jaringan Base:", error);
+
         }
+
     }
+
 }
+
+
 
 // **Koneksi Wallet dengan Signature**
+
 async function connectWallet() {
+
     if (!window.ethereum) {
+
         alert("Silakan instal MetaMask!");
+
         return;
+
     }
+
+
 
     provider = new ethers.providers.Web3Provider(window.ethereum);
+
     signer = provider.getSigner();
+
     contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 
+
+
     try {
+
         await switchToBase(); // Paksa ke jaringan Base
 
+
+
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+
         const address = accounts[0];
 
+
+
         const message = `Konfirmasi koneksi ke History on Blockchain pada ${new Date().toLocaleString()}`;
+
         await signer.signMessage(message);
 
+
+
         document.getElementById("walletAddress").innerText = `Wallet: ${address}`;
-        document.getElementById("networkStatus").innerText = "Jaringan: Base Mainnet";
+
+        document.getElementById("networkStatus").innerText = "Jaringan: Base Sepolia Testnet";
+
+
 
         getBalance(); // Perbarui saldo
+
         fetchHistory(); // Muat riwayat sejarah
 
-        // Ambil alamat admin
-        adminAddress = await contract.owner();
+
 
         // **Ganti tombol menjadi Diskonek**
+
         const connectButton = document.getElementById("connectWallet");
+
         connectButton.innerText = "🔌 Diskonek Wallet";
+
         connectButton.classList.add("disconnect");
+
         connectButton.onclick = disconnectWallet;
 
+
+
     } catch (error) {
+
         console.error("Koneksi gagal:", error);
+
     }
+
 }
+
+
 
 // **Menampilkan saldo token pengguna**
+
 async function getBalance() {
+
     try {
+
         const address = await signer.getAddress();
+
         const balance = await contract.balanceOf(address);
+
         document.getElementById("balance").innerText = `Saldo: ${ethers.utils.formatUnits(balance, 18)} HIST`;
+
     } catch (error) {
+
         console.error("Gagal mendapatkan saldo:", error);
+
     }
+
 }
 
+
+
 // **Menambahkan catatan sejarah**
+
 async function addHistory() {
+
     const title = document.getElementById("title").value;
+
     const description = document.getElementById("description").value;
 
+
+
     if (!title || !description) {
+
         alert("Judul dan Deskripsi harus diisi!");
+
         return;
+
     }
+
+    document.getElementById("description").addEventListener("input", function () {
+    let text = this.value.replace(/\n/g, ""); // Hapus newline sebelumnya
+    let formattedText = "";
+    
+    for (let i = 0; i < text.length; i++) {
+        if (i > 0 && i % 30 === 0) {
+            formattedText += "\n"; // Tambahkan newline setiap 30 karakter
+        }
+        formattedText += text[i];
+    }
+
+    this.value = formattedText; // Set teks yang sudah diformat
+});
+
 
     try {
+
         const tx = await contract.addHistory(title, description);
+
         await tx.wait();
+
         alert("Sejarah berhasil ditambahkan!");
 
+
+
         getBalance(); // Perbarui saldo
+
         fetchHistory(); // Muat ulang daftar sejarah
 
+
+
     } catch (error) {
+
         console.error("Gagal menambahkan sejarah:", error);
+
     }
+
 }
 
 // **Mendapatkan riwayat sejarah dari kontrak**
+
+let currentPage = 1;
+const itemsPerPage = 10;
+let historyData = [];
+
 async function fetchHistory() {
-    try {
-        const historiesCount = await contract.historyCount();  // Ambil jumlah total sejarah
-        const historyList = document.getElementById("historyList");
-        historyList.innerHTML = "";
-
-        // Tentukan range yang akan ditampilkan berdasarkan halaman saat ini
-        const startIndex = (currentPage - 1) * itemsPerPage + 1;
-        const endIndex = Math.min(currentPage * itemsPerPage, historiesCount);
-
-        // Menampilkan item sejarah untuk halaman saat ini
-        for (let i = startIndex; i <= endIndex; i++) {
-            const history = await contract.histories(i);
-            const li = document.createElement("li");
-            li.innerHTML = `<strong>${history.title}</strong> - ${history.description} <br> ⏳ ${new Date(history.timestamp * 1000).toLocaleString()} 
-                            <br><button onclick="confirmHistory(${i})">✅ Konfirmasi Sejarah</button>`;
-            historyList.appendChild(li);
-        }
-
-        // Menampilkan navigasi pagination
-        showPagination(historiesCount);
-
-    } catch (error) {
-        console.error("Gagal memuat sejarah:", error);
-    }
-}
-
-let currentPage = 1;  // Halaman saat ini
-let itemsPerPage = 10;  // Jumlah item per halaman
-
-// **Menampilkan tombol pagination**
-function showPagination(totalItems) {
-    const paginationContainer = document.getElementById("pagination");
-    paginationContainer.innerHTML = "";
-
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    // Tombol "First"
-    const firstButton = document.createElement("button");
-    firstButton.innerText = "First";
-    firstButton.onclick = () => goToPage(1);
-    paginationContainer.appendChild(firstButton);
-
-    // Tombol "Previous"
-    const prevButton = document.createElement("button");
-    prevButton.innerText = "Previous";
-    prevButton.onclick = () => goToPage(currentPage - 1);
-    paginationContainer.appendChild(prevButton);
-
-    // Tombol angka halaman
-    for (let i = 1; i <= totalPages; i++) {
-        const pageButton = document.createElement("button");
-        pageButton.innerText = i;
-        pageButton.onclick = () => goToPage(i);
-        paginationContainer.appendChild(pageButton);
-    }
-
-    // Tombol "Next"
-    const nextButton = document.createElement("button");
-    nextButton.innerText = "Next";
-    nextButton.onclick = () => goToPage(currentPage + 1);
-    paginationContainer.appendChild(nextButton);
-
-    // Tombol "Last"
-    const lastButton = document.createElement("button");
-    lastButton.innerText = "Last";
-    lastButton.onclick = () => goToPage(totalPages);
-    paginationContainer.appendChild(lastButton);
-}
-
-// **Pindah ke halaman tertentu**
-function goToPage(pageNumber) {
-    const totalPages = Math.ceil(1000 / itemsPerPage); // Ganti 1000 dengan total riwayat sebenarnya
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-        currentPage = pageNumber;
-        fetchHistory();
-    }
-}
-
-// **Konfirmasi Sejarah (Admin)**
-async function confirmHistory(index) {
-    if (!adminAddress) {
-        alert("Hanya admin yang dapat mengonfirmasi sejarah!");
-        return;
-    }
-
-    const address = await signer.getAddress();
-    if (address !== adminAddress) {
-        alert("Anda bukan admin! Hanya admin yang dapat mengonfirmasi sejarah.");
-        return;
-    }
-
-    try {
-        const tx = await contract.confirmHistory(index);
-        await tx.wait();
-        alert("Sejarah berhasil dikonfirmasi!");
-        fetchHistory(); // Muat ulang daftar sejarah
-    } catch (error) {
-        console.error("Gagal mengonfirmasi sejarah:", error);
-    }
-}
-
-// **Diskonek Wallet**
-function disconnectWallet() {
-    document.getElementById("walletAddress").innerText = "Wallet: -";
-    document.getElementById("networkStatus").innerText = "Jaringan: -";
-    document.getElementById("balance").innerText = "Saldo: 0 HIST";
-
-    // Reset tombol menjadi Konek Wallet
-    const connectButton = document.getElementById("connectWallet");
-    connectButton.innerText = "🔗 Konek Wallet";
-    connectButton.classList.remove("disconnect");
-    connectButton.onclick = connectWallet;
-}
-
-// **Event Listener untuk Koneksi Wallet**
-document.getElementById("connectWallet").addEventListener("click", connectWallet);
-    </script>
-</body>
-</html>
+    let provider = new ethers.providers.Web3Provider(window.ethereum);
+    let contractAddress = "0x4be484c6Af5c6d28477B9f2d3ba3C11667A7512c"; // Ganti dengan alamat kontrak
+    let abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"title","type":"string"},{"indexed":false,"internalType":"string","name":"description","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"HistoryAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_title","type":"string"},{"internalType":"string","name":"_description","type":"string"}],"name":"addHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"value","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"confirmHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllHistories","outputs":[{"components":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"internalType":"struct Token.History[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"histories","outputs":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"rewardAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name
