@@ -77,6 +77,13 @@ input, textarea {
     transition: all 0.3s ease;
 }
 
+/* Placeholder */
+input::placeholder,
+textarea::placeholder {
+    text-align: center; /* Placeholder teks di tengah */
+    color: #888; /* Warna abu-abu untuk placeholder */
+}
+
 input:focus, textarea:focus {
     box-shadow: inset 6px 6px 12px rgba(163, 177, 198, 0.6), 
                 inset -6px -6px 12px rgba(255, 255, 255, 1);
