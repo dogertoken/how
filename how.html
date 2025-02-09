@@ -553,17 +553,13 @@ function displayPage(page) {
     let end = start + itemsPerPage;
     let paginatedItems = historyData.slice(start, end);
 
-    function shortenAddress(address) {
-    return address.substring(0, 6) + "..." + address.substring(address.length - 4);
-}
-
 paginatedItems.forEach((item) => {
         let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
         let li = document.createElement("li");
         li.innerHTML = `<b>${item.title}</b> (${new Date(item.timestamp * 1000).toLocaleDateString("id-ID")})<br><br>
                         <i>${item.description}</i><br><br>
                         <small>ID Unik: ${item.id ? item.id : "Tidak Ada"}</small><br>
-                        <small>Creator: ${shortenAddress(item.creator)}</small><br>
+                        <small>Creator: ${item.creator}</small><br>
                         <small>Block: <a href="https://sepolia.basescan.org/block/${blockNumber}" target="_blank">${blockNumber}</a></small><br> <!-- Link ke block -->
                         <small>Tx Hash: <a href="https://sepolia.basescan.org/tx/${item.txHash}" target="_blank">
 ${item.txHash.substring(0, 10)}...</a></small><br>
