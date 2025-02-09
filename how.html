@@ -544,13 +544,17 @@ function goToPage(page) {
 
 // Fungsi untuk menampilkan modal
 function openModal(title, description, timestamp) {
-    let maxLength = 5000;
+    let maxLength = 500; // Batasi total karakter ke 500
     let truncatedDescription = description.length > maxLength 
         ? description.substring(0, maxLength) + "..." 
         : description;
 
+    // Format agar setiap 30 karakter pindah ke baris baru
+    let formattedDescription = truncatedDescription.replace(/(.{30})/g, "$1<br>");
+
+    // Set konten ke modal
     document.getElementById('modalTitle').textContent = title;
-    document.getElementById('modalDescription').textContent = truncatedDescription;
+    document.getElementById('modalDescription').innerHTML = formattedDescription; // Gunakan innerHTML
     document.getElementById('modalTimestamp').textContent = new Date(timestamp * 1000).toLocaleString();
     document.getElementById('historyModal').style.display = "block";
 }
