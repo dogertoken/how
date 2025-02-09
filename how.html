@@ -90,7 +90,25 @@ input, textarea {
 input:focus, textarea:focus {
     box-shadow: inset 6px 6px 12px rgba(163, 177, 198, 0.6), 
                 inset -6px -6px 12px rgba(255, 255, 255, 1);
-                                    }
+}
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: #e0e5ec;
+    box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), 
+                inset -4px -4px 8px rgba(255, 255, 255, 1);
+    transition: all 0.3s ease;
+    
+    /* Memastikan teks turun jika sudah melebihi batas */
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    resize: none; /* Agar ukuran textarea tidak bisa diubah */
+}
+        
 /* Pagination */
 #pagination {
     display: flex;
@@ -402,6 +420,19 @@ async function addHistory() {
 
     }
 
+    document.getElementById("description").addEventListener("input", function () {
+    let text = this.value.replace(/\n/g, ""); // Hapus newline sebelumnya
+    let formattedText = "";
+    
+    for (let i = 0; i < text.length; i++) {
+        if (i > 0 && i % 30 === 0) {
+            formattedText += "\n"; // Tambahkan newline setiap 30 karakter
+        }
+        formattedText += text[i];
+    }
+
+    this.value = formattedText; // Set teks yang sudah diformat
+});
 
 
     try {
