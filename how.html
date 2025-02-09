@@ -64,11 +64,20 @@ button.disconnect {
     color: #dc3545;
 }
 
-/* Inputs and Textarea */
-input, textarea {
+/* Wrapper untuk menyentralisasi kolom */
+.history-container {
+    display: flex;
+    flex-direction: column; /* Susun elemen secara vertikal */
+    align-items: center; /* Pusatkan elemen secara horizontal */
     width: 100%;
+}
+
+/* Input & Textarea */
+input, textarea {
+    width: 80%; /* Gunakan 80% dari parent agar tetap responsif */
+    max-width: 500px; /* Batasi lebar maksimal */
     padding: 12px;
-    margin: 10px 0;
+    margin: 10px 0; /* Jarak antar elemen */
     border: none;
     border-radius: 12px;
     background: #e0e5ec;
@@ -77,18 +86,11 @@ input, textarea {
     transition: all 0.3s ease;
 }
 
-/* Placeholder */
-input::placeholder,
-textarea::placeholder {
-    text-align: center; /* Placeholder teks di tengah */
-    color: #888; /* Warna abu-abu untuk placeholder */
-}
-
+/* Efek saat Fokus */
 input:focus, textarea:focus {
     box-shadow: inset 6px 6px 12px rgba(163, 177, 198, 0.6), 
                 inset -6px -6px 12px rgba(255, 255, 255, 1);
-}
-
+                                    }
 /* Pagination */
 #pagination {
     display: flex;
@@ -185,10 +187,12 @@ input:focus, textarea:focus {
 
     <hr>
 
-
+        
+<div class="history-container">
     <h2>Tambahkan Sejarah</h2>
-   <center><input type="text" id="title" placeholder="Judul Sejarah">
-    <textarea id="description" placeholder="Deskripsi Sejarah" maxlength="500"></textarea></center>
+    <input type="text" id="title" placeholder="Judul Sejarah">
+    <textarea id="description" placeholder="Deskripsi Sejarah" maxlength="500"></textarea>
+</div>
     <br>
     <button onclick="addHistory()">📝 Tambah Sejarah</button>
 
