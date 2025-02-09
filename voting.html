@@ -17,145 +17,250 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 
     <style>
-    /* General Styling */
+
+      /* General Styling */
+
 body {
+
     font-family: 'Anonymous Pro', monospace;
+
     text-align: center;
-    background: #e0e5ec;
+
+    background-color: #ffffff;
+
     margin: 0;
+
     padding: 20px;
+
     color: #333;
+
 }
+
+
 
 /* Container */
+
 .container {
-    background: #e0e5ec;
+
+    background: #ffffff;
+
     padding: 20px;
+
     border-radius: 12px;
+
     max-width: 900px;
+
     margin: auto;
-    box-shadow: 8px 8px 15px rgba(163, 177, 198, 0.6), 
-                -8px -8px 15px rgba(255, 255, 255, 1);
+
+    box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.1), -8px -8px 15px rgba(255, 255, 255, 0.9);
+
 }
+
+
 
 /* Buttons */
+
 button {
-    background: #e0e5ec;
-    color: #007bff;
+
+    background: #007bff;
+
+    color: white;
+
     border: none;
+
     padding: 10px 20px;
+
     cursor: pointer;
+
     margin-top: 10px;
+
     border-radius: 12px;
-    box-shadow: 4px 4px 10px rgba(163, 177, 198, 0.6), 
-                -4px -4px 10px rgba(255, 255, 255, 1);
+
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1), -4px -4px 10px rgba(255, 255, 255, 0.7);
+
     transition: all 0.3s ease-in-out;
+
 }
+
+
 
 button:hover {
-    background: #d1d9e6;
-    box-shadow: inset 4px 4px 10px rgba(163, 177, 198, 0.6), 
-                inset -4px -4px 10px rgba(255, 255, 255, 1);
+
+    background: #0056b3;
+
+    box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.2), -8px -8px 15px rgba(255, 255, 255, 0.8);
+
 }
+
+
 
 /* Disconnect Button */
+
 button.disconnect {
-    background: #e0e5ec;
-    color: #dc3545;
+
+    background: #dc3545;
+
 }
 
-/* Wrapper untuk menyentralisasi kolom */
-.history-container {
-    display: flex;
-    flex-direction: column; /* Susun elemen secara vertikal */
-    align-items: center; /* Pusatkan elemen secara horizontal */
-    width: 100%;
-}
 
-/* Input & Textarea */
+
+/* Inputs and Textarea */
+
 input, textarea {
-    width: 80%; /* Gunakan 80% dari parent agar tetap responsif */
-    max-width: 500px; /* Batasi lebar maksimal */
+
+    width: 100%;
+
     padding: 12px;
-    margin: 10px 0; /* Jarak antar elemen */
-    border: none;
+
+    margin: 10px 0;
+
+    border: 1px solid #ddd;
+
     border-radius: 12px;
-    background: #e0e5ec;
-    box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), 
-                inset -4px -4px 8px rgba(255, 255, 255, 1);
+
+    background: #f7f7f7;
+
+    box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.1), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+
     transition: all 0.3s ease;
+
 }
 
-/* Efek saat Fokus */
+
+
 input:focus, textarea:focus {
-    box-shadow: inset 6px 6px 12px rgba(163, 177, 198, 0.6), 
-                inset -6px -6px 12px rgba(255, 255, 255, 1);
+
+    box-shadow: inset 6px 6px 12px rgba(0, 0, 0, 0.1), inset -6px -6px 12px rgba(255, 255, 255, 0.7);
+
 }
-        
-/* Pagination */
+
+
+
+.historyPage {
+    display: none;
+    list-style: none;
+    padding: 0;
+}
+
+.historyPage.active {
+    display: block;
+}
 #pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    margin-top: 10px;
-}
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        margin-top: 10px;
+    }
+    
+    #pagination button {
+        padding: 5px 8px;
+        font-size: 14px;
+        min-width: 35px;
+        border: none;
+        border-radius: 5px;
+        background: #007bff;
+        color: white;
+        cursor: pointer;
+    }
 
-#pagination button {
-    padding: 5px 8px;
-    font-size: 14px;
-    min-width: 35px;
-    border: none;
-    border-radius: 5px;
-    background: #e0e5ec;
-    color: #007bff;
-    box-shadow: 4px 4px 10px rgba(163, 177, 198, 0.6), 
-                -4px -4px 10px rgba(255, 255, 255, 1);
-}
+    #pagination button:disabled {
+        background: #aaa;
+        cursor: not-allowed;
+    }
 
-#pagination button:disabled {
-    background: #d1d9e6;
-    color: #aaa;
-    cursor: not-allowed;
-}
+    #pageInfo {
+        font-size: 14px;
+        font-weight: bold;
+    }
 
 /* Modal Styles */
+
 .modal {
+
     display: none;
+
     position: fixed;
+
     z-index: 1000;
+
     left: 0;
+
     top: 0;
+
     width: 100%;
+
     height: 100%;
+
     background: rgba(0, 0, 0, 0.5);
-    overflow: auto; /* Tambahkan overflow untuk tampilan mobile */
+
 }
 
-/* Modal Box */
+
+
 .modal-content {
-    background: #e0e5ec;
+
+    background: #ffffff;
+
     padding: 20px;
+
     border-radius: 12px;
+
     max-width: 500px;
-    margin: 10% auto; /* Lebih responsif */
+
+    margin: 100px auto;
+
     position: relative;
-    box-shadow: 8px 8px 15px rgba(163, 177, 198, 0.6), 
-                -8px -8px 15px rgba(255, 255, 255, 1);
-    max-height: 80vh; /* Batasi tinggi agar modal tidak keluar layar */
-    overflow-y: auto;
-    word-wrap: break-word;
+
+    box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.1), -8px -8px 15px rgba(255, 255, 255, 0.9);
+
 }
+
+
 
 /* Close Button */
+
 .close {
+
     position: absolute;
+
     top: 10px;
+
     right: 15px;
+
     font-size: 20px;
+
     cursor: pointer;
+
 }
 
+/* Inputs and Textarea */
+
+input, textarea {
+
+    width: 80%; /* Menentukan lebar elemen */
+
+    max-width: 500px; /* Membatasi lebar maksimum */
+
+    padding: 12px;
+
+    margin: 10px auto; /* Menyentralkan kolom secara horizontal */
+
+    border: 1px solid #ddd;
+
+    border-radius: 12px;
+
+.modal-content {
+    max-height: 80vh; /* Maksimal tinggi modal 80% dari viewport */
+    overflow-y: auto; /* Aktifkan scroll jika konten melebihi batas */
+    padding: 20px;
+    word-wrap: break-word;
+    white-space: pre-wrap; /* Menjaga format teks dengan newline */
+}
+#modalDescription {
+    max-height: 60vh; /* Atur tinggi maksimum untuk deskripsi */
+    overflow-y: auto; /* Aktifkan scroll jika deskripsi panjang */
+}
 textarea {
     width: 100%;
     padding: 12px;
@@ -171,6 +276,15 @@ textarea {
     white-space: pre-wrap;
     overflow-y: auto;
     resize: none; /* Agar ukuran textarea tidak bisa diubah */
+}
+.scrollable-id {
+    display: inline-block;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 2px;
+    border: 1px solid #ddd; /* Opsional, untuk visual batas area */
+    background: #f9f9f9; /* Warna latar belakang opsional */
 }
     </style>
 
@@ -196,14 +310,12 @@ textarea {
 
     <hr>
 
-        
-<div class="history-container">
+
     <h2>Tambahkan Sejarah</h2>
     <input type="text" id="title" placeholder="Judul Sejarah">
     <textarea id="description" placeholder="Deskripsi Sejarah" maxlength="500"></textarea>
     <br>
     <button onclick="addHistory()">📝 Tambah Sejarah</button>
-    </div>
 
     <hr>
 
@@ -235,9 +347,9 @@ textarea {
 
     <script>
 
-const CONTRACT_ADDRESS = "0x4be484c6Af5c6d28477B9f2d3ba3C11667A7512c"; // Ganti dengan alamat kontrak
+const CONTRACT_ADDRESS = "0x712BFc46a581f7276A6bD112BfDAd795f3Aa9ecc"; // Ganti dengan alamat kontrak
 
-const ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"title","type":"string"},{"indexed":false,"internalType":"string","name":"description","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"HistoryAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_title","type":"string"},{"internalType":"string","name":"_description","type":"string"}],"name":"addHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"value","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"confirmHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllHistories","outputs":[{"components":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"internalType":"struct Token.History[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"histories","outputs":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"rewardAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"withdrawEther","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
+const ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"bytes32","name":"postId","type":"bytes32"},{"indexed":false,"internalType":"string","name":"title","type":"string"},{"indexed":false,"internalType":"string","name":"description","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"HistoryAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bool","name":"enabled","type":"bool"}],"name":"TransferEnabled","type":"event"},{"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_title","type":"string"},{"internalType":"string","name":"_description","type":"string"}],"name":"addHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"value","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"confirmHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bool","name":"_enabled","type":"bool"}],"name":"enableTransfer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAllHistories","outputs":[{"components":[{"internalType":"bytes32","name":"postId","type":"bytes32"},{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"internalType":"struct Token.History[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"histories","outputs":[{"internalType":"bytes32","name":"postId","type":"bytes32"},{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"lastPostTimestamp","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"rewardAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"transferEnabled","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"withdrawEther","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
     
 const BASE_SEPOLIA_PARAMS = {
 
@@ -391,27 +503,7 @@ async function getBalance() {
 
 }
 
-
-
-// **Menambahkan catatan sejarah**
-
-async function addHistory() {
-
-    const title = document.getElementById("title").value;
-
-    const description = document.getElementById("description").value;
-
-
-
-    if (!title || !description) {
-
-        alert("Judul dan Deskripsi harus diisi!");
-
-        return;
-
-    }
-
-    document.getElementById("description").addEventListener("input", function () {
+document.getElementById("description").addEventListener("input", function () {
     let text = this.value.replace(/\n/g, ""); // Hapus newline sebelumnya
     let formattedText = "";
     
@@ -425,30 +517,70 @@ async function addHistory() {
     this.value = formattedText; // Set teks yang sudah diformat
 });
 
+// **Cek waktu reset setiap 00:00 UTC**
+function getResetTimeUTC() {
+    let now = new Date();
+    let resetTime = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0)); // 00:00 UTC keesokan hari
+    return resetTime.getTime();
+}
 
-    try {
+// **Update tampilan countdown**
+function updateCountdown() {
+    let now = new Date().getTime();
+    let resetTime = localStorage.getItem("historyResetTime") || getResetTimeUTC();
+    let timeLeft = resetTime - now;
 
-        const tx = await contract.addHistory(title, description);
+    if (timeLeft > 0) {
+        let hours = Math.floor(timeLeft / (1000 * 60 * 60));
+        let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-        await tx.wait();
+        document.getElementById("addHistoryBtn").innerHTML = `⏳ ${hours}h ${minutes}m ${seconds}s`;
+        document.getElementById("addHistoryBtn").disabled = true;
+        document.getElementById("countdownTimer").innerText = "Anda hanya bisa menambah sejarah sekali per hari.";
 
-        alert("Sejarah berhasil ditambahkan!");
+        setTimeout(updateCountdown, 1000);
+    } else {
+        document.getElementById("addHistoryBtn").innerHTML = "📝 Tambah Sejarah";
+        document.getElementById("addHistoryBtn").disabled = false;
+        document.getElementById("countdownTimer").innerText = "";
+        localStorage.removeItem("historyResetTime"); // Hapus waktu reset setelah habis
+    }
+}
 
+// **Menambahkan catatan sejarah**
+async function addHistory() {
+    const title = document.getElementById("title").value;
+    const description = document.getElementById("description").value;
 
-
-        getBalance(); // Perbarui saldo
-
-        fetchHistory(); // Muat ulang daftar sejarah
-
-
-
-    } catch (error) {
-
-        console.error("Gagal menambahkan sejarah:", error);
-
+    if (!title || !description) {
+        alert("Judul dan Deskripsi harus diisi!");
+        return;
     }
 
+    try {
+        const tx = await contract.addHistory(title, description);
+        await tx.wait();
+        alert("Sejarah berhasil ditambahkan!");
+
+        getBalance(); // Perbarui saldo
+        fetchHistory(); // Muat ulang daftar sejarah
+
+        // Simpan waktu reset di localStorage
+        let resetTime = getResetTimeUTC();
+        localStorage.setItem("historyResetTime", resetTime);
+
+        updateCountdown(); // Jalankan countdown
+
+    } catch (error) {
+        console.error("Gagal menambahkan sejarah:", error);
+    }
 }
+
+// **Cek status tombol saat halaman dimuat**
+window.onload = function () {
+    updateCountdown();
+};
 
 // **Mendapatkan riwayat sejarah dari kontrak**
 
@@ -458,5 +590,142 @@ let historyData = [];
 
 async function fetchHistory() {
     let provider = new ethers.providers.Web3Provider(window.ethereum);
-    let contractAddress = "0x4be484c6Af5c6d28477B9f2d3ba3C11667A7512c"; // Ganti dengan alamat kontrak
-    let abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"title","type":"string"},{"indexed":false,"internalType":"string","name":"description","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"HistoryAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_title","type":"string"},{"internalType":"string","name":"_description","type":"string"}],"name":"addHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"value","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"confirmHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllHistories","outputs":[{"components":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"internalType":"struct Token.History[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"histories","outputs":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"rewardAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name
+    let contractAddress = "0x712BFc46a581f7276A6bD112BfDAd795f3Aa9ecc"; // Ganti dengan alamat kontrak
+    let abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"bytes32","name":"postId","type":"bytes32"},{"indexed":false,"internalType":"string","name":"title","type":"string"},{"indexed":false,"internalType":"string","name":"description","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"HistoryAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bool","name":"enabled","type":"bool"}],"name":"TransferEnabled","type":"event"},{"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_title","type":"string"},{"internalType":"string","name":"_description","type":"string"}],"name":"addHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"value","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"confirmHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bool","name":"_enabled","type":"bool"}],"name":"enableTransfer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAllHistories","outputs":[{"components":[{"internalType":"bytes32","name":"postId","type":"bytes32"},{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"internalType":"struct Token.History[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"histories","outputs":[{"internalType":"bytes32","name":"postId","type":"bytes32"},{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"lastPostTimestamp","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"rewardAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"transferEnabled","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"withdrawEther","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
+    let contract = new ethers.Contract(contractAddress, abi, provider);
+
+    try {
+        historyData = await contract.getAllHistories();
+        displayPage(currentPage);
+    } catch (error) {
+        console.error("Gagal mengambil data:", error);
+    }
+}
+
+function displayPage(page) {
+    let list = document.getElementById("historyList");
+    list.innerHTML = "";
+
+    let totalPages = Math.ceil(historyData.length / itemsPerPage);
+    let start = (page - 1) * itemsPerPage;
+    let end = start + itemsPerPage;
+    let paginatedItems = historyData.slice(start, end);
+
+    paginatedItems.forEach((item) => {
+    let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
+    let li = document.createElement("li");
+
+    li.innerHTML = `
+        <b>${item.title}</b> (${formattedDate})<br><br>
+        <b>${item.description}</b><br><br>
+        <small class="scrollable-id">ID: ${item.postId ? item.postId : "Tidak Ada"}</small><br>
+        <small>Confirmed: ${item.isConfirmed}</small><br>
+        <small>Creator: ${item.creator}</small><br>
+        <small>Block: ${item.blockNumber}</small><br>
+        <small>Tx Hash: 
+            <a href="https://sepolia.basescan.org/block/${item.blockNumber}" target="_blank">
+                ${item.txHash.substring(0, 10)}...
+            </a>
+        </small><br>
+        <button onclick="openModal(
+            '${item.title}', 
+            '${item.description}',
+            '${item.postId}',
+            '${item.isConfirmed}',
+            '${item.creator}',
+            '${item.blockNumber}', 
+            '${item.txHash}'
+        )">🔍 Lihat</button><br>
+    `;
+
+    list.appendChild(li);
+});
+
+    document.getElementById("pageInfo").innerText = `Page ${page} of ${totalPages}`;
+    document.getElementById("firstPage").disabled = page === 1;
+    document.getElementById("prevPage").disabled = page === 1;
+    document.getElementById("nextPage").disabled = page === totalPages;
+    document.getElementById("lastPage").disabled = page === totalPages;
+}
+
+function changePage(direction) {
+    let newPage = currentPage + direction;
+    let totalPages = Math.ceil(historyData.length / itemsPerPage);
+
+    if (newPage >= 1 && newPage <= totalPages) {
+        currentPage = newPage;
+        displayPage(currentPage);
+    }
+}
+
+function goToPage(page) {
+    let totalPages = Math.ceil(historyData.length / itemsPerPage);
+
+    if (page === "last") {
+        currentPage = totalPages;
+    } else {
+        currentPage = 1;
+    }
+    displayPage(currentPage);
+}
+
+// Fungsi untuk menampilkan modal
+function openModal(title, description, timestamp) {
+    let maxLength = 5000;
+    let truncatedDescription = description.length > maxLength 
+        ? description.substring(0, maxLength) + "..." 
+        : description;
+
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalDescription').textContent = truncatedDescription;
+    document.getElementById('modalTimestamp').textContent = new Date(timestamp * 1000).toLocaleString();
+    document.getElementById('historyModal').style.display = "block";
+}
+
+// Fungsi untuk menutup modal
+function closeModal() {
+    document.getElementById('historyModal').style.display = "none";
+}
+
+// Pastikan modal bisa ditutup dengan klik di luar modal
+window.onclick = function(event) {
+    let modal = document.getElementById('historyModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+};
+        
+
+// **Diskonek Wallet**
+
+function disconnectWallet() {
+
+    document.getElementById("walletAddress").innerText = "Wallet: -";
+
+    document.getElementById("networkStatus").innerText = "Jaringan: -";
+
+    document.getElementById("balance").innerText = "Saldo: 0 HIST";
+
+
+
+    // Reset tombol menjadi Konek Wallet
+
+    const connectButton = document.getElementById("connectWallet");
+
+    connectButton.innerText = "🔗 Konek Wallet";
+
+    connectButton.classList.remove("disconnect");
+
+    connectButton.onclick = connectWallet;
+
+}
+
+// **Event Listener untuk Koneksi Wallet**
+
+document.getElementById("connectWallet").addEventListener("click", connectWallet);
+
+    </script>
+
+</body>
+
+</html>
