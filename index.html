@@ -588,6 +588,8 @@ function displayPage(page) {
     li.innerHTML = `
         <b>${item.title}</b> (${formattedDate})<br><br>
         <b>${item.description}</b><br><br>
+        <small>ID: ${item.postId ? item.postId : "Tidak Ada"}</small><br>
+        <small>Confirmed: ${item.isConfirmed}</small><br>
         <small>Creator: ${item.creator}</small><br>
         <small>Block: ${item.blockNumber}</small><br>
         <small>Tx Hash: 
@@ -597,8 +599,10 @@ function displayPage(page) {
         </small><br>
         <button onclick="openModal(
             '${item.title}', 
-            '${item.description}', 
-            '${item.creator}', 
+            '${item.description}',
+            '${item.postId}',
+            '${item.isConfirmed}',
+            '${item.creator}',
             '${item.blockNumber}', 
             '${item.txHash}'
         )">🔍 Lihat</button><br>
