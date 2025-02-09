@@ -560,17 +560,16 @@ function displayPage(page) {
 paginatedItems.forEach((item) => {
         let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
         let li = document.createElement("li");
-
-    li.innerHTML = `<b>${item.title}</b> (${formattedDate})<br><br>
-                    <i>${item.description}</i><br><br>
-                    <small>ID Unik: ${item.id ? item.id : "Tidak Ada"}</small><br>
-                    <small>Creator: ${shortenAddress(item.creator)}</small><br>
-                    <small>Block: <a href="https://sepolia.basescan.org/block/${blockNumber}" target="_blank">${blockNumber}</a></small><br> <!-- Link ke block -->
-                    <small>Tx Hash: <a href="https://sepolia.basescan.org/tx/${txHash}" target="_blank">
-                    ${txHash.substring(0, 10)}...</a></small><br>
-                    <button onclick="openModal('${item.title}', '${item.description}', '${shortenAddress(item.creator)}', '${blockNumber}', '${txHash}', '${item.id}')">🔍 Lihat</button>`;
-    list.appendChild(li);
-});
+        li.innerHTML = `<b>${item.title}</b> (${new Date(item.timestamp * 1000).toLocaleDateString("id-ID")})<br><br>
+                        <i>${item.description}</i><br><br>
+                        <small>ID Unik: ${item.id ? item.id : "Tidak Ada"}</small><br>
+                        <small>Creator: ${shortenAddress(item.creator)}</small><br>
+                        <small>Block: <a href="https://sepolia.basescan.org/block/${blockNumber}" target="_blank">${blockNumber}</a></small><br> <!-- Link ke block -->
+                        <small>Tx Hash: <a href="https://sepolia.basescan.org/tx/${item.txHash}" target="_blank">
+${item.txHash.substring(0, 10)}...</a></small><br>
+                        <button onclick="openModal('${item.title}', '${item.description}', '${item.creator}', '${item.blockNumber}', '${item.txHash}')">🔍 Lihat</button>`;
+        list.appendChild(li);
+    });
 
     document.getElementById("pageInfo").innerText = `Page ${page} of ${totalPages}`;
     document.getElementById("firstPage").disabled = page === 1;
