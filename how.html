@@ -399,7 +399,19 @@ async function getBalance() {
 
 }
 
+document.getElementById("description").addEventListener("input", function () {
+    let text = this.value.replace(/\n/g, ""); // Hapus newline sebelumnya
+    let formattedText = "";
+    
+    for (let i = 0; i < text.length; i++) {
+        if (i > 0 && i % 30 === 0) {
+            formattedText += "\n"; // Tambahkan newline setiap 30 karakter
+        }
+        formattedText += text[i];
+    }
 
+    this.value = formattedText; // Set teks yang sudah diformat
+});
 
 // **Menambahkan catatan sejarah**
 
@@ -418,20 +430,6 @@ async function addHistory() {
         return;
 
     }
-
-    document.getElementById("description").addEventListener("input", function () {
-    let text = this.value.replace(/\n/g, ""); // Hapus newline sebelumnya
-    let formattedText = "";
-    
-    for (let i = 0; i < text.length; i++) {
-        if (i > 0 && i % 30 === 0) {
-            formattedText += "\n"; // Tambahkan newline setiap 30 karakter
-        }
-        formattedText += text[i];
-    }
-
-    this.value = formattedText; // Set teks yang sudah diformat
-});
 
 
     try {
