@@ -228,7 +228,9 @@ textarea {
     <button id="lastPage" onclick="goToPage('last')">⏭️</button>
 </div>
 
-
+<button id="likeButton_${item.postId}" onclick="toggleLike('${item.postId}')">
+    👍 Like (<span id="likeCount_${item.postId}">0</span>)
+</button><br>
 
     <hr>
 
@@ -722,6 +724,24 @@ function disconnectWallet() {
 
 document.getElementById("connectWallet").addEventListener("click", connectWallet);
 
+    </script>
+
+    <script>
+    let likedPosts = {}; // Objek untuk menyimpan status like setiap post
+
+    function toggleLike(postId) {
+        if (!likedPosts[postId]) {
+            likedPosts[postId] = { liked: false, count: 0 }; // Nilai awal 0 like
+        }
+
+        likedPosts[postId].liked = !likedPosts[postId].liked;
+        likedPosts[postId].count += likedPosts[postId].liked ? 1 : -1;
+
+        document.getElementById(`likeCount_${postId}`).innerText = likedPosts[postId].count;
+        document.getElementById(`likeButton_${postId}`).innerHTML = likedPosts[postId].liked 
+            ? `👎 Unlike (${likedPosts[postId].count})` 
+            : `👍 Like (${likedPosts[postId].count})`;
+    }
     </script>
 
 </body>
