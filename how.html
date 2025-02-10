@@ -577,7 +577,8 @@ searchContainer.innerHTML = `
     <input type="text" id="searchInput" placeholder="Cari sejarah...">
     <button id="searchButton" onclick="toggleSearch()">🔍 Cari</button>
 `;
-document.querySelector(".container").insertBefore(searchContainer, document.querySelector(".history-container"));
+const historyHeading = document.querySelector("h2:nth-of-type(2)"); 
+historyHeading.parentNode.insertBefore(searchContainer, historyHeading);
 
 function searchHistory() {
     const searchTerm = document.getElementById("searchInput").value.trim().toLowerCase();
