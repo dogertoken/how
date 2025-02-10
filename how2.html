@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="style.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.10.0/web3.min.js"></script>
 
     <style>
     /* General Styling */
@@ -957,6 +958,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <script>
         // Tip
+        if (typeof window.ethereum === "undefined") {
+    alert("MetaMask tidak terdeteksi. Silakan instal MetaMask.");
+    return;
+}
+
+try {
+    // Meminta akses ke akun MetaMask
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+
+    // Cek apakah Web3 bisa digunakan
+    if (typeof Web3 !== "undefined") {
+        var web3 = new Web3(window.ethereum);
+    } else {
+        alert("Web3 masih tidak terdeteksi. Coba muat ulang halaman.");
+        return;
+    }
+
+    const accounts = await web3.eth.getAccounts();
+    console.log("Akun MetaMask:", accounts);
+} catch (error) {
+    console.error("Gagal menghubungkan MetaMask:", error);
+    alert(`Gagal menghubungkan MetaMask: ${error.message}`);
+    return;
+}
+        
         document.addEventListener("DOMContentLoaded", function () {
     let recipientWallet = ""; // Wallet tujuan
 
