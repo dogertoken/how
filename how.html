@@ -555,13 +555,15 @@ function displayPage(page) {
     let end = start + itemsPerPage;
     let paginatedItems = historyData.slice(start, end);
 
-paginatedItems.forEach((item) => {
+    paginatedItems.forEach((item) => {
     let formattedDate = new Date(item.timestamp * 1000).toLocaleDateString("id-ID");
     let li = document.createElement("li");
 
     li.innerHTML = `
         <b>${item.title}</b> (${formattedDate})<br><br>
-        <i>${item.description}</i><br><br>
+        <b>${item.description}</b><br><br>
+        <small class="scrollable-id">ID: ${item.postId ? item.postId : "Tidak Ada"}</small><br>
+        <small>Confirmed: ${item.isConfirmed}</small><br>
         <small>Creator: ${item.creator}</small><br>
         <small>Block: ${item.blockNumber}</small><br>
         <small>Tx Hash: 
@@ -570,9 +572,9 @@ paginatedItems.forEach((item) => {
             </a>
         </small><br>
         <button onclick="openModal(
-            '${item.title}', 
-            '${item.description}', 
-            '${item.creator}', 
+            '${item.postId}',
+            '${item.isConfirmed}',
+            '${item.creator}',
             '${item.blockNumber}', 
             '${item.txHash}'
         )">🔍 Lihat</button><br>
