@@ -570,7 +570,7 @@ function displayPage(page) {
             </a>
         </small><br>
         <button id="likeButton_${item.postId}" onclick="toggleLike('${item.postId}')">
-    👍 Like (<span id="likeCount_${item.postId}">${item.likes}</span>)
+    👍 Like (<span id="likeCount_${item.postId}">${likedPosts[item.postId]?.count || 0}</span>)
 </button><br><br>
     `;
 
@@ -717,11 +717,11 @@ document.getElementById("connectWallet").addEventListener("click", connectWallet
     </script>
 
     <script>
-    // Ambil data like dari localStorage jika ada, jika tidak, gunakan objek kosong
-let likedPosts = JSON.parse(localStorage.getItem("likedPosts")) || {}; 
+    // Ambil data like dari localStorage jika ada
+let likedPosts = JSON.parse(localStorage.getItem("likedPosts")) || {};
 
 function toggleLike(postId) {
-    // Jika postId belum ada di localStorage, inisialisasi
+    // Jika belum ada di localStorage, inisialisasi
     if (!likedPosts[postId]) {
         likedPosts[postId] = { liked: false, count: 0 };
     }
@@ -735,7 +735,7 @@ function toggleLike(postId) {
         likedPosts[postId].count += 1;
     }
 
-    // Simpan perubahan ke localStorage
+    // Simpan ke localStorage
     localStorage.setItem("likedPosts", JSON.stringify(likedPosts));
 
     // Update tampilan tombol dan jumlah like
@@ -743,18 +743,18 @@ function toggleLike(postId) {
 }
 
 function updateLikeButton(postId) {
-    let likeButton = document.getElementById(`likeButton_${postId}`);
     let likeCount = document.getElementById(`likeCount_${postId}`);
+    let likeButton = document.getElementById(`likeButton_${postId}`);
 
-    if (likeButton && likeCount) {
+    if (likeCount && likeButton) {
         likeCount.innerText = likedPosts[postId].count;
         likeButton.innerHTML = likedPosts[postId].liked 
-            ? `👎 Dislike (${likedPosts[postId].count})` 
-            : `👍 Like (${likedPosts[postId].count})`;
+            ? `👎 Dislike (<span id="likeCount_${postId}">${likedPosts[postId].count}</span>)` 
+            : `👍 Like (<span id="likeCount_${postId}">${likedPosts[postId].count}</span>)`;
     }
 }
 
-// Saat halaman dimuat, perbarui tampilan tombol berdasarkan data di localStorage
+// Saat halaman dimuat, pastikan tampilan tombol sesuai dengan data dari localStorage
 document.addEventListener("DOMContentLoaded", () => {
     Object.keys(likedPosts).forEach(postId => {
         updateLikeButton(postId);
