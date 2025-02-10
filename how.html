@@ -226,10 +226,7 @@ textarea {
     <span id="pageInfo"></span>
     <button id="nextPage" onclick="changePage(1)">➡️</button>
     <button id="lastPage" onclick="goToPage('last')">⏭️</button>
-</div>
-<button onclick="openCommentsPage('${item.postId}')">
-    💬 Lihat Komentar (<span id="commentCount_${item.postId}">0</span>)
-</button><br>
+
     <hr>
 
     
@@ -839,80 +836,6 @@ document.addEventListener("DOMContentLoaded", () => {
     Object.keys(likedPosts).forEach(postId => {
         updateLikeButton(postId);
     });
-});
-
- // Comment II
-
- // Ambil `postId` dari URL
-const urlParams = new URLSearchParams(window.location.search);
-const postId = urlParams.get("postId");
-
-// Simpan komentar di localStorage
-let commentsData = JSON.parse(localStorage.getItem("commentsData")) || {};
-
-// Ambil postingan dari localStorage (Contoh saja, bisa diubah dengan sumber data lain)
-let postData = JSON.parse(localStorage.getItem("postData")) || {};
-let post = postData[postId];
-
-// Menampilkan postingan
-function displayPost() {
-    let postContainer = document.getElementById("postContainer");
-    if (!post) {
-        postContainer.innerHTML = "<p>Postingan tidak ditemukan.</p>";
-        return;
-    }
-    postContainer.innerHTML = `<h3>${post.title}</h3><p>${post.description}</p>`;
-}
-
-// Menampilkan komentar
-function displayComments() {
-    let commentsContainer = document.getElementById("commentsContainer");
-    commentsContainer.innerHTML = "";
-
-    if (!commentsData[postId] || commentsData[postId].length === 0) {
-        commentsContainer.innerHTML = "<p>Belum ada komentar.</p>";
-        return;
-    }
-
-    commentsData[postId].forEach(comment => {
-        let commentElement = document.createElement("p");
-        commentElement.innerHTML = `<b>${comment.id}</b> berkomentar:<br>${comment.text}`;
-        commentsContainer.appendChild(commentElement);
-    });
-}
-
-// Menambahkan komentar baru
-function addComment() {
-    let commentInput = document.getElementById("commentInput");
-    let commentText = commentInput.value.trim();
-    let userId = getWalletId(); // Dapatkan wallet ID atau ID sementara
-
-    if (commentText === "") return;
-
-    if (!commentsData[postId]) {
-        commentsData[postId] = [];
-    }
-
-    commentsData[postId].push({ id: userId, text: commentText });
-
-    localStorage.setItem("commentsData", JSON.stringify(commentsData));
-
-    displayComments();
-    commentInput.value = "";
-}
-
-// Fungsi mendapatkan wallet ID (sesuaikan dengan metode login)
-function getWalletId() {
-    if (window.ethereum) {
-        return window.ethereum.selectedAddress || "Wallet Tidak Ditemukan";
-    }
-    return "Guest_" + Math.random().toString(36).substr(2, 9);
-}
-
-// Panggil fungsi saat halaman dimuat
-document.addEventListener("DOMContentLoaded", () => {
-    displayPost();
-    displayComments();
 });
     </script>
 
