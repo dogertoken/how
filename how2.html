@@ -805,20 +805,17 @@ function renderComments() {
     let visibleComments = commentsData[currentPostId].slice(0, currentLimit);
     let userId = getWalletId();
 
+    
     visibleComments.forEach((comment, index) => {
         let commentElement = document.createElement("div");
-        commentElement.classList.add("comment-item");
-
         commentElement.innerHTML = `
-            <span class="comment-user">${comment.id}</span>
-            <br>
-            <small class="comment-time">${comment.time}</small>
-            <br>
-            <span class="comment-text" id="commentText_${index}">${comment.text}</span>
-            <button class="edit-btn" onclick="editComment(${index})">Edit</button>
-            <button class="delete-btn" onclick="deleteComment(${index})">Hapus</button>
+            <p>
+                <span class="comment-user">${comment.id}</span><br>
+                <small>${comment.timestamp}</small><br>
+                <span class="comment-text">${comment.text}</span>
+            </p>
         `;
-
+        
         // Jika user adalah pemilik komentar, tampilkan tombol Edit & Hapus
         if (comment.id === userId) {
             let editButton = document.createElement("button");
