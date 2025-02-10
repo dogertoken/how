@@ -734,21 +734,55 @@ document.getElementById("connectWallet").addEventListener("click", connectWallet
     // Comment
     let commentsData = JSON.parse(localStorage.getItem("commentsData")) || {};
 const INITIAL_COMMENTS = 3;
-const COMMENTS_INCREMENT = 10;
-let currentPostId;
+const COMMENTS_INCREMENT = 3;
+let currentPostId = "";
 let currentLimit = INITIAL_COMMENTS;
 
-function openCommentsModal(postId) {
-    currentPostId = postId;
-    currentLimit = INITIAL_COMMENTS; // Reset limit setiap buka modal
-    document.getElementById("commentsModal").style.display = "block";
-    renderComments();
+// Fungsi mendapatkan wallet ID
+function getWalletId() {
+    if (window.ethereum && window.ethereum.selectedAddress) {
+        return window.ethereum.selectedAddress; // Gunakan alamat wallet pengguna
+    }
+    return "Wallet_Tidak_Ditemukan";
 }
 
+// Fungsi membuka modal dan menampilkan komentar
+function openCommentsModal(postId) {
+    currentPostId = postId;
+    currentLimit = INITIAL_COMMENTS;
+    renderComments();
+    document.getElementById("commentsModal").style.display = "block";
+}
+
+// Fungsi menutup modal komentar
 function closeCommentsModal() {
     document.getElementById("commentsModal").style.display = "none";
 }
 
+// Fungsi menambahkan komentar
+function addComment() {
+    let commentInput = document.getElementById("commentInput");
+    let commentText = commentInput.value.trim();
+    let userId = getWalletId(); // Gunakan ID wallet pengguna
+
+    if (commentText === "" || userId === "Wallet_Tidak_Ditemukan") return;
+
+    if (!commentsData[currentPostId]) {
+        commentsData[currentPostId] = [];
+    }
+
+    commentsData[currentPostId].push({
+        id: userId,
+        text: commentText
+    });
+
+    localStorage.setItem("commentsData", JSON.stringify(commentsData));
+    commentInput.value = "";
+    renderComments();
+    updateCommentCount();
+}
+
+// Fungsi menampilkan komentar dengan lazy load
 function renderComments() {
     let commentsContainer = document.getElementById("commentsSection");
     commentsContainer.innerHTML = "";
@@ -778,31 +812,21 @@ function renderComments() {
     }
 }
 
-function addComment() {
-    let commentInput = document.getElementById("commentInput");
-    let commentText = commentInput.value.trim();
-    if (commentText === "") return;
-
-    if (!commentsData[currentPostId]) {
-        commentsData[currentPostId] = [];
+// Fungsi memperbarui jumlah komentar di tombol
+function updateCommentCount() {
+    let commentCountSpan = document.getElementById(`commentCount_${currentPostId}`);
+    if (commentCountSpan) {
+        commentCountSpan.innerText = commentsData[currentPostId] ? commentsData[currentPostId].length : 0;
     }
-
-    commentsData[currentPostId].push({
-        id: "User_" + Math.random().toString(36).substr(2, 9), 
-        text: commentText
-    });
-
-    localStorage.setItem("commentsData", JSON.stringify(commentsData));
-    commentInput.value = "";
-    renderComments();
 }
 
-// Pastikan jumlah komentar diperbarui di halaman utama
+// Pastikan komentar tetap muncul setelah refresh
 document.addEventListener("DOMContentLoaded", () => {
     Object.keys(commentsData).forEach(postId => {
-        let count = commentsData[postId] ? commentsData[postId].length : 0;
-        let countElement = document.getElementById(`commentCount_${postId}`);
-        if (countElement) countElement.innerText = count;
+        let commentCountSpan = document.getElementById(`commentCount_${postId}`);
+        if (commentCountSpan) {
+            commentCountSpan.innerText = commentsData[postId].length || 0;
+        }
     });
 });
         
