@@ -570,8 +570,8 @@ function displayPage(page) {
             </a>
         </small><br>
         <button id="likeButton_${item.postId}" onclick="toggleLike('${item.postId}')">
-    👍 Like (<span id="likeCount_${item.postId}">${item.likes}</span>)
-</button><br><br>
+                ${isLiked ? "👎 Dislike" : "👍 Like"} (<span id="likeCount_${item.postId}">${storedLikes}</span>)
+            </button><br><br>
     `;
 
     list.appendChild(li);
