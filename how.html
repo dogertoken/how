@@ -772,6 +772,7 @@ function addComment() {
     let commentInput = document.getElementById("commentInput");
     let commentText = commentInput.value.trim();
     let userId = getWalletId(); // Gunakan ID wallet pengguna
+    let timestamp = new Date().toLocaleString(); // Format waktu lokal
 
     if (commentText === "" || userId === "Wallet_Tidak_Ditemukan") return;
 
@@ -781,14 +782,15 @@ function addComment() {
 
     commentsData[currentPostId].push({
         id: userId,
-        text: commentText
+        text: commentText,
+        timestamp: timestamp // Simpan waktu posting
     });
 
     localStorage.setItem("commentsData", JSON.stringify(commentsData));
     commentInput.value = "";
     renderComments();
     updateCommentCount();
-}
+    }
 
 // Fungsi menampilkan komentar dengan lazy load
 function renderComments() {
@@ -804,10 +806,14 @@ function renderComments() {
     let visibleComments = commentsData[currentPostId].slice(0, currentLimit);
 
     visibleComments.forEach(comment => {
-    let commentElement = document.createElement("p");
-    commentElement.innerHTML = `<span class="comment-user">${comment.id}</span>: <span class="comment-text">${comment.text}</span>`;
-    commentsContainer.appendChild(commentElement);
-});
+        let commentElement = document.createElement("p");
+        commentElement.innerHTML = `
+            <span class="comment-user">${comment.id}</span><br>
+            <small>${comment.timestamp}</small><br>
+            <span class="comment-text">${comment.text}</span>
+        `;
+        commentsContainer.appendChild(commentElement);
+    });
 
     if (currentLimit < totalComments) {
         let loadMoreButton = document.createElement("button");
