@@ -571,66 +571,57 @@ window.onclick = function(event) {
     }
 };
         
-// Tambahkan input pencarian dan tombol cari
+// Tambahkan input pencarian dan tombol
 const searchContainer = document.createElement("div");
 searchContainer.innerHTML = `
     <input type="text" id="searchInput" placeholder="Cari sejarah...">
     <button id="searchButton" onclick="toggleSearch()">🔍 Cari</button>
-    <div id="searchResults"></div>
 `;
 document.querySelector(".container").insertBefore(searchContainer, document.querySelector(".history-container"));
 
-let isSearching = false;
-
-function toggleSearch() {
-    const searchInput = document.getElementById("searchInput");
-    const searchButton = document.getElementById("searchButton");
-    
-    if (!isSearching) {
-        searchHistory();
-        searchButton.innerText = "❌ Bersihkan";
-        isSearching = true;
-    } else {
-        clearSearch();
-        searchButton.innerText = "🔍 Cari";
-        isSearching = false;
-    }
-}
-
 function searchHistory() {
-    const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+    const searchTerm = document.getElementById("searchInput").value.trim().toLowerCase();
     const historyList = document.getElementById("historyList");
-    const searchResults = document.getElementById("searchResults");
-    searchResults.innerHTML = ""; // Kosongkan hasil sebelumnya
-
     const items = historyList.getElementsByTagName("li");
+
     let found = false;
-
     for (let i = 0; i < items.length; i++) {
-        const titleElement = items[i].querySelector(".history-title");
-        const descriptionElement = items[i].querySelector(".history-description");
-
-        if (titleElement && descriptionElement) {
-            const title = titleElement.textContent.toLowerCase();
-            const description = descriptionElement.textContent.toLowerCase();
-            
-            if (title.includes(searchTerm) || description.includes(searchTerm)) {
-                searchResults.appendChild(items[i].cloneNode(true));
-                found = true;
-            }
+        const text = items[i].textContent.toLowerCase(); // Ambil teks dari elemen <li>
+        
+        if (text.includes(searchTerm)) {
+            items[i].style.display = "";
+            found = true;
+        } else {
+            items[i].style.display = "none";
         }
     }
 
     if (!found) {
-        searchResults.innerHTML = "<p>Tidak ada hasil ditemukan.</p>";
+        historyList.innerHTML = "<li>Tidak ada hasil ditemukan.</li>";
+    }
+}
+
+function toggleSearch() {
+    const searchButton = document.getElementById("searchButton");
+    if (searchButton.textContent === "🔍 Cari") {
+        searchHistory();
+        searchButton.textContent = "❌ Bersihkan";
+    } else {
+        clearSearch();
+        searchButton.textContent = "🔍 Cari";
     }
 }
 
 function clearSearch() {
     document.getElementById("searchInput").value = "";
-    document.getElementById("searchResults").innerHTML = "";
-}
+    const historyList = document.getElementById("historyList");
+    const items = historyList.getElementsByTagName("li");
 
+    for (let i = 0; i < items.length; i++) {
+        items[i].style.display = "";
+    }
+        }
+        
 // **Diskonek Wallet**
 
 function disconnectWallet() {
