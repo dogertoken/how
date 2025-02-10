@@ -594,10 +594,10 @@ function displayPage(page) {
                 ${item.txHash.substring(0, 10)}...
             </a>
         </small><br>
+        <button class="small-button" id="likeButton_${item.postId}" onclick="toggleLike('${item.postId}')">
+    👍 Like (<span id="likeCount_${item.postId}">${likedPosts[item.postId]?.count || 0}</span>) </button>
         <button class="small-button" onclick="openCommentsModal('${item.postId}')">
-    💬 Lihat Komentar (<span id="commentCount_${item.postId}">0</span>) </button><br>
-       <button class="small-button" id="likeButton_${item.postId}" onclick="toggleLike('${item.postId}')">
-    👍 Like (<span id="likeCount_${item.postId}">${likedPosts[item.postId]?.count || 0}</span>) </button><br><br>
+    💬 Lihat Komentar (<span id="commentCount_${item.postId}">0</span>) </button><br><br>
     `;
 
     list.appendChild(li);
