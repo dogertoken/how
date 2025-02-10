@@ -749,7 +749,7 @@ window.onclick = function(event) {
 // Tambahkan input pencarian dan tombol
 const searchContainer = document.createElement("div");
 searchContainer.innerHTML = `
-    <input type="text" id="searchInput" placeholder="Cari sejarah...">
+    <input type="text" id="searchInput" placeholder="Cari sejarah..."><br>
     <button id="searchButton" onclick="toggleSearch()">🔍 Cari</button>
 `;
 document.querySelector(".container").insertBefore(searchContainer, document.querySelector(".history-container"));
