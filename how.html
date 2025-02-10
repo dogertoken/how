@@ -721,27 +721,31 @@ document.getElementById("connectWallet").addEventListener("click", connectWallet
 
     <script>
     // Comment
-    
-    let commentsData = localStorage.getItem("commentsData");
+let commentsData = localStorage.getItem("commentsData");
 commentsData = commentsData ? JSON.parse(commentsData) : {};
 
 // Konstanta untuk lazy load
 const INITIAL_COMMENTS = 3;
 const COMMENTS_INCREMENT = 3;
 
-// Fungsi mendapatkan wallet ID (sesuaikan dengan metode login)
-function getWalletId() {
+// Fungsi mendapatkan wallet ID dengan deteksi perubahan akun
+async function getWalletId() {
     if (window.ethereum) {
-        return window.ethereum.selectedAddress || "Wallet Tidak Ditemukan";
+        try {
+            let accounts = await window.ethereum.request({ method: "eth_accounts" });
+            return accounts.length > 0 ? accounts[0] : "Wallet Tidak Ditemukan";
+        } catch (error) {
+            console.error("Gagal mendapatkan akun wallet:", error);
+        }
     }
     return "Guest_" + Math.random().toString(36).substr(2, 9); // ID sementara jika tidak ada wallet
 }
 
 // Fungsi menambah komentar
-function addComment(postId) {
+async function addComment(postId) {
     let commentInput = document.getElementById(`commentInput_${postId}`);
     let commentText = commentInput.value.trim();
-    let userId = getWalletId(); // Ambil ID wallet atau user ID default
+    let userId = await getWalletId(); // Pastikan wallet ID diperbarui
 
     if (commentText === "") return;
 
@@ -763,7 +767,7 @@ function addComment(postId) {
 // Fungsi menampilkan komentar (Lazy Load)
 function renderComments(postId, limit = INITIAL_COMMENTS) {
     let commentsContainer = document.getElementById(`comments_${postId}`);
-    if (!commentsContainer) return; // Cegah error jika elemen tidak ditemukan
+    if (!commentsContainer) return; // Hindari error jika elemen tidak ditemukan
     commentsContainer.innerHTML = "";
 
     if (!commentsData[postId] || commentsData[postId].length === 0) {
@@ -789,11 +793,22 @@ function renderComments(postId, limit = INITIAL_COMMENTS) {
 }
 
 // Pastikan komentar tetap muncul setelah refresh
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    await getWalletId(); // Pastikan wallet diperiksa sebelum render
     Object.keys(commentsData).forEach(postId => {
         renderComments(postId);
     });
 });
+
+// Deteksi perubahan akun wallet
+if (window.ethereum) {
+    window.ethereum.on("accountsChanged", async () => {
+        await getWalletId();
+        Object.keys(commentsData).forEach(postId => {
+            renderComments(postId);
+        });
+    });
+}
         
     // Like Ambil data like dari localStorage jika ada
 let likedPosts = JSON.parse(localStorage.getItem("likedPosts")) || {};
