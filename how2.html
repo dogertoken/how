@@ -806,25 +806,30 @@ function renderComments() {
     let userId = getWalletId();
 
     visibleComments.forEach((comment, index) => {
-        let commentElement = document.createElement("div");
-        commentElement.innerHTML = `
-            <p>
-                <span class="comment-user">${comment.id}</span><br>
-                <small>${comment.timestamp}</small><br>
-                <span class="comment-text">${comment.text}</span>
-            </p>
-        `;
+    let commentElement = document.createElement("div");
+    commentElement.classList.add("comment-item");
+
+    commentElement.innerHTML = `
+        <span class="comment-user">${comment.id}</span> 
+        <small class="comment-time">${comment.time}</small><br>
+        <span class="comment-text" contenteditable="true">${comment.text}</span>
+        <button onclick="saveEdit('${index}')">✔</button>
+        <button onclick="cancelEdit('${index}')">✖</button>
+    `;
+
+    commentsContainer.appendChild(commentElement);
+});
 
         // Jika user adalah pemilik komentar, tampilkan tombol Edit & Hapus
         if (comment.id === userId) {
             let editButton = document.createElement("button");
             editButton.innerText = "Edit";
-            editButton.style = "font-size: 0.7em; padding: 2px 5px;";
+            editButton.style = "font-size: 0.9em; padding: 3px 7px;";
             editButton.onclick = () => editComment(index);
 
             let deleteButton = document.createElement("button");
             deleteButton.innerText = "Hapus";
-            deleteButton.style = "font-size: 0.7em; padding: 2px 5px; margin-left: 5px;";
+            deleteButton.style = "font-size: 0.9em; padding: 3px 6px; margin-left: 6px;";
             deleteButton.onclick = () => deleteComment(index);
 
             commentElement.appendChild(editButton);
