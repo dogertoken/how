@@ -188,6 +188,19 @@ textarea {
 .comment-text {
     font-weight: bold; /* Komentar lebih tebal */
 }
+
+.small-button {
+    padding: 4px 8px; /* Kurangi padding supaya lebih kecil */
+    font-size: 13px; /* Perkecil teks */
+    border-radius: 4px; /* Tetap terlihat rapi */
+    border: 1px solid #ccc;
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+.small-button:hover {
+    background-color: #e0e0e0;
+}
     </style>
 
 </head>
@@ -588,12 +601,10 @@ function displayPage(page) {
                 ${item.txHash.substring(0, 10)}...
             </a>
         </small><br>
-        <button onclick="openCommentsModal('${item.postId}')">
-    💬 Lihat Komentar (<span id="commentCount_${item.postId}">0</span>)
-</button><br>
-        <button id="likeButton_${item.postId}" onclick="toggleLike('${item.postId}')">
-    👍 Like (<span id="likeCount_${item.postId}">${likedPosts[item.postId]?.count || 0}</span>)
-</button><br><br>
+        <button class="small-button" onclick="openCommentsModal('${item.postId}')">
+    💬 Lihat Komentar (<span id="commentCount_${item.postId}">0</span>) </button><br>
+       <button class="small-button" id="likeButton_${item.postId}" onclick="toggleLike('${item.postId}')">
+    👍 Like (<span id="likeCount_${item.postId}">${likedPosts[item.postId]?.count || 0}</span>) </button><br><br>
     `;
 
     list.appendChild(li);
