@@ -1052,9 +1052,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // **🔹 Konversi jumlah ke unit terkecil dengan BigInt**
                 let decimals = 18; // Sesuaikan dengan token (USDT biasanya 6, HIST mungkin 18)
-                let amountInSmallestUnit = BigInt(amount) * BigInt(10 ** decimals);
+                let amountInSmallestUnit = BigInt(amount) * BigInt(10 ** 18);
 
                 console.log(`Mengirim ${amount} ${currency} (${amountInSmallestUnit} unit terkecil)`);
+
+                let rawAmount = document.getElementById("tipAmount").value.trim();
+let amount = rawAmount.replace(",", ".");  // Pastikan pakai titik desimal  
+amount = parseFloat(amount).toString();     // Pastikan angka tetap string valid
+
+console.log("Raw input:", rawAmount);
+console.log("Setelah replace koma:", amount);
+console.log("Setelah parseFloat:", parseFloat(amount));
+
+let amountInWei = web3.utils.toWei(amount, "ether");  
+console.log("Amount dalam Wei:", amountInWei);
+
+                await tokenContract.methods
+    .transfer(recipientWallet, amountInSmallestUnit.toString())
+    .send({ from: sender })
+    .on("transactionHash", function (hash) {
+        console.log("Transaksi berhasil dikirim, hash:", hash);
+    })
+    .on("error", function (error) {
+        console.error("Kesalahan transaksi ERC-20:", error);
+    });
 
                 // **🔹 Kirim token ERC-20**
                 await tokenContract.methods.transfer(recipientWallet, amountInSmallestUnit.toString()).send({ from: sender });
