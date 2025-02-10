@@ -668,7 +668,7 @@ function displayPage(page) {
         <b>${item.description}</b><br><br>
         <small class="scrollable-id">ID: ${item.postId ? (item.postId.length > 36 ? item.postId.substring(0, 18) + "..." + item.postId.substring(item.postId.length - 18) : item.postId) : "Tidak Ada"}</small><br>
         <small>Confirmed: ${item.isConfirmed}</small><br>
-        <small>Creator: ${item.creator ? (item.creator.length === 40 ? item.creator.substring(0, 18) + "...." + item.creator.substring(item.creator.length - 18) : item.creator) : "Tidak Ada"}</small><br>
+        <small>Creator: ${item.creator ? (item.creator.length > 40 ? item.creator.substring(0, 18) + "...." + item.creator.substring(item.creator.length - 18) : item.creator) : "Tidak Ada"}</small><br>
         <small>Block: ${item.blockNumber}</small><br>
         <small>Tx Hash: 
             <a href="https://sepolia.basescan.org/block/${item.blockNumber}" target="_blank">
