@@ -227,7 +227,9 @@ textarea {
     <button id="nextPage" onclick="changePage(1)">➡️</button>
     <button id="lastPage" onclick="goToPage('last')">⏭️</button>
 </div>
-
+<button onclick="openCommentsPage('${item.postId}')">
+    💬 Lihat Komentar (<span id="commentCount_${item.postId}">0</span>)
+</button><br>
     <hr>
 
     
@@ -569,9 +571,6 @@ function displayPage(page) {
                 ${item.txHash.substring(0, 10)}...
             </a>
         </small><br>
-        <button onclick="openCommentsPage('${item.postId}')">
-    💬 Lihat Komentar (<span id="commentCount_${item.postId}">0</span>)
-</button><br>
         <div id="comments_${item.postId}"></div>
 <input type="text" id="commentInput_${item.postId}" placeholder="Tulis komentar...">
 <button onclick="addComment('${item.postId}')">Kirim</button><br>
