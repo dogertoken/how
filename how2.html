@@ -771,8 +771,7 @@ function closeCommentsModal() {
 function addComment() {
     let commentInput = document.getElementById("commentInput");
     let commentText = commentInput.value.trim();
-    let userId = getWalletId(); // Gunakan ID wallet pengguna
-    let timestamp = new Date().toLocaleString(); // Format waktu lokal
+    let userId = getWalletId();
 
     if (commentText === "" || userId === "Wallet_Tidak_Ditemukan") return;
 
@@ -783,7 +782,7 @@ function addComment() {
     commentsData[currentPostId].push({
         id: userId,
         text: commentText,
-        time: timestamp
+        timestamp: new Date().toLocaleString() // Simpan waktu lokal
     });
 
     localStorage.setItem("commentsData", JSON.stringify(commentsData));
@@ -792,7 +791,7 @@ function addComment() {
     updateCommentCount();
 }
 
-// Fungsi menampilkan komentar dengan tombol edit dan hapus
+// Fungsi menampilkan komentar
 function renderComments() {
     let commentsContainer = document.getElementById("commentsSection");
     commentsContainer.innerHTML = "";
@@ -804,20 +803,33 @@ function renderComments() {
 
     let totalComments = commentsData[currentPostId].length;
     let visibleComments = commentsData[currentPostId].slice(0, currentLimit);
+    let userId = getWalletId();
 
     visibleComments.forEach((comment, index) => {
         let commentElement = document.createElement("div");
-        commentElement.classList.add("comment-item");
-
         commentElement.innerHTML = `
-            <span class="comment-user">${comment.id}</span>
-            <br>
-            <small class="comment-time">${comment.time}</small>
-            <br>
-            <span class="comment-text" id="commentText_${index}">${comment.text}</span>
-            <button class="edit-btn" onclick="editComment(${index})">Edit</button>
-            <button class="delete-btn" onclick="deleteComment(${index})">Hapus</button>
+            <p>
+                <span class="comment-user">${comment.id}</span><br>
+                <small>${comment.timestamp}</small><br>
+                <span class="comment-text">${comment.text}</span>
+            </p>
         `;
+
+        // Jika user adalah pemilik komentar, tampilkan tombol Edit & Hapus
+        if (comment.id === userId) {
+            let editButton = document.createElement("button");
+            editButton.innerText = "Edit";
+            editButton.style = "font-size: 0.7em; padding: 2px 5px;";
+            editButton.onclick = () => editComment(index);
+
+            let deleteButton = document.createElement("button");
+            deleteButton.innerText = "Hapus";
+            deleteButton.style = "font-size: 0.7em; padding: 2px 5px; margin-left: 5px;";
+            deleteButton.onclick = () => deleteComment(index);
+
+            commentElement.appendChild(editButton);
+            commentElement.appendChild(deleteButton);
+        }
 
         commentsContainer.appendChild(commentElement);
     });
@@ -833,53 +845,24 @@ function renderComments() {
     }
 }
 
-// Fungsi mengedit komentar
+// Fungsi edit komentar
 function editComment(index) {
-    let commentTextElement = document.getElementById(`commentText_${index}`);
-    let oldText = commentsData[currentPostId][index].text;
-    
-    let inputField = document.createElement("input");
-    inputField.type = "text";
-    inputField.value = oldText;
-    inputField.id = `editInput_${index}`;
-
-    let saveButton = document.createElement("button");
-    saveButton.innerText = "Simpan";
-    saveButton.onclick = function () {
-        saveEditedComment(index);
-    };
-
-    commentTextElement.innerHTML = "";
-    commentTextElement.appendChild(inputField);
-    commentTextElement.appendChild(saveButton);
-}
-
-// Fungsi menyimpan komentar yang telah diedit
-function saveEditedComment(index) {
-    let inputField = document.getElementById(`editInput_${index}`);
-    let newText = inputField.value.trim();
-
-    if (newText === "") return;
-
-    commentsData[currentPostId][index].text = newText;
-    localStorage.setItem("commentsData", JSON.stringify(commentsData));
-
-    renderComments();
-}
-
-// Fungsi menghapus komentar
-function deleteComment(index) {
-    let userId = getWalletId();
-    if (commentsData[currentPostId][index].id !== userId) {
-        alert("Anda hanya bisa menghapus komentar Anda sendiri!");
-        return;
+    let newText = prompt("Edit komentar:", commentsData[currentPostId][index].text);
+    if (newText !== null && newText.trim() !== "") {
+        commentsData[currentPostId][index].text = newText;
+        localStorage.setItem("commentsData", JSON.stringify(commentsData));
+        renderComments();
     }
+}
 
-    commentsData[currentPostId].splice(index, 1);
-    localStorage.setItem("commentsData", JSON.stringify(commentsData));
-
-    renderComments();
-    updateCommentCount();
+// Fungsi hapus komentar
+function deleteComment(index) {
+    if (confirm("Apakah Anda yakin ingin menghapus komentar ini?")) {
+        commentsData[currentPostId].splice(index, 1);
+        localStorage.setItem("commentsData", JSON.stringify(commentsData));
+        renderComments();
+        updateCommentCount();
+    }
 }
 
 // Fungsi memperbarui jumlah komentar di tombol
