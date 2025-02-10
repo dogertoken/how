@@ -721,31 +721,34 @@ document.getElementById("connectWallet").addEventListener("click", connectWallet
 
     <script>
     // Comment
-let commentsData = localStorage.getItem("commentsData");
-commentsData = commentsData ? JSON.parse(commentsData) : {};
+    let commentsData = JSON.parse(localStorage.getItem("commentsData")) || {};
 
 // Konstanta untuk lazy load
 const INITIAL_COMMENTS = 3;
 const COMMENTS_INCREMENT = 3;
+let currentWalletId = ""; // Variabel untuk menyimpan Wallet ID saat ini
 
-// Fungsi mendapatkan wallet ID dengan deteksi perubahan akun
+// Fungsi mendapatkan wallet ID yang valid
 async function getWalletId() {
     if (window.ethereum) {
         try {
             let accounts = await window.ethereum.request({ method: "eth_accounts" });
-            return accounts.length > 0 ? accounts[0] : "Wallet Tidak Ditemukan";
+            currentWalletId = accounts.length > 0 ? accounts[0] : "Wallet Tidak Ditemukan";
         } catch (error) {
             console.error("Gagal mendapatkan akun wallet:", error);
+            currentWalletId = "Wallet Tidak Ditemukan";
         }
+    } else {
+        currentWalletId = "Guest_" + Math.random().toString(36).substr(2, 9);
     }
-    return "Guest_" + Math.random().toString(36).substr(2, 9); // ID sementara jika tidak ada wallet
+    return currentWalletId;
 }
 
 // Fungsi menambah komentar
 async function addComment(postId) {
     let commentInput = document.getElementById(`commentInput_${postId}`);
     let commentText = commentInput.value.trim();
-    let userId = await getWalletId(); // Pastikan wallet ID diperbarui
+    let userId = await getWalletId(); // Ambil wallet ID terbaru
 
     if (commentText === "") return;
 
@@ -767,7 +770,7 @@ async function addComment(postId) {
 // Fungsi menampilkan komentar (Lazy Load)
 function renderComments(postId, limit = INITIAL_COMMENTS) {
     let commentsContainer = document.getElementById(`comments_${postId}`);
-    if (!commentsContainer) return; // Hindari error jika elemen tidak ditemukan
+    if (!commentsContainer) return;
     commentsContainer.innerHTML = "";
 
     if (!commentsData[postId] || commentsData[postId].length === 0) {
@@ -794,7 +797,7 @@ function renderComments(postId, limit = INITIAL_COMMENTS) {
 
 // Pastikan komentar tetap muncul setelah refresh
 document.addEventListener("DOMContentLoaded", async () => {
-    await getWalletId(); // Pastikan wallet diperiksa sebelum render
+    await getWalletId(); // Pastikan wallet ID terbaru diambil sebelum render
     Object.keys(commentsData).forEach(postId => {
         renderComments(postId);
     });
@@ -802,8 +805,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Deteksi perubahan akun wallet
 if (window.ethereum) {
-    window.ethereum.on("accountsChanged", async () => {
-        await getWalletId();
+    window.ethereum.on("accountsChanged", async (accounts) => {
+        currentWalletId = accounts.length > 0 ? accounts[0] : "Wallet Tidak Ditemukan";
+        console.log("Akun wallet berubah:", currentWalletId);
         Object.keys(commentsData).forEach(postId => {
             renderComments(postId);
         });
