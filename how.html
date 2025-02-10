@@ -416,45 +416,115 @@ document.getElementById("description").addEventListener("input", function () {
 // **Menambahkan catatan sejarah**
 
 async function addHistory() {
-
     const title = document.getElementById("title").value;
-
     const description = document.getElementById("description").value;
-
-
+    const addHistoryBtn = document.getElementById("addHistoryBtn");
 
     if (!title || !description) {
-
         alert("Judul dan Deskripsi harus diisi!");
-
         return;
-
     }
-
 
     try {
+        const accounts = await ethereum.request({ method: "eth_accounts" });
+        if (!accounts || accounts.length === 0) {
+            alert("Wallet tidak terhubung!");
+            return;
+        }
+        const userWallet = accounts[0]; // Dapatkan alamat wallet
 
         const tx = await contract.addHistory(title, description);
-
         await tx.wait();
-
         alert("Sejarah berhasil ditambahkan!");
 
+        // Tentukan kapan cooldown berakhir (00:00 UTC berikutnya)
+        let now = new Date();
+        let resetTime = new Date(now);
+        resetTime.setUTCHours(0, 0, 0, 0); 
+        if (now > resetTime) {
+            resetTime.setUTCDate(resetTime.getUTCDate() + 1);
+        }
 
+        let resetTimestamp = resetTime.getTime();
+        localStorage.setItem(`historyCooldown_${userWallet}`, resetTimestamp); // Simpan berdasarkan wallet
 
-        getBalance(); // Perbarui saldo
-
-        fetchHistory(); // Muat ulang daftar sejarah
-
-
-
+        startCountdown(resetTimestamp);
+        
     } catch (error) {
-
         console.error("Gagal menambahkan sejarah:", error);
+    }
+}
 
+function startCountdown(resetTimestamp) {
+    const addHistoryBtn = document.getElementById("addHistoryBtn");
+    const countdownTimer = document.getElementById("countdownTimer");
+
+    addHistoryBtn.disabled = true;
+
+    function updateCountdown() {
+        let now = Date.now();
+        let timeLeft = Math.floor((resetTimestamp - now) / 1000);
+
+        if (timeLeft <= 0) {
+            addHistoryBtn.disabled = false;
+            addHistoryBtn.innerHTML = "📝 Tambah Sejarah";
+            countdownTimer.innerHTML = "";
+            return;
+        }
+
+        let hours = Math.floor(timeLeft / 3600);
+        let minutes = Math.floor((timeLeft % 3600) / 60);
+        let seconds = timeLeft % 60;
+
+        addHistoryBtn.innerHTML = `⏳ ${hours}h ${minutes}m ${seconds}s`;
+        countdownTimer.innerHTML = `Tunggu hingga reset 00:00 UTC`;
+
+        setTimeout(updateCountdown, 1000);
     }
 
+    updateCountdown();
 }
+
+// Saat halaman dimuat atau wallet berubah
+async function checkCooldown() {
+    const accounts = await ethereum.request({ method: "eth_accounts" });
+    if (!accounts || accounts.length === 0) {
+        resetButton(); // Jika tidak ada wallet terhubung, reset tombol
+        return;
+    }
+    
+    const userWallet = accounts[0];
+    let resetTimestamp = localStorage.getItem(`historyCooldown_${userWallet}`);
+
+    if (resetTimestamp) {
+        let now = Date.now();
+        if (now < resetTimestamp) {
+            startCountdown(parseInt(resetTimestamp));
+        } else {
+            localStorage.removeItem(`historyCooldown_${userWallet}`);
+            resetButton();
+        }
+    } else {
+        resetButton();
+    }
+}
+
+function resetButton() {
+    const addHistoryBtn = document.getElementById("addHistoryBtn");
+    const countdownTimer = document.getElementById("countdownTimer");
+
+    addHistoryBtn.disabled = false;
+    addHistoryBtn.innerHTML = "📝 Tambah Sejarah";
+    countdownTimer.innerHTML = "";
+}
+
+// Pantau perubahan akun wallet
+if (window.ethereum) {
+    window.ethereum.on("accountsChanged", checkCooldown);
+}
+
+// Periksa cooldown saat halaman dimuat
+window.onload = checkCooldown;
 
 // **Mendapatkan riwayat sejarah dari kontrak**
 
