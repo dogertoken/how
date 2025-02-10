@@ -1,0 +1,54 @@
+<body>
+    <h2>Komentar untuk Postingan</h2>
+    <div id="commentsSection"></div>
+    <input type="text" id="commentInput" placeholder="Tulis komentar...">
+    <button onclick="addComment()">Kirim</button>
+    <button onclick="goBack()">🔙 Kembali</button>
+
+    <script>
+        let commentsData = JSON.parse(localStorage.getItem("commentsData")) || {};
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get("postId");
+
+        function renderComments() {
+            let commentsContainer = document.getElementById("commentsSection");
+            commentsContainer.innerHTML = `<h3>Komentar untuk Post ${postId}</h3>`;
+
+            if (!commentsData[postId] || commentsData[postId].length === 0) {
+                commentsContainer.innerHTML += "<p>Belum ada komentar.</p>";
+                return;
+            }
+
+            commentsData[postId].forEach(comment => {
+                let commentElement = document.createElement("p");
+                commentElement.innerHTML = `<b>${comment.id}</b>: ${comment.text}`;
+                commentsContainer.appendChild(commentElement);
+            });
+        }
+
+        function addComment() {
+            let commentInput = document.getElementById("commentInput");
+            let commentText = commentInput.value.trim();
+            if (commentText === "") return;
+
+            if (!commentsData[postId]) {
+                commentsData[postId] = [];
+            }
+
+            commentsData[postId].push({
+                id: "User_" + Math.random().toString(36).substr(2, 9), 
+                text: commentText
+            });
+
+            localStorage.setItem("commentsData", JSON.stringify(commentsData));
+            commentInput.value = "";
+            renderComments();
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        document.addEventListener("DOMContentLoaded", renderComments);
+    </script>
+</body>
