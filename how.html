@@ -542,18 +542,18 @@ function goToPage(page) {
 }
 
 // Fungsi untuk menampilkan modal
-function openModal(title, description, timestamp) {
+function openModal(creator, postid, isconfirmed, blocknumber, txhash) {
     let maxLength = 500; // Batasi total karakter ke 500
-    let truncatedDescription = description.length > maxLength 
-        ? description.substring(0, maxLength) + "..." 
-        : description;
+    let truncatedPostid = postid.length > maxLength 
+        ? postid.substring(0, maxLength) + "..." 
+        : postid;
 
     // Ganti newline `\n` dengan `<br>` agar terbaca di modal
-    let formattedDescription = truncatedDescription.replace(/\n/g, "<br>");
+    let formattedPostid = truncatedPostid.replace(/\n/g, "<br>");
 
     // Set konten ke modal
-    document.getElementById('modalTitle').textContent = title;
-    document.getElementById('modalDescription').innerHTML = formattedDescription; // Pakai innerHTML
+    document.getElementById('modalCreator').textContent = creator;
+    document.getElementById('modalPostid').innerHTML = formattedPostid; // Pakai innerHTML
     document.getElementById('modalTimestamp').textContent = new Date(timestamp * 1000).toLocaleString();
     document.getElementById('historyModal').style.display = "block";
 }
