@@ -254,7 +254,7 @@ textarea {
         <span class="close" onclick="closeCommentsModal()">&times;</span>
         <h2>Komentar</h2>
         <div id="commentsSection"></div>
-        <textarea id="commentInput" placeholder="Tulis komentar..."></textarea>
+        <input type="text" id="commentInput" placeholder="Tulis komentar...">
         <button onclick="addComment()">Kirim</button>
     </div>
 </div>
@@ -859,7 +859,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Text Area
-const textarea = document.getElementById("commentInput");
+const input = document.getElementById("commentInput");
 textarea.addEventListener("input", function () {
     this.style.height = "auto"; 
     this.style.height = this.scrollHeight + "px";
