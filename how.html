@@ -577,7 +577,9 @@ searchContainer.innerHTML = `
     <input type="text" id="searchInput" placeholder="Cari sejarah...">
     <button id="searchButton" onclick="toggleSearch()">🔍 Cari</button>
 `;
-const historyHeading = document.querySelector("h2:nth-of-type(2)"); 
+
+// Tempatkan di atas Riwayat Sejarah
+const historyHeading = document.querySelector("h2:nth-of-type(2)");
 historyHeading.parentNode.insertBefore(searchContainer, historyHeading);
 
 function searchHistory() {
