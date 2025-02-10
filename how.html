@@ -228,10 +228,6 @@ textarea {
     <button id="lastPage" onclick="goToPage('last')">⏭️</button>
 </div>
 
-<button id="likeButton_${item.postId}" onclick="toggleLike('${item.postId}')">
-    👍 Like (<span id="likeCount_${item.postId}">0</span>)
-</button><br>
-
     <hr>
 
     
@@ -573,15 +569,9 @@ function displayPage(page) {
                 ${item.txHash.substring(0, 10)}...
             </a>
         </small><br>
-        <button onclick="openModal(
-            '${item.title}', 
-            '${item.description}',
-            '${item.postId}',
-            '${item.isConfirmed}',
-            '${item.creator}',
-            '${item.blockNumber}', 
-            '${item.txHash}'
-        )">🔍 Lihat</button><br>
+        <button id="likeButton_${item.postId}" onclick="toggleLike('${item.postId}')">
+    👍 Like (<span id="likeCount_${item.postId}">${item.likes}</span>)
+</button><br><br>
     `;
 
     list.appendChild(li);
@@ -727,21 +717,23 @@ document.getElementById("connectWallet").addEventListener("click", connectWallet
     </script>
 
     <script>
-    let likedPosts = {}; // Objek untuk menyimpan status like setiap post
+    let likedPosts = {}; // Menyimpan status like setiap post
 
-    function toggleLike(postId) {
-        if (!likedPosts[postId]) {
-            likedPosts[postId] = { liked: false, count: 0 }; // Nilai awal 0 like
-        }
-
-        likedPosts[postId].liked = !likedPosts[postId].liked;
-        likedPosts[postId].count += likedPosts[postId].liked ? 1 : -1;
-
-        document.getElementById(`likeCount_${postId}`).innerText = likedPosts[postId].count;
-        document.getElementById(`likeButton_${postId}`).innerHTML = likedPosts[postId].liked 
-            ? `👎 Unlike (${likedPosts[postId].count})` 
-            : `👍 Like (${likedPosts[postId].count})`;
+function toggleLike(postId) {
+    if (!likedPosts[postId]) {
+        likedPosts[postId] = { liked: false, count: 0 };
     }
+
+    // Toggle antara Like dan Dislike
+    likedPosts[postId].liked = !likedPosts[postId].liked;
+    likedPosts[postId].count += likedPosts[postId].liked ? 1 : -1;
+
+    // Update tampilan tombol dan jumlah like
+    document.getElementById(`likeCount_${postId}`).innerText = likedPosts[postId].count;
+    document.getElementById(`likeButton_${postId}`).innerHTML = likedPosts[postId].liked 
+        ? `👎 Dislike (${likedPosts[postId].count})` 
+        : `👍 Like (${likedPosts[postId].count})`;
+}
     </script>
 
 </body>
