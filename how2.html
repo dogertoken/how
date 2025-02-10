@@ -1029,7 +1029,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (currency === "ETH") {
                 // **🔹 Konversi ETH ke Wei menggunakan `toWei`**
-                let amountInWei = web3.utils.toWei(amount, "ether");
+                let amountInWei = web3.utils.toWei(amount.toString(), "ether");
 
                 let txParams = {
                     from: sender,
@@ -1050,11 +1050,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const tokenContract = new web3.eth.Contract(tokenABI, tokenAddresses[currency]);
 
-                // **🔹 Konversi jumlah ke unit terkecil**
-                let decimals = 18; // Default untuk ERC-20 (USDT/HIST bisa berbeda)
-                let amountInSmallestUnit = new web3.utils.BN(amount).mul(new web3.utils.BN(10).pow(new web3.utils.BN(decimals)));
+                // **🔹 Konversi jumlah ke unit terkecil dengan BigInt**
+                let decimals = 18; // Sesuaikan dengan token (USDT biasanya 6, HIST mungkin 18)
+                let amountInSmallestUnit = BigInt(amount) * BigInt(10 ** decimals);
 
-                console.log(`Mengirim ${amount} ${currency} (${amountInSmallestUnit.toString()} unit terkecil)`);
+                console.log(`Mengirim ${amount} ${currency} (${amountInSmallestUnit} unit terkecil)`);
 
                 // **🔹 Kirim token ERC-20**
                 await tokenContract.methods.transfer(recipientWallet, amountInSmallestUnit.toString()).send({ from: sender });
