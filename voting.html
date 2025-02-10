@@ -505,27 +505,10 @@ async function getBalance() {
 
 }
 
-document.getElementById("description").addEventListener("input", function () {
-    let text = this.value.replace(/\n/g, ""); // Hapus newline sebelumnya
-    let formattedText = "";
-    
-    for (let i = 0; i < text.length; i++) {
-        if (i > 0 && i % 30 === 0) {
-            formattedText += "\n"; // Tambahkan newline setiap 30 karakter
-        }
-        formattedText += text[i];
-    }
-
-    this.value = formattedText; // Set teks yang sudah diformat
-});
-
-// countdown date
-        
 async function addHistory() {
     const title = document.getElementById("title").value;
     const description = document.getElementById("description").value;
     const addHistoryBtn = document.getElementById("addHistoryBtn");
-    const countdownTimer = document.getElementById("countdownTimer");
 
     if (!title || !description) {
         alert("Judul dan Deskripsi harus diisi!");
@@ -537,31 +520,34 @@ async function addHistory() {
         await tx.wait();
         alert("Sejarah berhasil ditambahkan!");
 
-        // Ambil waktu reset ke UTC 00:00
+        // Tentukan kapan cooldown berakhir (00:00 UTC berikutnya)
         let now = new Date();
         let resetTime = new Date(now);
         resetTime.setUTCHours(0, 0, 0, 0); // Set ke 00:00 UTC
         if (now > resetTime) {
             resetTime.setUTCDate(resetTime.getUTCDate() + 1); // Tambah 1 hari jika sudah lewat
         }
-        
-        let timeLeft = Math.floor((resetTime - now) / 1000); // Sisa waktu dalam detik
-        localStorage.setItem("historyCooldown", timeLeft); // Simpan di lokal
 
-        startCountdown(timeLeft); // Mulai countdown
+        let resetTimestamp = resetTime.getTime(); // Simpan dalam timestamp absolut
+        localStorage.setItem("historyCooldownEnd", resetTimestamp);
+
+        startCountdown(resetTimestamp); // Mulai countdown
         
     } catch (error) {
         console.error("Gagal menambahkan sejarah:", error);
     }
 }
 
-function startCountdown(timeLeft) {
+function startCountdown(resetTimestamp) {
     const addHistoryBtn = document.getElementById("addHistoryBtn");
     const countdownTimer = document.getElementById("countdownTimer");
 
-    addHistoryBtn.disabled = true; // Nonaktifkan tombol
+    addHistoryBtn.disabled = true;
 
     function updateCountdown() {
+        let now = Date.now();
+        let timeLeft = Math.floor((resetTimestamp - now) / 1000); // Hitung ulang sisa waktu
+
         if (timeLeft <= 0) {
             addHistoryBtn.disabled = false;
             addHistoryBtn.innerHTML = "📝 Tambah Sejarah";
@@ -575,8 +561,7 @@ function startCountdown(timeLeft) {
 
         addHistoryBtn.innerHTML = `⏳ ${hours}h ${minutes}m ${seconds}s`;
         countdownTimer.innerHTML = `Tunggu hingga reset 00:00 UTC`;
-        
-        timeLeft--;
+
         setTimeout(updateCountdown, 1000);
     }
 
@@ -585,9 +570,14 @@ function startCountdown(timeLeft) {
 
 // Saat halaman dimuat, cek cooldown
 window.onload = function () {
-    let timeLeft = localStorage.getItem("historyCooldown");
-    if (timeLeft && timeLeft > 0) {
-        startCountdown(parseInt(timeLeft));
+    let resetTimestamp = localStorage.getItem("historyCooldownEnd");
+    if (resetTimestamp) {
+        let now = Date.now();
+        if (now < resetTimestamp) {
+            startCountdown(parseInt(resetTimestamp));
+        } else {
+            localStorage.removeItem("historyCooldownEnd"); // Hapus cooldown jika sudah selesai
+        }
     }
 };
         
