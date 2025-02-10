@@ -805,10 +805,10 @@ function renderComments() {
     let visibleComments = commentsData[currentPostId].slice(0, currentLimit);
 
     visibleComments.forEach(comment => {
-        let commentElement = document.createElement("p");
-        commentElement.innerHTML = `<b>${comment.id}</b>: ${comment.text}`;
-        commentsContainer.appendChild(commentElement);
-    });
+    let commentElement = document.createElement("p");
+    commentElement.innerHTML = `<span class="comment-user">${comment.id}</span>: <span class="comment-text">${comment.text}</span>`;
+    commentsContainer.appendChild(commentElement);
+});
 
     if (currentLimit < totalComments) {
         let loadMoreButton = document.createElement("button");
