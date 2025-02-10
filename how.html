@@ -858,13 +858,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Text Area
-const input = document.getElementById("commentInput");
-textarea.addEventListener("input", function () {
-    this.style.height = "auto"; 
-    this.style.height = this.scrollHeight + "px";
-});
-        
     // Like Ambil data like dari localStorage jika ada
 let likedPosts = JSON.parse(localStorage.getItem("likedPosts")) || {};
 
