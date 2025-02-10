@@ -260,7 +260,7 @@ textarea {
 </div>
 
         <!-- Modal Tip -->
-        <div id="tipModal" class="modal">
+<div id="tipModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeTipModal()">&times;</span>
         <h2>Beri Tip</h2>
@@ -277,7 +277,7 @@ textarea {
         <button onclick="sendTip()">Beri Tip</button>
         <button onclick="closeTipModal()">Batal</button>
     </div>
-        </div>
+</div>
         
     <script>
 
@@ -972,18 +972,28 @@ function closeTipModal() {
 const histTokenABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"title","type":"string"},{"indexed":false,"internalType":"string","name":"description","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"HistoryAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_title","type":"string"},{"internalType":"string","name":"_description","type":"string"}],"name":"addHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"value","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"confirmHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllHistories","outputs":[{"components":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"internalType":"struct Token.History[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"histories","outputs":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"rewardAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"withdrawEther","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
 const usdtTokenABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"title","type":"string"},{"indexed":false,"internalType":"string","name":"description","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"HistoryAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_title","type":"string"},{"internalType":"string","name":"_description","type":"string"}],"name":"addHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"value","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"confirmHistory","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getAllHistories","outputs":[{"components":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"internalType":"struct Token.History[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"histories","outputs":[{"internalType":"string","name":"title","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isConfirmed","type":"bool"},{"internalType":"address","name":"creator","type":"address"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"rewardAmount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"withdrawEther","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
 
-// Alamat kontrak token (Ganti sesuai jaringan)
+
+// Alamat kontrak token (Ganti dengan yang benar)
 const tokenAddresses = {
-    "USDT": "0x4be484c6Af5c6d28477B9f2d3ba3C11667A7512c",  // USDT
-    "HIST": "0x4be484c6Af5c6d28477B9f2d3ba3C11667A7512c"  // HIST
+    "USDT": "0x4be484c6Af5c6d28477B9f2d3ba3C11667A7512c",
+    "HIST": "0x4be484c6Af5c6d28477B9f2d3ba3C11667A7512c"
 };
 
+// ABI untuk masing-masing token
 const tokenABIs = {
     "USDT": usdtTokenABI,
     "HIST": histTokenABI
 };
 
 async function sendTip() {
+    console.log("Fungsi sendTip dipanggil");
+    
+    // Validasi MetaMask
+    if (typeof window.ethereum === "undefined") {
+        alert("MetaMask tidak terdeteksi. Silakan instal MetaMask.");
+        return;
+    }
+
     let currency = document.getElementById("tipCurrency").value;
     let amount = document.getElementById("tipAmount").value.trim();
 
@@ -992,53 +1002,55 @@ async function sendTip() {
         return;
     }
 
-    // Pastikan MetaMask tersedia
-    if (typeof window.ethereum === "undefined") {
-        alert("MetaMask tidak terdeteksi. Silakan instal MetaMask.");
-        return;
-    }
-
-    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-    const sender = accounts[0];
-
-    // Konversi jumlah tip ke satuan terkecil berdasarkan token yang dipilih
+    // Konversi jumlah tip ke satuan terkecil
     let amountInSmallestUnit;
     if (currency === "ETH") {
-        amountInSmallestUnit = web3.utils.toWei(amount, "ether"); // ETH (18 desimal)
+        amountInSmallestUnit = web3.utils.toWei(amount, "ether"); // ETH pakai Wei (18 desimal)
     } else {
-        amountInSmallestUnit = web3.utils.toBN(amount).mul(web3.utils.toBN(10).pow(web3.utils.toBN(18))); // ERC-20 (18 desimal)
+        amountInSmallestUnit = web3.utils.toBN(amount).mul(web3.utils.toBN(10).pow(web3.utils.toBN(18))); // USDT/HIST (18 desimal)
     }
 
-    console.log(`Kirim ${amount} ${currency} (${amountInSmallestUnit.toString()} dalam satuan terkecil)`);
+    console.log("Recipient Wallet:", recipientWallet);
+    console.log("Jumlah:", amount);
+    console.log("Jumlah dalam satuan kecil:", amountInSmallestUnit);
+    console.log("Mata Uang:", currency);
 
-    // Jika ETH, kirim langsung
-    if (currency === "ETH") {
-        let txParams = {
-            from: sender,
-            to: recipientWallet,
-            value: amountInSmallestUnit
-        };
+    try {
+        // Request akun dari MetaMask
+        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+        const sender = accounts[0];
 
-        try {
+        console.log("Akun Pengirim:", sender);
+
+        if (currency === "ETH") {
+            // Kirim ETH langsung
+            let txParams = {
+                from: sender,
+                to: recipientWallet,
+                value: amountInSmallestUnit
+            };
+
+            console.log("Mengirim ETH...");
             await ethereum.request({ method: "eth_sendTransaction", params: [txParams] });
             alert(`Tip ${amount} ETH berhasil dikirim!`);
-        } catch (error) {
-            alert(`Gagal mengirim tip: ${error.message}`);
-        }
-    } else {
-        // Jika USDT atau HIST, gunakan kontrak ERC-20
-        const tokenContract = new web3.eth.Contract(tokenABIs[currency], tokenAddresses[currency]);
+        } else {
+            // Kirim token ERC-20 (USDT / HIST)
+            console.log("Menggunakan kontrak token ERC-20...");
+            const tokenContract = new web3.eth.Contract(tokenABIs[currency], tokenAddresses[currency]);
 
-        try {
-            await tokenContract.methods.transfer(recipientWallet, amountInSmallestUnit).send({ from: sender });
+            console.log("Memproses transaksi...");
+            await tokenContract.methods.transfer(recipientWallet, amountInSmallestUnit.toString()).send({ from: sender });
+
             alert(`Tip ${amount} ${currency} berhasil dikirim!`);
-        } catch (error) {
-            alert(`Gagal mengirim tip: ${error.message}`);
         }
+    } catch (error) {
+        console.error("Gagal mengirim tip:", error);
+        alert(`Gagal mengirim tip: ${error.message}`);
     }
 
     closeTipModal();
 }
+        
     </script>
 
 </body>
