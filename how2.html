@@ -280,7 +280,47 @@ textarea {
         <button onclick="closeTipModal()">Batal</button>
     </div>
 </div>
-        
+
+        <!-- Tab Beranda -->
+<div id="homeTab" class="tab">
+    <h2>📌 Beranda</h2>
+    <ul id="homeFeed">
+        <p>Memuat postingan...</p>
+    </ul>
+</div>
+
+<!-- Tab Profil -->
+<div id="profileTab" class="tab">
+    <h2>👤 Profil Saya</h2>
+    <button onclick="openProfileModal(currentUserWallet)">Lihat Profil</button>
+</div>
+
+<!-- Modal Profil -->
+<div id="profileModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeProfileModal()">×</span>
+        <h2>Profil</h2>
+        <img id="profilePic" src="default.png" alt="Foto Profil" width="100">
+        <p><strong>Wallet:</strong> <span id="profileAddress"></span></p>
+        <p><strong>Nama:</strong> <span id="profileName"></span></p>
+        <p><strong>Bio:</strong> <span id="profileBio"></span></p>
+
+        <!-- Tombol Follow -->
+        <button id="followButton" onclick="toggleFollow()">Follow</button>
+
+        <h3>📝 Postingan</h3>
+        <ul id="friendPosts"></ul>
+
+        <!-- Edit Profil (Hanya untuk pemilik akun) -->
+        <div id="editProfileSection" style="display:none;">
+            <h3>✏️ Edit Profil</h3>
+            <input type="text" id="editName" placeholder="Nama baru"><br>
+            <input type="text" id="editBio" placeholder="Bio baru"><br>
+            <input type="text" id="editProfilePic" placeholder="URL Foto Profil"><br>
+            <button onclick="saveProfile()">Simpan</button>
+        </div>
+    </div>
+</div>
         
     <script>
 
@@ -604,6 +644,15 @@ function displayPage(page) {
         <b>${item.description}</b><br><br>
         <small class="scrollable-id">ID: ${item.postId ? (item.postId.length > 36 ? item.postId.substring(0, 18) + "..." + item.postId.substring(item.postId.length - 18) : item.postId) : "Tidak Ada"}</small><br>
         <small>Confirmed: ${item.isConfirmed}</small><br>
+        <small>Creator:  
+    <a href="#" class="wallet-link" onclick="openProfileModal('${item.creator}')">  
+        ${item.creator  
+            ? (item.creator.length > 40  
+                ? item.creator.substring(0, 18) + "...." + item.creator.substring(item.creator.length - 18)  
+                : item.creator)  
+            : "Tidak Ada"}  
+    </a>  
+</small><br>
         <small>Creator: ${item.creator ? (item.creator.length > 40 ? item.creator.substring(0, 18) + "...." + item.creator.substring(item.creator.length - 18) : item.creator) : "Tidak Ada"}</small><br>
         <small>Block: ${item.blockNumber}</small><br>
         <small>Tx Hash: 
@@ -1090,6 +1139,47 @@ console.log("Amount dalam Wei:", amountInWei);
         }
     };
 });
+    </script>
+
+    <script>
+        // Modal Profile
+        async function loadPosts() {
+    let posts = await getAllPosts(); // Ambil semua postingan
+    let list = document.getElementById("homeFeed");
+    list.innerHTML = ""; // Hapus daftar sebelumnya
+
+    posts.forEach(item => {
+        let li = document.createElement("li");
+        li.innerHTML = `
+            <b style="color: #FF8C00;">${item.title}</b> (${item.date})<br><br>
+            <b>${item.description}</b><br><br>
+            <small class="scrollable-id">ID: ${item.postId ? (item.postId.length > 36 ? item.postId.substring(0, 18) + "..." + item.postId.substring(item.postId.length - 18) : item.postId) : "Tidak Ada"}</small><br>
+            <small>Confirmed: ${item.isConfirmed}</small><br>
+            <small>Creator: 
+                <a href="#" class="wallet-link" onclick="openProfileModal('${item.creator}')">
+                    ${item.creator ? (item.creator.length > 40 ? item.creator.substring(0, 18) + "...." + item.creator.substring(item.creator.length - 18) : item.creator) : "Tidak Ada"}
+                </a>
+            </small><br>
+            <small>Block: ${item.blockNumber}</small><br>
+            <small>Tx Hash: 
+                <a href="https://sepolia.basescan.org/block/${item.blockNumber}" target="_blank">
+                    ${item.txHash.substring(0, 10)}...
+                </a>
+            </small><br>
+            <button class="small-button" id="likeButton_${item.postId}" onclick="toggleLike('${item.postId}')">
+                👍 Like (<span id="likeCount_${item.postId}">${likedPosts[item.postId]?.count || 0}</span>) 
+            </button>
+            <button class="small-button" onclick="openCommentsModal('${item.postId}')">
+                💬 Lihat Komentar (<span id="commentCount_${item.postId}">0</span>) 
+            </button><br><br>
+        `;
+
+        list.appendChild(li);
+    });
+}
+
+// Panggil fungsi untuk memuat postingan saat halaman dibuka
+loadPosts();
     </script>
 
 </body>
