@@ -240,6 +240,17 @@ textarea {
     <button onclick="closeModal()">Tutup</button>
 </div>
 
+    <!-- Modal untuk menampilkan komentar -->
+<div id="commentsModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeCommentsModal()">&times;</span>
+        <h2>Komentar</h2>
+        <div id="commentsSection"></div>
+        <input type="text" id="commentInput" placeholder="Tulis komentar...">
+        <button onclick="addComment()">Kirim</button>
+    </div>
+</div>
+
     <script>
 
 const CONTRACT_ADDRESS = "0x712BFc46a581f7276A6bD112BfDAd795f3Aa9ecc"; // Ganti dengan alamat kontrak
@@ -569,11 +580,9 @@ function displayPage(page) {
                 ${item.txHash.substring(0, 10)}...
             </a>
         </small><br>
-        <div id="post_${item.postId}">
-    <button onclick="openCommentsPage('${item.postId}')">
-        💬 Lihat Komentar (<span id="commentCount_${item.postId}">0</span>)
-    </button>
-</div><br>
+        <button onclick="openCommentsModal('${item.postId}')">
+    💬 Lihat Komentar (<span id="commentCount_${item.postId}">0</span>)
+</button><br>
         <button id="likeButton_${item.postId}" onclick="toggleLike('${item.postId}')">
     👍 Like (<span id="likeCount_${item.postId}">${likedPosts[item.postId]?.count || 0}</span>)
 </button><br><br>
@@ -724,22 +733,76 @@ document.getElementById("connectWallet").addEventListener("click", connectWallet
     <script>
     // Comment
     let commentsData = JSON.parse(localStorage.getItem("commentsData")) || {};
+const INITIAL_COMMENTS = 3;
+const COMMENTS_INCREMENT = 10;
+let currentPostId;
+let currentLimit = INITIAL_COMMENTS;
 
-// Fungsi membuka halaman komentar terpisah
-function openCommentsPage(postId) {
-    window.location.href = `comments.html?postId=${postId}`;
+function openCommentsModal(postId) {
+    currentPostId = postId;
+    currentLimit = INITIAL_COMMENTS; // Reset limit setiap buka modal
+    document.getElementById("commentsModal").style.display = "block";
+    renderComments();
 }
 
-// Fungsi memperbarui jumlah komentar di halaman utama
-function updateCommentCount(postId) {
-    let count = commentsData[postId] ? commentsData[postId].length : 0;
-    document.getElementById(`commentCount_${postId}`).innerText = count;
+function closeCommentsModal() {
+    document.getElementById("commentsModal").style.display = "none";
 }
 
-// Panggil fungsi ini saat halaman dimuat
+function renderComments() {
+    let commentsContainer = document.getElementById("commentsSection");
+    commentsContainer.innerHTML = "";
+
+    if (!commentsData[currentPostId] || commentsData[currentPostId].length === 0) {
+        commentsContainer.innerHTML = "<p>Belum ada komentar.</p>";
+        return;
+    }
+
+    let totalComments = commentsData[currentPostId].length;
+    let visibleComments = commentsData[currentPostId].slice(0, currentLimit);
+
+    visibleComments.forEach(comment => {
+        let commentElement = document.createElement("p");
+        commentElement.innerHTML = `<b>${comment.id}</b>: ${comment.text}`;
+        commentsContainer.appendChild(commentElement);
+    });
+
+    if (currentLimit < totalComments) {
+        let loadMoreButton = document.createElement("button");
+        loadMoreButton.innerText = "Lihat Lebih Banyak";
+        loadMoreButton.onclick = () => {
+            currentLimit += COMMENTS_INCREMENT;
+            renderComments();
+        };
+        commentsContainer.appendChild(loadMoreButton);
+    }
+}
+
+function addComment() {
+    let commentInput = document.getElementById("commentInput");
+    let commentText = commentInput.value.trim();
+    if (commentText === "") return;
+
+    if (!commentsData[currentPostId]) {
+        commentsData[currentPostId] = [];
+    }
+
+    commentsData[currentPostId].push({
+        id: "User_" + Math.random().toString(36).substr(2, 9), 
+        text: commentText
+    });
+
+    localStorage.setItem("commentsData", JSON.stringify(commentsData));
+    commentInput.value = "";
+    renderComments();
+}
+
+// Pastikan jumlah komentar diperbarui di halaman utama
 document.addEventListener("DOMContentLoaded", () => {
     Object.keys(commentsData).forEach(postId => {
-        updateCommentCount(postId);
+        let count = commentsData[postId] ? commentsData[postId].length : 0;
+        let countElement = document.getElementById(`commentCount_${postId}`);
+        if (countElement) countElement.innerText = count;
     });
 });
         
