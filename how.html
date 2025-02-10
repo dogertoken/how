@@ -837,6 +837,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+// commentCount
+function addComment(postId) {
+    let commentKey = `commentCount_${postId}`;
+    let currentCount = localStorage.getItem(commentKey) || 0;
+    currentCount = parseInt(currentCount) + 1;
+    localStorage.setItem(commentKey, currentCount);
+    
+    document.getElementById(commentKey).textContent = currentCount;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    let commentElements = document.querySelectorAll("[id^='commentCount_']");
+    
+    commentElements.forEach(element => {
+        let postId = element.id.replace("commentCount_", "");
+        let savedCount = localStorage.getItem(`commentCount_${postId}`);
+        element.textContent = savedCount ? savedCount : 0;
+    });
+});
         
     // Like Ambil data like dari localStorage jika ada
 let likedPosts = JSON.parse(localStorage.getItem("likedPosts")) || {};
