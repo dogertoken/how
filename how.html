@@ -571,6 +571,36 @@ window.onclick = function(event) {
     }
 };
         
+// Tambahkan input pencarian di bagian atas
+const searchContainer = document.createElement("div");
+searchContainer.innerHTML = `
+    <input type="text" id="searchInput" placeholder="Cari sejarah..." onkeyup="searchHistory()">
+    <button onclick="clearSearch()">❌ Bersihkan</button>
+`;
+document.querySelector(".container").insertBefore(searchContainer, document.querySelector(".history-container"));
+
+function searchHistory() {
+    const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+    const historyList = document.getElementById("historyList");
+    const items = historyList.getElementsByTagName("li");
+    
+    for (let i = 0; i < items.length; i++) {
+        const title = items[i].querySelector(".history-title").textContent.toLowerCase();
+        const description = items[i].querySelector(".history-description").textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+            items[i].style.display = "";
+        } else {
+            items[i].style.display = "none";
+        }
+    }
+}
+
+function clearSearch() {
+    document.getElementById("searchInput").value = "";
+    searchHistory();
+}
+     
 
 // **Diskonek Wallet**
 
