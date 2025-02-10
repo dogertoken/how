@@ -188,6 +188,17 @@ textarea {
 .comment-text {
     font-weight: bold; /* Komentar lebih tebal */
 }
+
+#commentInput {
+    width: 700px; /* Lebar penuh */
+    min-height: 40px; /* Tinggi awal */
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    resize: none; /* Hilangkan opsi resize manual */
+    overflow: hidden; /* Hilangkan scrollbar */
+}
     </style>
 
 </head>
@@ -254,6 +265,7 @@ textarea {
         <span class="close" onclick="closeCommentsModal()">&times;</span>
         <h2>Komentar</h2>
         <div id="commentsSection"></div>
+        <textarea id="commentInput" placeholder="Tulis komentar..."></textarea>
         <input type="text" id="commentInput" placeholder="Tulis komentar...">
         <button onclick="addComment()">Kirim</button>
     </div>
@@ -827,6 +839,13 @@ function updateCommentCount() {
         commentCountSpan.innerText = commentsData[currentPostId] ? commentsData[currentPostId].length : 0;
     }
 }
+
+//textarea
+const textarea = document.getElementById("commentInput");
+textarea.addEventListener("input", function () {
+    this.style.height = "auto"; 
+    this.style.height = this.scrollHeight + "px";
+});
 
 // Pastikan komentar tetap muncul setelah refresh
 document.addEventListener("DOMContentLoaded", () => {
