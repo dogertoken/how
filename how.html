@@ -181,21 +181,8 @@ textarea {
     word-wrap: break-word; /* Agar teks panjang tetap di dalam box */
 }
 
-#commentInput {
-    width: 100%; /* Lebar penuh */
-    min-height: 40px; /* Tinggi awal */
-    padding: 10px; /* Tambah ruang dalam */
-    margin-bottom: 10px; /* Beri jarak bawah */
-    border-radius: 5px; /* Sudut melengkung */
-    border: 1px solid #ccc; /* Tambahkan garis batas */
-    font-size: 16px; /* Perbesar teks */
-    resize: none; /* Hilangkan opsi resize manual */
-    overflow: hidden; /* Hilangkan scrollbar */
-}
-
 .comment-user {
     color: #00bfff; /* Warna biru untuk user ID */
-    font-weight: 500; /* Tidak tebal */
 }
 
 .comment-text {
@@ -840,12 +827,6 @@ function updateCommentCount() {
         commentCountSpan.innerText = commentsData[currentPostId] ? commentsData[currentPostId].length : 0;
     }
 }
-
-const textarea = document.getElementById("commentInput");
-textarea.addEventListener("input", function () {
-    this.style.height = "auto"; 
-    this.style.height = this.scrollHeight + "px";
-});
 
 // Pastikan komentar tetap muncul setelah refresh
 document.addEventListener("DOMContentLoaded", () => {
