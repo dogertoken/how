@@ -717,7 +717,8 @@ document.getElementById("connectWallet").addEventListener("click", connectWallet
     </script>
 
     <script>
-    let likedPosts = {}; // Menyimpan status like setiap post
+    // Ambil data like dari localStorage jika ada, jika tidak, gunakan objek kosong
+let likedPosts = JSON.parse(localStorage.getItem("likedPosts")) || {}; 
 
 function toggleLike(postId) {
     if (!likedPosts[postId]) {
@@ -728,12 +729,27 @@ function toggleLike(postId) {
     likedPosts[postId].liked = !likedPosts[postId].liked;
     likedPosts[postId].count += likedPosts[postId].liked ? 1 : -1;
 
+    // Simpan perubahan ke localStorage
+    localStorage.setItem("likedPosts", JSON.stringify(likedPosts));
+
     // Update tampilan tombol dan jumlah like
     document.getElementById(`likeCount_${postId}`).innerText = likedPosts[postId].count;
     document.getElementById(`likeButton_${postId}`).innerHTML = likedPosts[postId].liked 
         ? `👎 Dislike (${likedPosts[postId].count})` 
         : `👍 Like (${likedPosts[postId].count})`;
 }
+
+// Saat halaman dimuat, pastikan tampilan tombol sesuai dengan data dari localStorage
+document.addEventListener("DOMContentLoaded", () => {
+    Object.keys(likedPosts).forEach(postId => {
+        if (document.getElementById(`likeButton_${postId}`)) {
+            document.getElementById(`likeCount_${postId}`).innerText = likedPosts[postId].count;
+            document.getElementById(`likeButton_${postId}`).innerHTML = likedPosts[postId].liked 
+                ? `👎 Dislike (${likedPosts[postId].count})` 
+                : `👍 Like (${likedPosts[postId].count})`;
+        }
+    });
+});
     </script>
 
 </body>
