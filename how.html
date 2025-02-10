@@ -578,7 +578,7 @@ function displayPage(page) {
     let li = document.createElement("li");
 
     li.innerHTML = `
-        <b>${item.title}</b> (${formattedDate})<br><br>
+        <b style="color: #FF8C00;">${item.title}</b> (${formattedDate})<br><br>
         <b>${item.description}</b><br><br>
         <small class="scrollable-id">ID: ${item.postId ? (item.postId.length > 36 ? item.postId.substring(0, 18) + "..." + item.postId.substring(item.postId.length - 18) : item.postId) : "Tidak Ada"}</small><br>
         <small>Confirmed: ${item.isConfirmed}</small><br>
