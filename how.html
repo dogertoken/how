@@ -467,77 +467,6 @@ async function addHistory() {
     }
 }
 
-function startCountdown(resetTimestamp) {
-    const addHistoryBtn = document.getElementById("addHistoryBtn");
-    const countdownTimer = document.getElementById("countdownTimer");
-
-    addHistoryBtn.disabled = true;
-
-    function updateCountdown() {
-        let now = Date.now();
-        let timeLeft = Math.floor((resetTimestamp - now) / 1000);
-
-        if (timeLeft <= 0) {
-            addHistoryBtn.disabled = false;
-            addHistoryBtn.innerHTML = "📝 Tambah Sejarah";
-            countdownTimer.innerHTML = "";
-            return;
-        }
-
-        let hours = Math.floor(timeLeft / 3600);
-        let minutes = Math.floor((timeLeft % 3600) / 60);
-        let seconds = timeLeft % 60;
-
-        addHistoryBtn.innerHTML = `⏳ ${hours}h ${minutes}m ${seconds}s`;
-        countdownTimer.innerHTML = `Tunggu hingga reset 00:00 UTC`;
-
-        setTimeout(updateCountdown, 1000);
-    }
-
-    updateCountdown();
-}
-
-// Saat halaman dimuat atau wallet berubah
-async function checkCooldown() {
-    const accounts = await ethereum.request({ method: "eth_accounts" });
-    if (!accounts || accounts.length === 0) {
-        resetButton(); // Jika tidak ada wallet terhubung, reset tombol
-        return;
-    }
-    
-    const userWallet = accounts[0];
-    let resetTimestamp = localStorage.getItem(`historyCooldown_${userWallet}`);
-
-    if (resetTimestamp) {
-        let now = Date.now();
-        if (now < resetTimestamp) {
-            startCountdown(parseInt(resetTimestamp));
-        } else {
-            localStorage.removeItem(`historyCooldown_${userWallet}`);
-            resetButton();
-        }
-    } else {
-        resetButton();
-    }
-}
-
-function resetButton() {
-    const addHistoryBtn = document.getElementById("addHistoryBtn");
-    const countdownTimer = document.getElementById("countdownTimer");
-
-    addHistoryBtn.disabled = false;
-    addHistoryBtn.innerHTML = "📝 Tambah Sejarah";
-    countdownTimer.innerHTML = "";
-}
-
-// Pantau perubahan akun wallet
-if (window.ethereum) {
-    window.ethereum.on("accountsChanged", checkCooldown);
-}
-
-// Periksa cooldown saat halaman dimuat
-window.onload = checkCooldown;
-
 // **Mendapatkan riwayat sejarah dari kontrak**
 
 let currentPage = 1;
@@ -619,36 +548,6 @@ function goToPage(page) {
     }
     displayPage(currentPage);
 }
-
-// Fungsi untuk menampilkan modal
-function openModal(creator, postid, isconfirmed, blocknumber, txhash) {
-    let maxLength = 500; // Batasi total karakter ke 500
-    let truncatedPostid = postid.length > maxLength 
-        ? postid.substring(0, maxLength) + "..." 
-        : postid;
-
-    // Ganti newline `\n` dengan `<br>` agar terbaca di modal
-    let formattedPostid = truncatedPostid.replace(/\n/g, "<br>");
-
-    // Set konten ke modal
-    document.getElementById('modalCreator').textContent = creator;
-    document.getElementById('modalPostid').innerHTML = formattedPostid; // Pakai innerHTML
-    document.getElementById('modalTimestamp').textContent = new Date(timestamp * 1000).toLocaleString();
-    document.getElementById('historyModal').style.display = "block";
-}
-
-// Fungsi untuk menutup modal
-function closeModal() {
-    document.getElementById('historyModal').style.display = "none";
-}
-
-// Pastikan modal bisa ditutup dengan klik di luar modal
-window.onclick = function(event) {
-    let modal = document.getElementById('historyModal');
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-};
         
 // Tambahkan input pencarian dan tombol
 const searchContainer = document.createElement("div");
