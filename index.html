@@ -17,7 +17,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 
     <style>
-    /* General Styling */
+   /* General Styling */
 body {
     font-family: 'Anonymous Pro', monospace;
     text-align: center;
@@ -31,10 +31,11 @@ body {
 .container {
     background: #e0e5ec;
     padding: 20px;
-    border-radius: 12px;
+    border-radius: 15px;
     max-width: 900px;
     margin: auto;
-    box-shadow: 8px 8px 15px rgba(255, 255, 255, 0.8), -8px -8px 15px rgba(163, 177, 198, 0.6);
+    box-shadow: 10px 10px 20px rgba(163, 177, 198, 0.6),
+                -10px -10px 20px rgba(255, 255, 255, 1);
 }
 
 /* Buttons */
@@ -42,20 +43,21 @@ button {
     background: #e0e5ec;
     color: #333;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 20px;
     cursor: pointer;
     margin-top: 10px;
     border-radius: 12px;
-    box-shadow: 4px 4px 8px rgba(255, 255, 255, 0.8), -4px -4px 8px rgba(163, 177, 198, 0.6);
+    font-weight: bold;
+    box-shadow: 6px 6px 12px rgba(163, 177, 198, 0.6),
+                -6px -6px 12px rgba(255, 255, 255, 1);
     transition: all 0.3s ease-in-out;
 }
 
 button:hover {
-    background: #d1d9e6;
-    box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+    box-shadow: 8px 8px 16px rgba(163, 177, 198, 0.6),
+                -8px -8px 16px rgba(255, 255, 255, 1);
 }
 
-/* Disconnect Button */
 button.disconnect {
     background: #dc3545;
     color: white;
@@ -64,46 +66,30 @@ button.disconnect {
 /* Inputs and Textarea */
 input, textarea {
     width: 100%;
+    max-width: 500px;
     padding: 12px;
-    margin: 10px 0;
+    margin: 10px auto;
     border: none;
     border-radius: 12px;
     background: #e0e5ec;
-    box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 1);
+    box-shadow: inset 6px 6px 12px rgba(163, 177, 198, 0.6),
+                inset -6px -6px 12px rgba(255, 255, 255, 1);
     transition: all 0.3s ease;
+    text-align: left; /* Menjaga teks tetap rata kiri */
+}
+
+input::placeholder, textarea::placeholder {
+    color: #666;
+    text-align: left; /* Placeholder tetap rata kiri */
 }
 
 input:focus, textarea:focus {
-    box-shadow: inset 6px 6px 12px rgba(163, 177, 198, 0.6), inset -6px -6px 12px rgba(255, 255, 255, 0.7);
+    box-shadow: inset 8px 8px 16px rgba(163, 177, 198, 0.6),
+                inset -8px -8px 16px rgba(255, 255, 255, 1);
     outline: none;
 }
 
-/* Pagination */
-#pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    margin-top: 10px;
-}
-
-#pagination button {
-    padding: 5px 8px;
-    font-size: 14px;
-    min-width: 35px;
-    border: none;
-    border-radius: 5px;
-    background: #e0e5ec;
-    color: #333;
-    cursor: pointer;
-    box-shadow: 4px 4px 8px rgba(255, 255, 255, 0.8), -4px -4px 8px rgba(163, 177, 198, 0.6);
-}
-
-#pagination button:hover {
-    box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
-}
-
-/* Modal Styles */
+/* Modal */
 .modal {
     display: none;
     position: fixed;
@@ -122,7 +108,8 @@ input:focus, textarea:focus {
     max-width: 500px;
     margin: 100px auto;
     position: relative;
-    box-shadow: 8px 8px 15px rgba(255, 255, 255, 0.8), -8px -8px 15px rgba(163, 177, 198, 0.6);
+    box-shadow: 10px 10px 20px rgba(163, 177, 198, 0.6),
+                -10px -10px 20px rgba(255, 255, 255, 1);
 }
 
 /* Close Button */
