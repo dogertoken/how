@@ -254,14 +254,17 @@ textarea {
     <button onclick="closeModal()">Tutup</button>
 </div>
 
-    <!-- Modal untuk menampilkan komentar -->
-<div id="commentsModal" class="modal">
+    <div id="commentsModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeCommentsModal()">&times;</span>
         <h2>Komentar</h2>
-        <div id="commentsSection"></div>
-        <input type="text" id="commentInput" placeholder="Tulis komentar...">
-        <button onclick="addComment()">Kirim</button>
+        
+        <div id="commentsSection" class="comments-container"></div>
+        
+        <div class="comment-input-container">
+            <input type="text" id="commentInput" placeholder="Tulis komentar..." oninput="toggleCommentButton()">
+            <button id="sendCommentButton" onclick="addComment()" disabled>Kirim</button>
+        </div>
     </div>
 </div>
 
@@ -743,22 +746,22 @@ document.getElementById("connectWallet").addEventListener("click", connectWallet
     </script>
 
     <script>
-    // Comment
-    let commentsData = JSON.parse(localStorage.getItem("commentsData")) || {};
+    document.addEventListener("DOMContentLoaded", () => {
+    initializeComments();
+    initializeLikes();
+});
+
+// ===================== COMMENTS ===================== //
+let commentsData = JSON.parse(localStorage.getItem("commentsData")) || {};
 const INITIAL_COMMENTS = 3;
 const COMMENTS_INCREMENT = 10;
 let currentPostId = "";
 let currentLimit = INITIAL_COMMENTS;
 
-// Fungsi mendapatkan wallet ID
 function getWalletId() {
-    if (window.ethereum && window.ethereum.selectedAddress) {
-        return window.ethereum.selectedAddress; // Gunakan alamat wallet pengguna
-    }
-    return "Wallet_Tidak_Ditemukan";
+    return window.ethereum?.selectedAddress || "Wallet_Tidak_Ditemukan";
 }
 
-// Fungsi membuka modal dan menampilkan komentar
 function openCommentsModal(postId) {
     currentPostId = postId;
     currentLimit = INITIAL_COMMENTS;
@@ -766,101 +769,61 @@ function openCommentsModal(postId) {
     document.getElementById("commentsModal").style.display = "block";
 }
 
-// Fungsi menutup modal komentar
 function closeCommentsModal() {
     document.getElementById("commentsModal").style.display = "none";
 }
 
-// Fungsi menambahkan komentar
 function addComment() {
     let commentInput = document.getElementById("commentInput");
     let commentText = commentInput.value.trim();
     let userId = getWalletId();
 
-    if (commentText === "" || userId === "Wallet_Tidak_Ditemukan") return;
+    if (!commentText || userId === "Wallet_Tidak_Ditemukan") return;
 
-    if (!commentsData[currentPostId]) {
-        commentsData[currentPostId] = [];
-    }
-
-    commentsData[currentPostId].push({
-        id: userId,
-        text: commentText,
-        timestamp: new Date().toLocaleString() // Simpan waktu lokal
-    });
-
+    commentsData[currentPostId] = commentsData[currentPostId] || [];
+    commentsData[currentPostId].push({ id: userId, text: commentText, timestamp: new Date().toLocaleString() });
+    
     localStorage.setItem("commentsData", JSON.stringify(commentsData));
     commentInput.value = "";
     renderComments();
     updateCommentCount();
 }
 
-// Fungsi menampilkan komentar
 function renderComments() {
     let commentsContainer = document.getElementById("commentsSection");
-    commentsContainer.innerHTML = "";
-
-    if (!commentsData[currentPostId] || commentsData[currentPostId].length === 0) {
-        commentsContainer.innerHTML = "<p>Belum ada komentar.</p>";
-        return;
-    }
-
-    let totalComments = commentsData[currentPostId].length;
-    let visibleComments = commentsData[currentPostId].slice(0, currentLimit);
+    commentsContainer.innerHTML = commentsData[currentPostId]?.length ? "" : "<p>Belum ada komentar.</p>";
     let userId = getWalletId();
-
+    let visibleComments = commentsData[currentPostId]?.slice(0, currentLimit) || [];
     
     visibleComments.forEach((comment, index) => {
         let commentElement = document.createElement("div");
-        commentElement.innerHTML = `
-            <p>
-                <span class="comment-user">${comment.id}</span><br>
-                <small>${comment.timestamp}</small><br>
-                <span class="comment-text">${comment.text}</span>
-            </p>
-        `;
-        
-        // Jika user adalah pemilik komentar, tampilkan tombol Edit & Hapus
+        commentElement.innerHTML = `<p><span class="comment-user">${comment.id}</span><br><small>${comment.timestamp}</small><br><span class="comment-text">${comment.text}</span></p>`;
+
         if (comment.id === userId) {
-            let editButton = document.createElement("button");
-            editButton.innerText = "Edit";
-            editButton.style = "font-size: 0.9em; padding: 3px 6px;";
-            editButton.onclick = () => editComment(index);
-
-            let deleteButton = document.createElement("button");
-            deleteButton.innerText = "Hapus";
-            deleteButton.style = "font-size: 0.9em; padding: 3px 6px; margin-left: 6px;";
-            deleteButton.onclick = () => deleteComment(index);
-
-            commentElement.appendChild(editButton);
-            commentElement.appendChild(deleteButton);
+            commentElement.appendChild(createButton("Edit", () => editComment(index)));
+            commentElement.appendChild(createButton("Hapus", () => deleteComment(index)));
         }
-
+        
         commentsContainer.appendChild(commentElement);
     });
-
-    if (currentLimit < totalComments) {
-        let loadMoreButton = document.createElement("button");
-        loadMoreButton.innerText = "Lihat Lebih Banyak";
-        loadMoreButton.onclick = () => {
+    
+    if (currentLimit < commentsData[currentPostId]?.length) {
+        commentsContainer.appendChild(createButton("Lihat Lebih Banyak", () => {
             currentLimit += COMMENTS_INCREMENT;
             renderComments();
-        };
-        commentsContainer.appendChild(loadMoreButton);
+        }));
     }
 }
 
-// Fungsi edit komentar
 function editComment(index) {
     let newText = prompt("Edit komentar:", commentsData[currentPostId][index].text);
-    if (newText !== null && newText.trim() !== "") {
+    if (newText?.trim()) {
         commentsData[currentPostId][index].text = newText;
         localStorage.setItem("commentsData", JSON.stringify(commentsData));
         renderComments();
     }
 }
 
-// Fungsi hapus komentar
 function deleteComment(index) {
     if (confirm("Apakah Anda yakin ingin menghapus komentar ini?")) {
         commentsData[currentPostId].splice(index, 1);
@@ -870,46 +833,23 @@ function deleteComment(index) {
     }
 }
 
-// Fungsi memperbarui jumlah komentar di tombol
 function updateCommentCount() {
-    let commentCountSpan = document.getElementById(`commentCount_${currentPostId}`);
-    if (commentCountSpan) {
-        commentCountSpan.innerText = commentsData[currentPostId] ? commentsData[currentPostId].length : 0;
-    }
+    document.getElementById(`commentCount_${currentPostId}`).innerText = commentsData[currentPostId]?.length || 0;
 }
 
-// Pastikan komentar tetap muncul setelah refresh
-document.addEventListener("DOMContentLoaded", () => {
-    Object.keys(commentsData).forEach(postId => {
-        let commentCountSpan = document.getElementById(`commentCount_${postId}`);
-        if (commentCountSpan) {
-            commentCountSpan.innerText = commentsData[postId].length || 0;
-        }
-    });
-});
+function initializeComments() {
+    Object.keys(commentsData).forEach(postId => updateCommentCount(postId));
+}
 
-    // Like Ambil data like dari localStorage jika ada
+// ===================== LIKES ===================== //
 let likedPosts = JSON.parse(localStorage.getItem("likedPosts")) || {};
 
 function toggleLike(postId) {
-    // Jika belum ada di localStorage, inisialisasi
-    if (!likedPosts[postId]) {
-        likedPosts[postId] = { liked: false, count: 0 };
-    }
-
-    // Toggle antara Like dan Dislike
-    if (likedPosts[postId].liked) {
-        likedPosts[postId].liked = false;
-        likedPosts[postId].count -= 1;
-    } else {
-        likedPosts[postId].liked = true;
-        likedPosts[postId].count += 1;
-    }
-
-    // Simpan ke localStorage
+    likedPosts[postId] = likedPosts[postId] || { liked: false, count: 0 };
+    likedPosts[postId].liked = !likedPosts[postId].liked;
+    likedPosts[postId].count += likedPosts[postId].liked ? 1 : -1;
+    
     localStorage.setItem("likedPosts", JSON.stringify(likedPosts));
-
-    // Update tampilan tombol dan jumlah like
     updateLikeButton(postId);
 }
 
@@ -925,13 +865,24 @@ function updateLikeButton(postId) {
     }
 }
 
-// Saat halaman dimuat, pastikan tampilan tombol sesuai dengan data dari localStorage
-document.addEventListener("DOMContentLoaded", () => {
-    Object.keys(likedPosts).forEach(postId => {
-        updateLikeButton(postId);
-    });
-});
-    </script>
+function initializeLikes() {
+    Object.keys(likedPosts).forEach(postId => updateLikeButton(postId));
+}
+
+// ===================== UTILITIES ===================== //
+function createButton(text, onClick) {
+    let button = document.createElement("button");
+    button.innerText = text;
+    button.style = "font-size: 0.9em; padding: 3px 6px; margin: 4px;";
+    button.onclick = onClick;
+    return button;
+}   
+    function toggleCommentButton() {
+        let commentInput = document.getElementById("commentInput");
+        let sendButton = document.getElementById("sendCommentButton");
+        sendButton.disabled = commentInput.value.trim() === "";
+    }
+</script>
 
 </body>
 
