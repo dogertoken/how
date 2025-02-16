@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Fair Lottery</title>
+    <link rel="stylesheet" href="stylescss">
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background: #007bff;
+    color: white;
+    border-radius: 5px;
+}
+
+.tab-button.active {
+    background: #0056b3;
+}
+
+.lottery-panel {
+    display: none;
+}
+
+.lottery-panel.active {
+    display: block;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 15px;
+    border: none;
+    background: #28a745;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #218838;
+}
+
+#status {
+    margin-top: 20px;
+    font-weight: bold;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Blockchain Fair Lottery</h1>
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('daily')">Lotre Harian</button>
+            <button class="tab-button" onclick="switchTab('weekly')">Lotre Mingguan</button>
+            <button class="tab-button" onclick="switchTab('monthly')">Lotre Bulanan</button>
+        </div>
+
+        <div id="daily" class="lottery-panel active">
+            <h2>Lotre Harian</h2>
+            <p>Harga Tiket: 1.5 USDT</p>
+            <button onclick="buyTicket('daily')">Beli Tiket</button>
+            <button onclick="revealNumber('daily')">Ungkap Nomor</button>
+        </div>
+
+        <div id="weekly" class="lottery-panel">
+            <h2>Lotre Mingguan</h2>
+            <p>Harga Tiket: 5 USDT</p>
+            <button onclick="buyTicket('weekly')">Beli Tiket</button>
+            <button onclick="revealNumber('weekly')">Ungkap Nomor</button>
+        </div>
+
+        <div id="monthly" class="lottery-panel">
+            <h2>Lotre Bulanan</h2>
+            <p>Harga Tiket: 10 USDT</p>
+            <button onclick="buyTicket('monthly')">Beli Tiket</button>
+            <button onclick="revealNumber('monthly')">Ungkap Nomor</button>
+        </div>
+
+        <p id="status"></p>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
