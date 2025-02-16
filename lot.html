@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
     <script>
-        const contractAddress = "0xYourContractAddress";
-const usdtAddress = "0xYourUSDTAddress";
+        const contractAddress = "0xYourContractAddress"; // Ganti dengan alamat kontrak yang benar
+const usdtAddress = "0xYourUSDTAddress"; // Ganti dengan alamat kontrak USDT yang benar
 
 const abi = [ /* ABI Kontrak Fair Lottery */ ];
 const usdtAbi = [ /* ABI Kontrak USDT */ ];
@@ -16,7 +16,8 @@ const usdtAbi = [ /* ABI Kontrak USDT */ ];
 let web3, account, lotteryContract, usdtContract;
 
 window.addEventListener("load", async () => {
-    if (window.ethereum) {
+    if (typeof window.ethereum !== "undefined") {
+        console.log("MetaMask Detected!");
         web3 = new Web3(window.ethereum);
         lotteryContract = new web3.eth.Contract(abi, contractAddress);
         usdtContract = new web3.eth.Contract(usdtAbi, usdtAddress);
@@ -36,14 +37,21 @@ window.addEventListener("load", async () => {
 
 async function connectWallet() {
     try {
-        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        web3 = new Web3(window.ethereum); // Inisialisasi ulang Web3 setelah koneksi
+        const accounts = await web3.eth.getAccounts();
         account = accounts[0];
+
         document.getElementById("wallet-address").innerText = "Wallet: " + account;
         document.getElementById("connect-wallet").style.display = "none";
         document.getElementById("disconnect-wallet").style.display = "block";
+
+        console.log("Connected to:", account);
+        await checkNetwork();
         updateBalance();
     } catch (error) {
         console.error("Wallet connection failed", error);
+        alert("Gagal menghubungkan ke wallet. Coba lagi.");
     }
 }
 
@@ -53,6 +61,16 @@ function disconnectWallet() {
     document.getElementById("usdt-balance").innerText = "USDT Balance: 0";
     document.getElementById("connect-wallet").style.display = "block";
     document.getElementById("disconnect-wallet").style.display = "none";
+}
+
+// Cek apakah pengguna ada di jaringan Ethereum yang benar
+async function checkNetwork() {
+    const chainId = await web3.eth.getChainId();
+    console.log("Current Chain ID:", chainId);
+
+    if (chainId !== 1) { // 1 = Ethereum Mainnet
+        alert("Harap gunakan Ethereum Mainnet di MetaMask!");
+    }
 }
 
 async function updateBalance() {
@@ -70,23 +88,57 @@ function updateTotalCost() {
 }
 
 async function buyTicket() {
+    if (!account) {
+        alert("Silakan hubungkan wallet terlebih dahulu.");
+        return;
+    }
+
     const lotteryType = document.getElementById("lottery-type").value;
     const ticketAmount = document.getElementById("ticket-amount").value;
     const ticketPrices = [1.5, 5, 10];
     const totalCost = web3.utils.toWei((ticketAmount * ticketPrices[lotteryType]).toString(), "mwei");
 
-    await usdtContract.methods.approve(contractAddress, totalCost).send({ from: account });
-    await lotteryContract.methods.buyTicket(lotteryType, web3.utils.keccak256("randomSalt")).send({ from: account });
+    try {
+        await usdtContract.methods.approve(contractAddress, totalCost).send({ from: account });
+        await lotteryContract.methods.buyTicket(lotteryType, web3.utils.keccak256("randomSalt")).send({ from: account });
 
-    alert("Ticket purchased!");
-    updateBalance();
+        alert("Ticket purchased!");
+        updateBalance();
+    } catch (error) {
+        console.error("Gagal membeli tiket", error);
+        alert("Transaksi gagal.");
+    }
 }
 
 async function checkWinner() {
-    const lotteryType = document.getElementById("lottery-type").value;
-    const winner = await lotteryContract.methods.checkWinner(lotteryType).call();
-    document.getElementById("winner-info").innerText = "Winner: " + winner;
+    if (!account) {
+        alert("Silakan hubungkan wallet terlebih dahulu.");
+        return;
+    }
+
+    try {
+        const lotteryType = document.getElementById("lottery-type").value;
+        const winner = await lotteryContract.methods.checkWinner(lotteryType).call();
+        document.getElementById("winner-info").innerText = "Winner: " + winner;
+    } catch (error) {
+        console.error("Gagal mengecek pemenang", error);
+        alert("Gagal mengecek pemenang.");
+    }
 }
+
+// Deteksi perubahan akun atau jaringan
+window.ethereum.on("accountsChanged", (accounts) => {
+    if (accounts.length === 0) {
+        disconnectWallet();
+    } else {
+        account = accounts[0];
+        document.getElementById("wallet-address").innerText = "Wallet: " + account;
+    }
+});
+
+window.ethereum.on("chainChanged", () => {
+    window.location.reload();
+});
     </script>
 
     <style>
