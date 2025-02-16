@@ -19,8 +19,12 @@
     margin: auto;
     background: white;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.wallet-info {
+    margin-bottom: 20px;
 }
 
 .tabs {
@@ -38,10 +42,6 @@
     border-radius: 5px;
 }
 
-.tab-button.active {
-    background: #0056b3;
-}
-
 .lottery-panel {
     display: none;
 }
@@ -53,138 +53,156 @@
 button {
     margin: 10px;
     padding: 10px 15px;
-    border: none;
     background: #28a745;
     color: white;
     border-radius: 5px;
     cursor: pointer;
 }
 
-button:hover {
-    background: #218838;
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
 }
 
-#status {
-    margin-top: 20px;
-    font-weight: bold;
+.modal-content {
+    background: white;
+    padding: 20px;
+    margin: 15% auto;
+    width: 50%;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.close {
+    float: right;
+    cursor: pointer;
 }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Blockchain Fair Lottery</h1>
+
+        <!-- Wallet Info -->
+        <div class="wallet-info">
+            <button onclick="connectWallet()">🔗 Connect Wallet</button>
+            <p>Wallet: <span id="walletAddress">Not connected</span></p>
+            <p>Saldo USDT: <span id="usdtBalance">0</span> USDT</p>
+        </div>
+
+        <!-- Tabs -->
         <div class="tabs">
             <button class="tab-button active" onclick="switchTab('daily')">Lotre Harian</button>
             <button class="tab-button" onclick="switchTab('weekly')">Lotre Mingguan</button>
             <button class="tab-button" onclick="switchTab('monthly')">Lotre Bulanan</button>
         </div>
 
+        <!-- Lottery Panels -->
         <div id="daily" class="lottery-panel active">
             <h2>Lotre Harian</h2>
             <p>Harga Tiket: 1.5 USDT</p>
-            <button onclick="buyTicket('daily')">Beli Tiket</button>
-            <button onclick="revealNumber('daily')">Ungkap Nomor</button>
+            <p>Tiket Dibeli: <span id="dailyTickets">0</span></p>
+            <button onclick="openBuyModal('daily', 1.5)">Beli Tiket</button>
         </div>
 
         <div id="weekly" class="lottery-panel">
             <h2>Lotre Mingguan</h2>
             <p>Harga Tiket: 5 USDT</p>
-            <button onclick="buyTicket('weekly')">Beli Tiket</button>
-            <button onclick="revealNumber('weekly')">Ungkap Nomor</button>
+            <p>Tiket Dibeli: <span id="weeklyTickets">0</span></p>
+            <button onclick="openBuyModal('weekly', 5)">Beli Tiket</button>
         </div>
 
         <div id="monthly" class="lottery-panel">
             <h2>Lotre Bulanan</h2>
             <p>Harga Tiket: 10 USDT</p>
-            <button onclick="buyTicket('monthly')">Beli Tiket</button>
-            <button onclick="revealNumber('monthly')">Ungkap Nomor</button>
+            <p>Tiket Dibeli: <span id="monthlyTickets">0</span></p>
+            <button onclick="openBuyModal('monthly', 10)">Beli Tiket</button>
         </div>
 
-        <p id="status"></p>
+        <!-- Status Pemenang -->
+        <div class="winner-status">
+            <h2>Hasil Undian</h2>
+            <p>Juara 1: <span id="winner1">-</span> (50%)</p>
+            <p>Juara 2: <span id="winner2">-</span> (20%)</p>
+            <p>Juara 3: <span id="winner3">-</span> (10%)</p>
+            <p>Pemenang Lain: <span id="winnerOthers">-</span></p>
+        </div>
     </div>
-    
-    <script src="scriptjs"></script>
-    <script>
-        const contractAddress = "0xYourSmartContractAddress"; // Ganti dengan alamat kontrak
-const usdtAddress = "0xYourUSDTTokenAddress"; // Ganti dengan alamat USDT ERC-20
-const abi = [ /* Masukkan ABI kontrak di sini */ ];
 
-let web3;
-let contract;
+    <!-- Modal Pembelian Tiket -->
+    <div id="buyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeBuyModal()">&times;</span>
+            <h2>Beli Tiket</h2>
+            <p>Jenis Lotre: <span id="lotteryType"></span></p>
+            <label>Jumlah Tiket:</label>
+            <input type="number" id="ticketAmount" min="1" max="100" value="1" oninput="updateTotal()">
+            <p>Total Harga: <span id="totalPrice">0</span> USDT</p>
+            <button onclick="buyTicket()">Beli</button>
+        </div>
+    </div>
+
+    <script src="scriptjs"></script>
+
+    <script>
+        let web3;
 let account;
 
-// Fungsi untuk mengganti tab
-function switchTab(tabName) {
-    document.querySelectorAll('.lottery-panel').forEach(panel => {
-        panel.classList.remove('active');
-    });
-    document.querySelector(`#${tabName}`).classList.add('active');
-
-    document.querySelectorAll('.tab-button').forEach(button => {
-        button.classList.remove('active');
-    });
-    document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
-}
-
-// Inisialisasi Web3
-async function initWeb3() {
+// Fungsi Connect Wallet
+async function connectWallet() {
     if (window.ethereum) {
         web3 = new Web3(window.ethereum);
         await window.ethereum.request({ method: "eth_requestAccounts" });
         const accounts = await web3.eth.getAccounts();
         account = accounts[0];
-        contract = new web3.eth.Contract(abi, contractAddress);
-        document.getElementById("status").innerText = `Terhubung: ${account}`;
+        document.getElementById("walletAddress").innerText = account;
     } else {
-        alert("MetaMask tidak ditemukan. Harap install terlebih dahulu.");
+        alert("MetaMask tidak ditemukan. Harap install.");
     }
 }
 
-// Fungsi untuk membeli tiket
-async function buyTicket(lotteryType) {
-    if (!account) await initWeb3();
+// Fungsi mengganti tab
+function switchTab(tabName) {
+    document.querySelectorAll('.lottery-panel').forEach(panel => panel.classList.remove('active'));
+    document.querySelector(`#${tabName}`).classList.add('active');
 
-    let price;
-    if (lotteryType === "daily") price = web3.utils.toWei("1.5", "ether");
-    if (lotteryType === "weekly") price = web3.utils.toWei("5", "ether");
-    if (lotteryType === "monthly") price = web3.utils.toWei("10", "ether");
-
-    const usdtContract = new web3.eth.Contract([
-        { "constant": false, "inputs": [{ "name": "spender", "type": "address" }, { "name": "value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "", "type": "bool" }], "type": "function" }
-    ], usdtAddress);
-
-    // Setujui transfer USDT ke kontrak
-    await usdtContract.methods.approve(contractAddress, price).send({ from: account });
-
-    // Komit nomor lotre dengan hash random
-    const randomNumber = Math.floor(Math.random() * 1000000);
-    const salt = web3.utils.randomHex(32);
-    const commitment = web3.utils.soliditySha3(salt, randomNumber);
-
-    await contract.methods.buyTicket(lotteryType, commitment).send({ from: account });
-
-    document.getElementById("status").innerText = "Tiket berhasil dibeli!";
+    document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+    document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
 }
 
-// Fungsi untuk mengungkap nomor lotre
-async function revealNumber(lotteryType) {
-    if (!account) await initWeb3();
-
-    const randomNumber = prompt("Masukkan nomor lotre yang Anda ingat:");
-    const salt = prompt("Masukkan salt yang digunakan:");
-
-    if (!randomNumber || !salt) {
-        alert("Anda harus mengisi nomor dan salt!");
-        return;
-    }
-
-    await contract.methods.revealNumber(lotteryType, randomNumber, salt).send({ from: account });
-
-    document.getElementById("status").innerText = "Nomor berhasil diungkap!";
+// Fungsi membuka modal pembelian
+function openBuyModal(type, price) {
+    document.getElementById("buyModal").style.display = "block";
+    document.getElementById("lotteryType").innerText = type;
+    document.getElementById("ticketAmount").value = 1;
+    document.getElementById("totalPrice").innerText = price;
 }
 
-// Inisialisasi saat halaman dimuat
-window.onload = initWeb3;
+// Fungsi menutup modal
+function closeBuyModal() {
+    document.getElementById("buyModal").style.display = "none";
+}
+
+// Fungsi update total harga tiket
+function updateTotal() {
+    let amount = document.getElementById("ticketAmount").value;
+    let pricePerTicket = document.getElementById("lotteryType").innerText === "daily" ? 1.5 : 
+                         document.getElementById("lotteryType").innerText === "weekly" ? 5 : 10;
+    document.getElementById("totalPrice").innerText = amount * pricePerTicket;
+}
+
+// Fungsi membeli tiket
+async function buyTicket() {
+    alert("Pembelian tiket dalam pengembangan!");
+    closeBuyModal();
+}
+
+window.onload = connectWallet;
     </script>
 </body>
 </html>
