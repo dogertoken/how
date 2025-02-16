@@ -144,89 +144,99 @@ window.ethereum.on("chainChanged", () => {
     <style>
         /* General Styles */
 body {
-    font-family: "Poppins", sans-serif;
-    background: linear-gradient(135deg, #1e1e2f, #2a2a3b);
-    color: white;
+    font-family: 'Poppins', sans-serif;
     text-align: center;
-    padding: 20px;
-}
-
-/* Container */
-.container {
-    max-width: 950px;
-    margin: auto;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-}
-
-/* 3D Buttons */
-button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 15px;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px;
-    font-weight: bold;
+    background: linear-gradient(to right, #1e3c72, #2a5298);
     color: white;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container Styling */
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.container:hover {
+    transform: translateY(-5px);
+}
+
+/* Buttons */
+button {
+    background: linear-gradient(to right, #ff512f, #dd2476);
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px 20px;
+    margin: 10px 0;
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    box-shadow: 0px 5px 10px rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    box-shadow: 0px 5px 15px rgba(255, 81, 47, 0.5);
 }
 
 button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0px 8px 20px rgba(255, 255, 255, 0.4);
+    background: linear-gradient(to right, #dd2476, #ff512f);
+    transform: scale(1.05);
 }
 
-/* Primary Button */
-button.primary {
-    background: linear-gradient(135deg, #007bff, #0056b3);
+button:active {
+    transform: scale(0.95);
 }
 
-/* Secondary Button */
-button.secondary {
-    background: linear-gradient(135deg, #ffbb00, #ff8800);
-}
-
-/* Input & Select */
-select, input {
-    width: 100%;
+/* Inputs & Select */
+input, select {
+    width: 90%;
     padding: 12px;
-    margin-top: 10px;
-    border-radius: 8px;
+    margin: 10px 0;
+    border-radius: 10px;
     border: none;
-    background: rgba(255, 255, 255, 0.1);
+    outline: none;
+    background: rgba(255, 255, 255, 0.2);
     color: white;
     font-size: 16px;
-    transition: all 0.3s;
+    text-align: center;
+    box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.1), inset -2px -2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Glow Effect on Focus */
-select:focus, input:focus {
-    outline: none;
-    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
+input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
 }
 
-/* Total Cost */
-#total-cost {
-    margin-top: 15px;
+/* Lottery Selection */
+#lottery-selection, #ticket-purchase, #commit-reveal, #lottery-status {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Typography */
+h1 {
+    font-size: 30px;
     font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+    font-size: 22px;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* Wallet Info */
+#wallet-info p {
     font-size: 18px;
-}
-
-/* Winner Info */
-#winner-info {
-    margin-top: 20px;
-    font-size: 16px;
     font-weight: bold;
-    background: rgba(0, 255, 0, 0.2);
-    padding: 10px;
-    border-radius: 8px;
-    display: none;
 }
     </style>
 </head>
