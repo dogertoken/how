@@ -1,11 +1,128 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fair Lottery</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+    <link rel="stylesheet" href="stylescss">
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script>
+        const contractAddress = "0xYourContractAddress";  
+const usdtAddress = "0xYourUSDTAddress";  
+
+const abi = [ /* ABI dari kontrak FairLottery */ ];  
+const usdtAbi = [ /* ABI dari kontrak USDT */ ];  
+
+let web3, account, lotteryContract, usdtContract;
+
+window.addEventListener("load", async () => {
+    if (window.ethereum) {
+        web3 = new Web3(window.ethereum);
+        lotteryContract = new web3.eth.Contract(abi, contractAddress);
+        usdtContract = new web3.eth.Contract(usdtAbi, usdtAddress);
+        
+        document.getElementById("connect-wallet").addEventListener("click", connectWallet);
+        document.getElementById("lottery-type").addEventListener("change", updateTotalCost);
+        document.getElementById("ticket-amount").addEventListener("input", updateTotalCost);
+        document.getElementById("buy-ticket").addEventListener("click", buyTicket);
+        document.getElementById("commit-number").addEventListener("click", commitNumber);
+        document.getElementById("reveal-number").addEventListener("click", revealNumber);
+        document.getElementById("check-winner").addEventListener("click", checkWinner);
+    } else {
+        alert("Please install MetaMask!");
+    }
+});
+
+async function connectWallet() {
+    try {
+        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+        account = accounts[0];
+        document.getElementById("wallet-address").innerText = "Wallet: " + account;
+        updateBalance();
+    } catch (error) {
+        console.error("Wallet connection failed", error);
+    }
+}
+
+async function updateBalance() {
+    if (!account) return;
+    const balance = await usdtContract.methods.balanceOf(account).call();
+    document.getElementById("usdt-balance").innerText = "USDT Balance: " + web3.utils.fromWei(balance, "mwei");
+}
+
+function updateTotalCost() {
+    const lotteryType = document.getElementById("lottery-type").value;
+    const ticketAmount = document.getElementById("ticket-amount").value;
+    const ticketPrices = [1.5, 5, 10];  
+    const totalCost = ticketAmount * ticketPrices[lotteryType];
+    document.getElementById("total-cost").innerText = `Total Cost: $${totalCost}`;
+}
+
+async function buyTicket() {
+    const lotteryType = document.getElementById("lottery-type").value;
+    const ticketAmount = document.getElementById("ticket-amount").value;
+    const ticketPrices = [1.5, 5, 10];
+    const totalCost = web3.utils.toWei((ticketAmount * ticketPrices[lotteryType]).toString(), "mwei");
+
+    await usdtContract.methods.approve(contractAddress, totalCost).send({ from: account });
+    await lotteryContract.methods.buyTicket(lotteryType, web3.utils.keccak256("randomSalt")).send({ from: account });
+
+    alert("Ticket purchased!");
+    updateBalance();
+}
+
+async function commitNumber() {
+    const lotteryType = document.getElementById("lottery-type").value;
+    const randomNumber = document.getElementById("random-number").value;
+    const salt = web3.utils.randomHex(32);
+    const commitment = web3.utils.keccak256(web3.eth.abi.encodeParameters(["bytes32", "uint256"], [salt, randomNumber]));
+
+    await lotteryContract.methods.commitNumber(lotteryType, commitment).send({ from: account });
+
+    alert("Number committed!");
+}
+
+async function revealNumber() {
+    const lotteryType = document.getElementById("lottery-type").value;
+    const randomNumber = document.getElementById("random-number").value;
+    const salt = "0xYourSalt";  
+
+    await lotteryContract.methods.revealNumber(lotteryType, randomNumber, salt).send({ from: account });
+
+    alert("Number revealed!");
+}
+
+async function checkWinner() {
+    const lotteryType = document.getElementById("lottery-type").value;
+    const winner = await lotteryContract.methods.checkWinner(lotteryType).call();
+    document.getElementById("winner-info").innerText = "Winner: " + winner;
+}
+
+async function connectWallet() {
+    try {
+        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+        account = accounts[0];
+        document.getElementById("wallet-address").innerText = "Wallet: " + account;
+        document.getElementById("connect-wallet").style.display = "none";
+        document.getElementById("disconnect-wallet").style.display = "block";
+        updateBalance();
+    } catch (error) {
+        console.error("Wallet connection failed", error);
+    }
+}
+
+function disconnectWallet() {
+    account = null;
+    document.getElementById("wallet-address").innerText = "Not Connected";
+    document.getElementById("usdt-balance").innerText = "USDT Balance: 0";
+    document.getElementById("connect-wallet").style.display = "block";
+    document.getElementById("disconnect-wallet").style.display = "none";
+}
+
+// Tambahkan event listener untuk tombol disconnect
+document.getElementById("disconnect-wallet").addEventListener("click", disconnectWallet);
+    </script>
+    
     <style>
         body {
     font-family: Arial, sans-serif;
@@ -13,227 +130,72 @@
     background-color: #f4f4f4;
 }
 
-h1 {
-    color: #333;
+.container {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
 button {
-    padding: 10px 20px;
-    margin: 10px;
-    border: none;
-    background-color: #28a745;
+    background-color: #007bff;
     color: white;
+    border: none;
+    padding: 10px;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #218838;
+    background-color: #0056b3;
 }
 
-p {
-    font-size: 18px;
+input, select {
+    padding: 10px;
+    width: 80%;
+    margin: 10px 0;
 }
     </style>
 </head>
 <body>
-    <h1>Fair Lottery</h1>
+    <div class="container">
+        <h1>Fair Lottery</h1>
+        
+        <div id="wallet-info">
+            <button id="connect-wallet">Connect Wallet</button>
+            <button id="disconnect-wallet" style="display: none;">Disconnect Wallet</button>
+            <p id="wallet-address">Not Connected</p>
+            <p id="usdt-balance">USDT Balance: 0</p>
+        </div>
 
-    <button id="connectWallet">Connect Wallet</button>
-    <button id="disconnectWallet" style="display:none;">Disconnect</button>
+        <div id="lottery-selection">
+            <h2>Select Lottery Type</h2>
+            <select id="lottery-type">
+                <option value="0">Daily - $1.5</option>
+                <option value="1">Weekly - $5</option>
+                <option value="2">Monthly - $10</option>
+            </select>
+        </div>
 
-    <p><strong>Wallet:</strong> <span id="walletAddress">Not Connected</span></p>
-    <p><strong>Saldo USDT:</strong> <span id="usdtBalance">0</span> USDT</p>
+        <div id="ticket-purchase">
+            <h2>Buy Ticket</h2>
+            <input type="number" id="ticket-amount" min="1" max="100" value="1">
+            <button id="buy-ticket">Buy Ticket</button>
+            <p id="total-cost">Total Cost: $1.5</p>
+        </div>
 
-    <label for="lotteryType">Pilih Jenis Lotre:</label>
-    <select id="lotteryType">
-        <option value="0">Harian</option>
-        <option value="1">Mingguan</option>
-        <option value="2">Bulanan</option>
-    </select>
+        <div id="commit-reveal">
+            <h2>Commit & Reveal</h2>
+            <input type="text" id="random-number" placeholder="Enter your random number">
+            <button id="commit-number">Commit</button>
+            <button id="reveal-number">Reveal</button>
+        </div>
 
-    <div>
-        <button id="buyTicket">Beli Tiket</button>
-        <button id="commitNumber">Commit Nomor</button>
-        <button id="revealNumber">Reveal Nomor</button>
-        <button id="finalizeLottery">Finalisasi Lotre</button>
+        <div id="lottery-status">
+            <h2>Lottery Status</h2>
+            <button id="check-winner">Check Winner</button>
+            <p id="winner-info">No winner yet.</p>
+        </div>
     </div>
-
-    <h2>Info Lotre</h2>
-    <p><strong>Jackpot:</strong> <span id="jackpot">0</span> USDT</p>
-    <p><strong>Peserta:</strong> <span id="participants">0</span></p>
-    <p><strong>Pemenang Terakhir:</strong> <span id="winner">-</span></p>
-
-    <script src="appjs"></script>
-    <script>
-        const contractAddress = "0x1234567890abcdef1234567890abcdef12345678"; // Ganti dengan alamat kontrak
-const contractABI = [ /* ABI Kontrak */ ];
-const usdtContractAddress = "0xYOUR_USDT_CONTRACT_ADDRESS"; // Ganti dengan alamat kontrak USDT
-const usdtABI = [ /* ABI USDT ERC20 */ ];
-
-let web3;
-let lotteryContract;
-let usdtContract;
-let userAccount = null;
-
-// 🔹 Inisialisasi Web3 dan Kontrak
-async function initWeb3() {
-    if (window.ethereum) {
-        web3 = new Web3(window.ethereum);
-        lotteryContract = new web3.eth.Contract(contractABI, contractAddress);
-        usdtContract = new web3.eth.Contract(usdtABI, usdtContractAddress);
-    } else {
-        alert("Metamask tidak terdeteksi! Silakan install.");
-    }
-}
-
-// 🔹 Connect Wallet
-async function connectWallet() {
-    try {
-        if (!window.ethereum) return alert("Metamask tidak tersedia!");
-
-        await window.ethereum.request({ method: "eth_requestAccounts" });
-        const accounts = await web3.eth.getAccounts();
-        userAccount = accounts[0];
-
-        document.getElementById("walletAddress").innerText = userAccount;
-        document.getElementById("connectWallet").style.display = "none";
-        document.getElementById("disconnectWallet").style.display = "inline";
-
-        updateUSDTBalance();
-        updateLotteryInfo();
-    } catch (error) {
-        console.error(error);
-        alert("Gagal menghubungkan wallet!");
-    }
-}
-
-// 🔹 Disconnect Wallet
-function disconnectWallet() {
-    userAccount = null;
-    document.getElementById("walletAddress").innerText = "Not Connected";
-    document.getElementById("usdtBalance").innerText = "0";
-    document.getElementById("connectWallet").style.display = "inline";
-    document.getElementById("disconnectWallet").style.display = "none";
-}
-
-// 🔹 Update Saldo USDT
-async function updateUSDTBalance() {
-    if (!userAccount) return;
-    
-    try {
-        const balance = await usdtContract.methods.balanceOf(userAccount).call();
-        document.getElementById("usdtBalance").innerText = web3.utils.fromWei(balance, "mwei");
-    } catch (error) {
-        console.error("Gagal mengambil saldo USDT:", error);
-    }
-}
-
-// 🔹 Membeli Tiket Lotre
-async function buyTicket() {
-    if (!userAccount) return alert("Silakan connect wallet dulu!");
-
-    const lotteryType = document.getElementById("lotteryType").value;
-    const ticketPrice = await lotteryContract.methods.lotteries(lotteryType).call();
-    const priceWei = ticketPrice.ticketPrice;
-
-    try {
-        await usdtContract.methods.approve(contractAddress, priceWei).send({ from: userAccount });
-        await lotteryContract.methods.buyTicket(lotteryType, web3.utils.keccak256("salt123")).send({ from: userAccount });
-
-        alert("Tiket berhasil dibeli!");
-        updateUSDTBalance();
-        updateLotteryInfo();
-    } catch (error) {
-        console.error(error);
-        alert("Gagal membeli tiket!");
-    }
-}
-
-// 🔹 Commit Nomor Lotre
-async function commitNumber() {
-    if (!userAccount) return alert("Silakan connect wallet dulu!");
-
-    const lotteryType = document.getElementById("lotteryType").value;
-    const randomNumber = Math.floor(Math.random() * 100000);
-    const salt = web3.utils.randomHex(32);
-    const commitment = web3.utils.keccak256(web3.eth.abi.encodeParameters(["bytes32", "uint256"], [salt, randomNumber]));
-
-    try {
-        await lotteryContract.methods.commitNumber(lotteryType, commitment).send({ from: userAccount });
-
-        localStorage.setItem("salt", salt);
-        localStorage.setItem("randomNumber", randomNumber);
-        alert("Nomor berhasil di-commit!");
-    } catch (error) {
-        console.error(error);
-        alert("Gagal commit nomor!");
-    }
-}
-
-// 🔹 Reveal Nomor Lotre
-async function revealNumber() {
-    if (!userAccount) return alert("Silakan connect wallet dulu!");
-
-    const lotteryType = document.getElementById("lotteryType").value;
-    const salt = localStorage.getItem("salt");
-    const randomNumber = localStorage.getItem("randomNumber");
-
-    if (!salt || !randomNumber) {
-        alert("Anda belum commit nomor!");
-        return;
-    }
-
-    try {
-        await lotteryContract.methods.revealNumber(lotteryType, randomNumber, salt).send({ from: userAccount });
-        alert("Nomor berhasil di-reveal!");
-    } catch (error) {
-        console.error(error);
-        alert("Gagal reveal nomor!");
-    }
-}
-
-// 🔹 Finalisasi Lotre
-async function finalizeLottery() {
-    if (!userAccount) return alert("Silakan connect wallet dulu!");
-
-    const lotteryType = document.getElementById("lotteryType").value;
-    
-    try {
-        await lotteryContract.methods.finalizeLottery(lotteryType).send({ from: userAccount });
-        alert("Lotre berhasil difinalisasi!");
-        updateLotteryInfo();
-    } catch (error) {
-        console.error(error);
-        alert("Gagal finalisasi lotre!");
-    }
-}
-
-// 🔹 Update Info Lotre
-async function updateLotteryInfo() {
-    if (!userAccount) return;
-
-    try {
-        const lotteryType = document.getElementById("lotteryType").value;
-        const lotteryData = await lotteryContract.methods.lotteries(lotteryType).call();
-
-        document.getElementById("jackpot").innerText = lotteryData.jackpot;
-        document.getElementById("participants").innerText = lotteryData.participants.length;
-        document.getElementById("winner").innerText = "Menunggu finalisasi...";
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-// 🔹 Tambahkan Event Listener ke Tombol
-document.getElementById("connectWallet").addEventListener("click", connectWallet);
-document.getElementById("disconnectWallet").addEventListener("click", disconnectWallet);
-document.getElementById("buyTicket").addEventListener("click", buyTicket);
-document.getElementById("commitNumber").addEventListener("click", commitNumber);
-document.getElementById("revealNumber").addEventListener("click", revealNumber);
-document.getElementById("finalizeLottery").addEventListener("click", finalizeLottery);
-
-// 🔹 Inisialisasi Web3 saat halaman dimuat
-window.onload = initWeb3;
-    </script>
 </body>
 </html>
