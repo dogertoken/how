@@ -48,15 +48,15 @@ button {
     <!-- Header -->
     <header>
         <h1>DApps Fair Lottery</h1>
-        <button id="connectWalletBtn" onclick="connectWallet()">Connect Wallet</button>
-        <button id="disconnectWalletBtn" onclick="disconnectWallet()" style="display: none;">Disconnect</button>
+        <button id="connectWalletBtn">Connect Wallet</button>
+        <button id="disconnectWalletBtn" style="display: none;">Disconnect</button>
         <p>Wallet: <span id="walletAddress">Not Connected</span></p>
     </header>
 
     <!-- Saldo & Tiket -->
     <section class="balance-info">
-        <p>Saldo USDT: <span id="usdtBalance">0</span> USDT</p>
-        <p>Tiket Dibeli: <span id="ticketCount">0</span></p>
+        <p>Saldo USDT: <span id="usdtBalance">-</span> USDT</p>
+        <p>Tiket Dibeli: <span id="ticketCount">-</span></p>
     </section>
 
     <!-- Pilihan Lotre -->
@@ -71,7 +71,7 @@ button {
         <h2 id="lotteryTitle">Lotre Harian</h2>
         <p>Harga Tiket: <span id="ticketPrice">1.5</span> USDT</p>
         <p>Waktu Undian: <span id="countdown">00:00:00</span></p>
-        <button onclick="openBuyModal()">Beli Tiket</button>
+        <button id="buyTicketBtn">Beli Tiket</button>
     </section>
 
     <!-- Modal Pembelian Tiket -->
@@ -81,7 +81,7 @@ button {
             <label>Jumlah Tiket:</label>
             <input type="number" id="ticketAmount" min="1" max="100" value="1">
             <p>Total Biaya: <span id="totalCost">1.5</span> USDT</p>
-            <button onclick="buyTicket()">Buy</button>
+            <button id="confirmBuy">Buy</button>
             <button onclick="closeBuyModal()">Cancel</button>
         </div>
     </div>
@@ -104,14 +104,6 @@ button {
     let web3;
     let lotteryContract;
     let account;
-
-    // Pastikan semua tombol bisa diklik
-    document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
-    document.getElementById("disconnectWalletBtn").addEventListener("click", disconnectWallet);
-    document.getElementById("buyModal").addEventListener("click", closeBuyModal);
-    document.querySelector(".modal-content").addEventListener("click", function (e) {
-        e.stopPropagation(); // Mencegah modal tertutup saat klik di dalamnya
-    });
 
     // Koneksi Wallet
     async function connectWallet() {
@@ -148,6 +140,18 @@ button {
         document.getElementById("usdtBalance").innerText = balance;
     }
 
+    // Countdown Lotre
+    function startCountdown() {
+        let time = 86400; // 24 jam contoh
+        setInterval(() => {
+            let hours = Math.floor(time / 3600);
+            let minutes = Math.floor((time % 3600) / 60);
+            let seconds = time % 60;
+            document.getElementById("countdown").innerText = `${hours}:${minutes}:${seconds}`;
+            time--;
+        }, 1000);
+    }
+
     // Buka Modal Beli Tiket
     function openBuyModal() {
         document.getElementById("buyModal").style.display = "block";
@@ -157,13 +161,6 @@ button {
     function closeBuyModal() {
         document.getElementById("buyModal").style.display = "none";
     }
-
-    // Perbarui Total Biaya Saat Jumlah Tiket Berubah
-    document.getElementById("ticketAmount").addEventListener("input", function () {
-        let amount = parseInt(this.value) || 0;
-        let price = parseFloat(document.getElementById("ticketPrice").innerText);
-        document.getElementById("totalCost").innerText = (amount * price).toFixed(2);
-    });
 
     // Beli Tiket
     async function buyTicket() {
@@ -184,30 +181,14 @@ button {
         updateBalance();
     }
 
-    // Countdown Lotre
-    function startCountdown() {
-        let time = 86400; // 24 jam contoh
-        setInterval(() => {
-            let hours = Math.floor(time / 3600);
-            let minutes = Math.floor((time % 3600) / 60);
-            let seconds = time % 60;
-            document.getElementById("countdown").innerText = `${hours}:${minutes}:${seconds}`;
-            time--;
-        }, 1000);
-    }
+    document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
+    document.getElementById("disconnectWalletBtn").addEventListener("click", disconnectWallet);
+    document.getElementById("buyTicketBtn").addEventListener("click", openBuyModal);
+    document.getElementById("confirmBuy").addEventListener("click", buyTicket);
 
-    // Ambil Pemenang
-    async function fetchWinners() {
-        if (!lotteryContract) return;
-        let winners = await lotteryContract.methods.getWinners().call();
-        document.getElementById("winner1").innerText = winners[0] || "-";
-        document.getElementById("winner2").innerText = winners[1] || "-";
-        document.getElementById("winner3").innerText = winners[2] || "-";
-    }
-
-    // Jalankan saat halaman siap
     startCountdown();
 });
     </script>
+
 </body>
 </html>
