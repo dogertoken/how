@@ -3,59 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blockchain Fair Lottery</title>
-    <link rel="stylesheet" href="stylescss">
-    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <title>DApps Fair Lottery</title>
+    <link rel="stylesheet" href="stylecss">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.0/web3.min.js"></script>
     <style>
         body {
     font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
     text-align: center;
-    padding: 20px;
+    background-color: #f4f4f4;
 }
 
-.container {
-    max-width: 600px;
-    margin: auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.wallet-info {
-    margin-bottom: 20px;
-}
-
-.tabs {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-}
-
-.tab-button {
-    padding: 10px 20px;
-    cursor: pointer;
-    border: none;
-    background: #007bff;
+header {
+    background: #333;
     color: white;
-    border-radius: 5px;
-}
-
-.lottery-panel {
-    display: none;
-}
-
-.lottery-panel.active {
-    display: block;
+    padding: 10px;
 }
 
 button {
-    margin: 10px;
-    padding: 10px 15px;
-    background: #28a745;
-    color: white;
-    border-radius: 5px;
+    padding: 10px;
+    margin: 5px;
     cursor: pointer;
 }
 
@@ -72,137 +38,148 @@ button {
 .modal-content {
     background: white;
     padding: 20px;
-    margin: 15% auto;
-    width: 50%;
-    text-align: center;
-    border-radius: 5px;
-}
-
-.close {
-    float: right;
-    cursor: pointer;
+    width: 300px;
+    margin: 100px auto;
 }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Blockchain Fair Lottery</h1>
 
-        <!-- Wallet Info -->
-        <div class="wallet-info">
-            <button onclick="connectWallet()">🔗 Connect Wallet</button>
-            <p>Wallet: <span id="walletAddress">Not connected</span></p>
-            <p>Saldo USDT: <span id="usdtBalance">0</span> USDT</p>
-        </div>
+    <!-- Header -->
+    <header>
+        <h1>DApps Fair Lottery</h1>
+        <button id="connectWalletBtn" onclick="connectWallet()">Connect Wallet</button>
+        <button id="disconnectWalletBtn" onclick="disconnectWallet()" style="display: none;">Disconnect</button>
+        <p>Wallet: <span id="walletAddress">Not Connected</span></p>
+    </header>
 
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab-button active" onclick="switchTab('daily')">Lotre Harian</button>
-            <button class="tab-button" onclick="switchTab('weekly')">Lotre Mingguan</button>
-            <button class="tab-button" onclick="switchTab('monthly')">Lotre Bulanan</button>
-        </div>
+    <!-- Saldo & Tiket -->
+    <section class="balance-info">
+        <p>Saldo USDT: <span id="usdtBalance">0</span> USDT</p>
+        <p>Tiket Dibeli: <span id="ticketCount">0</span></p>
+    </section>
 
-        <!-- Lottery Panels -->
-        <div id="daily" class="lottery-panel active">
-            <h2>Lotre Harian</h2>
-            <p>Harga Tiket: 1.5 USDT</p>
-            <p>Tiket Dibeli: <span id="dailyTickets">0</span></p>
-            <button onclick="openBuyModal('daily', 1.5)">Beli Tiket</button>
-        </div>
+    <!-- Pilihan Lotre -->
+    <section class="lottery-tabs">
+        <button onclick="showLottery('daily')">Lotre Harian</button>
+        <button onclick="showLottery('weekly')">Lotre Mingguan</button>
+        <button onclick="showLottery('monthly')">Lotre Bulanan</button>
+    </section>
 
-        <div id="weekly" class="lottery-panel">
-            <h2>Lotre Mingguan</h2>
-            <p>Harga Tiket: 5 USDT</p>
-            <p>Tiket Dibeli: <span id="weeklyTickets">0</span></p>
-            <button onclick="openBuyModal('weekly', 5)">Beli Tiket</button>
-        </div>
-
-        <div id="monthly" class="lottery-panel">
-            <h2>Lotre Bulanan</h2>
-            <p>Harga Tiket: 10 USDT</p>
-            <p>Tiket Dibeli: <span id="monthlyTickets">0</span></p>
-            <button onclick="openBuyModal('monthly', 10)">Beli Tiket</button>
-        </div>
-
-        <!-- Status Pemenang -->
-        <div class="winner-status">
-            <h2>Hasil Undian</h2>
-            <p>Juara 1: <span id="winner1">-</span> (50%)</p>
-            <p>Juara 2: <span id="winner2">-</span> (20%)</p>
-            <p>Juara 3: <span id="winner3">-</span> (10%)</p>
-            <p>Pemenang Lain: <span id="winnerOthers">-</span></p>
-        </div>
-    </div>
+    <!-- Detail Lotre -->
+    <section id="lotteryDetails">
+        <h2 id="lotteryTitle">Lotre Harian</h2>
+        <p>Harga Tiket: <span id="ticketPrice">1.5</span> USDT</p>
+        <p>Waktu Undian: <span id="countdown">00:00:00</span></p>
+        <button onclick="openBuyModal()">Beli Tiket</button>
+    </section>
 
     <!-- Modal Pembelian Tiket -->
     <div id="buyModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeBuyModal()">&times;</span>
             <h2>Beli Tiket</h2>
-            <p>Jenis Lotre: <span id="lotteryType"></span></p>
             <label>Jumlah Tiket:</label>
-            <input type="number" id="ticketAmount" min="1" max="100" value="1" oninput="updateTotal()">
-            <p>Total Harga: <span id="totalPrice">0</span> USDT</p>
-            <button onclick="buyTicket()">Beli</button>
+            <input type="number" id="ticketAmount" min="1" max="100" value="1">
+            <p>Total Biaya: <span id="totalCost">1.5</span> USDT</p>
+            <button onclick="buyTicket()">Buy</button>
+            <button onclick="closeBuyModal()">Cancel</button>
         </div>
     </div>
+
+    <!-- Hasil Undian -->
+    <section id="winners">
+        <h2>Pemenang</h2>
+        <p>Juara 1: <span id="winner1">-</span></p>
+        <p>Juara 2: <span id="winner2">-</span></p>
+        <p>Juara 3: <span id="winner3">-</span></p>
+    </section>
 
     <script src="scriptjs"></script>
 
     <script>
-        let web3;
+        const contractAddress = "0x123456789abcdef"; // Ganti dengan alamat kontrak asli
+const contractABI = [...]; // Tambahkan ABI smart contract asli
+
+let web3;
+let lotteryContract;
 let account;
 
-// Fungsi Connect Wallet
+// Koneksi Wallet
 async function connectWallet() {
     if (window.ethereum) {
         web3 = new Web3(window.ethereum);
         await window.ethereum.request({ method: "eth_requestAccounts" });
         const accounts = await web3.eth.getAccounts();
         account = accounts[0];
+
+        lotteryContract = new web3.eth.Contract(contractABI, contractAddress);
+
         document.getElementById("walletAddress").innerText = account;
+        document.getElementById("connectWalletBtn").style.display = "none";
+        document.getElementById("disconnectWalletBtn").style.display = "block";
+
+        updateBalance();
     } else {
-        alert("MetaMask tidak ditemukan. Harap install.");
+        alert("MetaMask tidak ditemukan.");
     }
 }
 
-// Fungsi mengganti tab
-function switchTab(tabName) {
-    document.querySelectorAll('.lottery-panel').forEach(panel => panel.classList.remove('active'));
-    document.querySelector(`#${tabName}`).classList.add('active');
-
-    document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
-    document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+// Diskoneksi Wallet
+function disconnectWallet() {
+    account = null;
+    document.getElementById("walletAddress").innerText = "Not Connected";
+    document.getElementById("connectWalletBtn").style.display = "block";
+    document.getElementById("disconnectWalletBtn").style.display = "none";
 }
 
-// Fungsi membuka modal pembelian
-function openBuyModal(type, price) {
+// Update Saldo USDT
+async function updateBalance() {
+    let balance = await lotteryContract.methods.getBalance(account).call();
+    document.getElementById("usdtBalance").innerText = balance;
+}
+
+// Buka Modal Beli Tiket
+function openBuyModal() {
     document.getElementById("buyModal").style.display = "block";
-    document.getElementById("lotteryType").innerText = type;
-    document.getElementById("ticketAmount").value = 1;
-    document.getElementById("totalPrice").innerText = price;
 }
 
-// Fungsi menutup modal
+// Tutup Modal
 function closeBuyModal() {
     document.getElementById("buyModal").style.display = "none";
 }
 
-// Fungsi update total harga tiket
-function updateTotal() {
-    let amount = document.getElementById("ticketAmount").value;
-    let pricePerTicket = document.getElementById("lotteryType").innerText === "daily" ? 1.5 : 
-                         document.getElementById("lotteryType").innerText === "weekly" ? 5 : 10;
-    document.getElementById("totalPrice").innerText = amount * pricePerTicket;
-}
-
-// Fungsi membeli tiket
+// Beli Tiket
 async function buyTicket() {
-    alert("Pembelian tiket dalam pengembangan!");
+    let amount = document.getElementById("ticketAmount").value;
+    await lotteryContract.methods.buyTicket(amount).send({ from: account });
+    alert("Tiket berhasil dibeli!");
     closeBuyModal();
 }
 
-window.onload = connectWallet;
+// Countdown Lotre
+function startCountdown() {
+    let time = 3600; // 1 jam contoh
+    setInterval(() => {
+        let hours = Math.floor(time / 3600);
+        let minutes = Math.floor((time % 3600) / 60);
+        let seconds = time % 60;
+        document.getElementById("countdown").innerText = `${hours}:${minutes}:${seconds}`;
+        time--;
+    }, 1000);
+}
+
+// Ambil Pemenang
+async function fetchWinners() {
+    let winners = await lotteryContract.methods.getWinners().call();
+    document.getElementById("winner1").innerText = winners[0] || "-";
+    document.getElementById("winner2").innerText = winners[1] || "-";
+    document.getElementById("winner3").innerText = winners[2] || "-";
+}
+
+window.onload = function() {
+    connectWallet();
+    startCountdown();
+};
     </script>
 </body>
 </html>
