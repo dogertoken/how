@@ -97,89 +97,117 @@ button {
     <script src="scriptjs"></script>
 
     <script>
-        const contractAddress = "0x123456789abcdef"; // Ganti dengan alamat kontrak asli
-const contractABI = [...]; // Tambahkan ABI smart contract asli
+        document.addEventListener("DOMContentLoaded", function () {
+    const contractAddress = "0x123456789abcdef"; // Ganti dengan alamat kontrak asli
+    const contractABI = [...]; // Tambahkan ABI smart contract asli
 
-let web3;
-let lotteryContract;
-let account;
+    let web3;
+    let lotteryContract;
+    let account;
 
-// Koneksi Wallet
-async function connectWallet() {
-    if (window.ethereum) {
-        web3 = new Web3(window.ethereum);
-        await window.ethereum.request({ method: "eth_requestAccounts" });
-        const accounts = await web3.eth.getAccounts();
-        account = accounts[0];
+    // Pastikan semua tombol bisa diklik
+    document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
+    document.getElementById("disconnectWalletBtn").addEventListener("click", disconnectWallet);
+    document.getElementById("buyModal").addEventListener("click", closeBuyModal);
+    document.querySelector(".modal-content").addEventListener("click", function (e) {
+        e.stopPropagation(); // Mencegah modal tertutup saat klik di dalamnya
+    });
 
-        lotteryContract = new web3.eth.Contract(contractABI, contractAddress);
+    // Koneksi Wallet
+    async function connectWallet() {
+        if (window.ethereum) {
+            web3 = new Web3(window.ethereum);
+            await window.ethereum.request({ method: "eth_requestAccounts" });
+            const accounts = await web3.eth.getAccounts();
+            account = accounts[0];
 
-        document.getElementById("walletAddress").innerText = account;
-        document.getElementById("connectWalletBtn").style.display = "none";
-        document.getElementById("disconnectWalletBtn").style.display = "block";
+            lotteryContract = new web3.eth.Contract(contractABI, contractAddress);
 
-        updateBalance();
-    } else {
-        alert("MetaMask tidak ditemukan.");
+            document.getElementById("walletAddress").innerText = account;
+            document.getElementById("connectWalletBtn").style.display = "none";
+            document.getElementById("disconnectWalletBtn").style.display = "block";
+
+            updateBalance();
+        } else {
+            alert("MetaMask tidak ditemukan.");
+        }
     }
-}
 
-// Diskoneksi Wallet
-function disconnectWallet() {
-    account = null;
-    document.getElementById("walletAddress").innerText = "Not Connected";
-    document.getElementById("connectWalletBtn").style.display = "block";
-    document.getElementById("disconnectWalletBtn").style.display = "none";
-}
+    // Diskoneksi Wallet
+    function disconnectWallet() {
+        account = null;
+        document.getElementById("walletAddress").innerText = "Not Connected";
+        document.getElementById("connectWalletBtn").style.display = "block";
+        document.getElementById("disconnectWalletBtn").style.display = "none";
+    }
 
-// Update Saldo USDT
-async function updateBalance() {
-    let balance = await lotteryContract.methods.getBalance(account).call();
-    document.getElementById("usdtBalance").innerText = balance;
-}
+    // Update Saldo USDT
+    async function updateBalance() {
+        if (!account || !lotteryContract) return;
+        let balance = await lotteryContract.methods.getBalance(account).call();
+        document.getElementById("usdtBalance").innerText = balance;
+    }
 
-// Buka Modal Beli Tiket
-function openBuyModal() {
-    document.getElementById("buyModal").style.display = "block";
-}
+    // Buka Modal Beli Tiket
+    function openBuyModal() {
+        document.getElementById("buyModal").style.display = "block";
+    }
 
-// Tutup Modal
-function closeBuyModal() {
-    document.getElementById("buyModal").style.display = "none";
-}
+    // Tutup Modal
+    function closeBuyModal() {
+        document.getElementById("buyModal").style.display = "none";
+    }
 
-// Beli Tiket
-async function buyTicket() {
-    let amount = document.getElementById("ticketAmount").value;
-    await lotteryContract.methods.buyTicket(amount).send({ from: account });
-    alert("Tiket berhasil dibeli!");
-    closeBuyModal();
-}
+    // Perbarui Total Biaya Saat Jumlah Tiket Berubah
+    document.getElementById("ticketAmount").addEventListener("input", function () {
+        let amount = parseInt(this.value) || 0;
+        let price = parseFloat(document.getElementById("ticketPrice").innerText);
+        document.getElementById("totalCost").innerText = (amount * price).toFixed(2);
+    });
 
-// Countdown Lotre
-function startCountdown() {
-    let time = 3600; // 1 jam contoh
-    setInterval(() => {
-        let hours = Math.floor(time / 3600);
-        let minutes = Math.floor((time % 3600) / 60);
-        let seconds = time % 60;
-        document.getElementById("countdown").innerText = `${hours}:${minutes}:${seconds}`;
-        time--;
-    }, 1000);
-}
+    // Beli Tiket
+    async function buyTicket() {
+        if (!account || !lotteryContract) {
+            alert("Harap sambungkan wallet terlebih dahulu!");
+            return;
+        }
 
-// Ambil Pemenang
-async function fetchWinners() {
-    let winners = await lotteryContract.methods.getWinners().call();
-    document.getElementById("winner1").innerText = winners[0] || "-";
-    document.getElementById("winner2").innerText = winners[1] || "-";
-    document.getElementById("winner3").innerText = winners[2] || "-";
-}
+        let amount = document.getElementById("ticketAmount").value;
+        if (amount < 1 || amount > 100) {
+            alert("Jumlah tiket harus antara 1 hingga 100!");
+            return;
+        }
 
-window.onload = function() {
-    connectWallet();
+        await lotteryContract.methods.buyTicket(amount).send({ from: account });
+        alert("Tiket berhasil dibeli!");
+        closeBuyModal();
+        updateBalance();
+    }
+
+    // Countdown Lotre
+    function startCountdown() {
+        let time = 86400; // 24 jam contoh
+        setInterval(() => {
+            let hours = Math.floor(time / 3600);
+            let minutes = Math.floor((time % 3600) / 60);
+            let seconds = time % 60;
+            document.getElementById("countdown").innerText = `${hours}:${minutes}:${seconds}`;
+            time--;
+        }, 1000);
+    }
+
+    // Ambil Pemenang
+    async function fetchWinners() {
+        if (!lotteryContract) return;
+        let winners = await lotteryContract.methods.getWinners().call();
+        document.getElementById("winner1").innerText = winners[0] || "-";
+        document.getElementById("winner2").innerText = winners[1] || "-";
+        document.getElementById("winner3").innerText = winners[2] || "-";
+    }
+
+    // Jalankan saat halaman siap
     startCountdown();
-};
+});
     </script>
 </body>
 </html>
