@@ -103,6 +103,88 @@ button:hover {
         <p id="status"></p>
     </div>
     
-    <script src="script.js"></script>
+    <script src="scriptjs"></script>
+    <script>
+        const contractAddress = "0xYourSmartContractAddress"; // Ganti dengan alamat kontrak
+const usdtAddress = "0xYourUSDTTokenAddress"; // Ganti dengan alamat USDT ERC-20
+const abi = [ /* Masukkan ABI kontrak di sini */ ];
+
+let web3;
+let contract;
+let account;
+
+// Fungsi untuk mengganti tab
+function switchTab(tabName) {
+    document.querySelectorAll('.lottery-panel').forEach(panel => {
+        panel.classList.remove('active');
+    });
+    document.querySelector(`#${tabName}`).classList.add('active');
+
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+    });
+    document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+}
+
+// Inisialisasi Web3
+async function initWeb3() {
+    if (window.ethereum) {
+        web3 = new Web3(window.ethereum);
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        const accounts = await web3.eth.getAccounts();
+        account = accounts[0];
+        contract = new web3.eth.Contract(abi, contractAddress);
+        document.getElementById("status").innerText = `Terhubung: ${account}`;
+    } else {
+        alert("MetaMask tidak ditemukan. Harap install terlebih dahulu.");
+    }
+}
+
+// Fungsi untuk membeli tiket
+async function buyTicket(lotteryType) {
+    if (!account) await initWeb3();
+
+    let price;
+    if (lotteryType === "daily") price = web3.utils.toWei("1.5", "ether");
+    if (lotteryType === "weekly") price = web3.utils.toWei("5", "ether");
+    if (lotteryType === "monthly") price = web3.utils.toWei("10", "ether");
+
+    const usdtContract = new web3.eth.Contract([
+        { "constant": false, "inputs": [{ "name": "spender", "type": "address" }, { "name": "value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "", "type": "bool" }], "type": "function" }
+    ], usdtAddress);
+
+    // Setujui transfer USDT ke kontrak
+    await usdtContract.methods.approve(contractAddress, price).send({ from: account });
+
+    // Komit nomor lotre dengan hash random
+    const randomNumber = Math.floor(Math.random() * 1000000);
+    const salt = web3.utils.randomHex(32);
+    const commitment = web3.utils.soliditySha3(salt, randomNumber);
+
+    await contract.methods.buyTicket(lotteryType, commitment).send({ from: account });
+
+    document.getElementById("status").innerText = "Tiket berhasil dibeli!";
+}
+
+// Fungsi untuk mengungkap nomor lotre
+async function revealNumber(lotteryType) {
+    if (!account) await initWeb3();
+
+    const randomNumber = prompt("Masukkan nomor lotre yang Anda ingat:");
+    const salt = prompt("Masukkan salt yang digunakan:");
+
+    if (!randomNumber || !salt) {
+        alert("Anda harus mengisi nomor dan salt!");
+        return;
+    }
+
+    await contract.methods.revealNumber(lotteryType, randomNumber, salt).send({ from: account });
+
+    document.getElementById("status").innerText = "Nomor berhasil diungkap!";
+}
+
+// Inisialisasi saat halaman dimuat
+window.onload = initWeb3;
+    </script>
 </body>
 </html>
