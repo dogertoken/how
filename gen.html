@@ -140,7 +140,7 @@ button:hover {
 
 <body>
 
-    <h1>🎰 Generator 4 Angka Acak 🎰</h1>
+    <h1>🎰 Generator Angka Acak 🎰</h1>
 
     <div id="container">
         <div class="number" id="num1">0</div>
@@ -152,14 +152,6 @@ button:hover {
     <div class="buttons">
         <button onclick="generateRandomNumbers()">Generate</button>
         <button onclick="copyToClipboard()">Copy</button>
-    </div>
-
-    <h2>Riwayat Angka:</h2>
-    <div id="history" style="margin-top: 10px; text-align: center;"></div>
-    
-
-    <div class="buttons">
-    <button onclick="clearHistory()">Hapus Riwayat</button>
     </div>
     
     <script>
@@ -203,55 +195,6 @@ button:hover {
             });
         }
 
-        // History
-        function saveToHistory(angka) {
-    let history = JSON.parse(localStorage.getItem("history")) || [];
-    
-    // Simpan maksimal 10 hasil terakhir
-    if (history.length >= 10) {
-        history.pop(); // Hapus hasil paling lama
-    }
-    
-    history.unshift(angka); // Masukkan angka terbaru di awal array
-    localStorage.setItem("history", JSON.stringify(history));  
-    displayHistory(); // Perbarui tampilan riwayat
-}
-
-function displayHistory() {
-    let historyDiv = document.getElementById("history");
-    historyDiv.innerHTML = ""; // Kosongkan sebelum diisi ulang
-
-    let history = JSON.parse(localStorage.getItem("history")) || [];
-    
-    if (history.length === 0) {
-        historyDiv.innerHTML = "<p>Belum ada riwayat.</p>";
-        return;
-    }
-
-    history.forEach((angka) => {
-        let entry = document.createElement("p");
-        entry.textContent = angka;
-        entry.style.margin = "5px 0"; // Atur jarak antar riwayat
-        entry.style.fontSize = "1.2rem";
-        entry.style.fontWeight = "bold";
-        historyDiv.appendChild(entry);
-    });
-}
-
-function clearHistory() {
-    localStorage.removeItem("history");
-    displayHistory(); // Perbarui tampilan setelah dihapus
-}
-
-// Panggil saat halaman dibuka untuk menampilkan riwayat sebelumnya
-document.addEventListener("DOMContentLoaded", displayHistory);
-
-setTimeout(() => {
-    clearInterval(interval[3]);
-    angka[3] = parseInt(elements[3].textContent); // Pastikan angka terakhir tersimpan
-    let angkaFinal = angka.join("");
-    saveToHistory(angkaFinal);
-}, 2500);
     </script>
 
 </body>
