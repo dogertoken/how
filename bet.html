@@ -6,43 +6,99 @@
     <title>Taruhan Blockchain</title>
     <link rel="stylesheet" href="stylecss">
     <style>
-        body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
+        /* 🔹 Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1e1e2f, #282843);
+    color: white;
     padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
+/* 🔹 Container */
 #app {
     max-width: 800px;
-    margin: 0 auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    text-align: center;
 }
 
+/* 🔹 Header */
 h2 {
-    margin-top: 30px;
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #218838;
-}
-
+/* 🔹 Input Fields */
 input {
-    padding: 8px;
+    padding: 10px;
     margin-top: 10px;
     width: 100%;
     box-sizing: border-box;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    transition: 0.3s;
 }
 
+input:focus {
+    outline: none;
+    box-shadow: 0 0 10px #00ffcc;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* 🔹 Button Styling */
+button {
+    margin-top: 15px;
+    padding: 12px 25px;
+    background: linear-gradient(135deg, #00ffcc, #007bff);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 255, 204, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #007bff, #00ffcc);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 255, 204, 0.5);
+}
+
+/* 🔹 Button Click Animation */
+button:active {
+    transform: translateY(2px);
+}
+
+/* 🔹 Bet History Section */
 #betHistory, #explorerHistory {
     margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+#betHistory p, #explorerHistory p {
+    font-size: 14px;
+    opacity: 0.9;
 }
     </style>
 </head>
