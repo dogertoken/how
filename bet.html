@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TotoChain Bet</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+  <link rel="stylesheet" href="stylescss">
+  <style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  width: 80%;
+  max-width: 600px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.wallet-connection,
+.wallet-info,
+.bet-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #cccccc;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+  padding-top: 60px;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 400px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+#bet-history-list {
+  margin-top: 20px;
+}
+
+#pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#pagination button {
+  margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>TotoChain Betting</h1>
+    
+    <!-- Wallet Connection -->
+    <div class="wallet-connection">
+      <button id="connect-wallet" onclick="connectWallet()">Connect Wallet</button>
+      <button id="disconnect-wallet" onclick="disconnectWallet()" style="display:none;">Disconnect Wallet</button>
+    </div>
+    
+    <!-- Wallet Info (Hidden initially) -->
+    <div class="wallet-info" style="display:none;">
+      <p><strong>Wallet Address:</strong> <span id="wallet-address"></span></p>
+      <p><strong>ETH Balance:</strong> <span id="eth-balance"></span></p>
+      <p><strong>USDT Balance:</strong> <span id="usdt-balance"></span></p>
+      <p><strong>Today's Bet Count:</strong> <span id="bet-count-today"></span></p>
+      <button id="check-eligibility" onclick="checkEligibility()">Check Eligibility</button>
+    </div>
+
+    <!-- Bet Section (Hidden initially) -->
+    <div class="bet-section" style="display:none;">
+      <button id="bet-btn" onclick="openBetModal()">Place Bet</button>
+    </div>
+    
+    <!-- Bet History Section -->
+    <div class="bet-history">
+      <h3>Bet History</h3>
+      <div id="bet-history-list"></div>
+      <div id="pagination"></div>
+    </div>
+
+    <!-- Bet Modal -->
+    <div id="bet-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeBetModal()">&times;</span>
+        <h3>Place Bet</h3>
+        <label for="bet-number">Number (1-4 digits):</label>
+        <input type="number" id="bet-number" max="9999" min="1" />
+        <label for="bet-amount">Amount:</label>
+        <input type="number" id="bet-amount" />
+        <p>Total: <span id="total-cost">0</span></p>
+        <button onclick="placeBet()">Place Bet</button>
+      </div>
+    </div>
+
+    <!-- Comment Modal -->
+    <div id="comment-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeCommentModal()">&times;</span>
+        <h3>Leave a Comment</h3>
+        <textarea id="comment-text" rows="4"></textarea>
+        <button onclick="submitComment()">Submit Comment</button>
+        <div id="comment-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="scriptsjs"></script>
+
+  <script>
+    let web3;
+let contract;
+let usdtContract;
+let userWallet = null;
+let betHistory = [];
+let currentPage = 1;
+const betsPerPage = 15;
+const contractAddress = '0xYourContractAddress'; // Alamat kontrak pintar
+const usdtContractAddress = '0xUSDTContractAddress'; // Alamat kontrak USDT
+const contractABI = [ /* ABI dari kontrak pintar Anda */ ];
+const usdtABI = [ /* ABI dari kontrak pintar USDT */ ];
+
+async function connectWallet() {
+  if (window.ethereum) {
+    try {
+      web3 = new Web3(window.ethereum);
+      const accounts = await web3.eth.requestAccounts();
+      userWallet = accounts[0];
+
+      contract = new web3.eth.Contract(contractABI, contractAddress);
+      usdtContract = new web3.eth.Contract(usdtABI, usdtContractAddress);
+
+      document.getElementById("wallet-address").textContent = userWallet;
+      document.getElementById("connect-wallet").style.display = 'none';
+      document.getElementById("disconnect-wallet").style.display = 'block';
+      document.querySelector('.wallet-info').style.display = 'block';
+      document.querySelector('.bet-section').style.display = 'block';
+
+      fetchWalletInfo();
+    } catch (error) {
+      alert("Error connecting wallet: " + error.message);
+    }
+  } else {
+    alert("Please install MetaMask!");
+  }
+}
+
+async function fetchWalletInfo() {
+  try {
+    const ethBalance = await web3.eth.getBalance(userWallet);
+    document.getElementById("eth-balance").textContent = `${web3.utils.fromWei(ethBalance, 'ether')} ETH`;
+
+    const usdtBalance = await usdtContract.methods.balanceOf(userWallet).call();
+    document.getElementById("usdt-balance").textContent = `${web3.utils.fromWei(usdtBalance, 'mwei')} USDT`;
+
+    const betCountToday = await contract.methods.getBetCountToday(userWallet).call();
+    document.getElementById("bet-count-today").textContent = betCountToday;
+  } catch (error) {
+    alert("Error fetching wallet info: " + error.message);
+  }
+}
+
+async function placeBet() {
+  const betNumber = document.getElementById('bet-number').value;
+  const betAmount = document.getElementById('bet-amount').value;
+  const totalCost = calculateTotalCost(betAmount);
+
+  const betAmountInWei = web3.utils.toWei(betAmount, 'ether');
+  const totalCostInWei = web3.utils.toWei(totalCost.toString(), 'ether');
+
+  try {
+    await contract.methods.placeBet(betNumber).send({ from: userWallet, value: betAmountInWei });
+    alert(`Bet placed: Number ${betNumber}, Amount: ${betAmount} ETH`);
+  } catch (error) {
+    alert("Error placing bet: " + error.message);
+  }
+}
+
+function calculateTotalCost(betAmount) {
+  return betAmount * 1.05; // Misalnya ada fee 5%
+}
+
+const disconnectWallet = () => {
+  userWallet = null;
+  document.getElementById("connect-wallet").style.display = 'block';
+  document.getElementById("disconnect-wallet").style.display = 'none';
+  document.querySelector('.wallet-info').style.display = 'none';
+  document.querySelector('.bet-section').style.display = 'none';
+  alert("Wallet disconnected.");
+};
+
+const openBetModal = () => {
+  document.getElementById('bet-modal').style.display = 'block';
+};
+
+const closeBetModal = () => {
+  document.getElementById('bet-modal').style.display = 'none';
+};
+
+const openCommentModal = () => {
+  document.getElementById('comment-modal').style.display = 'block';
+};
+
+const closeCommentModal = () => {
+  document.getElementById('comment-modal').style.display = 'none';
+};
+
+const submitComment = () => {
+  const commentText = document.getElementById('comment-text').value;
+  if (commentText.trim()) {
+    alert("Comment submitted!");
+    document.getElementById('comment-text').value = '';
+    closeCommentModal();
+  } else {
+    alert("Please enter a comment.");
+  }
+};
+
+const updatePagination = () => {
+  let paginationHTML = '';
+  const totalPages = Math.ceil(betHistory.length / betsPerPage);
+  for (let i = 1; i <= totalPages; i++) {
+    paginationHTML += `<button onclick="changePage(${i})">${i}</button>`;
+  }
+  document.getElementById('pagination').innerHTML = paginationHTML;
+};
+
+const changePage = (page) => {
+  currentPage = page;
+  renderBetHistory();
+};
+
+const renderBetHistory = () => {
+  const startIndex = (currentPage - 1) * betsPerPage;
+  const endIndex = startIndex + betsPerPage;
+  const betHistoryPage = betHistory.slice(startIndex, endIndex);
+
+  let historyHTML = '';
+  betHistoryPage.forEach(bet => {
+    historyHTML += `
+      <div class="bet-item">
+        <p>Bet ID: ${bet.id} | ${bet.number} | ${bet.amount} ETH</p>
+        <p>Status: ${bet.status} | Time: ${bet.timestamp}</p>
+        <button onclick="openCommentModal()">Comment</button>
+      </div>
+    `;
+  });
+
+  document.getElementById('bet-history-list').innerHTML = historyHTML;
+  updatePagination();
+};
+
+const searchBetHistory = (searchTerm) => {
+  const filteredHistory = betHistory.filter(bet => 
+    bet.id.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    bet.number.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  betHistory = filteredHistory;
+  renderBetHistory();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderBetHistory();
+  document.getElementById('search-bet-history').addEventListener('input', (e) => {
+    searchBetHistory(e.target.value);
+  });
+});
+  </script>
+</body>
+        </html>
