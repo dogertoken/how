@@ -399,35 +399,31 @@ window.onclick = function(event) {
 
 // Kalkulasi harga total
 calculatePriceBtn.onclick = function() {
-    var betNumber = document.getElementById("betNumber").value;
-    var betCount = document.getElementById("betCount").value;
+// Ambil nilai dari input
+var betNumber = document.getElementById('betNumber').value;
+var betCount = document.getElementById('betCount').value;
 
-    // Misalkan harga taruhan adalah 0.0001 ETH atau 0.5 USDT per taruhan
-const ethPricePerBet = 0.0001;  // Harga per taruhan dalam ETH
-const usdtPricePerBet = 0.5;   // Harga per taruhan dalam USDT
-
-// Validasi input
+// Validasi input dan hitung harga
 if (betNumber && betCount && betCount >= 1 && betCount <= 99) {
-    // Misalkan Anda ingin menampilkan harga dalam ETH atau USDT tergantung pilihan
-    let totalPrice;
-    
-    // Jika menggunakan ETH, perhitungan harga total dengan 0.0001 ETH per taruhan
-    if (paymentMethod === 'eth') {
-        totalPrice = betCount * ethPricePerBet;  // Total harga dalam ETH
-        totalPriceDisplay.textContent = totalPrice.toFixed(4) + " ETH";  // Menampilkan harga dalam 4 desimal
-    }
-    // Jika menggunakan USDT, perhitungan harga total dengan 0.5 USDT per taruhan
-    else if (paymentMethod === 'usdt') {
-        totalPrice = betCount * usdtPricePerBet;  // Total harga dalam USDT
-        totalPriceDisplay.textContent = totalPrice.toFixed(2) + " USDT";  // Menampilkan harga dalam 2 desimal
-    }
-    
+    var ethPricePerBet = 0.0001; // Harga per taruhan untuk ETH
+    var usdtPricePerBet = 0.5;  // Harga per taruhan untuk USDT
+
+    // Menghitung total harga dalam ETH dan USDT
+    var totalEthPrice = betCount * ethPricePerBet;
+    var totalUsdtPrice = betCount * usdtPricePerBet;
+
+    // Tampilkan hasil
+    console.log('Total harga dalam ETH:', totalEthPrice.toFixed(4));
+    console.log('Total harga dalam USDT:', totalUsdtPrice.toFixed(2));
+
+    // Menampilkan harga di tampilan pengguna (jika diperlukan)
+    totalPriceDisplay.textContent = totalEthPrice.toFixed(4); // Misal menampilkan total ETH
     priceDetails.style.display = "block";
     paymentOptions.style.display = "block";
     confirmBetBtn.style.display = "block";
 } else {
     alert("Harap masukkan Nomor Taruhan dan Jumlah Taruhan yang valid.");
-}
+} 
 }
 
 // Mengubah jenis mata uang berdasarkan pilihan pembayaran
