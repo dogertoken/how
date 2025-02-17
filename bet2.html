@@ -220,140 +220,126 @@
     <script src="app.js"></script>
 
     <script>
-        let currentAccount = null;
-        let provider, signer, contract;
-        const contractAddress = 'YOUR_CONTRACT_ADDRESS';  // Ganti dengan alamat kontrak Anda
-        const usdtAddress = 'USDT_CONTRACT_ADDRESS';  // Ganti dengan alamat kontrak USDT Anda
-        const betPriceETH = ethers.utils.parseEther("0.0001"); // Harga per bet dalam ETH (0.0001 ETH)
-        const betPriceUSDT = ethers.utils.parseUnits("0.5", 6); // Harga per bet dalam USDT (0.5 USDT)
+        const betPriceETH = ethers.utils.parseEther("0.01"); // Harga per bet dalam ETH (0.01 ETH)
+const betPriceUSDT = ethers.utils.parseUnits("1", 6); // Harga per bet dalam USDT (1 USDT)
 
-        // ABI dari kontrak pintar Anda
-        const abi = [
-            "function placeBet(uint256 number, uint256 betCount, uint256 betType, bool isUSDT) public payable",
-            "function getBet(uint256 betId) public view returns (address, uint256, uint256, uint256, uint256, uint256, bool, uint256)",
-            "function addComment(uint256 betId, string memory comment) public",
-            "function addLike(uint256 betId) public",
-            "function getBetCount() public view returns (uint256)",
-            "function balanceOf(address account) public view returns (uint256)"  // Fungsi untuk memeriksa saldo USDT
-        ];
+let provider, signer, contract;
+const contractAddress = "0xYourContractAddress"; // Ganti dengan alamat kontrak utama
+const usdtAddress = "0xYourUSDTAddress"; // Ganti dengan alamat kontrak USDT jika perlu
 
-        // Inisialisasi Web3.js dan Ethers.js
-        async function initialize() {
-            if (typeof window.ethereum !== 'undefined') {
-                provider = new ethers.providers.Web3Provider(window.ethereum);
-                signer = provider.getSigner();
-                contract = new ethers.Contract(contractAddress, abi, signer);
-                await getWalletDetails();
+// ABI Kontrak Utama (Pastikan ini sesuai dengan kontrak yang digunakan)
+const contractABI = [
+    "function placeBet(uint256 betNumber, uint256 betCount, uint256 multiplier, bool useUSDT) payable external",
+    "function getBetPriceETH() external view returns (uint256)",
+    "function getBetPriceUSDT() external view returns (uint256)"
+];
+
+// ABI untuk USDT (Standar ERC-20)
+const usdtABI = [
+    "function transfer(address recipient, uint256 amount) public returns (bool)",
+    "function allowance(address owner, address spender) public view returns (uint256)",
+    "function approve(address spender, uint256 amount) public returns (bool)"
+];
+
+// Fungsi untuk menghubungkan Wallet
+async function connectWallet() {
+    if (window.ethereum) {
+        try {
+            provider = new ethers.providers.Web3Provider(window.ethereum);
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+            signer = provider.getSigner();
+            contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+            document.getElementById('walletStatus').innerText = "Terhubung";
+            document.getElementById('walletStatus').style.color = "green";
+        } catch (error) {
+            console.error(error);
+            alert("Gagal menghubungkan wallet.");
+        }
+    } else {
+        alert("Metamask tidak terdeteksi. Silakan instal Metamask.");
+    }
+}
+
+// Fungsi untuk menghitung harga taruhan
+document.getElementById('calculatePriceBtn').addEventListener('click', async function() {
+    const betCount = parseInt(document.getElementById('betCount').value);
+    const paymentMethod = document.getElementById('paymentMethod').value;
+    
+    if (!betCount || betCount <= 0) {
+        alert("Harap masukkan jumlah taruhan yang valid.");
+        return;
+    }
+
+    let price, priceFormatted, currencyType;
+
+    if (paymentMethod === 'eth') {
+        price = betPriceETH.mul(betCount);
+        priceFormatted = ethers.utils.formatEther(price);
+        currencyType = 'ETH';
+    } else {
+        price = betPriceUSDT.mul(betCount);
+        priceFormatted = ethers.utils.formatUnits(price, 6);
+        currencyType = 'USDT';
+    }
+
+    document.getElementById('totalPrice').innerText = priceFormatted;
+    document.getElementById('currencyType').innerText = currencyType;
+    document.getElementById('priceDetails').style.display = "block";
+    document.getElementById('paymentOptions').style.display = "block";
+    document.getElementById('confirmBetBtn').style.display = "inline-block";
+});
+
+// Fungsi untuk menempatkan taruhan
+async function placeBet() {
+    const betNumber = document.getElementById('betNumber').value;
+    const betCount = parseInt(document.getElementById('betCount').value);
+    const paymentMethod = document.getElementById('paymentMethod').value;
+
+    if (!betNumber || !betCount || betCount <= 0) {
+        alert("Harap isi nomor taruhan dan jumlah taruhan yang valid.");
+        return;
+    }
+
+    let price, isUSDT;
+
+    if (paymentMethod === 'eth') {
+        price = betPriceETH.mul(betCount);
+        isUSDT = false;
+    } else {
+        price = betPriceUSDT.mul(betCount);
+        isUSDT = true;
+    }
+
+    try {
+        let tx;
+        if (isUSDT) {
+            const usdtContract = new ethers.Contract(usdtAddress, usdtABI, signer);
+
+            // Cek allowance USDT
+            const allowance = await usdtContract.allowance(await signer.getAddress(), contractAddress);
+            if (allowance.lt(price)) {
+                const approveTx = await usdtContract.approve(contractAddress, price);
+                await approveTx.wait();
             }
+
+            // Kirim USDT ke kontrak
+            tx = await usdtContract.transfer(contractAddress, price);
+        } else {
+            tx = await contract.placeBet(betNumber, betCount, 1, false, { value: price });
         }
 
-        // Fungsi untuk menghubungkan dompet dan mendapatkan detailnya
-        async function getWalletDetails() {
-            const accounts = await provider.listAccounts();
-            if (accounts.length > 0) {
-                currentAccount = accounts[0];
-                document.getElementById("walletAddress").innerText = currentAccount;
-                await getEthBalance();
-                await getUsdtBalance();
-            }
-        }
+        await tx.wait();
+        alert("Taruhan berhasil!");
+    } catch (error) {
+        console.error(error);
+        alert("Terjadi kesalahan saat memasang taruhan.");
+    }
+}
 
-        // Fungsi untuk mengambil saldo ETH
-        async function getEthBalance() {
-            const balance = await provider.getBalance(currentAccount);
-            document.getElementById("ethBalance").innerText = ethers.utils.formatEther(balance);
-        }
-
-        // Fungsi untuk mengambil saldo USDT
-        async function getUsdtBalance() {
-            const usdtContract = new ethers.Contract(usdtAddress, ["function balanceOf(address) view returns (uint256)"], provider);
-            const balance = await usdtContract.balanceOf(currentAccount);
-            document.getElementById("usdtBalance").innerText = ethers.utils.formatUnits(balance, 6);
-        }
-
-        // Fungsi untuk memasang taruhan
-        async function placeBet() {
-            const betNumber = document.getElementById('betNumber').value;
-            const betCount = document.getElementById('betCount').value;
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            let price, isUSDT;
-
-            // Validasi input
-            if (!betNumber || !betCount) {
-                alert("Harap isi nomor taruhan dan jumlah taruhan.");
-                return;
-            }
-
-            if (paymentMethod === 'eth') {
-                price = betPriceETH.mul(betCount);
-                isUSDT = false;
-            } else {
-                price = betPriceUSDT * betCount;
-                isUSDT = true;
-            }
-
-            // Kirim transaksi ke kontrak pintar
-            try {
-                let tx;
-                if (isUSDT) {
-                    const usdtContract = new ethers.Contract(usdtAddress, abi, signer);
-                    tx = await usdtContract.transfer(contractAddress, price, { from: currentAccount });
-                } else {
-                    tx = await contract.placeBet(betNumber, betCount, 1, false, {
-                        value: price,
-                    });
-                }
-                await tx.wait();
-                alert("Taruhan berhasil!");
-            } catch (error) {
-                console.error(error);
-                alert("Terjadi kesalahan saat memasang taruhan.");
-            }
-        }
-
-        // Fungsi untuk membuka modal
-        document.getElementById('placeBetBtn').addEventListener('click', function() {
-            document.getElementById('betModal').style.display = "block";
-        });
-
-        // Fungsi untuk menutup modal
-        document.querySelector('.close').addEventListener('click', function() {
-            document.getElementById('betModal').style.display = "none";
-        });
-
-        // Fungsi untuk menghitung harga taruhan dan menampilkan detailnya
-        document.getElementById('calculatePriceBtn').addEventListener('click', function() {
-            const betCount = document.getElementById('betCount').value;
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            let price, currencyType;
-
-            if (!betCount) {
-                alert("Harap masukkan jumlah taruhan.");
-                return;
-            }
-
-            if (paymentMethod === 'eth') {
-                price = betPriceETH.mul(betCount);
-                currencyType = 'ETH';
-            } else {
-                price = betPriceUSDT * betCount;
-                currencyType = 'USDT';
-            }
-
-            document.getElementById('totalPrice').innerText = price.toString();
-            document.getElementById('currencyType').innerText = currencyType;
-            document.getElementById('priceDetails').style.display = "block";
-            document.getElementById('paymentOptions').style.display = "block";
-            document.getElementById('confirmBetBtn').style.display = "inline-block";
-        });
-
-        // Fungsi untuk konfirmasi taruhan
-        document.getElementById('confirmBetBtn').addEventListener('click', function() {
-            placeBet();
-        });
-
-        // Menjalankan inisialisasi saat halaman dimuat
-        window.onload = initialize;
+// Event listener untuk tombol konfirmasi taruhan
+document.getElementById('confirmBetBtn').addEventListener('click', placeBet);
+document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
     </script>
 </body>
 </html>
