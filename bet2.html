@@ -11,13 +11,14 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
 
-/* Body and background */
+/* Body */
 body {
-    background-color: #f4f4f4;
+    background-color: #eceff1;
     color: #333;
+    font-size: 16px;
 }
 
 /* Modal Background */
@@ -25,77 +26,90 @@ body {
     display: none;
     position: fixed;
     z-index: 1000;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    animation: fadeIn 0.3s ease-in-out;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.5s ease;
 }
 
 /* Modal Content */
 .modal-content {
-    background-color: #fff;
-    margin: 15% auto;
+    background-color: #ffffff;
+    margin: 10% auto;
     padding: 30px;
-    width: 80%;
-    max-width: 500px;
+    width: 90%;
+    max-width: 600px;
     border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transform: translateY(-20px);
-    animation: slideUp 0.5s ease-in-out forwards;
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+    transform: scale(0.8);
+    animation: scaleUp 0.4s ease forwards;
 }
 
-/* 3D Input fields */
+/* Modal Header */
+.modal-header {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #007BFF;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* 3D Input Fields */
 .modal-content input {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
+    padding: 14px 20px;
+    margin: 10px 0;
+    border: 2px solid #ddd;
     border-radius: 8px;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-size: 16px;
+    background-color: #f8f8f8;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
+/* Input Focus effect */
 .modal-content input:focus {
+    border-color: #007BFF;
     transform: translateY(-4px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
 }
 
-/* Buttons with hover and 3D effect */
+/* Buttons with 3D Effect */
 .btn {
     cursor: pointer;
     padding: 12px 24px;
-    margin: 5px;
     background-color: #007BFF;
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 16px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-size: 18px;
+    box-shadow: 0 5px 20px rgba(0, 123, 255, 0.2);
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    width: 100%;
 }
 
 .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    background-color: #0056b3;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px);
 }
 
 .btn:active {
     transform: translateY(2px);
 }
 
-/* Modal Header */
-.modal-header {
+/* Modal Footer */
+.modal-footer {
     text-align: center;
-    font-size: 24px;
-    color: #333;
-    font-weight: bold;
-    margin-bottom: 20px;
+    margin-top: 15px;
 }
 
-/* Animation for Modal appearance */
+/* Animations for Modal */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -105,26 +119,29 @@ body {
     }
 }
 
-@keyframes slideUp {
+@keyframes scaleUp {
     from {
-        transform: translateY(-20px);
+        transform: scale(0.8);
     }
     to {
-        transform: translateY(0);
+        transform: scale(1);
     }
 }
 
-/* Responsiveness for different screen sizes */
+/* Responsive Design for Mobile */
 @media (max-width: 768px) {
     .modal-content {
-        width: 90%;
-        margin: 10% auto;
+        width: 85%;
         padding: 20px;
     }
 
     .btn {
-        width: 100%;
         padding: 15px;
+        font-size: 16px;
+    }
+
+    .modal-header {
+        font-size: 24px;
     }
 }
 
@@ -134,16 +151,15 @@ body {
         padding: 15px;
     }
 
-    .modal-header {
-        font-size: 20px;
-    }
-
     .btn {
-        width: 100%;
         padding: 12px;
         font-size: 14px;
     }
-}
+
+    .modal-header {
+        font-size: 20px;
+    }
+    }
     </style>
 </head>
 <body>
