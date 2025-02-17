@@ -60,16 +60,14 @@ input {
         <!-- Taruhan Form -->
         <h2>Place Bet</h2>
         <div>
-            <label for="betNumber">Nomor Taruhan:</label>
-            <input type="number" id="betNumber" placeholder="Masukkan nomor taruhan">
-        </div>
-        <div>
-            <label for="betCount">Jumlah Taruhan:</label>
-            <input type="number" id="betCount" placeholder="Jumlah taruhan">
-        </div>
-        <div>
-            <button id="placeBetBtn">Place Bet (0.0001 ETH / 0.5 USDT per taruhan)</button>
-        </div>
+    <label for="betNumber">Nomor Taruhan:</label>
+    <input type="number" id="betNumber" placeholder="Masukkan nomor taruhan" min="0" max="9999" oninput="validateBetNumber(this)">
+</div>
+<div>
+    <label for="betCount">Jumlah Taruhan:</label>
+    <input type="number" id="betCount" placeholder="Jumlah taruhan" min="1" max="99" oninput="validateBetCount(this)">
+</div>
+<button id="placeBetBtn">Pasang Taruhan</button>
 
         <!-- Riwayat Taruhan -->
         <h2>Riwayat Taruhan Pribadi</h2>
@@ -149,32 +147,65 @@ async function loadBalance() {
     document.getElementById("usdtBalance").innerText = ethers.utils.formatUnits(usdtBalance, 6);  // USDT biasanya memiliki 6 desimal
 }
 
-// Menangani form untuk taruhan
+// Fungsi validasi Nomor Taruhan (00 - 9999)
+function validateBetNumber(input) {
+    let value = input.value;
+
+    // Jika angka kurang dari 2 digit, tambahkan leading zero
+    if (value.length === 1) {
+        input.value = "0" + value;
+    }
+
+    // Pastikan angka dalam batas 00 - 9999
+    if (value < 0 || value > 9999) {
+        input.value = "";
+        alert("Nomor taruhan harus antara 00 hingga 9999.");
+    }
+}
+
+// Fungsi validasi Jumlah Taruhan (1 - 99)
+function validateBetCount(input) {
+    let value = input.value;
+
+    if (value < 1 || value > 99) {
+        input.value = "";
+        alert("Jumlah taruhan harus antara 1 hingga 99.");
+    }
+}
+
+// Fungsi untuk memasang taruhan
 async function placeBet() {
     const betNumber = document.getElementById("betNumber").value;
     const betCount = document.getElementById("betCount").value;
     const isUSDT = false; // Ganti sesuai jenis taruhan
 
-    if (!betNumber || !betCount || isNaN(betNumber) || isNaN(betCount)) {
-        alert("Please enter a valid bet number and count.");
+    // Validasi angka
+    if (betNumber.length < 2 || betNumber.length > 4 || betNumber < 0 || betNumber > 9999) {
+        alert("Nomor taruhan harus terdiri dari 2 hingga 4 angka (00 - 9999).");
         return;
     }
 
-    const betAmount = isUSDT ? betPriceUSDT * betCount : betPriceETH * betCount;
+    if (betCount < 1 || betCount > 99 || isNaN(betCount)) {
+        alert("Jumlah taruhan harus antara 1 hingga 99.");
+        return;
+    }
+
+    const betAmount = isUSDT ? betPriceUSDT * betCount : betPriceETH.mul(betCount);
 
     try {
-        const tx = await contract.placeBet(betNumber, betCount, 0, isUSDT, {
-            value: betAmount
-        });
+        const tx = await contract.placeBet(betNumber, betCount, 0, isUSDT, { value: betAmount });
         await tx.wait();
-        alert("Bet placed successfully!");
-        loadBalance();  // Perbarui saldo setelah taruhan berhasil
-        loadBetHistory();  // Load riwayat bet pribadi setelah taruhan berhasil
+        alert("Taruhan berhasil!");
+        loadBalance();  // Perbarui saldo
+        loadBetHistory();  // Perbarui riwayat taruhan pribadi
     } catch (error) {
         console.error(error);
-        alert("Error placing bet.");
+        alert("Gagal memasang taruhan.");
     }
 }
+
+// Tambahkan event listener ke tombol "Pasang Taruhan"
+document.getElementById("placeBetBtn").addEventListener("click", placeBet);
 
 // Mengambil riwayat taruhan pribadi
 async function loadBetHistory() {
