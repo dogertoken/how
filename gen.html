@@ -154,6 +154,13 @@ button:hover {
         <button onclick="copyToClipboard()">Copy</button>
     </div>
 
+    <div class="buttons">
+    <button onclick="clearHistory()">Hapus Riwayat</button>
+</div>
+
+<h2>Riwayat Angka:</h2>
+<div id="history"></div>
+
     <script>
         function generateRandomNumbers() {
             let angka = [0, 0, 0, 0];
@@ -194,6 +201,45 @@ button:hover {
                 console.error("Gagal menyalin angka", err);
             });
         }
+
+        // History
+        function saveToHistory(angka) {
+    let history = JSON.parse(localStorage.getItem("history")) || [];
+    
+    // Maksimal simpan 10 riwayat terbaru
+    if (history.length >= 10) {
+        history.pop();
+    }
+    
+    history.unshift(angka); // Masukkan angka terbaru ke awal array
+    localStorage.setItem("history", JSON.stringify(history));  
+    displayHistory();
+}
+
+function displayHistory() {
+    let historyDiv = document.getElementById("history");
+    historyDiv.innerHTML = ""; // Kosongkan sebelum diisi ulang
+
+    let history = JSON.parse(localStorage.getItem("history")) || [];
+    history.forEach((angka) => {
+        let entry = document.createElement("p");
+        entry.textContent = angka;
+        historyDiv.appendChild(entry);
+    });
+}
+
+function clearHistory() {
+    localStorage.removeItem("history");
+    displayHistory();
+}
+
+// Panggil saat halaman dibuka untuk menampilkan riwayat sebelumnya
+displayHistory();
+
+setTimeout(() => {
+    let angkaFinal = angka.join("");
+    saveToHistory(angkaFinal);
+}, 2500);
     </script>
 
 </body>
