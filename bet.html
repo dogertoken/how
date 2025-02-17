@@ -137,7 +137,7 @@ button:active {
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: #1e1e2f;
     margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
@@ -349,10 +349,7 @@ async function placeBet() {
         alert("Taruhan berhasil!");
         loadBalance();  // Perbarui saldo
         loadBetHistory();  // Perbarui riwayat taruhan pribadi
-    } catch (error) {
-        console.error(error);
-        alert("Gagal memasang taruhan.");
-    }
+    } 
 }
 
 // Tambahkan event listener ke tombol "Pasang Taruhan"
