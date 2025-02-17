@@ -121,6 +121,44 @@ button:active {
     font-size: 14px;
     opacity: 0.9;
 }
+
+/* Modal Style */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); 
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
     </style>
 </head>
 <body>
@@ -135,16 +173,29 @@ button:active {
         <p><strong>Saldo USDT:</strong> <span id="usdtBalance">-</span> USDT</p>
 
         <!-- Taruhan Form -->
-        <h2>Place Bet</h2>
-        <div>
-    <label for="betNumber">Nomor Taruhan:</label>
-    <input type="number" id="betNumber" placeholder="Masukkan nomor taruhan" min="0" max="9999" oninput="validateBetNumber(this)">
-</div>
-<div>
-    <label for="betCount">Jumlah Taruhan:</label>
-    <input type="number" id="betCount" placeholder="Jumlah taruhan" min="1" max="99" oninput="validateBetCount(this)">
-</div>
+<h2>Place Bet</h2>
 <button id="placeBetBtn">Pasang Taruhan</button>
+
+<!-- Modal Popup -->
+<div id="betModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Masukkan Detail Taruhan</h3>
+        <div>
+            <label for="betNumber">Nomor Taruhan:</label>
+            <input type="number" id="betNumber" placeholder="Masukkan nomor taruhan" min="0" max="9999" oninput="validateBetNumber(this)">
+        </div>
+        <div>
+            <label for="betCount">Jumlah Taruhan:</label>
+            <input type="number" id="betCount" placeholder="Jumlah taruhan" min="1" max="99" oninput="validateBetCount(this)">
+        </div>
+        <button id="calculatePriceBtn">Kalkulasi Harga</button>
+        <div id="priceDetails" style="margin-top: 10px; display: none;">
+            <p><strong>Total Biaya: </strong><span id="totalPrice">0</span> ETH / USDT</p>
+        </div>
+        <button id="confirmBetBtn" style="display: none;">Konfirmasi Pembayaran</button>
+    </div>
+</div>
 
         <!-- Riwayat Taruhan -->
         <h2>Riwayat Taruhan Pribadi</h2>
@@ -329,6 +380,56 @@ async function loadBetHistory() {
     } catch (error) {
         console.error(error);
     }
+}
+
+// Mendapatkan elemen modal dan tombol
+var modal = document.getElementById("betModal");
+var placeBetBtn = document.getElementById("placeBetBtn");
+var closeModal = document.getElementsByClassName("close")[0];
+var calculatePriceBtn = document.getElementById("calculatePriceBtn");
+var confirmBetBtn = document.getElementById("confirmBetBtn");
+var priceDetails = document.getElementById("priceDetails");
+var totalPriceDisplay = document.getElementById("totalPrice");
+
+// Tampilkan modal saat tombol Pasang Taruhan diklik
+placeBetBtn.onclick = function() {
+    modal.style.display = "block";
+}
+
+// Tutup modal ketika klik tombol "x"
+closeModal.onclick = function() {
+    modal.style.display = "none";
+}
+
+// Tutup modal jika area di luar modal diklik
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+// Kalkulasi harga total
+calculatePriceBtn.onclick = function() {
+    var betNumber = document.getElementById("betNumber").value;
+    var betCount = document.getElementById("betCount").value;
+
+    // Validasi input
+    if (betNumber && betCount && betCount >= 1 && betCount <= 99) {
+        var totalPrice = betCount * 0.0001;  // Contoh perhitungan dengan harga 0.0001 ETH atau 0.5 USDT per taruhan
+        totalPriceDisplay.textContent = totalPrice.toFixed(4);  // Menampilkan harga dalam 4 desimal
+        priceDetails.style.display = "block";
+        confirmBetBtn.style.display = "block";
+    } else {
+        alert("Harap masukkan Nomor Taruhan dan Jumlah Taruhan yang valid.");
+    }
+}
+
+// Konfirmasi pembayaran
+confirmBetBtn.onclick = function() {
+    var betNumber = document.getElementById("betNumber").value;
+    var betCount = document.getElementById("betCount").value;
+    alert("Taruhan telah dikonfirmasi! Nomor Taruhan: " + betNumber + " | Jumlah Taruhan: " + betCount);
+    modal.style.display = "none"; // Menutup modal setelah konfirmasi
 }
 
 // Mengambil riwayat taruhan umum
