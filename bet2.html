@@ -170,6 +170,125 @@ body {
         font-size: 20px;
     }
 }
+
+   /* Wallet Info Container */
+#walletInfo {
+    background-color: #1f1f1f;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+    margin: 20px auto;
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+    color: #fff;
+    border: 2px solid #333;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Wallet Info hover effect */
+#walletInfo:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+}
+
+/* Wallet Info Text */
+#walletInfo p {
+    font-size: 18px;
+    margin: 10px 0;
+    font-weight: bold;
+    color: #b0b0b0;
+}
+
+/* Wallet Info Span (for dynamic values) */
+#walletInfo span {
+    color: #9c27b0;
+}
+
+/* Buttons within Wallet Info */
+#walletInfo .btn {
+    padding: 16px 24px;
+    font-size: 18px;
+    width: 100%;
+    margin-top: 15px;
+    background-color: #9c27b0;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    color: white;
+    border: none;
+}
+
+/* Button hover and active states */
+#walletInfo .btn:hover {
+    background-color: #7b1fa2;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+}
+
+#walletInfo .btn:active {
+    transform: translateY(2px);
+}
+
+/* Bet Button */
+#placeBetBtn {
+    display: block;
+    margin: 30px auto;
+    padding: 18px 30px;
+    background-color: #9c27b0;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+#placeBetBtn:hover {
+    background-color: #7b1fa2;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+}
+
+#placeBetBtn:active {
+    transform: translateY(2px);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    #walletInfo {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .btn {
+        font-size: 16px;
+        padding: 14px 20px;
+    }
+
+    #placeBetBtn {
+        padding: 15px 20px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    #walletInfo {
+        width: 95%;
+        padding: 10px;
+    }
+
+    .btn {
+        font-size: 14px;
+        padding: 12px 18px;
+    }
+
+    #placeBetBtn {
+        padding: 14px 20px;
+        font-size: 14px;
+    }
+}
     </style>
 </head>
 <body>
