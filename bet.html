@@ -190,8 +190,18 @@ button:active {
             <input type="number" id="betCount" placeholder="Jumlah taruhan" min="1" max="99" oninput="validateBetCount(this)">
         </div>
         <button id="calculatePriceBtn">Kalkulasi Harga</button>
+        
+        <!-- Opsi Pembayaran -->
+        <div id="paymentOptions" style="display: none; margin-top: 10px;">
+            <label for="paymentMethod">Pilih Pembayaran:</label>
+            <select id="paymentMethod">
+                <option value="eth">ETH</option>
+                <option value="usdt">USDT</option>
+            </select>
+        </div>
+
         <div id="priceDetails" style="margin-top: 10px; display: none;">
-            <p><strong>Total Biaya: </strong><span id="totalPrice">0</span> ETH / USDT</p>
+            <p><strong>Total Biaya: </strong><span id="totalPrice">0</span> <span id="currencyType">ETH</span></p>
         </div>
         <button id="confirmBetBtn" style="display: none;">Konfirmasi Pembayaran</button>
     </div>
@@ -359,30 +369,6 @@ async function placeBet() {
 // Tambahkan event listener ke tombol "Pasang Taruhan"
 document.getElementById("placeBetBtn").addEventListener("click", placeBet);
 
-// Mengambil riwayat taruhan pribadi
-async function loadBetHistory() {
-    if (!currentAccount) return;
-
-    try {
-        const betCount = await contract.getBetCount();
-        let historyHTML = '';
-        for (let i = 1; i <= betCount; i++) {
-            const bet = await contract.getBet(i);
-            if (bet[0].toLowerCase() === currentAccount.toLowerCase()) {
-                historyHTML += `<div>
-                    <p>Bet ID: ${i} | Nomor: ${bet[2]} | Taruhan: ${bet[1]} | Payout: ${bet[4]}</p>
-                    <button onclick="addComment(${i})">Add Comment</button>
-                    <button onclick="addLike(${i})">Like</button>
-                    <div id="comments-${i}"></div>
-                </div>`;
-            }
-        }
-        document.getElementById("betHistory").innerHTML = historyHTML;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
 // Mendapatkan elemen modal dan tombol
 var modal = document.getElementById("betModal");
 var placeBetBtn = document.getElementById("placeBetBtn");
@@ -391,6 +377,8 @@ var calculatePriceBtn = document.getElementById("calculatePriceBtn");
 var confirmBetBtn = document.getElementById("confirmBetBtn");
 var priceDetails = document.getElementById("priceDetails");
 var totalPriceDisplay = document.getElementById("totalPrice");
+var paymentOptions = document.getElementById("paymentOptions");
+var currencyTypeDisplay = document.getElementById("currencyType");
 
 // Tampilkan modal saat tombol Pasang Taruhan diklik
 placeBetBtn.onclick = function() {
@@ -419,9 +407,20 @@ calculatePriceBtn.onclick = function() {
         var totalPrice = betCount * 0.0001;  // Contoh perhitungan dengan harga 0.0001 ETH atau 0.5 USDT per taruhan
         totalPriceDisplay.textContent = totalPrice.toFixed(4);  // Menampilkan harga dalam 4 desimal
         priceDetails.style.display = "block";
+        paymentOptions.style.display = "block";
         confirmBetBtn.style.display = "block";
     } else {
         alert("Harap masukkan Nomor Taruhan dan Jumlah Taruhan yang valid.");
+    }
+}
+
+// Mengubah jenis mata uang berdasarkan pilihan pembayaran
+document.getElementById("paymentMethod").onchange = function() {
+    var paymentMethod = document.getElementById("paymentMethod").value;
+    if (paymentMethod === "eth") {
+        currencyTypeDisplay.textContent = "ETH";
+    } else {
+        currencyTypeDisplay.textContent = "USDT";
     }
 }
 
@@ -429,8 +428,33 @@ calculatePriceBtn.onclick = function() {
 confirmBetBtn.onclick = function() {
     var betNumber = document.getElementById("betNumber").value;
     var betCount = document.getElementById("betCount").value;
-    alert("Taruhan telah dikonfirmasi! Nomor Taruhan: " + betNumber + " | Jumlah Taruhan: " + betCount);
+    var paymentMethod = document.getElementById("paymentMethod").value;
+    alert("Taruhan telah dikonfirmasi! Nomor Taruhan: " + betNumber + " | Jumlah Taruhan: " + betCount + " | Pembayaran menggunakan " + paymentMethod.toUpperCase());
     modal.style.display = "none"; // Menutup modal setelah konfirmasi
+}
+
+// Mengambil riwayat taruhan pribadi
+async function loadBetHistory() {
+    if (!currentAccount) return;
+
+    try {
+        const betCount = await contract.getBetCount();
+        let historyHTML = '';
+        for (let i = 1; i <= betCount; i++) {
+            const bet = await contract.getBet(i);
+            if (bet[0].toLowerCase() === currentAccount.toLowerCase()) {
+                historyHTML += `<div>
+                    <p>Bet ID: ${i} | Nomor: ${bet[2]} | Taruhan: ${bet[1]} | Payout: ${bet[4]}</p>
+                    <button onclick="addComment(${i})">Add Comment</button>
+                    <button onclick="addLike(${i})">Like</button>
+                    <div id="comments-${i}"></div>
+                </div>`;
+            }
+        }
+        document.getElementById("betHistory").innerHTML = historyHTML;
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 // Mengambil riwayat taruhan umum
