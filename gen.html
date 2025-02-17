@@ -246,10 +246,15 @@ function clearHistory() {
 // Panggil saat halaman dibuka untuk menampilkan riwayat sebelumnya
 document.addEventListener("DOMContentLoaded", displayHistory);
 
+// Hentikan animasi satu per satu dengan delay
+setTimeout(() => clearInterval(interval[0]), 1000);
+setTimeout(() => clearInterval(interval[1]), 1500);
+setTimeout(() => clearInterval(interval[2]), 2000);
 setTimeout(() => {
-    let angkaFinal = angka.join("");
-    saveToHistory(angkaFinal);
-}, 2600);
+    clearInterval(interval[3]); // Pastikan animasi angka berhenti
+    let angkaFinal = angka.join(""); // Gabungkan angka yang dihasilkan
+    saveToHistory(angkaFinal);  // Simpan ke localStorage
+}, 2500);
     </script>
 
 </body>
