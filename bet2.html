@@ -224,8 +224,8 @@
         let provider, signer, contract;
         const contractAddress = 'YOUR_CONTRACT_ADDRESS';  // Ganti dengan alamat kontrak Anda
         const usdtAddress = 'USDT_CONTRACT_ADDRESS';  // Ganti dengan alamat kontrak USDT Anda
-        const betPriceETH = ethers.utils.parseEther("0.0001");  // 0.0001 ETH
-        const betPriceUSDT = 500000;  // 0.5 USDT = 500,000 wei
+        const betPriceETH = ethers.utils.parseEther("0.0001"); // Harga per bet dalam ETH (0.0001 ETH)
+        const betPriceUSDT = ethers.utils.parseUnits("0.5", 6); // Harga per bet dalam USDT (0.5 USDT)
 
         // ABI dari kontrak pintar Anda
         const abi = [
