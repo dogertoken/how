@@ -149,17 +149,20 @@ async function loadBalance() {
 
 // Fungsi validasi Nomor Taruhan (00 - 9999)
 function validateBetNumber(input) {
-    let value = input.value;
+    let value = input.value.trim();
 
-    // Jika angka kurang dari 2 digit, tambahkan leading zero
-    if (value.length === 1) {
-        input.value = "0" + value;
+    // Pastikan input hanya angka
+    if (!/^\d+$/.test(value)) {
+        alert("Hanya boleh angka.");
+        input.value = "";
+        return;
     }
 
-    // Pastikan angka dalam batas 00 - 9999
-    if (value < 0 || value > 9999) {
+    // Cegah input kurang dari 2 digit atau lebih dari 4 digit
+    if (value.length < 2 || value.length > 4) {
+        alert("Nomor taruhan harus terdiri dari minimal 2 digit dan maksimal 4 digit.");
         input.value = "";
-        alert("Nomor taruhan harus antara 00 hingga 9999.");
+        return;
     }
 }
 
