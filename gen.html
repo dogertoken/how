@@ -154,13 +154,14 @@ button:hover {
         <button onclick="copyToClipboard()">Copy</button>
     </div>
 
+    <h2>Riwayat Angka:</h2>
+    <div id="history" style="margin-top: 10px; text-align: center;"></div>
+    
+
     <div class="buttons">
     <button onclick="clearHistory()">Hapus Riwayat</button>
-</div>
-
-<h2>Riwayat Angka:</h2>
-<div id="history"></div>
-
+    </div>
+    
     <script>
         function generateRandomNumbers() {
             let angka = [0, 0, 0, 0];
@@ -206,14 +207,14 @@ button:hover {
         function saveToHistory(angka) {
     let history = JSON.parse(localStorage.getItem("history")) || [];
     
-    // Maksimal simpan 10 riwayat terbaru
+    // Simpan maksimal 10 hasil terakhir
     if (history.length >= 10) {
-        history.pop();
+        history.pop(); // Hapus hasil paling lama
     }
     
-    history.unshift(angka); // Masukkan angka terbaru ke awal array
+    history.unshift(angka); // Masukkan angka terbaru di awal array
     localStorage.setItem("history", JSON.stringify(history));  
-    displayHistory();
+    displayHistory(); // Perbarui tampilan riwayat
 }
 
 function displayHistory() {
@@ -221,25 +222,34 @@ function displayHistory() {
     historyDiv.innerHTML = ""; // Kosongkan sebelum diisi ulang
 
     let history = JSON.parse(localStorage.getItem("history")) || [];
+    
+    if (history.length === 0) {
+        historyDiv.innerHTML = "<p>Belum ada riwayat.</p>";
+        return;
+    }
+
     history.forEach((angka) => {
         let entry = document.createElement("p");
         entry.textContent = angka;
+        entry.style.margin = "5px 0"; // Atur jarak antar riwayat
+        entry.style.fontSize = "1.2rem";
+        entry.style.fontWeight = "bold";
         historyDiv.appendChild(entry);
     });
 }
 
 function clearHistory() {
     localStorage.removeItem("history");
-    displayHistory();
+    displayHistory(); // Perbarui tampilan setelah dihapus
 }
 
 // Panggil saat halaman dibuka untuk menampilkan riwayat sebelumnya
-displayHistory();
+document.addEventListener("DOMContentLoaded", displayHistory);
 
 setTimeout(() => {
     let angkaFinal = angka.join("");
     saveToHistory(angkaFinal);
-}, 2500);
+}, 2600);
     </script>
 
 </body>
