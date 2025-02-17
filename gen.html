@@ -11,29 +11,44 @@
             margin: 50px;
         }
         #hasil {
-            font-size: 24px;
+            font-size: 48px;
+            font-weight: bold;
+            letter-spacing: 10px;
             margin: 20px;
         }
         button {
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
     <h1>Generator 4 Angka Acak</h1>
-    <p id="hasil">Klik tombol untuk mendapatkan angka acak</p>
+    <p id="hasil">0 0 0 0</p>
     <button onclick="generateRandomNumbers()">Generate</button>
 
     <script>
         function generateRandomNumbers() {
-            let angka1 = Math.floor(Math.random() * 10);
-            let angka2 = Math.floor(Math.random() * 10);
-            let angka3 = Math.floor(Math.random() * 10);
-            let angka4 = Math.floor(Math.random() * 10);
-            document.getElementById("hasil").innerText = angka1 + "" + angka2 + "" + angka3 + "" + angka4;
+            let hasilElement = document.getElementById("hasil");
+            let angka = [0, 0, 0, 0];
+            let interval = [];
+
+            // Animasi angka terus berubah cepat
+            for (let i = 0; i < 4; i++) {
+                interval[i] = setInterval(() => {
+                    angka[i] = Math.floor(Math.random() * 10);
+                    hasilElement.innerText = angka.join(" ");
+                }, 50);
+            }
+
+            // Menghentikan angka satu per satu dengan jeda waktu
+            setTimeout(() => clearInterval(interval[0]), 1000);
+            setTimeout(() => clearInterval(interval[1]), 1500);
+            setTimeout(() => clearInterval(interval[2]), 2000);
+            setTimeout(() => clearInterval(interval[3]), 2500);
         }
     </script>
 
