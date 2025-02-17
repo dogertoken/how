@@ -230,10 +230,30 @@ body {
     transform: translateY(2px);
 }
 
-/* Bet Button */
+/* Place Bet Box */
+#placeBetBox {
+    background-color: #1f1f1f;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+    margin: 20px auto;
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+    color: #fff;
+    border: 2px solid #333;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Place Bet hover effect */
+#placeBetBox:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+}
+
+/* Place Bet Button */
 #placeBetBtn {
     display: block;
-    margin: 30px auto;
     padding: 18px 30px;
     background-color: #9c27b0;
     color: white;
@@ -243,6 +263,7 @@ body {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
     width: 100%;
     transition: all 0.3s ease;
+    margin-top: 20px;
 }
 
 #placeBetBtn:hover {
@@ -257,7 +278,7 @@ body {
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-    #walletInfo {
+    #walletInfo, #placeBetBox {
         width: 90%;
         padding: 15px;
     }
@@ -274,7 +295,7 @@ body {
 }
 
 @media (max-width: 480px) {
-    #walletInfo {
+    #walletInfo, #placeBetBox {
         width: 95%;
         padding: 10px;
     }
@@ -288,7 +309,7 @@ body {
         padding: 14px 20px;
         font-size: 14px;
     }
-}
+    }
     </style>
 </head>
 <body>
