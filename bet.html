@@ -151,20 +151,40 @@ async function loadBalance() {
 function validateBetNumber(input) {
     let value = input.value.trim();
 
-    // Pastikan input hanya angka
+    // Jika input kosong, biarkan dulu (agar pengguna bisa mengetik)
+    if (value === "") {
+        return;
+    }
+
+    // Pastikan hanya angka yang diperbolehkan
     if (!/^\d+$/.test(value)) {
         alert("Hanya boleh angka.");
         input.value = "";
         return;
     }
 
-    // Cegah input kurang dari 2 digit atau lebih dari 4 digit
-    if (value.length < 2 || value.length > 4) {
-        alert("Nomor taruhan harus terdiri dari minimal 2 digit dan maksimal 4 digit.");
-        input.value = "";
-        return;
+    // Jika kurang dari 2 digit, biarkan dulu sampai pengguna selesai mengetik
+    if (value.length > 4) {
+        alert("Nomor taruhan harus maksimal 4 digit.");
+        input.value = value.slice(0, 4); // Potong ke 4 digit pertama
     }
 }
+
+// Pastikan validasi final saat input kehilangan fokus (blur event)
+document.getElementById("betNumber").addEventListener("blur", function () {
+    let value = this.value.trim();
+
+    // Jika pengguna mengosongkan input, tidak perlu validasi
+    if (value === "") {
+        return;
+    }
+
+    // Jika kurang dari 2 digit setelah mengetik selesai, peringatkan pengguna
+    if (value.length < 2) {
+        alert("Nomor taruhan harus minimal 2 digit.");
+        this.value = ""; // Reset input jika tidak valid
+    }
+});
 
 // Fungsi validasi Jumlah Taruhan (1 - 99)
 function validateBetCount(input) {
