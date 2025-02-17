@@ -1,50 +1,113 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generator 4 Angka Acak</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             text-align: center;
-            margin: 50px;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            overflow: hidden;
         }
-        #hasil {
-            font-size: 48px;
+
+        h1 {
+            font-size: 3rem;
+            text-shadow: 0 0 15px rgba(0, 183, 255, 0.8);
+        }
+
+        #container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .number {
+            font-size: 5rem;
             font-weight: bold;
-            letter-spacing: 10px;
-            margin: 20px;
+            width: 80px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #273c75, #192a56);
+            box-shadow: 0 8px 25px rgba(0, 183, 255, 0.8), 0 4px 10px rgba(0, 183, 255, 0.5);
+            transform: perspective(500px) rotateX(20deg);
+            animation: pulse 1.5s infinite alternate;
         }
+
         button {
-            padding: 10px 20px;
-            font-size: 18px;
+            padding: 12px 30px;
+            margin-top: 30px;
+            font-size: 1.5rem;
             cursor: pointer;
-            margin-top: 20px;
+            color: white;
+            background: linear-gradient(135deg, #00b7ff, #007bff);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 183, 255, 0.8);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
+        }
+
+        @keyframes pulse {
+            from {
+                transform: perspective(500px) rotateX(20deg) translateY(0);
+            }
+
+            to {
+                transform: perspective(500px) rotateX(20deg) translateY(-10px);
+            }
         }
     </style>
 </head>
+
 <body>
 
-    <h1>Generator 4 Angka Acak</h1>
-    <p id="hasil">0 0 0 0</p>
+    <h1>🎰 Generator 4 Angka Acak 🎰</h1>
+
+    <div id="container">
+        <div class="number" id="num1">0</div>
+        <div class="number" id="num2">0</div>
+        <div class="number" id="num3">0</div>
+        <div class="number" id="num4">0</div>
+    </div>
+
     <button onclick="generateRandomNumbers()">Generate</button>
 
     <script>
         function generateRandomNumbers() {
-            let hasilElement = document.getElementById("hasil");
             let angka = [0, 0, 0, 0];
+            let elements = [
+                document.getElementById("num1"),
+                document.getElementById("num2"),
+                document.getElementById("num3"),
+                document.getElementById("num4")
+            ];
             let interval = [];
 
-            // Animasi angka terus berubah cepat
+            // Mulai animasi angka berputar
             for (let i = 0; i < 4; i++) {
                 interval[i] = setInterval(() => {
                     angka[i] = Math.floor(Math.random() * 10);
-                    hasilElement.innerText = angka.join(" ");
+                    elements[i].textContent = angka[i];
                 }, 50);
             }
 
-            // Menghentikan angka satu per satu dengan jeda waktu
+            // Hentikan animasi satu per satu dengan delay
             setTimeout(() => clearInterval(interval[0]), 1000);
             setTimeout(() => clearInterval(interval[1]), 1500);
             setTimeout(() => clearInterval(interval[2]), 2000);
@@ -53,4 +116,5 @@
     </script>
 
 </body>
+
 </html>
