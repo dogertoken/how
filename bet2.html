@@ -125,7 +125,7 @@ body {
     animation: fadeIn 0.5s ease;
 }
 
-/* Modal Content */
+/* Modal Content - Center Align */
 .modal-content {
     background-color: #1f1f1f;
     margin: 10% auto;
@@ -137,6 +137,26 @@ body {
     transform: scale(0.8);
     animation: scaleUp 0.4s ease forwards;
     border: 2px solid #333;
+    
+    /* Flexbox untuk center alignment */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Input Fields with 3D Effect - Center */
+.modal-content input {
+    width: 80%; /* Lebih kecil supaya pas dengan tombol */
+    padding: 14px 18px;
+    margin: 9px 0;
+    border: 2px solid #444;
+    border-radius: 11px;
+    background-color: #2a2a2a;
+    color: #fff;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.2);
+    text-align: center; /* Teks placeholder dan input di tengah */
 }
 
 /* Modal Header */
@@ -148,20 +168,6 @@ body {
     font-weight: bold;
     text-transform: uppercase;
     text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.3);
-}
-
-/* Input Fields with 3D Effect */
-.modal-content input {
-    width: 95%;
-    padding: 14px 18px;
-    margin: 9px 0;
-    border: 2px solid #444;
-    border-radius: 11px;
-    background-color: #2a2a2a;
-    color: #fff;
-    font-size: 16px;
-    transition: all 0.3s ease-in-out;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
 /* Placeholder Effect */
