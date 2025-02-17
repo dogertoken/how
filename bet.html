@@ -3,219 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TotoChain</title>
-    <link rel="stylesheet" href="stylescss">
+    <title>Taruhan Blockchain</title>
+    <link rel="stylesheet" href="stylecss">
     <style>
-      body {
+        body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: #f8f9fa;
     padding: 20px;
 }
 
-.wallet-container, .bet-container, .history-container, .public-history-container, .comments-container {
-    background-color: white;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-input, textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #ddd;
+#app {
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 h2 {
-    margin-bottom: 20px;
+    margin-top: 30px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+input {
+    padding: 8px;
+    margin-top: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#betHistory, #explorerHistory {
+    margin-top: 20px;
 }
     </style>
 </head>
 <body>
-    <div class="wallet-container">
-        <button id="connect-wallet-btn">Connect Wallet</button>
-        <button id="disconnect-wallet-btn" style="display:none;">Disconnect Wallet</button>
-        <div id="wallet-address"></div>
-        <div id="eth-balance"></div>
-        <div id="usdt-balance"></div>
+    <div id="app">
+        <!-- Wallet Connection -->
+        <button id="connectWalletBtn">Connect Wallet</button>
+        <button id="disconnectWalletBtn" style="display:none;">Disconnect Wallet</button>
+
+        <h3>Wallet Information</h3>
+        <p><strong>Alamat Wallet:</strong> <span id="walletAddress">-</span></p>
+        <p><strong>Saldo ETH:</strong> <span id="ethBalance">-</span> ETH</p>
+        <p><strong>Saldo USDT:</strong> <span id="usdtBalance">-</span> USDT</p>
+
+        <!-- Taruhan Form -->
+        <h2>Place Bet</h2>
+        <div>
+            <label for="betNumber">Nomor Taruhan:</label>
+            <input type="number" id="betNumber" placeholder="Masukkan nomor taruhan">
+        </div>
+        <div>
+            <label for="betCount">Jumlah Taruhan:</label>
+            <input type="number" id="betCount" placeholder="Jumlah taruhan">
+        </div>
+        <div>
+            <button id="placeBetBtn">Place Bet (0.0001 ETH / 0.5 USDT per taruhan)</button>
+        </div>
+
+        <!-- Riwayat Taruhan -->
+        <h2>Riwayat Taruhan Pribadi</h2>
+        <div id="betHistory"></div>
+
+        <h2>Explorer Taruhan Umum</h2>
+        <div id="explorerHistory"></div>
     </div>
 
-    <div class="bet-container">
-        <h2>Place a Bet</h2>
-        <label for="bet-amount">Bet Amount:</label>
-        <input type="number" id="bet-amount" />
-        <button id="place-bet-btn">Place Bet</button>
-    </div>
-
-    <div class="history-container">
-        <h2>Your Bet History</h2>
-        <div id="personal-bet-history"></div>
-    </div>
-
-    <div class="public-history-container">
-        <h2>Public Bet History</h2>
-        <div id="public-bet-history"></div>
-    </div>
-
-    <div class="comments-container">
-        <h2>Comments</h2>
-        <textarea id="comment-input"></textarea>
-        <button id="submit-comment-btn">Submit Comment</button>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/ethers@5.0.28/dist/ethers.umd.min.js"></script>
-    <script src="scriptjs"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.6.9/dist/ethers.umd.min.js"></script>
+    <script src="https://unpkg.com/web3.js"></script>
+    <script src="appjs"></script>
     <script>
-      let provider;
-let signer;
-let walletAddress = null;
+        let currentAccount = null;
+let provider, signer, contract;
+const contractAddress = 'YOUR_CONTRACT_ADDRESS';  // Ganti dengan alamat kontrak Anda
+const usdtAddress = 'USDT_CONTRACT_ADDRESS';  // Ganti dengan alamat kontrak USDT Anda
+const betPriceETH = ethers.utils.parseEther("0.0001");  // 0.0001 ETH
+const betPriceUSDT = 500000;  // 0.5 USDT = 500,000 wei
 
-const connectWalletBtn = document.getElementById('connect-wallet-btn');
-const disconnectWalletBtn = document.getElementById('disconnect-wallet-btn');
-const walletAddressElement = document.getElementById('wallet-address');
-const ethBalanceElement = document.getElementById('eth-balance');
-const usdtBalanceElement = document.getElementById('usdt-balance');
-const personalBetHistory = document.getElementById('personal-bet-history');
-const publicBetHistory = document.getElementById('public-bet-history');
+// ABI dari kontrak pintar Anda
+const abi = [
+    "function placeBet(uint256 number, uint256 betCount, uint256 betType, bool isUSDT) public payable",
+    "function getBet(uint256 betId) public view returns (address, uint256, uint256, uint256, uint256, uint256, bool, uint256)",
+    "function addComment(uint256 betId, string memory comment) public",
+    "function addLike(uint256 betId) public",
+    "function getBetCount() public view returns (uint256)",
+    "function balanceOf(address account) public view returns (uint256)"  // Fungsi untuk cek saldo USDT
+];
 
-// Koneksi wallet menggunakan Ethers.js
+// Menghubungkan wallet dengan provider
 async function connectWallet() {
-    if (typeof window.ethereum !== "undefined") {
-        provider = new ethers.BrowserProvider(window.ethereum);
+    if (window.ethereum) {
+        provider = new ethers.providers.Web3Provider(window.ethereum);
         await provider.send("eth_requestAccounts", []);
         signer = provider.getSigner();
-        walletAddress = await signer.getAddress();
-        
-        walletAddressElement.textContent = `Connected: ${walletAddress}`;
-        connectWalletBtn.style.display = "none";
-        disconnectWalletBtn.style.display = "inline";
-        
-        await updateBalance();
-        await loadBetHistory();
+        currentAccount = await signer.getAddress();
+        contract = new ethers.Contract(contractAddress, abi, signer);
+
+        document.getElementById("connectWalletBtn").style.display = "none";
+        document.getElementById("disconnectWalletBtn").style.display = "block";
+        document.getElementById("walletAddress").innerText = currentAccount;
+
+        loadBalance();  // Memuat saldo ETH dan USDT setelah wallet terhubung
+        loadBetHistory();
+        loadExplorerHistory();
     } else {
-        alert("Please install MetaMask to use this feature.");
+        alert("Please install MetaMask to connect your wallet.");
     }
 }
 
-// Pemutusan koneksi wallet
-async function disconnectWallet() {
-    walletAddress = null;
-    walletAddressElement.textContent = "Not connected";
-    connectWalletBtn.style.display = "inline";
-    disconnectWalletBtn.style.display = "none";
-    ethBalanceElement.textContent = "";
-    usdtBalanceElement.textContent = "";
-    personalBetHistory.innerHTML = "";
-    publicBetHistory.innerHTML = "";
+// Memutuskan koneksi wallet
+function disconnectWallet() {
+    currentAccount = null;
+    provider = null;
+    signer = null;
+    contract = null;
+
+    document.getElementById("connectWalletBtn").style.display = "block";
+    document.getElementById("disconnectWalletBtn").style.display = "none";
+    document.getElementById("walletAddress").innerText = "-";
+    document.getElementById("ethBalance").innerText = "-";
+    document.getElementById("usdtBalance").innerText = "-";
 }
 
-// Menampilkan saldo ETH dan USDT
-async function updateBalance() {
-    // Saldo ETH
-    const ethBalance = await provider.getBalance(walletAddress);
-    ethBalanceElement.textContent = `ETH Balance: ${ethers.utils.formatEther(ethBalance)} ETH`;
+// Mengambil saldo ETH dan USDT
+async function loadBalance() {
+    if (!currentAccount) return;
 
-    // Saldo USDT (ERC20 Token)
-    const usdtAddress = "USDT_CONTRACT_ADDRESS";  // Ganti dengan alamat kontrak USDT
-    const usdtContract = new ethers.Contract(usdtAddress, [
-        "function balanceOf(address) view returns (uint256)"
-    ], provider);
-    const usdtBalance = await usdtContract.balanceOf(walletAddress);
-    usdtBalanceElement.textContent = `USDT Balance: ${ethers.utils.formatUnits(usdtBalance, 6)} USDT`;
+    // Mendapatkan saldo ETH
+    const ethBalance = await provider.getBalance(currentAccount);
+    document.getElementById("ethBalance").innerText = ethers.utils.formatEther(ethBalance);
+
+    // Mendapatkan saldo USDT
+    const usdtContract = new ethers.Contract(usdtAddress, abi, provider);
+    const usdtBalance = await usdtContract.balanceOf(currentAccount);
+    document.getElementById("usdtBalance").innerText = ethers.utils.formatUnits(usdtBalance, 6);  // USDT biasanya memiliki 6 desimal
 }
 
-// Fungsi untuk menempatkan taruhan
+// Menangani form untuk taruhan
 async function placeBet() {
-    if (!walletAddress) {
-        alert("Please connect your wallet first.");
+    const betNumber = document.getElementById("betNumber").value;
+    const betCount = document.getElementById("betCount").value;
+    const isUSDT = false; // Ganti sesuai jenis taruhan
+
+    if (!betNumber || !betCount || isNaN(betNumber) || isNaN(betCount)) {
+        alert("Please enter a valid bet number and count.");
         return;
     }
 
-    const betAmount = document.getElementById('bet-amount').value;
-    if (!betAmount || betAmount <= 0) {
-        alert("Please enter a valid bet amount.");
-        return;
-    }
-
-    const betContract = new ethers.Contract("your_contract_address_here", [
-        // ABI dari kontrak TotoChain
-    ], signer);
+    const betAmount = isUSDT ? betPriceUSDT * betCount : betPriceETH * betCount;
 
     try {
-        const tx = await betContract.placeBet(1, betAmount, 1, false, { value: ethers.utils.parseEther(betAmount.toString()) });
+        const tx = await contract.placeBet(betNumber, betCount, 0, isUSDT, {
+            value: betAmount
+        });
         await tx.wait();
         alert("Bet placed successfully!");
-        await loadBetHistory();  // Refresh bet history
+        loadBalance();  // Perbarui saldo setelah taruhan berhasil
+        loadBetHistory();  // Load riwayat bet pribadi setelah taruhan berhasil
     } catch (error) {
-        alert("Error placing bet: " + error.message);
+        console.error(error);
+        alert("Error placing bet.");
     }
 }
 
-// Fungsi untuk mengambil riwayat taruhan pribadi
+// Mengambil riwayat taruhan pribadi
 async function loadBetHistory() {
-    if (!walletAddress) return;
+    if (!currentAccount) return;
 
-    const betContract = new ethers.Contract("your_contract_address_here", [
-        "function getUserBetHistory(address) view returns (tuple[])"
-    ], provider);
-
-    const bets = await betContract.getUserBetHistory(walletAddress);
-    personalBetHistory.innerHTML = `<h3>Personal Bet History:</h3>`;
-    bets.forEach(bet => {
-        personalBetHistory.innerHTML += `<div>Bet ID: ${bet.id}, Amount: ${ethers.utils.formatEther(bet.amount)} ETH</div>`;
-    });
-
-    // Load Public Bet History
-    loadPublicBetHistory();
-}
-
-// Fungsi untuk mengambil riwayat taruhan umum
-async function loadPublicBetHistory() {
-    const betContract = new ethers.Contract("your_contract_address_here", [
-        "function getPublicBetHistory() view returns (tuple[])"
-    ], provider);
-
-    const bets = await betContract.getPublicBetHistory();
-    publicBetHistory.innerHTML = `<h3>Public Bet History:</h3>`;
-    bets.forEach(bet => {
-        publicBetHistory.innerHTML += `<div>Bet ID: ${bet.id}, Amount: ${ethers.utils.formatEther(bet.amount)} ETH</div>`;
-    });
-}
-
-// Fungsi untuk menambahkan komentar
-async function submitComment() {
-    const commentText = document.getElementById('comment-input').value;
-    if (!commentText) {
-        alert("Please enter a comment.");
-        return;
+    try {
+        const betCount = await contract.getBetCount();
+        let historyHTML = '';
+        for (let i = 1; i <= betCount; i++) {
+            const bet = await contract.getBet(i);
+            if (bet[0].toLowerCase() === currentAccount.toLowerCase()) {
+                historyHTML += `<div>
+                    <p>Bet ID: ${i} | Nomor: ${bet[2]} | Taruhan: ${bet[1]} | Payout: ${bet[4]}</p>
+                    <button onclick="addComment(${i})">Add Comment</button>
+                    <button onclick="addLike(${i})">Like</button>
+                    <div id="comments-${i}"></div>
+                </div>`;
+            }
+        }
+        document.getElementById("betHistory").innerHTML = historyHTML;
+    } catch (error) {
+        console.error(error);
     }
-
-    // Tambahkan interaksi dengan smart contract untuk menambahkan komentar
-    alert("Comment submitted!");
 }
 
-// Event listeners
-connectWalletBtn.addEventListener('click', connectWallet);
-disconnectWalletBtn.addEventListener('click', disconnectWallet);
-document.getElementById('place-bet-btn').addEventListener('click', placeBet);
-document.getElementById('submit-comment-btn').addEventListener('click', submitComment);
+// Mengambil riwayat taruhan umum
+async function loadExplorerHistory() {
+    try {
+        const betCount = await contract.getBetCount();
+        let historyHTML = '';
+        for (let i = 1; i <= betCount; i++) {
+            const bet = await contract.getBet(i);
+            historyHTML += `<div>
+                <p>Bet ID: ${i} | Nomor: ${bet[2]} | Taruhan: ${bet[1]} | Payout: ${bet[4]}</p>
+                <button onclick="addComment(${i})">Add Comment</button>
+                <button onclick="addLike(${i})">Like</button>
+                <div id="comments-${i}"></div>
+            </div>`;
+        }
+        document.getElementById("explorerHistory").innerHTML = historyHTML;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// Menambahkan komentar
+async function addComment(betId) {
+    const comment = prompt("Enter your comment:");
+    if (comment) {
+        try {
+            const tx = await contract.addComment(betId, comment);
+            await tx.wait();
+            alert("Comment added!");
+            loadExplorerHistory();  // Update riwayat taruhan umum
+        } catch (error) {
+            console.error(error);
+            alert("Error adding comment.");
+        }
+    }
+}
+
+// Menambahkan like
+async function addLike(betId) {
+    try {
+        const tx = await contract.addLike(betId);
+        await tx.wait();
+        alert("You liked this bet!");
+        loadExplorerHistory();  // Update riwayat taruhan umum
+    } catch (error) {
+        console.error(error);
+        alert("Error adding like.");
+    }
+}
+
+// Event listener untuk tombol
+document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
+document.getElementById("disconnectWalletBtn").addEventListener("click", disconnectWallet);
+document.getElementById("placeBetBtn").addEventListener("click", placeBet);
     </script>
 </body>
 </html>
