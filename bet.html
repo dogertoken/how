@@ -1,502 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TotoChain Bet</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
-  <link rel="stylesheet" href="stylescss">
-  <style>
-  /* Reset Margin dan Padding */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TotoChain</title>
+    <link rel="stylesheet" href="stylescss">
+    <style>
+      body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    padding: 20px;
 }
 
-/* Body */
-body {
-  font-family: 'Roboto', sans-serif;
-  background: linear-gradient(135deg, #6e7aeb, #4851f4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  color: #333;
+.wallet-container, .bet-container, .history-container, .public-history-container, .comments-container {
+    background-color: white;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Kontainer Utama */
-.container {
-  width: 100%;
-  max-width: 600px;
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1), 0 4px 15px rgba(0, 0, 0, 0.07);
-  transform: translateY(-10px);
-  transition: transform 0.3s ease-in-out;
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
 }
 
-.container:hover {
-  transform: translateY(0);
+button:hover {
+    background-color: #45a049;
 }
 
-/* Heading */
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 2rem;
-  color: #333;
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
 }
 
-/* Wallet Connection, Info dan Bet Section */
-.wallet-connection,
-.wallet-info,
-.bet-section {
-  text-align: center;
-  margin-bottom: 30px;
+h2 {
+    margin-bottom: 20px;
 }
-
-.wallet-connection button,
-.wallet-info button,
-.bet-section button {
-  display: inline-block;
-  padding: 12px 25px;
-  background: #5e60e5;
-  color: #fff;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  transition: transform 0.2s, background-color 0.2s;
-}
-
-.wallet-connection button:hover,
-.wallet-info button:hover,
-.bet-section button:hover {
-  background-color: #3b49d3;
-  transform: translateY(-3px);
-}
-
-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-/* Modal */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.6);
-  padding-top: 60px;
-}
-
-.modal-content {
-  background-color: #fff;
-  margin: 5% auto;
-  padding: 30px;
-  border-radius: 12px;
-  width: 80%;
-  max-width: 500px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  transform: translateY(-20px);
-  opacity: 0;
-  transition: transform 0.3s, opacity 0.3s;
-}
-
-.modal-content.show {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-/* Close Button */
-.close {
-  color: #888;
-  font-size: 30px;
-  font-weight: bold;
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  cursor: pointer;
-}
-
-.close:hover,
-.close:focus {
-  color: #333;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-/* Textarea */
-textarea {
-  width: 100%;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 1rem;
-  resize: vertical;
-  margin-top: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-textarea:focus {
-  border-color: #5e60e5;
-  outline: none;
-}
-
-/* Bet History */
-#bet-history-list {
-  margin-top: 20px;
-}
-
-.bet-item {
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  padding: 15px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s;
-}
-
-.bet-item:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-
-.bet-item p {
-  margin: 8px 0;
-}
-
-.bet-item button {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #5e60e5;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.bet-item button:hover {
-  background-color: #3b49d3;
-}
-
-/* Pagination */
-#pagination {
-  margin-top: 20px;
-  text-align: center;
-}
-
-#pagination button {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  background-color: #5e60e5;
-  color: white;
-  cursor: pointer;
-  margin: 0 5px;
-  font-size: 1rem;
-}
-
-#pagination button:hover {
-  background-color: #3b49d3;
-}
-
-#pagination button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-.modal {
-  display: none; /* Modal tersembunyi secara default */
-  position: fixed;
-  z-index: 1; /* Pastikan modal di atas elemen lain */
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4); /* Latar belakang transparan */
-}
-
-.modal-content {
-  background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%; /* Lebar modal */
-}
-
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-  </style>
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>TotoChain Betting</h1>
-    
-    <!-- Wallet Connection -->
-    <div class="wallet-connection">
-      <button id="connect-wallet" onclick="connectWallet()">Connect Wallet</button>
-      <button id="disconnect-wallet" onclick="disconnectWallet()" style="display:none;">Disconnect Wallet</button>
-    </div>
-    
-    <!-- Wallet Info (Hidden initially) -->
-    <div class="wallet-info" style="display:none;">
-      <p><strong>Wallet Address:</strong> <span id="wallet-address"></span></p>
-      <p><strong>ETH Balance:</strong> <span id="eth-balance"></span></p>
-      <p><strong>USDT Balance:</strong> <span id="usdt-balance"></span></p>
-      <p><strong>Today's Bet Count:</strong> <span id="bet-count-today"></span></p>
-      <button id="check-eligibility" onclick="checkEligibility()">Check Eligibility</button>
+    <div class="wallet-container">
+        <button id="connect-wallet-btn">Connect Wallet</button>
+        <button id="disconnect-wallet-btn" style="display:none;">Disconnect Wallet</button>
+        <div id="wallet-address"></div>
+        <div id="eth-balance"></div>
+        <div id="usdt-balance"></div>
     </div>
 
-    <!-- Bet Section (Hidden initially) -->
-    <div class="bet-section" style="display:none;">
-      <button id="bet-btn" onclick="openBetModal()">Place Bet</button>
-    </div>
-    
-    <!-- Bet History Section -->
-    <div class="bet-history">
-      <h3>Bet History</h3>
-      <div id="bet-history-list"></div>
-      <div id="pagination"></div>
+    <div class="bet-container">
+        <h2>Place a Bet</h2>
+        <label for="bet-amount">Bet Amount:</label>
+        <input type="number" id="bet-amount" />
+        <button id="place-bet-btn">Place Bet</button>
     </div>
 
-    <!-- Modal Bet -->
-<div id="bet-modal" class="modal" style="display: none;">
-  <div class="modal-content">
-    <span class="close" onclick="closeBetModal()">&times;</span>
-    <h2>Place Your Bet</h2>
-    <form id="bet-form">
-      <input type="number" id="bet-amount" placeholder="Enter your bet" required>
-      <button type="submit">Place Bet</button>
-    </form>
-  </div>
-</div>
-
-<!-- Tombol untuk membuka modal -->
-<button id="bet-btn" onclick="openBetModal()">Place Bet</button>
-    
-    <!-- Comment Modal -->
-    <div id="comment-modal" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeCommentModal()">&times;</span>
-        <h3>Leave a Comment</h3>
-        <textarea id="comment-text" rows="4"></textarea>
-        <button onclick="submitComment()">Submit Comment</button>
-        <div id="comment-list"></div>
-      </div>
+    <div class="history-container">
+        <h2>Your Bet History</h2>
+        <div id="personal-bet-history"></div>
     </div>
-  </div>
 
-  <script src="scriptsjs"></script>
+    <div class="public-history-container">
+        <h2>Public Bet History</h2>
+        <div id="public-bet-history"></div>
+    </div>
 
-  <script>
-    let web3;
-let contract;
-let usdtContract;
-let userWallet = null;
-let betHistory = [];
-let currentPage = 1;
-const betsPerPage = 15;
-const contractAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'; // Alamat kontrak pintar
-const usdtContractAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'; // Alamat kontrak USDT
-const contractABI = [ /* ABI dari kontrak pintar Anda */ ];
-const usdtABI = [ /* ABI dari kontrak pintar USDT */ ];
+    <div class="comments-container">
+        <h2>Comments</h2>
+        <textarea id="comment-input"></textarea>
+        <button id="submit-comment-btn">Submit Comment</button>
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.0.28/dist/ethers.umd.min.js"></script>
+    <script src="scriptjs"></script>
+
+    <script>
+      let provider;
+let signer;
+let walletAddress = null;
+
+const connectWalletBtn = document.getElementById('connect-wallet-btn');
+const disconnectWalletBtn = document.getElementById('disconnect-wallet-btn');
+const walletAddressElement = document.getElementById('wallet-address');
+const ethBalanceElement = document.getElementById('eth-balance');
+const usdtBalanceElement = document.getElementById('usdt-balance');
+const personalBetHistory = document.getElementById('personal-bet-history');
+const publicBetHistory = document.getElementById('public-bet-history');
+
+// Koneksi wallet menggunakan Ethers.js
 async function connectWallet() {
-  if (window.ethereum) {
-    try {
-      web3 = new Web3(window.ethereum);
-      const accounts = await web3.eth.requestAccounts();
-      userWallet = accounts[0];
-
-      contract = new web3.eth.Contract(contractABI, contractAddress);
-      usdtContract = new web3.eth.Contract(usdtABI, usdtContractAddress);
-
-      document.getElementById("wallet-address").textContent = userWallet;
-      document.getElementById("connect-wallet").style.display = 'none';
-      document.getElementById("disconnect-wallet").style.display = 'block';
-      document.querySelector('.wallet-info').style.display = 'block';
-      document.querySelector('.bet-section').style.display = 'block';
-
-      fetchWalletInfo();
-    } catch (error) {
-      alert("Error connecting wallet: " + error.message);
+    if (typeof window.ethereum !== "undefined") {
+        provider = new ethers.BrowserProvider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        signer = provider.getSigner();
+        walletAddress = await signer.getAddress();
+        
+        walletAddressElement.textContent = `Connected: ${walletAddress}`;
+        connectWalletBtn.style.display = "none";
+        disconnectWalletBtn.style.display = "inline";
+        
+        await updateBalance();
+        await loadBetHistory();
+    } else {
+        alert("Please install MetaMask to use this feature.");
     }
-  } else {
-    alert("Please install MetaMask!");
-  }
 }
 
-async function fetchWalletInfo() {
-  try {
-    const ethBalance = await web3.eth.getBalance(userWallet);
-    document.getElementById("eth-balance").textContent = `${web3.utils.fromWei(ethBalance, 'ether')} ETH`;
-
-    const usdtBalance = await usdtContract.methods.balanceOf(userWallet).call();
-    document.getElementById("usdt-balance").textContent = `${web3.utils.fromWei(usdtBalance, 'mwei')} USDT`;
-
-    const betCountToday = await contract.methods.getBetCountToday(userWallet).call();
-    document.getElementById("bet-count-today").textContent = betCountToday;
-  } catch (error) {
-    alert("Error fetching wallet info: " + error.message);
-  }
+// Pemutusan koneksi wallet
+async function disconnectWallet() {
+    walletAddress = null;
+    walletAddressElement.textContent = "Not connected";
+    connectWalletBtn.style.display = "inline";
+    disconnectWalletBtn.style.display = "none";
+    ethBalanceElement.textContent = "";
+    usdtBalanceElement.textContent = "";
+    personalBetHistory.innerHTML = "";
+    publicBetHistory.innerHTML = "";
 }
 
+// Menampilkan saldo ETH dan USDT
+async function updateBalance() {
+    // Saldo ETH
+    const ethBalance = await provider.getBalance(walletAddress);
+    ethBalanceElement.textContent = `ETH Balance: ${ethers.utils.formatEther(ethBalance)} ETH`;
+
+    // Saldo USDT (ERC20 Token)
+    const usdtAddress = "USDT_CONTRACT_ADDRESS";  // Ganti dengan alamat kontrak USDT
+    const usdtContract = new ethers.Contract(usdtAddress, [
+        "function balanceOf(address) view returns (uint256)"
+    ], provider);
+    const usdtBalance = await usdtContract.balanceOf(walletAddress);
+    usdtBalanceElement.textContent = `USDT Balance: ${ethers.utils.formatUnits(usdtBalance, 6)} USDT`;
+}
+
+// Fungsi untuk menempatkan taruhan
 async function placeBet() {
-  const betNumber = document.getElementById('bet-number').value;
-  const betAmount = document.getElementById('bet-amount').value;
-  const totalCost = calculateTotalCost(betAmount);
+    if (!walletAddress) {
+        alert("Please connect your wallet first.");
+        return;
+    }
 
-  const betAmountInWei = web3.utils.toWei(betAmount, 'ether');
-  const totalCostInWei = web3.utils.toWei(totalCost.toString(), 'ether');
+    const betAmount = document.getElementById('bet-amount').value;
+    if (!betAmount || betAmount <= 0) {
+        alert("Please enter a valid bet amount.");
+        return;
+    }
 
-  try {
-    await contract.methods.placeBet(betNumber).send({ from: userWallet, value: betAmountInWei });
-    alert(`Bet placed: Number ${betNumber}, Amount: ${betAmount} ETH`);
-  } catch (error) {
-    alert("Error placing bet: " + error.message);
-  }
+    const betContract = new ethers.Contract("your_contract_address_here", [
+        // ABI dari kontrak TotoChain
+    ], signer);
+
+    try {
+        const tx = await betContract.placeBet(1, betAmount, 1, false, { value: ethers.utils.parseEther(betAmount.toString()) });
+        await tx.wait();
+        alert("Bet placed successfully!");
+        await loadBetHistory();  // Refresh bet history
+    } catch (error) {
+        alert("Error placing bet: " + error.message);
+    }
 }
 
-function calculateTotalCost(betAmount) {
-  return betAmount * 1.05; // Misalnya ada fee 5%
+// Fungsi untuk mengambil riwayat taruhan pribadi
+async function loadBetHistory() {
+    if (!walletAddress) return;
+
+    const betContract = new ethers.Contract("your_contract_address_here", [
+        "function getUserBetHistory(address) view returns (tuple[])"
+    ], provider);
+
+    const bets = await betContract.getUserBetHistory(walletAddress);
+    personalBetHistory.innerHTML = `<h3>Personal Bet History:</h3>`;
+    bets.forEach(bet => {
+        personalBetHistory.innerHTML += `<div>Bet ID: ${bet.id}, Amount: ${ethers.utils.formatEther(bet.amount)} ETH</div>`;
+    });
+
+    // Load Public Bet History
+    loadPublicBetHistory();
 }
 
-// Fungsi untuk membuka modal
-const openBetModal = () => {
-  document.getElementById('bet-modal').style.display = 'block';
-};
+// Fungsi untuk mengambil riwayat taruhan umum
+async function loadPublicBetHistory() {
+    const betContract = new ethers.Contract("your_contract_address_here", [
+        "function getPublicBetHistory() view returns (tuple[])"
+    ], provider);
 
-// Fungsi untuk menutup modal
-const closeBetModal = () => {
-  document.getElementById('bet-modal').style.display = 'none';
-};
+    const bets = await betContract.getPublicBetHistory();
+    publicBetHistory.innerHTML = `<h3>Public Bet History:</h3>`;
+    bets.forEach(bet => {
+        publicBetHistory.innerHTML += `<div>Bet ID: ${bet.id}, Amount: ${ethers.utils.formatEther(bet.amount)} ETH</div>`;
+    });
+}
 
-// Fungsi untuk menangani pengiriman form bet
-const submitBetForm = (event) => {
-  event.preventDefault(); // Menghentikan pengiriman form secara default
+// Fungsi untuk menambahkan komentar
+async function submitComment() {
+    const commentText = document.getElementById('comment-input').value;
+    if (!commentText) {
+        alert("Please enter a comment.");
+        return;
+    }
 
-  const betAmount = document.getElementById('bet-amount').value;
-  if (betAmount) {
-    alert(`You have placed a bet of ${betAmount}`);
-    closeBetModal(); // Menutup modal setelah bet ditempatkan
-  } else {
-    alert("Please enter a bet amount.");
-  }
-};
-
-// Menambahkan event listener pada form bet
-document.getElementById('bet-form').addEventListener('submit', submitBetForm);
-
-// Menambahkan event listener pada tombol close untuk modal
-document.querySelector('.close').addEventListener('click', closeBetModal);
-
-const disconnectWallet = () => {
-  userWallet = null;
-  document.getElementById("connect-wallet").style.display = 'block';
-  document.getElementById("disconnect-wallet").style.display = 'none';
-  document.querySelector('.wallet-info').style.display = 'none';
-  document.querySelector('.bet-section').style.display = 'none';
-  alert("Wallet disconnected.");
-};
-
-const openBetModal = () => {
-  document.getElementById('bet-modal').style.display = 'block';
-};
-
-const closeBetModal = () => {
-  document.getElementById('bet-modal').style.display = 'none';
-};
-
-const openCommentModal = () => {
-  document.getElementById('comment-modal').style.display = 'block';
-};
-
-const closeCommentModal = () => {
-  document.getElementById('comment-modal').style.display = 'none';
-};
-
-const submitComment = () => {
-  const commentText = document.getElementById('comment-text').value;
-  if (commentText.trim()) {
+    // Tambahkan interaksi dengan smart contract untuk menambahkan komentar
     alert("Comment submitted!");
-    document.getElementById('comment-text').value = '';
-    closeCommentModal();
-  } else {
-    alert("Please enter a comment.");
-  }
-};
+}
 
-const updatePagination = () => {
-  let paginationHTML = '';
-  const totalPages = Math.ceil(betHistory.length / betsPerPage);
-  for (let i = 1; i <= totalPages; i++) {
-    paginationHTML += `<button onclick="changePage(${i})">${i}</button>`;
-  }
-  document.getElementById('pagination').innerHTML = paginationHTML;
-};
-
-const changePage = (page) => {
-  currentPage = page;
-  renderBetHistory();
-};
-
-const renderBetHistory = () => {
-  const startIndex = (currentPage - 1) * betsPerPage;
-  const endIndex = startIndex + betsPerPage;
-  const betHistoryPage = betHistory.slice(startIndex, endIndex);
-
-  let historyHTML = '';
-  betHistoryPage.forEach(bet => {
-    historyHTML += `
-      <div class="bet-item">
-        <p>Bet ID: ${bet.id} | ${bet.number} | ${bet.amount} ETH</p>
-        <p>Status: ${bet.status} | Time: ${bet.timestamp}</p>
-        <button onclick="openCommentModal()">Comment</button>
-      </div>
-    `;
-  });
-
-  document.getElementById('bet-history-list').innerHTML = historyHTML;
-  updatePagination();
-};
-
-const searchBetHistory = (searchTerm) => {
-  const filteredHistory = betHistory.filter(bet => 
-    bet.id.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    bet.number.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  betHistory = filteredHistory;
-  renderBetHistory();
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-  renderBetHistory();
-  document.getElementById('search-bet-history').addEventListener('input', (e) => {
-    searchBetHistory(e.target.value);
-  });
-});
-  </script>
+// Event listeners
+connectWalletBtn.addEventListener('click', connectWallet);
+disconnectWalletBtn.addEventListener('click', disconnectWallet);
+document.getElementById('place-bet-btn').addEventListener('click', placeBet);
+document.getElementById('submit-comment-btn').addEventListener('click', submitComment);
+    </script>
 </body>
-        </html>
+</html>
