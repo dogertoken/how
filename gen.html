@@ -1,113 +1,97 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generator 4 Angka Acak</title>
     <style>
+        /* Gaya dasar halaman */
         body {
-            font-family: 'Poppins', sans-serif;
-            text-align: center;
-            margin: 0;
-            height: 100vh;
+            font-family: Arial, sans-serif;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: white;
-            overflow: hidden;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         h1 {
-            font-size: 3rem;
-            text-shadow: 0 0 15px rgba(0, 183, 255, 0.8);
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #f5a623;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        #container {
-            display: flex;
-            gap: 20px;
-        }
-
-        .number {
-            font-size: 5rem;
+        /* Area angka dengan efek 3D */
+        #hasil {
+            font-size: 64px;
             font-weight: bold;
-            width: 80px;
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 20px;
-            background: linear-gradient(145deg, #273c75, #192a56);
-            box-shadow: 0 8px 25px rgba(0, 183, 255, 0.8), 0 4px 10px rgba(0, 183, 255, 0.5);
-            transform: perspective(500px) rotateX(20deg);
-            animation: pulse 1.5s infinite alternate;
+            color: #fff;
+            text-shadow: 0 0 15px #f5a623, 0 0 30px #ff7300;
+            letter-spacing: 20px;
+            margin: 20px 0;
+            perspective: 500px;
+            transform-style: preserve-3d;
         }
 
+        /* Tombol dengan animasi hover */
         button {
             padding: 12px 30px;
-            margin-top: 30px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: white;
-            background: linear-gradient(135deg, #00b7ff, #007bff);
+            font-size: 18px;
+            color: #fff;
+            background-color: #f5a623;
             border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 183, 255, 0.8);
-            transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(245, 166, 35, 0.3);
         }
 
         button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
+            background-color: #ff7300;
+            box-shadow: 0 6px 20px rgba(255, 115, 0, 0.4);
+            transform: translateY(-2px);
         }
 
-        @keyframes pulse {
-            from {
-                transform: perspective(500px) rotateX(20deg) translateY(0);
-            }
-
-            to {
-                transform: perspective(500px) rotateX(20deg) translateY(-10px);
-            }
+        button:active {
+            transform: translateY(1px);
         }
     </style>
 </head>
-
 <body>
 
-    <h1>🎰 Generator 4 Angka Acak 🎰</h1>
-
-    <div id="container">
-        <div class="number" id="num1">0</div>
-        <div class="number" id="num2">0</div>
-        <div class="number" id="num3">0</div>
-        <div class="number" id="num4">0</div>
+    <div class="container">
+        <h1>Generator 4 Angka Acak</h1>
+        <p id="hasil">0 0 0 0</p>
+        <button onclick="generateRandomNumbers()">Generate</button>
     </div>
-
-    <button onclick="generateRandomNumbers()">Generate</button>
 
     <script>
         function generateRandomNumbers() {
+            let hasilElement = document.getElementById("hasil");
             let angka = [0, 0, 0, 0];
-            let elements = [
-                document.getElementById("num1"),
-                document.getElementById("num2"),
-                document.getElementById("num3"),
-                document.getElementById("num4")
-            ];
             let interval = [];
 
-            // Mulai animasi angka berputar
+            // Animasi angka terus berubah cepat
             for (let i = 0; i < 4; i++) {
                 interval[i] = setInterval(() => {
                     angka[i] = Math.floor(Math.random() * 10);
-                    elements[i].textContent = angka[i];
+                    hasilElement.innerText = angka.join(" ");
                 }, 50);
             }
 
-            // Hentikan animasi satu per satu dengan delay
+            // Menghentikan angka satu per satu dengan jeda waktu
             setTimeout(() => clearInterval(interval[0]), 1000);
             setTimeout(() => clearInterval(interval[1]), 1500);
             setTimeout(() => clearInterval(interval[2]), 2000);
@@ -116,5 +100,4 @@
     </script>
 
 </body>
-
 </html>
