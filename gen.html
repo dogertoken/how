@@ -31,6 +31,8 @@ h1 {
     display: flex;
     gap: 20px;
     margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .number {
@@ -57,7 +59,7 @@ h1 {
 }
 
 button {
-    padding: 12px 30px;
+    padding: 15px 35px;
     font-size: 1.5rem;
     cursor: pointer;
     color: white;
@@ -87,20 +89,24 @@ button:hover {
     h1 {
         font-size: 2.5rem;
     }
-    
+
     #container {
         gap: 10px;
     }
 
     .number {
         font-size: 4rem;
-        width: 65px;
-        height: 100px;
+        width: 70px;
+        height: 110px;
+    }
+
+    .buttons {
+        flex-wrap: nowrap; /* Tetap sejajar */
     }
 
     button {
-        font-size: 1.2rem;
-        padding: 10px 20px;
+        font-size: 1.4rem;
+        padding: 12px 28px;
     }
 }
 
@@ -114,21 +120,19 @@ button:hover {
     }
 
     .number {
-        font-size: 3rem;
-        width: 55px;
-        height: 80px;
+        font-size: 3.5rem;
+        width: 60px;
+        height: 90px;
     }
 
     .buttons {
-        flex-direction: column;
+        flex-wrap: nowrap; /* Tetap sejajar */
         gap: 10px;
     }
 
     button {
-        font-size: 1rem;
-        padding: 8px 15px;
-        width: 80%;
-        max-width: 200px;
+        font-size: 1.3rem;
+        padding: 12px 25px;
     }
 }
     </style>
