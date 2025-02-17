@@ -349,7 +349,11 @@ async function placeBet() {
         alert("Taruhan berhasil!");
         loadBalance();  // Perbarui saldo
         loadBetHistory();  // Perbarui riwayat taruhan pribadi
-    } 
+    }
+    catch (error) {
+        console.error(error);
+        alert("Gagal memasang taruhan.");
+    }
 }
 
 // Tambahkan event listener ke tombol "Pasang Taruhan"
