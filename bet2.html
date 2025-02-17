@@ -7,23 +7,108 @@
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.0/dist/ethers.min.js"></script>
     <style>
     /* Global Styles */
-* {
+body {
+    background-color: #111;
+    font-family: Arial, sans-serif;
+    color: #fff;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: 'Roboto', sans-serif;
-}
-
-/* Body */
-body {
-    background-color: #121212;
-    color: #fff;
-    font-size: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    overflow: hidden;
+}
+
+/* Main Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+/* Wallet Section */
+.wallet-section, .betting-section {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Section Titles */
+.wallet-section h2, .betting-section h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #9c27b0;
+}
+
+/* Wallet Info Box */
+#walletInfo, #placeBetBox {
+    background-color: #1f1f1f;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+    border: 2px solid #333;
+    transition: all 0.3s ease-in-out;
+    text-align: center;
+}
+
+/* Wallet Info Hover */
+#walletInfo:hover, #placeBetBox:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+}
+
+/* Wallet Details */
+.wallet-details p {
+    font-size: 18px;
+    margin: 10px 0;
+    font-weight: bold;
+    color: #b0b0b0;
+}
+
+.wallet-details span {
+    color: #9c27b0;
+}
+
+/* Buttons */
+.btn {
+    padding: 16px 24px;
+    font-size: 18px;
+    width: 100%;
+    background-color: #9c27b0;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+/* Button Hover & Active */
+.btn:hover {
+    background-color: #7b1fa2;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+}
+
+.btn:active {
+    transform: translateY(2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .btn {
+        font-size: 16px;
+        padding: 14px 20px;
+    }
 }
 
 /* Modal Background */
@@ -170,162 +255,37 @@ body {
         font-size: 20px;
     }
 }
-
-   /* Wallet Info Container */
-#walletInfo {
-    background-color: #1f1f1f;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
-    margin: 20px auto;
-    width: 80%;
-    max-width: 600px;
-    text-align: center;
-    color: #fff;
-    border: 2px solid #333;
-    transition: all 0.3s ease-in-out;
-}
-
-/* Wallet Info hover effect */
-#walletInfo:hover {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    transform: translateY(-5px);
-}
-
-/* Wallet Info Text */
-#walletInfo p {
-    font-size: 18px;
-    margin: 10px 0;
-    font-weight: bold;
-    color: #b0b0b0;
-}
-
-/* Wallet Info Span (for dynamic values) */
-#walletInfo span {
-    color: #9c27b0;
-}
-
-/* Buttons within Wallet Info */
-#walletInfo .btn {
-    padding: 16px 24px;
-    font-size: 18px;
-    width: 100%;
-    margin-top: 15px;
-    background-color: #9c27b0;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-    transition: all 0.3s ease;
-    border-radius: 12px;
-    color: white;
-    border: none;
-}
-
-/* Button hover and active states */
-#walletInfo .btn:hover {
-    background-color: #7b1fa2;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-    transform: translateY(-5px);
-}
-
-#walletInfo .btn:active {
-    transform: translateY(2px);
-}
-
-/* Place Bet Box */
-#placeBetBox {
-    background-color: #1f1f1f;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
-    margin: 20px auto;
-    width: 80%;
-    max-width: 600px;
-    text-align: center;
-    color: #fff;
-    border: 2px solid #333;
-    transition: all 0.3s ease-in-out;
-}
-
-/* Place Bet hover effect */
-#placeBetBox:hover {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    transform: translateY(-5px);
-}
-
-/* Place Bet Button */
-#placeBetBtn {
-    display: block;
-    padding: 18px 30px;
-    background-color: #9c27b0;
-    color: white;
-    font-size: 18px;
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-    width: 100%;
-    transition: all 0.3s ease;
-    margin-top: 20px;
-}
-
-#placeBetBtn:hover {
-    background-color: #7b1fa2;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-    transform: translateY(-5px);
-}
-
-#placeBetBtn:active {
-    transform: translateY(2px);
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-    #walletInfo, #placeBetBox {
-        width: 90%;
-        padding: 15px;
-    }
-
-    .btn {
-        font-size: 16px;
-        padding: 14px 20px;
-    }
-
-    #placeBetBtn {
-        padding: 15px 20px;
-        font-size: 16px;
-    }
-}
-
-@media (max-width: 480px) {
-    #walletInfo, #placeBetBox {
-        width: 95%;
-        padding: 10px;
-    }
-
-    .btn {
-        font-size: 14px;
-        padding: 12px 18px;
-    }
-
-    #placeBetBtn {
-        padding: 14px 20px;
-        font-size: 14px;
-    }
-    }
     </style>
 </head>
 <body>
 
-<!-- Wallet Connection and Info -->
-<div id="walletInfo">
-    <button class="btn" id="connectWalletBtn">Connect Wallet</button>
-    <button class="btn" id="disconnectWalletBtn" style="display:none;">Disconnect Wallet</button>
-    <p>Wallet Address: <span id="walletAddress">-</span></p>
-    <p>ETH Balance: <span id="ethBalance">-</span></p>
-    <p>USDT Balance: <span id="usdtBalance">-</span></p>
+<!-- Main Container -->
+<div class="container">
+
+    <!-- Wallet Section -->
+    <div class="wallet-section">
+        <h2>Wallet Info</h2>
+        <div id="walletInfo">
+            <button class="btn" id="connectWalletBtn">Connect Wallet</button>
+            <button class="btn" id="disconnectWalletBtn" style="display:none;">Disconnect Wallet</button>
+            <div class="wallet-details">
+                <p>Wallet Address: <span id="walletAddress">-</span></p>
+                <p>ETH Balance: <span id="ethBalance">-</span></p>
+                <p>USDT Balance: <span id="usdtBalance">-</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Betting Section -->
+    <div class="betting-section">
+        <h2>Place Your Bet</h2>
+        <div id="placeBetBox">
+            <button class="btn" id="placeBetBtn">Place Bet</button>
+        </div>
+    </div>
+
 </div>
-
-<!-- Bet Button -->
-<button class="btn" id="placeBetBtn">Place Bet</button>
-
+    
 <!-- Bet Modal -->
 <div id="betModal">
     <div class="modal-content">
