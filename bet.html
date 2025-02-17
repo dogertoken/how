@@ -214,6 +214,40 @@ textarea:focus {
   background-color: #cccccc;
   cursor: not-allowed;
 }
+
+.modal {
+  display: none; /* Modal tersembunyi secara default */
+  position: fixed;
+  z-index: 1; /* Pastikan modal di atas elemen lain */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4); /* Latar belakang transparan */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Lebar modal */
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
   </style>
 </head>
 <body>
@@ -247,20 +281,21 @@ textarea:focus {
       <div id="pagination"></div>
     </div>
 
-    <!-- Bet Modal -->
-    <div id="bet-modal" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeBetModal()">&times;</span>
-        <h3>Place Bet</h3>
-        <label for="bet-number">Number (1-4 digits):</label>
-        <input type="number" id="bet-number" max="9999" min="1" />
-        <label for="bet-amount">Amount:</label>
-        <input type="number" id="bet-amount" />
-        <p>Total: <span id="total-cost">0</span></p>
-        <button onclick="placeBet()">Place Bet</button>
-      </div>
-    </div>
+    <!-- Modal Bet -->
+<div id="bet-modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeBetModal()">&times;</span>
+    <h2>Place Your Bet</h2>
+    <form id="bet-form">
+      <input type="number" id="bet-amount" placeholder="Enter your bet" required>
+      <button type="submit">Place Bet</button>
+    </form>
+  </div>
+</div>
 
+<!-- Tombol untuk membuka modal -->
+<button id="bet-btn" onclick="openBetModal()">Place Bet</button>
+    
     <!-- Comment Modal -->
     <div id="comment-modal" class="modal">
       <div class="modal-content">
@@ -347,6 +382,35 @@ async function placeBet() {
 function calculateTotalCost(betAmount) {
   return betAmount * 1.05; // Misalnya ada fee 5%
 }
+
+// Fungsi untuk membuka modal
+const openBetModal = () => {
+  document.getElementById('bet-modal').style.display = 'block';
+};
+
+// Fungsi untuk menutup modal
+const closeBetModal = () => {
+  document.getElementById('bet-modal').style.display = 'none';
+};
+
+// Fungsi untuk menangani pengiriman form bet
+const submitBetForm = (event) => {
+  event.preventDefault(); // Menghentikan pengiriman form secara default
+
+  const betAmount = document.getElementById('bet-amount').value;
+  if (betAmount) {
+    alert(`You have placed a bet of ${betAmount}`);
+    closeBetModal(); // Menutup modal setelah bet ditempatkan
+  } else {
+    alert("Please enter a bet amount.");
+  }
+};
+
+// Menambahkan event listener pada form bet
+document.getElementById('bet-form').addEventListener('submit', submitBetForm);
+
+// Menambahkan event listener pada tombol close untuk modal
+document.querySelector('.close').addEventListener('click', closeBetModal);
 
 const disconnectWallet = () => {
   userWallet = null;
