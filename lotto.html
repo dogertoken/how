@@ -23,7 +23,8 @@ body {
 
 /* Navbar */
 .navbar {
-    width: 90%;
+    width: 100%; /* Mengubah menjadi 100% agar lebar mengikuti layar */
+    max-width: 1200px; /* Membatasi lebar maksimal navbar */
     background: #0f3460;
     display: flex;
     justify-content: space-between;
@@ -32,6 +33,7 @@ body {
     position: fixed;
     top: 0;
     z-index: 1000;
+    margin: 0 auto; /* Agar navbar terpusat */
 }
 
 .nav-links {
