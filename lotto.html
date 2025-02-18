@@ -25,8 +25,8 @@ body {
 
 /* Navbar */
 .navbar {
-    width: 100%; /* Lebar penuh untuk desktop */
-    max-width: 1200px; /* Menetapkan lebar maksimal navbar di desktop */
+    width: 100%;
+    max-width: 1200px;
     background: #0f3460;
     display: flex;
     justify-content: space-between;
@@ -35,38 +35,14 @@ body {
     position: fixed;
     top: 0;
     z-index: 1000;
-    margin: 0 auto; /* Navbar terpusat */
-    box-sizing: border-box; /* Memastikan padding dan border tidak memengaruhi lebar */
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .navbar {
-        width: 100%; /* Lebar 95% di mobile */
-    }
-}
-        
-/* Popup Menu (nav-links) */
-.nav-links {
-    display: none; /* Menyembunyikan menu popup secara default */
-    flex-direction: column; /* Menata menu dalam kolom */
-    background: rgba(15, 52, 96, 0.9); /* Latar belakang semi-transparan */
-    position: absolute;
-    top: 60px; /* Menempatkan menu di bawah navbar */
-    left: 0;
-    width: 100%; /* Menggunakan lebar penuh dari navbar */
-    max-width: 800px; /* Lebar maksimal yang sesuai dengan navbar */
-    margin: 0 auto; /* Memusatkan menu di layar */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
+    margin: 0 auto;
     box-sizing: border-box;
-    text-align: left; /* Mengubah teks menjadi rata kiri */
-    align-items: flex-start; /* Memastikan item menu rata kiri */
 }
 
-.nav-links.active {
-    display: flex; /* Menampilkan popup saat toggleMenu dipanggil */
+/* Menampilkan nav-links secara default di PC */
+.nav-links {
+    display: flex;  /* Tampilkan menu di desktop */
+    gap: 20px;
 }
 
 .nav-links a {
@@ -75,11 +51,33 @@ body {
     font-weight: bold;
 }
 
-.hamburger {
-    display: none;
-    font-size: 2rem;
-    cursor: pointer;
-    color: white;
+/* Sembunyikan menu di mode mobile */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Menu tersembunyi di mobile */
+        flex-direction: column;
+        background: rgba(15, 52, 96, 0.9);
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
+        text-align: left;
+        align-items: flex-start;
+    }
+
+    .nav-links.active {
+        display: flex; /* Muncul saat toggle hamburger */
+    }
+
+    .hamburger {
+        display: block; /* Tampilkan hamburger hanya di mobile */
+        font-size: 2rem;
+        cursor: pointer;
+        color: white;
+    }
 }
 
 /* Hero Section */
