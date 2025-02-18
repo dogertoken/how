@@ -114,6 +114,109 @@
         </div>
     </div>
 
+    <!-- Riwayat Keluaran Angka -->
+<section class="history-section">
+    <h2>Riwayat Keluaran Angka</h2>
+
+    <div class="history-entry">
+        <p>HK (06-04-2025)</p>
+        <div class="history-balls">
+            <div class="history-ball">7</div>
+            <div class="history-ball">14</div>
+            <div class="history-ball">21</div>
+            <div class="history-ball">30</div>
+        </div>
+    </div>
+
+    <div class="history-entry">
+        <p>HK (05-04-2025)</p>
+        <div class="history-balls">
+            <div class="history-ball">5</div>
+            <div class="history-ball">10</div>
+            <div class="history-ball">15</div>
+            <div class="history-ball">20</div>
+        </div>
+    </div>
+
+    <div class="history-entry">
+        <p>HK (04-04-2025)</p>
+        <div class="history-balls">
+            <div class="history-ball">8</div>
+            <div class="history-ball">16</div>
+            <div class="history-ball">24</div>
+            <div class="history-ball">32</div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Section Riwayat */
+.history-section {
+    text-align: center;
+    margin-top: 50px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+}
+
+/* Judul Riwayat */
+.history-section h2 {
+    font-size: 2rem;
+    text-shadow: 0 0 10px rgba(0, 183, 255, 0.8);
+    margin-bottom: 20px;
+}
+
+/* Setiap entri keluaran */
+.history-entry {
+    margin-bottom: 20px;
+}
+
+/* Tanggal Keluaran */
+.history-entry p {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #00b7ff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Bola Riwayat */
+.history-balls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.history-ball {
+    width: 70px;
+    height: 70px;
+    background: radial-gradient(circle at 30% 30%, #00b7ff, #007bff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 8px 15px rgba(0, 183, 255, 0.6), 0 4px 10px rgba(0, 0, 0, 0.4);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    border: 3px solid white;
+}
+
+/* Animasi */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.history-ball:nth-child(1) { animation: bounce 1s infinite 0.1s; }
+.history-ball:nth-child(2) { animation: bounce 1s infinite 0.2s; }
+.history-ball:nth-child(3) { animation: bounce 1s infinite 0.3s; }
+.history-ball:nth-child(4) { animation: bounce 1s infinite 0.4s; }
+</style>
+
     <script>
     function updateDateTime() {
         const now = new Date();
