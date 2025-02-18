@@ -56,6 +56,30 @@ input {
     margin-top: 10px;
     font-weight: bold;
 }
+
+ @media (min-width: 768px) {
+    form {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    label {
+        display: none; /* Sembunyikan label untuk hemat ruang */
+    }
+
+    input {
+        width: auto;
+        flex: 1;
+        min-width: 150px;
+    }
+
+    button[type="submit"] {
+        width: auto;
+    }
+ }
     </style>
 </head>
 <body>
@@ -70,18 +94,12 @@ input {
         <p id="signature">Signature: -</p>
 
         <form id="setWinnerForm">
-            <label for="winnerAddress">Alamat Pemenang:</label><br>
-            <input type="text" id="winnerAddress" required><br>
-
-            <label for="lotteryNumber">Nomor Undian:</label><br>
-            <input type="number" id="lotteryNumber" required><br>
-
-            <label for="rewardAmount">Hadiah (ETH):</label><br>
-            <input type="text" id="rewardAmount" required><br>
-
-            <button type="submit">Set Pemenang</button>
+            <input type="text" id="winnerAddress" placeholder="Alamat Pemenang" required>
+            <input type="number" id="lotteryNumber" placeholder="Nomor Undian" required>
+            <input type="text" id="rewardAmount" placeholder="Hadiah (ETH)" required>
+            <button type="submit">🎉 Set Pemenang</button>
         </form>
-
+        
         <p id="status"></p>
     </div>
 
