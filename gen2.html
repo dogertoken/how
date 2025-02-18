@@ -73,35 +73,6 @@
             transform: scale(1.05);
             box-shadow: 0 8px 20px rgba(0, 183, 255, 1);
         }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-
-            .number {
-                font-size: 3.5rem;
-                width: 60px;
-                height: 90px;
-            }
-
-            button {
-                font-size: 1.2rem;
-                padding: 10px 25px;
-            }
-        }
-
-        @keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
-    100% { transform: translateX(0); }
-}
-
-.shake {
-    animation: shake 0.2s ease-in-out;
-}
     </style>
 </head>
 
@@ -126,22 +97,15 @@
     <br>
 
     <div id="stats">
-    <p>🔢 <b>Angka Paling Sering Muncul:</b> <span id="mostFrequent">-</span></p>
-    <p>📉 <b>Angka Paling Jarang Muncul:</b> <span id="leastFrequent">-</span></p>
-    <p>📊 <b>Total Angka Dihasilkan:</b> <span id="totalGenerated">0</span></p>
+        <p>🔢 <b>Angka Paling Sering Muncul:</b> <span id="mostFrequent">-</span></p>
+        <p>📉 <b>Angka Paling Jarang Muncul:</b> <span id="leastFrequent">-</span></p>
+        <p>📊 <b>Total Angka Dihasilkan:</b> <span id="totalGenerated">0</span></p>
     </div>
     <br>
-
-    <button onclick="generateLuckyNumbers()">Pilih Angka Beruntung</button>
-    <button onclick="resetHistory()">Reset Riwayat</button>
-    <br>
-
-    <div>
-        <h2>🎰 Semoga Hoki! 🎰</h2>
-        <p>Gunakan generator angka ini untuk mendapatkan kombinasi acak yang unik dan tidak terduga.</p>
-    </div>
 
     <script>
+        let angkaChart;
+
         function generateRandomNumbers() {
             let angka = [0, 0, 0, 0];
             let elements = [
@@ -152,7 +116,7 @@
             ];
             let interval = [];
 
-            // Mulai animasi angka berputar
+            // Animasi angka berputar
             for (let i = 0; i < 4; i++) {
                 interval[i] = setInterval(() => {
                     angka[i] = Math.floor(Math.random() * 10);
@@ -160,7 +124,6 @@
                 }, 50);
             }
 
-            // Hentikan animasi satu per satu dengan delay
             setTimeout(() => {
                 for (let i = 0; i < 4; i++) {
                     clearInterval(interval[i]);
@@ -170,97 +133,9 @@
             }, 2500);
         }
 
-        // Save To Local Storage
-    setTimeout(() => {
-    let history = JSON.parse(localStorage.getItem("history")) || [];
-    let newNumber = angka.join("");
-    history.push(newNumber);
-    
-    // Batasi jumlah riwayat agar tidak terlalu besar
-    if (history.length > 50) history.shift();
-
-    localStorage.setItem("history", JSON.stringify(history));
-
-    // Perbarui grafik
-    generateChart();
-}, 2600);
-
-    // Frekuensi Angka Tertinggi
-    function updateStats(frequency) {
-    let maxFreq = Math.max(...frequency);
-    let minFreq = Math.min(...frequency.filter(f => f > 0)); // Hindari angka yang belum pernah muncul
-
-    let mostFrequent = frequency.map((f, i) => (f === maxFreq ? i : null)).filter(n => n !== null);
-    let leastFrequent = frequency.map((f, i) => (f === minFreq ? i : null)).filter(n => n !== null);
-    let totalGenerated = frequency.reduce((a, b) => a + b, 0);
-
-    document.getElementById("mostFrequent").textContent = mostFrequent.join(", ") || "-";
-    document.getElementById("leastFrequent").textContent = leastFrequent.join(", ") || "-";
-    document.getElementById("totalGenerated").textContent = totalGenerated;
-    }
-
-        updateStats(frequency);
-
-        // Copy Text
-        function copyToClipboard() {
-            let angka = [
-                document.getElementById("num1").textContent,
-                document.getElementById("num2").textContent,
-                document.getElementById("num3").textContent,
-                document.getElementById("num4").textContent
-            ].join("");
-
-            navigator.clipboard.writeText(angka).then(() => {
-                alert("Angka berhasil disalin: " + angka);
-            }).catch(err => {
-                console.error("Gagal menyalin angka", err);
-            });
-        }
-
-        // Lucky Number
-        function generateLuckyNumbers() {
-    let history = JSON.parse(localStorage.getItem("history")) || [];
-    let frequency = new Array(10).fill(0);
-
-    history.forEach(entry => {
-        entry.split("").forEach(num => {
-            frequency[parseInt(num)]++;
-        });
-    });
-
-    let maxFreq = Math.max(...frequency);
-    let luckyNumbers = frequency.map((f, i) => (f === maxFreq ? i : null)).filter(n => n !== null);
-    
-    if (luckyNumbers.length > 0) {
-        let elements = [
-            document.getElementById("num1"),
-            document.getElementById("num2"),
-            document.getElementById("num3"),
-            document.getElementById("num4")
-        ];
-        for (let i = 0; i < 4; i++) {
-            elements[i].textContent = luckyNumbers[Math.floor(Math.random() * luckyNumbers.length)];
-        }
-    } else {
-        alert("Belum cukup data untuk memilih angka beruntung!");
-    }
-        }
-
-        // Reset
-        function resetHistory() {
-    localStorage.removeItem("history");
-    alert("Riwayat angka telah dihapus!");
-    generateChart(); // Perbarui grafik agar kosong
-        }
-
-        // Animotion
-        elements[i].classList.add("shake");
-setTimeout(() => elements[i].classList.remove("shake"), 500);
-
-        // Chart
         function saveToHistory(newNumber) {
             let history = JSON.parse(localStorage.getItem("history")) || [];
-            if (history.length >= 50) history.shift(); // Batasi riwayat 50 angka
+            if (history.length >= 50) history.shift(); 
             history.push(newNumber);
             localStorage.setItem("history", JSON.stringify(history));
         }
@@ -277,32 +152,55 @@ setTimeout(() => elements[i].classList.remove("shake"), 500);
 
             angkaChart.data.datasets[0].data = frequency;
             angkaChart.update();
+
+            updateStats(frequency);
         }
 
-        let ctx = document.getElementById('angkaChart').getContext('2d');
-        let angkaChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
-                datasets: [{
-                    label: 'Frekuensi Angka Muncul',
-                    data: new Array(10).fill(0),
-                    backgroundColor: 'rgba(0, 183, 255, 0.5)',
-                    borderColor: 'rgba(0, 183, 255, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
+        function updateStats(frequency) {
+            let maxFreq = Math.max(...frequency);
+            let minFreq = Math.min(...frequency.filter(f => f > 0));
 
-        document.addEventListener("DOMContentLoaded", updateChart);
+            let mostFrequent = frequency.map((f, i) => (f === maxFreq ? i : null)).filter(n => n !== null);
+            let leastFrequent = frequency.map((f, i) => (f === minFreq ? i : null)).filter(n => n !== null);
+            let totalGenerated = frequency.reduce((a, b) => a + b, 0);
+
+            document.getElementById("mostFrequent").textContent = mostFrequent.join(", ") || "-";
+            document.getElementById("leastFrequent").textContent = leastFrequent.join(", ") || "-";
+            document.getElementById("totalGenerated").textContent = totalGenerated;
+        }
+
+        function copyToClipboard() {
+            let angka = [
+                document.getElementById("num1").textContent,
+                document.getElementById("num2").textContent,
+                document.getElementById("num3").textContent,
+                document.getElementById("num4").textContent
+            ].join("");
+
+            navigator.clipboard.writeText(angka).then(() => {
+                alert("Angka berhasil disalin: " + angka);
+            });
+        }
+
+        window.onload = function () {
+            let ctx = document.getElementById('angkaChart').getContext('2d');
+            angkaChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+                    datasets: [{
+                        label: 'Frekuensi Angka Muncul',
+                        data: new Array(10).fill(0),
+                        backgroundColor: 'rgba(0, 183, 255, 0.5)',
+                        borderColor: 'rgba(0, 183, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: true } } }
+            });
+
+            updateChart();
+        };
     </script>
 
 </body>
