@@ -8,18 +8,18 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            text-align: center;
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: white;
-            overflow: hidden;
-            padding: 10px;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    margin: 0;
+    min-height: 100vh;  /* ✅ Ubah height menjadi min-height */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* ✅ Supaya elemen tidak selalu di tengah */
+    align-items: center;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: white;
+    overflow-y: auto;  /* ✅ Tambahkan ini agar bisa discroll */
+    padding: 20px;
         }
 
         h1 {
