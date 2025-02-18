@@ -44,12 +44,25 @@ body {
     }
 }
         
+/* Popup Menu (nav-links) */
 .nav-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap; /* Membuat elemen di dalam navbar bisa membungkus */
-    margin: 0; /* Menghindari margin yang berlebihan */
+    display: none; /* Menyembunyikan menu popup secara default */
+    flex-direction: column; /* Menata menu dalam kolom */
+    background: rgba(15, 52, 96, 0.9); /* Latar belakang semi-transparan */
+    position: absolute;
+    top: 60px; /* Menempatkan menu di bawah navbar */
+    left: 0;
+    width: 100%; /* Menggunakan lebar penuh dari navbar */
+    max-width: 800px; /* Lebar maksimal yang sesuai dengan navbar */
+    margin: 0 auto; /* Memusatkan menu di layar */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
+    box-sizing: border-box;
+}
+
+.nav-links.active {
+    display: flex; /* Menampilkan popup saat toggleMenu dipanggil */
 }
 
 .nav-links a {
