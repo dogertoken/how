@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator 4 Angka Acak</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            overflow: hidden;
+            padding: 10px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-shadow: 0 0 15px rgba(0, 183, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        #container {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .number {
+            font-size: 4rem;
+            font-weight: bold;
+            width: 70px;
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #273c75, #192a56);
+            box-shadow: 0 8px 25px rgba(0, 183, 255, 0.8), 0 4px 10px rgba(0, 183, 255, 0.5);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: white;
+            background: linear-gradient(135deg, #00b7ff, #007bff);
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 183, 255, 0.8);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 183, 255, 1);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .number {
+                font-size: 3.5rem;
+                width: 60px;
+                height: 90px;
+            }
+
+            button {
+                font-size: 1.2rem;
+                padding: 10px 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🎰 Generator Angka Acak 🎰</h1>
+
+    <div id="container">
+        <div class="number" id="num1">0</div>
+        <div class="number" id="num2">0</div>
+        <div class="number" id="num3">0</div>
+        <div class="number" id="num4">0</div>
+    </div>
+
+    <div class="buttons">
+        <button onclick="generateRandomNumbers()">Generate</button>
+        <button onclick="copyToClipboard()">Copy</button>
+    </div>
+
+    <br>
+    <canvas id="angkaChart"></canvas>
+    <br>
+
+    <div>
+        <h2>Semoga Hoki!</h2>
+        <p>Gunakan generator angka ini untuk mendapatkan kombinasi acak yang unik dan tidak terduga.</p>
+    </div>
+
+    <script>
+        function generateRandomNumbers() {
+            let angka = [0, 0, 0, 0];
+            let elements = [
+                document.getElementById("num1"),
+                document.getElementById("num2"),
+                document.getElementById("num3"),
+                document.getElementById("num4")
+            ];
+            let interval = [];
+
+            // Mulai animasi angka berputar
+            for (let i = 0; i < 4; i++) {
+                interval[i] = setInterval(() => {
+                    angka[i] = Math.floor(Math.random() * 10);
+                    elements[i].textContent = angka[i];
+                }, 50);
+            }
+
+            // Hentikan animasi satu per satu dengan delay
+            setTimeout(() => {
+                for (let i = 0; i < 4; i++) {
+                    clearInterval(interval[i]);
+                }
+                saveToHistory(angka.join(""));
+                updateChart();
+            }, 2500);
+        }
+
+        function copyToClipboard() {
+            let angka = [
+                document.getElementById("num1").textContent,
+                document.getElementById("num2").textContent,
+                document.getElementById("num3").textContent,
+                document.getElementById("num4").textContent
+            ].join("");
+
+            navigator.clipboard.writeText(angka).then(() => {
+                alert("Angka berhasil disalin: " + angka);
+            }).catch(err => {
+                console.error("Gagal menyalin angka", err);
+            });
+        }
+
+        function saveToHistory(newNumber) {
+            let history = JSON.parse(localStorage.getItem("history")) || [];
+            if (history.length >= 50) history.shift(); // Batasi riwayat 50 angka
+            history.push(newNumber);
+            localStorage.setItem("history", JSON.stringify(history));
+        }
+
+        function updateChart() {
+            let history = JSON.parse(localStorage.getItem("history")) || [];
+            let frequency = new Array(10).fill(0);
+
+            history.forEach(entry => {
+                entry.split("").forEach(num => {
+                    frequency[parseInt(num)]++;
+                });
+            });
+
+            angkaChart.data.datasets[0].data = frequency;
+            angkaChart.update();
+        }
+
+        let ctx = document.getElementById('angkaChart').getContext('2d');
+        let angkaChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+                datasets: [{
+                    label: 'Frekuensi Angka Muncul',
+                    data: new Array(10).fill(0),
+                    backgroundColor: 'rgba(0, 183, 255, 0.5)',
+                    borderColor: 'rgba(0, 183, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", updateChart);
+    </script>
+
+</body>
+
+</html>
