@@ -88,10 +88,9 @@ body {
 /* Hero Section */
 .hero {
     width: 100%;
-    height: 60vh;
-    background: url('your-image-url.jpg') no-repeat center center/cover;
+    height: 550px;
+    background: url('your-image-url.jpg') no-repeat center center/cover; /* Replace with your image URL */
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -101,119 +100,6 @@ body {
     animation: fadeIn 2s ease-in-out;
 }
 
-/* Container untuk bola (agar horizontal) */
-.hero {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2vw; /* Jarak antar bola */
-}
-
-/* Bola */
-.hero .ball {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 8vw;
-    height: 8vw;
-    min-width: 60px; /* Ukuran minimal di HP */
-    min-height: 60px;
-    max-width: 120px; /* Ukuran maksimal di PC */
-    max-height: 120px;
-    background: radial-gradient(circle at 30% 30%, #00b7ff, #005f99);
-    border-radius: 50%;
-    font-size: 3vw;
-    font-weight: bold;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    box-shadow: inset 5px 5px 10px rgba(255, 255, 255, 0.3), 
-                inset -5px -5px 10px rgba(0, 0, 0, 0.3),
-                5px 5px 15px rgba(0, 0, 0, 0.3);
-    transition: transform 0.5s ease, box-shadow 0.5s ease;
-    position: relative;
-}
-
-/* Efek Glow */
-.hero .ball::before {
-    content: "";
-    position: absolute;
-    width: 120%;
-    height: 120%;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(0, 183, 255, 0.5), rgba(0, 183, 255, 0) 70%);
-    opacity: 0;
-    transition: opacity 0.5s ease;
-}
-
-/* Hover Effect */
-.hero .ball:hover {
-    transform: rotate(10deg) scale(1.1);
-    box-shadow: 0px 0px 20px rgba(0, 183, 255, 0.8), 
-                0px 0px 40px rgba(0, 183, 255, 0.5);
-}
-
-.hero .ball:hover::before {
-    opacity: 1;
-    animation: pulse 1.5s infinite alternate;
-}
-
-/* Efek Glow Berdenyut */
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 0.5;
-    }
-    100% {
-        transform: scale(1.2);
-        opacity: 0;
-    }
-}
-
-/* Animasi Floating */
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
-/* Delay untuk masing-masing bola */
-.hero .ball:nth-child(1) { animation: float 3s infinite ease-in-out; }
-.hero .ball:nth-child(2) { animation: float 3s infinite ease-in-out 0.2s; }
-.hero .ball:nth-child(3) { animation: float 3s infinite ease-in-out 0.4s; }
-.hero .ball:nth-child(4) { animation: float 3s infinite ease-in-out 0.6s; }
-
-/* Responsif untuk HP */
-@media (max-width: 768px) {
-    .hero {
-        font-size: 2rem;
-    }
-    .hero .ball {
-        width: 15vw;
-        height: 15vw;
-        font-size: 5vw;
-    }
-}
-
-/* Responsif untuk layar besar */
-@media (min-width: 1200px) {
-    .hero .ball {
-        width: 6vw;
-        height: 6vw;
-        font-size: 2vw;
-    }
-}
-
-/* Paragraf dalam hero */
-.hero p {
-    margin-top: 20px;
-    font-size: 1.5vw;
-    font-weight: normal;
-    opacity: 0.9;
-}
-    
 .hero h1 {
     font-size: 3.5rem;
     margin-bottom: 20px;
@@ -453,6 +339,40 @@ button:hover {
     width: 50px; /* Ukuran ikon */
     height: auto;
 }
+
+/* Styling for Lottery Balls in Features Section */
+.lottery-balls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.lottery-ball {
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle at 30% 30%, #00b7ff, #007bff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.6);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    border: 3px solid white;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.lottery-ball:nth-child(1) { animation: bounce 1s infinite 0.1s; }
+.lottery-ball:nth-child(2) { animation: bounce 1s infinite 0.2s; }
+.lottery-ball:nth-child(3) { animation: bounce 1s infinite 0.3s; }
+.lottery-ball:nth-child(4) { animation: bounce 1s infinite 0.4s; }
     </style>
 </head>
 <body>
@@ -472,10 +392,13 @@ button:hover {
  
     <!-- Hero Section -->
     <div class="hero">
-        <div class="ball">1</div>
-        <div class="ball">2</div>
-        <div class="ball">3</div>
-        <div class="ball">4</div><br>
+        <div>
+            <h1>Welcome to Lotto Chain</h1>
+            <p>Your Decentralized, Transparent, and Secure Lottery Platform</p>
+            <button class="hero-button">
+                <i class="fas fa-play-circle"></i> Play Now
+            </button>
+        </div>
     </div>
     
     <!-- Main Content -->
@@ -526,6 +449,68 @@ button:hover {
                 </li>
              </ul>
           </div>
+
+         <!-- Features Section -->
+<div id="features" class="section-box">
+   <center><h2>Pools Menu</h2></center>
+   <ul>
+        <li>
+            <a href="#transparent" class="feature-box">
+                <span><strong>Hongkong</strong> (HK)</span>
+                <div class="lottery-balls">
+                    <div class="lottery-ball">7</div>
+                    <div class="lottery-ball">14</div>
+                    <div class="lottery-ball">21</div>
+                    <div class="lottery-ball">30</div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="#instant-payouts" class="feature-box">
+                <span><strong>Instant Prize Distribution</strong> – Winners receive payouts automatically.</span>
+                <div class="lottery-balls">
+                    <div class="lottery-ball">5</div>
+                    <div class="lottery-ball">10</div>
+                    <div class="lottery-ball">15</div>
+                    <div class="lottery-ball">20</div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="#no-manipulation" class="feature-box">
+                <span><strong>No Manipulation</strong> – No interference from third parties.</span>
+                <div class="lottery-balls">
+                    <div class="lottery-ball">3</div>
+                    <div class="lottery-ball">6</div>
+                    <div class="lottery-ball">9</div>
+                    <div class="lottery-ball">12</div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="#multi-blockchain" class="feature-box">
+                <span><strong>Multi-Blockchain Support</strong> – Play on Ethereum, BSC, and other networks.</span>
+                <div class="lottery-balls">
+                    <div class="lottery-ball">8</div>
+                    <div class="lottery-ball">16</div>
+                    <div class="lottery-ball">24</div>
+                    <div class="lottery-ball">32</div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="#no-house-edge" class="feature-box">
+                <span><strong>No House Edge in Lotto Pools</strong> – Winnings are purely based on pooled bets.</span>
+                <div class="lottery-balls">
+                    <div class="lottery-ball">2</div>
+                    <div class="lottery-ball">4</div>
+                    <div class="lottery-ball">8</div>
+                    <div class="lottery-ball">12</div>
+                </div>
+            </a>
+        </li>
+     </ul>
+</div>
 
          <!-- How to Play -->
          <div id="how-to-play" class="section-box">
@@ -616,4 +601,4 @@ button:hover {
     </script>
 
 </body>
-                                </html>
+</html>
