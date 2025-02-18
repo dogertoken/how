@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Winner - Base Testnet</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <link rel="stylesheet" href="stylescss">
+    <style>
+      body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #16213e;
+    color: white;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 400px;
+    margin: auto;
+    background: #1a1a2e;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.6);
+}
+
+button {
+    background: #00b7ff;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin: 5px;
+}
+
+button:hover {
+    background: #007bff;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+}
+
+#status {
+    margin-top: 10px;
+    font-weight: bold;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Set Pemenang</h1>
+        
+        <button id="connectWallet">🔗 Connect Wallet</button>
+        <button id="disconnectWallet" style="display: none;">❌ Disconnect</button>
+        <p id="walletAddress">Wallet: Not Connected</p>
+
+        <form id="setWinnerForm">
+            <label for="winnerAddress">Alamat Pemenang:</label>
+            <input type="text" id="winnerAddress" required>
+
+            <label for="lotteryNumber">Nomor Undian:</label>
+            <input type="number" id="lotteryNumber" required>
+
+            <label for="rewardAmount">Hadiah (ETH):</label>
+            <input type="text" id="rewardAmount" required>
+
+            <button type="submit">Set Pemenang</button>
+        </form>
+
+        <p id="status"></p>
+    </div>
+
+    <script src="scriptjs"></script>
+    <script>
+      const CONTRACT_ADDRESS = "0x..."; // Ganti dengan alamat kontrak di Base Testnet
+const ABI = [...]; // Masukkan ABI kontrak
+
+let provider, signer, contract;
+
+async function connectWallet() {
+    if (window.ethereum) {
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        signer = provider.getSigner();
+        
+        try {
+            const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+            localStorage.setItem("connected", "true"); // Simpan status koneksi
+
+            // Paksa ke Base Testnet
+            await switchToBaseTestnet();
+
+            document.getElementById("walletAddress").innerText = `Wallet: ${accounts[0]}`;
+            document.getElementById("connectWallet").style.display = "none";
+            document.getElementById("disconnectWallet").style.display = "inline-block";
+
+            contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+        } catch (error) {
+            console.error(error);
+        }
+    } else {
+        alert("Metamask tidak terdeteksi!");
+    }
+}
+
+async function switchToBaseTestnet() {
+    const chainId = "0x2105"; // Base Testnet Chain ID
+
+    try {
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId }],
+        });
+    } catch (switchError) {
+        if (switchError.code === 4902) {
+            await window.ethereum.request({
+                method: "wallet_addEthereumChain",
+                params: [{
+                    chainId,
+                    chainName: "Base Testnet",
+                    rpcUrls: ["https://goerli.base.org"],
+                    nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+                    blockExplorerUrls: ["https://base-goerli.blockscout.com"],
+                }],
+            });
+        } else {
+            console.error(switchError);
+        }
+    }
+}
+
+async function disconnectWallet() {
+    localStorage.removeItem("connected"); // Hapus status koneksi
+    document.getElementById("walletAddress").innerText = "Wallet: Not Connected";
+    document.getElementById("connectWallet").style.display = "inline-block";
+    document.getElementById("disconnectWallet").style.display = "none";
+}
+
+document.getElementById("connectWallet").addEventListener("click", connectWallet);
+document.getElementById("disconnectWallet").addEventListener("click", disconnectWallet);
+
+document.getElementById("setWinnerForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    if (!contract) {
+        alert("Wallet belum terhubung!");
+        return;
+    }
+
+    const winner = document.getElementById("winnerAddress").value;
+    const lotteryNumber = document.getElementById("lotteryNumber").value;
+    const reward = ethers.utils.parseEther(document.getElementById("rewardAmount").value);
+
+    try {
+        const tx = await contract.setWinner(winner, lotteryNumber, reward);
+        document.getElementById("status").innerText = "Menunggu konfirmasi transaksi...";
+        await tx.wait();
+        document.getElementById("status").innerText = "Pemenang berhasil ditetapkan!";
+    } catch (error) {
+        console.error(error);
+        document.getElementById("status").innerText = "Gagal menetapkan pemenang!";
+    }
+});
+
+// Pastikan wallet tetap terhubung meski halaman direfresh
+window.addEventListener("load", async () => {
+    if (localStorage.getItem("connected") === "true") {
+        await connectWallet();
+    }
+});
+    </script>
+</body>
+</html>
