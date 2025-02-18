@@ -90,6 +90,18 @@
                 padding: 10px 25px;
             }
         }
+
+        @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+.shake {
+    animation: shake 0.2s ease-in-out;
+}
     </style>
 </head>
 
@@ -111,6 +123,17 @@
 
     <br><br>
     <canvas id="angkaChart"></canvas>
+    <br>
+
+    <div id="stats">
+    <p>🔢 <b>Angka Paling Sering Muncul:</b> <span id="mostFrequent">-</span></p>
+    <p>📉 <b>Angka Paling Jarang Muncul:</b> <span id="leastFrequent">-</span></p>
+    <p>📊 <b>Total Angka Dihasilkan:</b> <span id="totalGenerated">0</span></p>
+    </div>
+    <br>
+
+    <button onclick="generateLuckyNumbers()">Pilih Angka Beruntung</button>
+    <button onclick="resetHistory()">Reset Riwayat</button>
     <br>
 
     <div>
@@ -162,6 +185,23 @@
     generateChart();
 }, 2600);
 
+    // Frekuensi Angka Tertinggi
+    function updateStats(frequency) {
+    let maxFreq = Math.max(...frequency);
+    let minFreq = Math.min(...frequency.filter(f => f > 0)); // Hindari angka yang belum pernah muncul
+
+    let mostFrequent = frequency.map((f, i) => (f === maxFreq ? i : null)).filter(n => n !== null);
+    let leastFrequent = frequency.map((f, i) => (f === minFreq ? i : null)).filter(n => n !== null);
+    let totalGenerated = frequency.reduce((a, b) => a + b, 0);
+
+    document.getElementById("mostFrequent").textContent = mostFrequent.join(", ") || "-";
+    document.getElementById("leastFrequent").textContent = leastFrequent.join(", ") || "-";
+    document.getElementById("totalGenerated").textContent = totalGenerated;
+    }
+
+        updateStats(frequency);
+
+        // Copy Text
         function copyToClipboard() {
             let angka = [
                 document.getElementById("num1").textContent,
@@ -177,6 +217,47 @@
             });
         }
 
+        // Lucky Number
+        function generateLuckyNumbers() {
+    let history = JSON.parse(localStorage.getItem("history")) || [];
+    let frequency = new Array(10).fill(0);
+
+    history.forEach(entry => {
+        entry.split("").forEach(num => {
+            frequency[parseInt(num)]++;
+        });
+    });
+
+    let maxFreq = Math.max(...frequency);
+    let luckyNumbers = frequency.map((f, i) => (f === maxFreq ? i : null)).filter(n => n !== null);
+    
+    if (luckyNumbers.length > 0) {
+        let elements = [
+            document.getElementById("num1"),
+            document.getElementById("num2"),
+            document.getElementById("num3"),
+            document.getElementById("num4")
+        ];
+        for (let i = 0; i < 4; i++) {
+            elements[i].textContent = luckyNumbers[Math.floor(Math.random() * luckyNumbers.length)];
+        }
+    } else {
+        alert("Belum cukup data untuk memilih angka beruntung!");
+    }
+        }
+
+        // Reset
+        function resetHistory() {
+    localStorage.removeItem("history");
+    alert("Riwayat angka telah dihapus!");
+    generateChart(); // Perbarui grafik agar kosong
+        }
+
+        // Animotion
+        elements[i].classList.add("shake");
+setTimeout(() => elements[i].classList.remove("shake"), 500);
+
+        // Chart
         function saveToHistory(newNumber) {
             let history = JSON.parse(localStorage.getItem("history")) || [];
             if (history.length >= 50) history.shift(); // Batasi riwayat 50 angka
