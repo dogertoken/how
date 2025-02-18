@@ -80,6 +80,42 @@ body {
     color: white;
 }
 
+/* Hero Section */
+.hero {
+    width: 100%;
+    height: 100vh;
+    background: url('your-image-url.jpg') no-repeat center center/cover; /* Replace with your image URL */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px rgba(0, 183, 255, 0.8);
+}
+
+.hero p {
+    font-size: 1.5rem;
+    margin-top: 10px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 /* Section Box */
 .section-box {
     background: rgba(255, 255, 255, 0.1);
@@ -186,6 +222,14 @@ body {
             <a href="#join">5️⃣ Join</a>
         </ul>
     </nav>
+ 
+    <!-- Hero Section -->
+    <div class="hero">
+        <div>
+            <h1>Welcome to Lotto Chain</h1>
+            <p>Your Decentralized, Transparent, and Secure Lottery Platform</p>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <div class="container">
