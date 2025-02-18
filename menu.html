@@ -110,64 +110,7 @@ body {
     font-size: 1.5rem;
     margin-top: 10px;
 }
-
-/* Styling for Lottery Balls */
-        .lottery-balls {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .lottery-ball {
-    width: 80px;
-    height: 80px;
-    background: radial-gradient(circle at 30% 30%, #00b7ff, #007bff);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    font-weight: bold;
-    color: white;
-    box-shadow: 0 8px 15px rgba(0, 183, 255, 0.6), 0 4px 10px rgba(0, 0, 0, 0.4);
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
-    border: 3px solid white;
-        }
-
-        /* Animasi bola */
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .lottery-ball:nth-child(1) { animation: bounce 1s infinite 0.1s; }
-        .lottery-ball:nth-child(2) { animation: bounce 1s infinite 0.2s; }
-        .lottery-ball:nth-child(3) { animation: bounce 1s infinite 0.3s; }
-        .lottery-ball:nth-child(4) { animation: bounce 1s infinite 0.4s; }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-    .lottery-balls {
-        flex-wrap: wrap;
-    }
-    .lottery-ball {
-        width: 60px; /* Lebih kecil agar tidak terlalu besar */
-        height: 60px;
-        font-size: 1.5rem; /* Menyesuaikan ukuran teks */
-    }
-        }
-
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
+        
 .buttons {
     display: flex;
     gap: 15px;
