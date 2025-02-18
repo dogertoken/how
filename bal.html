@@ -59,19 +59,19 @@
         }
 
         .lottery-ball {
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle at 30% 30%, #00b7ff, #007bff);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 4px 10px rgba(0, 183, 255, 0.6);
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
-            border: 3px solid white;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle at 30% 30%, #00b7ff, #007bff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 8px 15px rgba(0, 183, 255, 0.6), 0 4px 10px rgba(0, 0, 0, 0.4);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    border: 3px solid white;
         }
 
         /* Animasi bola */
@@ -87,14 +87,14 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .lottery-balls {
-                flex-wrap: wrap;
-            }
-            .lottery-ball {
-                width: 70px;
-                height: 70px;
-                font-size: 1.5rem;
-            }
+    .lottery-balls {
+        flex-wrap: wrap;
+    }
+    .lottery-ball {
+        width: 60px; /* Lebih kecil agar tidak terlalu besar */
+        height: 60px;
+        font-size: 1.25rem; /* Menyesuaikan ukuran teks */
+    }
         }
     </style>
 </head>
