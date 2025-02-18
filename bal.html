@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bola 3D dengan Animasi</title>
+    <link rel="stylesheet" href="stylecss">
+    <style>
+      body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(120deg, #1e3c72, #2a5298);
+    margin: 0;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    gap: 30px;
+}
+
+.ball {
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle at 30% 30%, #00b7ff, #005f99);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 5px 5px 10px rgba(255, 255, 255, 0.3), 
+                inset -5px -5px 10px rgba(0, 0, 0, 0.3),
+                5px 5px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    position: relative;
+}
+
+/* Efek glow */
+.ball::before {
+    content: "";
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 183, 255, 0.5), rgba(0, 183, 255, 0) 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* Animasi hover */
+.ball:hover {
+    transform: rotate(10deg) scale(1.1);
+    box-shadow: 0px 0px 20px rgba(0, 183, 255, 0.8), 
+                0px 0px 40px rgba(0, 183, 255, 0.5);
+}
+
+.ball:hover::before {
+    opacity: 1;
+    animation: pulse 1.5s infinite alternate;
+}
+
+/* Animasi berdenyut (glow effect) */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* Animasi bola naik turun */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+/* Memberikan animasi float ke setiap bola dengan delay */
+.ball:nth-child(1) { animation: float 3s infinite ease-in-out; }
+.ball:nth-child(2) { animation: float 3s infinite ease-in-out 0.2s; }
+.ball:nth-child(3) { animation: float 3s infinite ease-in-out 0.4s; }
+.ball:nth-child(4) { animation: float 3s infinite ease-in-out 0.6s; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="ball">1</div>
+    <div class="ball">2</div>
+    <div class="ball">3</div>
+    <div class="ball">4</div>
+</div>
+
+</body>
+</html>
