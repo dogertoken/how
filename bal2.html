@@ -340,30 +340,23 @@ button:hover {
     height: auto;
 }
 
-/* Wrapper untuk teks dan bola */
+/* Wrapper agar bola tidak terpotong */
 .lottery-container {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px; /* Jarak antara teks dan bola */
-    padding: 10px;
+    justify-content: center;
+    overflow-x: auto; /* Tambahkan scroll horizontal jika diperlukan */
+    padding: 10px; /* Beri padding agar tidak menempel ke tepi layar */
 }
 
-/* Kontainer teks */
-.lottery-text {
-    font-size: 1.2rem;
-    font-weight: bold;
-    max-width: 300px; /* Batasi lebar teks agar rapi */
-}
-
-/* Wrapper untuk bola */
+/* Styling Lottery Balls */
 .lottery-balls {
     display: flex;
     justify-content: center;
     gap: 15px;
+    flex-wrap: wrap; /* Agar bola turun ke bawah di layar kecil */
 }
 
-/* Styling Bola */
+/* Bola Lotre */
 .lottery-ball {
     width: 50px;
     height: 50px;
@@ -393,25 +386,13 @@ button:hover {
 
 /* Media Query untuk HP */
 @media (max-width: 480px) {
-    .lottery-container {
-        flex-direction: column; /* Susun vertikal di HP */
-        align-items: center;
-        text-align: center;
-    }
-
-    .lottery-text {
-        max-width: none; /* Biarkan teks menyesuaikan */
-    }
-
     .lottery-balls {
-        flex-wrap: nowrap; /* Bola tetap sejajar horizontal */
-        overflow-x: auto; /* Jika tidak cukup, bisa scroll horizontal */
-        justify-content: center;
-        width: 100%;
+        gap: 10px; /* Kurangi jarak antar bola di layar kecil */
+        flex-wrap: wrap; /* Supaya bola turun ke bawah jika layar terlalu kecil */
     }
 
     .lottery-ball {
-        width: 40px; /* Perkecil bola di HP */
+        width: 40px; /* Perkecil bola untuk layar HP */
         height: 40px;
         font-size: 1.2rem;
     }
@@ -498,8 +479,8 @@ button:hover {
    <center><h2>Pools Menu</h2></center>
    <ul>
         <li>
+            <span><strong>Hongkong</strong> (HK)</span><br>
             <a href="#transparent" class="feature-box">
-                <span><strong>Hongkong</strong> (HK)</span><br>
                 <div class="lottery-balls">
                     <div class="lottery-ball">7</div>
                     <div class="lottery-ball">14</div>
