@@ -118,6 +118,31 @@ body {
     }
 }
 
+.buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+button {
+    padding: 15px 35px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(135deg, #00b7ff, #007bff);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 183, 255, 0.8);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
+}
+
 /* Section Box */
 .section-box {
     background: rgba(255, 255, 255, 0.1);
