@@ -278,6 +278,30 @@ button:hover {
     }
 }
 
+/* Join Section */
+#join p {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+#join i {
+    margin-right: 10px; /* Memberikan jarak antara ikon dan teks */
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+    #join p {
+        flex-direction: column; /* Menata ikon dan teks secara vertikal pada layar kecil */
+        align-items: flex-start;
+    }
+
+    #join i {
+        margin-right: 0;
+        margin-bottom: 5px; /* Memberikan jarak antara ikon dan teks secara vertikal */
+    }
+}
+
 /* Footer */
 .footer {
     padding: 20px;
