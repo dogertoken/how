@@ -22,6 +22,68 @@
     padding: 10px;
 }
 
+/* Navbar */
+.navbar {
+    width: 100%;
+    max-width: 1200px;
+    background: #0f3460;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Menampilkan menu secara default di mode PC */
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Sembunyikan hamburger di mode PC */
+.hamburger {
+    display: none;
+}
+
+/* Mode Mobile */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        background: rgba(15, 52, 96, 0.9);
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
+        text-align: left;
+        align-items: flex-start;
+    }
+
+    .nav-links.active {
+        display: flex; /* Muncul saat toggle hamburger */
+    }
+
+    .hamburger {
+        display: block; /* Hanya muncul di mobile */
+        font-size: 2rem;
+        cursor: pointer;
+        color: white;
+    }
+}
+
 h1 {
     font-size: 2.5rem;
     text-shadow: 0 0 15px rgba(0, 183, 255, 0.8);
@@ -211,6 +273,19 @@ button:hover {
 </head>
 
 <body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">Lotto Chain</div>
+        <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
+        <ul class="nav-links">
+            <a href="#about">1️⃣ About</a>
+            <a href="#features">2️⃣ Features</a>
+            <a href="#how-to-play">3️⃣ How to Play</a>
+            <a href="#prizes">4️⃣ Prizes</a>
+            <a href="#join">5️⃣ Join</a>
+        </ul>
+    </nav>
 
     <h1>🎰 Acak Angka 🎰</h1>
 
