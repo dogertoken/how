@@ -340,23 +340,30 @@ button:hover {
     height: auto;
 }
 
-/* Wrapper agar bola tidak terpotong */
+/* Wrapper untuk teks dan bola */
 .lottery-container {
     display: flex;
-    justify-content: center;
-    overflow-x: auto; /* Tambahkan scroll horizontal jika diperlukan */
-    padding: 10px; /* Beri padding agar tidak menempel ke tepi layar */
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px; /* Jarak antara teks dan bola */
+    padding: 10px;
 }
 
-/* Styling Lottery Balls */
+/* Kontainer teks */
+.lottery-text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    max-width: 300px; /* Batasi lebar teks agar rapi */
+}
+
+/* Wrapper untuk bola */
 .lottery-balls {
     display: flex;
     justify-content: center;
     gap: 15px;
-    flex-wrap: wrap; /* Agar bola turun ke bawah di layar kecil */
 }
 
-/* Bola Lotre */
+/* Styling Bola */
 .lottery-ball {
     width: 50px;
     height: 50px;
@@ -386,14 +393,26 @@ button:hover {
 
 /* Media Query untuk HP */
 @media (max-width: 480px) {
+    .lottery-container {
+        flex-direction: column; /* Susun vertikal di HP */
+        align-items: center;
+        text-align: center;
+    }
+
+    .lottery-text {
+        max-width: none; /* Biarkan teks menyesuaikan */
+    }
+
     .lottery-balls {
-        gap: 10px; /* Kurangi jarak antar bola di layar kecil */
-        flex-wrap: wrap; /* Supaya bola turun ke bawah jika layar terlalu kecil */
+        flex-wrap: nowrap; /* Bola tetap sejajar horizontal */
+        overflow-x: auto; /* Jika tidak cukup, bisa scroll horizontal */
+        justify-content: center;
+        width: 100%;
     }
 
     .lottery-ball {
-        width: 30px; /* Perkecil bola untuk layar HP */
-        height: 30px;
+        width: 40px; /* Perkecil bola di HP */
+        height: 40px;
         font-size: 1.2rem;
     }
 }
