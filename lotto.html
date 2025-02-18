@@ -23,8 +23,8 @@ body {
 
 /* Navbar */
 .navbar {
-    width: 95%; /* Mengatur panjang navbar agar sesuai dengan panjang .section-box */
-    max-width: 800px; /* Menetapkan lebar maksimal navbar */
+    width: 100%; /* Lebar penuh untuk desktop */
+    max-width: 1200px; /* Menetapkan lebar maksimal navbar di desktop */
     background: #0f3460;
     display: flex;
     justify-content: space-between;
@@ -37,6 +37,13 @@ body {
     box-sizing: border-box; /* Memastikan padding dan border tidak memengaruhi lebar */
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        width: 95%; /* Lebar 95% di mobile */
+    }
+}
+        
 .nav-links {
     list-style: none;
     display: flex;
