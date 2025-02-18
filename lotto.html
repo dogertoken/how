@@ -234,25 +234,38 @@ button:hover {
             opacity: 0.7;
         }
 
-        /* Styling untuk setiap list item (li) */
+        /* Styling untuk judul di atas box */
+.box-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    background: linear-gradient(135deg, #00b7ff, #007bff);
+    padding: 12px 20px;
+    border-radius: 10px 10px 0 0; /* Membulat di bagian atas */
+    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.5);
+    margin-bottom: 15px;
+}
+
+/* Styling untuk setiap list item (li) */
 .section-box ul li, 
 .section-box ol li {
-    background: rgba(0, 183, 255, 0.1); /* Warna latar belakang */
-    border: 2px solid #00b7ff; /* Border berwarna biru */
-    border-radius: 12px; /* Sudut membulat */
-    padding: 15px 20px; /* Ruang dalam */
-    margin: 10px 0; /* Jarak antar item */
-    font-size: 1.2rem; /* Ukuran font */
-    display: flex; /* Agar kontennya sejajar */
+    background: rgba(0, 183, 255, 0.1);
+    border: 2px solid #00b7ff;
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin: 10px 0;
+    font-size: 1.2rem;
+    display: flex;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.2); /* Efek bayangan */
+    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease-in-out;
     opacity: 0;
     transform: translateY(20px);
 }
 
-/* Efek animasi muncul */
+/* Animasi muncul */
 .section-box ul li:nth-child(1),
 .section-box ol li:nth-child(1) { animation: fadeInUp 0.5s forwards 0.2s; }
 .section-box ul li:nth-child(2),
@@ -281,7 +294,7 @@ button:hover {
         opacity: 1;
         transform: translateY(0);
     }
-                             }
+    }
     </style>
 </head>
 <body>
@@ -323,27 +336,27 @@ button:hover {
         </div>
 
         <!-- Features -->
-        <div id="features" class="section-box">
-            <h2>Why Choose Lotto Chain?</h2>
-            <ul>
-                <li>✅ 100% **Transparent & Secure** – All results are recorded on the blockchain.</li>
-                <li>✅ **Instant Prize Distribution** – Winners receive payouts automatically.</li>
-                <li>✅ **No Manipulation** – No interference from third parties.</li>
-                <li>✅ **Multi-Blockchain Support** – Play on Ethereum, BSC, and other networks.</li>
-                <li>✅ **No House Edge in Lotto Pools** – Winnings are purely based on pooled bets.</li>
-            </ul>
-        </div>
+<div id="features" class="section-box">
+    <div class="box-title">🌟 Why Choose Lotto Chain?</div>
+    <ul>
+        <li>✅ 100% <strong>Transparent & Secure</strong> – All results are recorded on the blockchain.</li>
+        <li>✅ <strong>Instant Prize Distribution</strong> – Winners receive payouts automatically.</li>
+        <li>✅ <strong>No Manipulation</strong> – No interference from third parties.</li>
+        <li>✅ <strong>Multi-Blockchain Support</strong> – Play on Ethereum, BSC, and other networks.</li>
+        <li>✅ <strong>No House Edge in Lotto Pools</strong> – Winnings are purely based on pooled bets.</li>
+    </ul>
+</div>
 
-        <!-- How to Play -->
-        <div id="how-to-play" class="section-box">
-            <h2>How to Play?</h2>
-            <ol>
-                <li>🎲 **Choose Your Bet Type** – Lotto Pools (HK, SG, etc.) or VRF Lottery.</li>
-                <li>📢 **Pick Your Numbers & Place a Bet** – Choose numbers for **6D, 5D, 4D, 3D, or 2D**.</li>
-                <li>📝 **Confirm & Submit** – Your bet is recorded on the blockchain.</li>
-                <li>🏆 **Check Results & Claim Winnings** – Payouts are automatically sent to winners.</li>
-            </ol>
-        </div>
+<!-- How to Play -->
+<div id="how-to-play" class="section-box">
+    <div class="box-title">🎮 How to Play?</div>
+    <ol>
+        <li>🎲 <strong>Choose Your Bet Type</strong> – Lotto Pools (HK, SG, etc.) or VRF Lottery.</li>
+        <li>📢 <strong>Pick Your Numbers & Place a Bet</strong> – Choose numbers for <strong>6D, 5D, 4D, 3D, or 2D</strong>.</li>
+        <li>📝 <strong>Confirm & Submit</strong> – Your bet is recorded on the blockchain.</li>
+        <li>🏆 <strong>Check Results & Claim Winnings</strong> – Payouts are automatically sent to winners.</li>
+    </ol>
+</div>
 
         <!-- Prize Table -->
         <div id="prizes" class="section-box">
