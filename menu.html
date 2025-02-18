@@ -349,17 +349,13 @@ button:hover {
     <!-- Hero Section -->
     <div class="hero">
         <div>
-            <h1>Results</h1>
-            <p id="current-date-time"></p>
-
-            <!-- Lottery Balls -->
-            <div class="lottery-balls">
-                <div class="lottery-ball">7</div>
-                <div class="lottery-ball">14</div>
-                <div class="lottery-ball">21</div>
-                <div class="lottery-ball">30</div>
-            </div>
+            <h1>Welcome to Lotto Chain</h1>
+            <p>Your Decentralized, Transparent, and Secure Lottery Platform</p>
+                <button class="hero-button">
+                <i class="fas fa-play-circle"></i> Play Now
+            </button>
         </div>
+    </div>
     
     <!-- Main Content -->
     <div class="container">
@@ -473,26 +469,6 @@ button:hover {
        </div>
 
     <script>
-        function updateDateTime() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0'); // Menambahkan 1 karena bulan dimulai dari 0
-        const day = String(now.getDate()).padStart(2, '0');
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const seconds = String(now.getSeconds()).padStart(2, '0');
-        
-        const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-        
-        document.getElementById('current-date-time').textContent = formattedDateTime;
-    }
-
-    // Update setiap detik
-    setInterval(updateDateTime, 1000);
-
-    // Panggil updateDateTime pertama kali agar langsung muncul
-    updateDateTime();
-        
         function toggleMenu() {
             document.querySelector(".nav-links").classList.toggle("active");
         }
