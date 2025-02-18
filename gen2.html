@@ -147,6 +147,21 @@
             }, 2500);
         }
 
+        // Save To Local Storage
+    setTimeout(() => {
+    let history = JSON.parse(localStorage.getItem("history")) || [];
+    let newNumber = angka.join("");
+    history.push(newNumber);
+    
+    // Batasi jumlah riwayat agar tidak terlalu besar
+    if (history.length > 50) history.shift();
+
+    localStorage.setItem("history", JSON.stringify(history));
+
+    // Perbarui grafik
+    generateChart();
+}, 2600);
+
         function copyToClipboard() {
             let angka = [
                 document.getElementById("num1").textContent,
