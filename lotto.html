@@ -39,9 +39,9 @@ body {
     box-sizing: border-box;
 }
 
-/* Menampilkan nav-links secara default di PC */
+/* Menampilkan menu secara default di mode PC */
 .nav-links {
-    display: flex;  /* Tampilkan menu di desktop */
+    display: flex;
     gap: 20px;
 }
 
@@ -51,10 +51,15 @@ body {
     font-weight: bold;
 }
 
-/* Sembunyikan menu di mode mobile */
+/* Sembunyikan hamburger di mode PC */
+.hamburger {
+    display: none;
+}
+
+/* Mode Mobile */
 @media (max-width: 768px) {
     .nav-links {
-        display: none; /* Menu tersembunyi di mobile */
+        display: none;
         flex-direction: column;
         background: rgba(15, 52, 96, 0.9);
         position: absolute;
@@ -73,7 +78,7 @@ body {
     }
 
     .hamburger {
-        display: block; /* Tampilkan hamburger hanya di mobile */
+        display: block; /* Hanya muncul di mobile */
         font-size: 2rem;
         cursor: pointer;
         color: white;
