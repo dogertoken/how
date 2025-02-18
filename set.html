@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <link rel="stylesheet" href="stylescss">
     <style>
-      body {
+        body {
     font-family: Arial, sans-serif;
     text-align: center;
     background: #16213e;
@@ -65,6 +65,9 @@ input {
         <button id="connectWallet">🔗 Connect Wallet</button>
         <button id="disconnectWallet" style="display: none;">❌ Disconnect</button>
         <p id="walletAddress">Wallet: Not Connected</p>
+        <p id="ethBalance">ETH: -</p>
+        <p id="usdtBalance">USDT: -</p>
+        <p id="signature">Signature: -</p>
 
         <form id="setWinnerForm">
             <label for="winnerAddress">Alamat Pemenang:</label>
@@ -84,16 +87,18 @@ input {
 
     <script src="scriptjs"></script>
     <script>
-      const CONTRACT_ADDRESS = "0x..."; // Ganti dengan alamat kontrak di Base Testnet
+        const CONTRACT_ADDRESS = "0x..."; // Ganti dengan alamat kontrak di Base Testnet
+const USDT_ADDRESS = "0x..."; // Ganti dengan alamat USDT di Base Testnet
 const ABI = [...]; // Masukkan ABI kontrak
+const USDT_ABI = [...]; // Masukkan ABI ERC-20 USDT
 
-let provider, signer, contract;
+let provider, signer, contract, usdtContract;
 
 async function connectWallet() {
     if (window.ethereum) {
         provider = new ethers.providers.Web3Provider(window.ethereum);
         signer = provider.getSigner();
-        
+
         try {
             const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
             localStorage.setItem("connected", "true"); // Simpan status koneksi
@@ -101,11 +106,21 @@ async function connectWallet() {
             // Paksa ke Base Testnet
             await switchToBaseTestnet();
 
-            document.getElementById("walletAddress").innerText = `Wallet: ${accounts[0]}`;
+            const address = accounts[0];
+            document.getElementById("walletAddress").innerText = `Wallet: ${address}`;
+
+            // Ambil saldo ETH dan USDT
+            await updateBalances(address);
+
+            // Generate Signature
+            const signature = await signer.signMessage("Verifikasi Wallet untuk Set Winner");
+            document.getElementById("signature").innerText = `Signature: ${signature}`;
+
             document.getElementById("connectWallet").style.display = "none";
             document.getElementById("disconnectWallet").style.display = "inline-block";
 
             contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+            usdtContract = new ethers.Contract(USDT_ADDRESS, USDT_ABI, signer);
         } catch (error) {
             console.error(error);
         }
@@ -140,9 +155,23 @@ async function switchToBaseTestnet() {
     }
 }
 
+async function updateBalances(address) {
+    // Ambil saldo ETH
+    const balanceETH = await provider.getBalance(address);
+    document.getElementById("ethBalance").innerText = `ETH: ${ethers.utils.formatEther(balanceETH)} ETH`;
+
+    // Ambil saldo USDT
+    usdtContract = new ethers.Contract(USDT_ADDRESS, USDT_ABI, provider);
+    const balanceUSDT = await usdtContract.balanceOf(address);
+    document.getElementById("usdtBalance").innerText = `USDT: ${ethers.utils.formatUnits(balanceUSDT, 6)} USDT`;
+}
+
 async function disconnectWallet() {
     localStorage.removeItem("connected"); // Hapus status koneksi
     document.getElementById("walletAddress").innerText = "Wallet: Not Connected";
+    document.getElementById("ethBalance").innerText = "ETH: -";
+    document.getElementById("usdtBalance").innerText = "USDT: -";
+    document.getElementById("signature").innerText = "Signature: -";
     document.getElementById("connectWallet").style.display = "inline-block";
     document.getElementById("disconnectWallet").style.display = "none";
 }
