@@ -340,14 +340,23 @@ button:hover {
     height: auto;
 }
 
-/* Styling for Lottery Balls in Features Section */
+/* Wrapper agar bola tidak terpotong */
+.lottery-container {
+    display: flex;
+    justify-content: center;
+    overflow-x: auto; /* Tambahkan scroll horizontal jika diperlukan */
+    padding: 10px; /* Beri padding agar tidak menempel ke tepi layar */
+}
+
+/* Styling Lottery Balls */
 .lottery-balls {
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-top: 10px;
+    flex-wrap: wrap; /* Agar bola turun ke bawah di layar kecil */
 }
 
+/* Bola Lotre */
 .lottery-ball {
     width: 50px;
     height: 50px;
@@ -364,6 +373,7 @@ button:hover {
     border: 3px solid white;
 }
 
+/* Animasi Bounce */
 @keyframes bounce {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-5px); }
@@ -373,6 +383,20 @@ button:hover {
 .lottery-ball:nth-child(2) { animation: bounce 1s infinite 0.2s; }
 .lottery-ball:nth-child(3) { animation: bounce 1s infinite 0.3s; }
 .lottery-ball:nth-child(4) { animation: bounce 1s infinite 0.4s; }
+
+/* Media Query untuk HP */
+@media (max-width: 480px) {
+    .lottery-balls {
+        gap: 10px; /* Kurangi jarak antar bola di layar kecil */
+        flex-wrap: wrap; /* Supaya bola turun ke bawah jika layar terlalu kecil */
+    }
+
+    .lottery-ball {
+        width: 40px; /* Perkecil bola untuk layar HP */
+        height: 40px;
+        font-size: 1.2rem;
+    }
+}
     </style>
 </head>
 <body>
