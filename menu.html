@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotto Chain - Decentralized Lottery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* General Style */
+body {
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    margin: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: white;
+    overflow-y: auto;
+}
+
+/* Navbar */
+.navbar {
+    width: 100%;
+    max-width: 1200px;
+    background: #0f3460;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Menampilkan menu secara default di mode PC */
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Sembunyikan hamburger di mode PC */
+.hamburger {
+    display: none;
+}
+
+/* Mode Mobile */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        background: rgba(15, 52, 96, 0.9);
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
+        text-align: left;
+        align-items: flex-start;
+    }
+
+    .nav-links.active {
+        display: flex; /* Muncul saat toggle hamburger */
+    }
+
+    .hamburger {
+        display: block; /* Hanya muncul di mobile */
+        font-size: 2rem;
+        cursor: pointer;
+        color: white;
+    }
+}
+
+/* Hero Section */
+.hero {
+    width: 100%;
+    height: 550px;
+    background: url('your-image-url.jpg') no-repeat center center/cover; /* Replace with your image URL */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px rgba(0, 183, 255, 0.8);
+}
+
+.hero p {
+    font-size: 1.5rem;
+    margin-top: 10px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+button {
+    padding: 15px 35px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(135deg, #00b7ff, #007bff);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 183, 255, 0.8);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
+}
+
+/* Section Box */
+.section-box {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
+    max-width: 800px;
+    width: 90%;
+}
+
+/* Footer */
+.footer {
+    padding: 20px;
+    margin-top: 20px;
+    background: #0f3460;
+    width: 100%;
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        background: #0f3460;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .hamburger {
+        display: block;
+    }
+}
+
+        h1, h2 {
+            text-shadow: 0 0 15px rgba(0, 183, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; }
+
+        /* Main Container */
+        .container {
+            margin-top: 80px;
+            max-width: 900px;
+            text-align: left;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 183, 255, 0.3);
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            text-align: center;
+        }
+
+        th {
+            background: rgba(0, 183, 255, 0.5);
+        }
+
+        /* Styling untuk setiap list item (li) */
+.section-box ul li, 
+.section-box ol li {
+    background: rgba(0, 183, 255, 0.1); /* Warna latar belakang */
+    border: 2px solid #00b7ff; /* Border berwarna biru */
+    border-radius: 12px; /* Sudut membulat */
+    padding: 15px 20px; /* Ruang dalam */
+    margin: 10px 0; /* Jarak antar item */
+    font-size: 1.2rem; /* Ukuran font */
+    display: flex; /* Agar kontennya sejajar */
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.2); /* Efek bayangan */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease-in-out;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* Efek animasi muncul */
+.section-box ul li:nth-child(1),
+.section-box ol li:nth-child(1) { animation: fadeInUp 0.5s forwards 0.2s; }
+.section-box ul li:nth-child(2),
+.section-box ol li:nth-child(2) { animation: fadeInUp 0.5s forwards 0.4s; }
+.section-box ul li:nth-child(3),
+.section-box ol li:nth-child(3) { animation: fadeInUp 0.5s forwards 0.6s; }
+.section-box ul li:nth-child(4),
+.section-box ol li:nth-child(4) { animation: fadeInUp 0.5s forwards 0.8s; }
+.section-box ul li:nth-child(5),
+.section-box ol li:nth-child(5) { animation: fadeInUp 0.5s forwards 1s; }
+
+/* Hover effect */
+.section-box ul li:hover, 
+.section-box ol li:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 183, 255, 0.4);
+}
+
+/* Animasi fadeInUp */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Join Section */
+#join p {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+#join i {
+    margin-right: 10px; /* Memberikan jarak antara ikon dan teks */
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+    #join p {
+        flex-direction: column; /* Menata ikon dan teks secara vertikal pada layar kecil */
+        align-items: flex-start;
+    }
+
+    #join i {
+        margin-right: 0;
+        margin-bottom: 5px; /* Memberikan jarak antara ikon dan teks secara vertikal */
+    }
+}
+
+/* Footer */
+.footer {
+    padding: 20px;
+    margin-top: 20px;
+    background: #0f3460;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box; /* Pastikan padding dan border tidak mengubah ukuran elemen */
+    }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">Lotto Chain</div>
+        <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
+        <ul class="nav-links">
+            <a href="#about">1️⃣ About</a>
+            <a href="#features">2️⃣ Features</a>
+            <a href="#how-to-play">3️⃣ How to Play</a>
+            <a href="#prizes">4️⃣ Prizes</a>
+            <a href="#join">5️⃣ Join</a>
+        </ul>
+    </nav>
+ 
+    <!-- Hero Section -->
+    <div class="hero">
+        <div>
+            <h1>Welcome to Lotto Chain</h1>
+            <p>Your Decentralized, Transparent, and Secure Lottery Platform</p>
+            <button class="hero-button">
+                <i class="fas fa-play-circle"></i> Play Now
+            </button>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container">
+
+        <h1>Lotto Chain – Decentralized Lottery & Betting</h1>
+
+        <!-- Feature Menu -->
+        <section class="feature-menu">
+        <center><h2>Pools Menu</h2></center>
+            <div class="option">
+                <img src="img/lottery.png" alt="Lottery" width="20"> 
+                <a href="#lottery">Hong Kong (HK)</a>
+            </div>
+            <div class="option">
+                <img src="img/staking.png" alt="Staking" width="20"> 
+                <a href="#staking">China (CN)</a>
+            </div>
+            <div class="option">
+                <img src="img/rewards.png" alt="Rewards" width="20"> 
+                <a href="#rewards">Singapore (SG)</a>
+            </div>
+            <div class="option">
+                <img src="img/rewards.png" alt="Rewards" width="20"> 
+                <a href="#rewards">Sidney (SN)</a>
+            </div>
+        </section>
+
+        <!-- Prize Table -->
+        <div id="prizes" class="section-box">
+        <center><h2>USDT Prize Payouts</h2></center>
+            <table>
+                <tr>
+                    <th>Bet Type</th>
+                    <th>Prize Multiplier</th>
+                    <th>Example (0.5 USDT)</th>
+                </tr>
+                <tr>
+                    <td>4D</td>
+                    <td>50,000%</td>
+                    <td>250 USDT</td>
+                </tr>
+                <tr>
+                    <td>3D</td>
+                    <td>5,000%</td>
+                    <td>25 USDT</td>
+                </tr>
+                <tr>
+                    <td>2D</td>
+                    <td>500%</td>
+                    <td>2.5 USDT</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Prize Table -->
+        <div id="prizes" class="section-box">
+        <center><h2>ETH Prize Payouts</h2></center>
+            <table>
+                <tr>
+                    <th>Bet Type</th>
+                    <th>Prize Multiplier</th>
+                    <th>Example (0.0001 ETH)</th>
+                </tr>
+                <tr>
+                    <td>4D</td>
+                    <td>50,000%</td>
+                    <td>0.05 ETH</td>
+                </tr>
+                <tr>
+                    <td>3D</td>
+                    <td>5,000%</td>
+                    <td>0.005 ETH</td>
+                </tr>
+                <tr>
+                    <td>2D</td>
+                    <td>500%</td>
+                    <td>0.0005 ETH</td>
+                </tr>
+            </table>
+        </div>
+
+        
+        <!-- Join Section -->
+        <div id="join" class="section-box">
+            <center><h2>Join Lotto Chain Now!</h2></center>
+            <center><p>Experience a <strong>fair, secure, and decentralized</strong> lottery system.</p></center>
+
+            <p><i class="fas fa-play"></i> <a href="#" style="color: #00b7ff;"> Play Now!</a></p>
+            <p><i class="fas fa-file-contract"></i> <a href="#" style="color: #00b7ff;"> Etherscan</a></p>
+            <p><i class="fab fa-telegram"></i> <a href="#" style="color: #00b7ff;"> Telegram</a></p>
+            <p><i class="fab fa-twitter"></i> <a href="#" style="color: #00b7ff;"> Twitter</a></p>
+        </div>
+
+       <!-- Footer -->
+       <div class="footer">
+           © 2025 Lotto Chain. All rights reserved. Play responsibly.
+       </div>
+
+    <script>
+        function toggleMenu() {
+            document.querySelector(".nav-links").classList.toggle("active");
+        }
+    </script>
+
+</body>
+  </html>
