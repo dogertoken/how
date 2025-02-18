@@ -42,7 +42,7 @@ body {
 /* Responsive Design */
 @media (max-width: 768px) {
     .navbar {
-        width: 95%; /* Lebar 95% di mobile */
+        width: 100%; /* Lebar 95% di mobile */
     }
 }
         
@@ -234,38 +234,25 @@ button:hover {
             opacity: 0.7;
         }
 
-        /* Styling untuk judul di atas box */
-.box-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    text-align: center;
-    color: white;
-    background: linear-gradient(135deg, #00b7ff, #007bff);
-    padding: 12px 20px;
-    border-radius: 10px 10px 0 0; /* Membulat di bagian atas */
-    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.5);
-    margin-bottom: 15px;
-}
-
-/* Styling untuk setiap list item (li) */
+        /* Styling untuk setiap list item (li) */
 .section-box ul li, 
 .section-box ol li {
-    background: rgba(0, 183, 255, 0.1);
-    border: 2px solid #00b7ff;
-    border-radius: 12px;
-    padding: 15px 20px;
-    margin: 10px 0;
-    font-size: 1.2rem;
-    display: flex;
+    background: rgba(0, 183, 255, 0.1); /* Warna latar belakang */
+    border: 2px solid #00b7ff; /* Border berwarna biru */
+    border-radius: 12px; /* Sudut membulat */
+    padding: 15px 20px; /* Ruang dalam */
+    margin: 10px 0; /* Jarak antar item */
+    font-size: 1.2rem; /* Ukuran font */
+    display: flex; /* Agar kontennya sejajar */
     align-items: center;
     gap: 10px;
-    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.2); /* Efek bayangan */
     transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease-in-out;
     opacity: 0;
     transform: translateY(20px);
 }
 
-/* Animasi muncul */
+/* Efek animasi muncul */
 .section-box ul li:nth-child(1),
 .section-box ol li:nth-child(1) { animation: fadeInUp 0.5s forwards 0.2s; }
 .section-box ul li:nth-child(2),
@@ -294,7 +281,8 @@ button:hover {
         opacity: 1;
         transform: translateY(0);
     }
-    }
+}
+
     </style>
 </head>
 <body>
