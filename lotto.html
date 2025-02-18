@@ -233,6 +233,55 @@ button:hover {
             font-size: 0.9rem;
             opacity: 0.7;
         }
+
+        /* Styling untuk setiap list item (li) */
+.section-box ul li, 
+.section-box ol li {
+    background: rgba(0, 183, 255, 0.1); /* Warna latar belakang */
+    border: 2px solid #00b7ff; /* Border berwarna biru */
+    border-radius: 12px; /* Sudut membulat */
+    padding: 15px 20px; /* Ruang dalam */
+    margin: 10px 0; /* Jarak antar item */
+    font-size: 1.2rem; /* Ukuran font */
+    display: flex; /* Agar kontennya sejajar */
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.2); /* Efek bayangan */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease-in-out;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* Efek animasi muncul */
+.section-box ul li:nth-child(1),
+.section-box ol li:nth-child(1) { animation: fadeInUp 0.5s forwards 0.2s; }
+.section-box ul li:nth-child(2),
+.section-box ol li:nth-child(2) { animation: fadeInUp 0.5s forwards 0.4s; }
+.section-box ul li:nth-child(3),
+.section-box ol li:nth-child(3) { animation: fadeInUp 0.5s forwards 0.6s; }
+.section-box ul li:nth-child(4),
+.section-box ol li:nth-child(4) { animation: fadeInUp 0.5s forwards 0.8s; }
+.section-box ul li:nth-child(5),
+.section-box ol li:nth-child(5) { animation: fadeInUp 0.5s forwards 1s; }
+
+/* Hover effect */
+.section-box ul li:hover, 
+.section-box ol li:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 183, 255, 0.4);
+}
+
+/* Animasi fadeInUp */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+                             }
     </style>
 </head>
 <body>
