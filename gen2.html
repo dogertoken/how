@@ -73,6 +73,17 @@
             transform: scale(1.05);
             box-shadow: 0 8px 20px rgba(0, 183, 255, 1);
         }
+
+        @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+}
+
+.shake {
+    animation: shake 0.5s ease;
+}
     </style>
 </head>
 
@@ -134,12 +145,20 @@ Dapatkan angka acak untuk keperluan undian, perhitungan, atau sekadar bersenang-
             }
 
             setTimeout(() => {
-                for (let i = 0; i < 4; i++) {
-                    clearInterval(interval[i]);
-                }
-                saveToHistory(angka.join(""));
-                updateChart();
-            }, 2500);
+    for (let i = 0; i < 4; i++) {
+        clearInterval(interval[i]);
+
+        // Tambahkan animasi shake
+        elements[i].classList.add("shake");
+
+        // Hapus animasi shake setelah 500ms
+        setTimeout(() => {
+            elements[i].classList.remove("shake");
+        }, 500);
+    }
+    saveToHistory(angka.join(""));
+    updateChart();
+}, 2500);
         }
 
         function saveToHistory(newNumber) {
