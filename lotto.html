@@ -23,8 +23,8 @@ body {
 
 /* Navbar */
 .navbar {
-    width: 100%; /* Mengubah menjadi 100% agar lebar mengikuti layar */
-    max-width: 1200px; /* Membatasi lebar maksimal navbar */
+    width: 100%; /* Memastikan navbar mengikuti lebar layar */
+    max-width: 1200px; /* Menetapkan lebar maksimal navbar */
     background: #0f3460;
     display: flex;
     justify-content: space-between;
@@ -33,13 +33,17 @@ body {
     position: fixed;
     top: 0;
     z-index: 1000;
-    margin: 0 auto; /* Agar navbar terpusat */
+    margin: 0 auto; /* Navbar terpusat */
+    box-sizing: border-box; /* Memastikan padding dan border tidak memengaruhi lebar */
+    flex-wrap: wrap; /* Membuat navbar bisa membungkus jika terlalu lebar */
 }
 
 .nav-links {
     list-style: none;
     display: flex;
     gap: 20px;
+    flex-wrap: wrap; /* Membuat elemen di dalam navbar bisa membungkus */
+    margin: 0; /* Menghindari margin yang berlebihan */
 }
 
 .nav-links a {
