@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generator 4 Angka Acak</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
     font-family: 'Poppins', sans-serif;
@@ -186,6 +187,9 @@ button:hover {
     </div>
 
     <br>
+    <canvas id="angkaChart"></canvas>
+    <br>
+    
     <div>
     <h2>Semoga Hoki!</h2>
     <p>Gunakan generator angka ini untuk mendapatkan kombinasi acak yang unik dan tidak terduga.
@@ -236,6 +240,45 @@ Dapatkan angka acak untuk keperluan undian, perhitungan, atau sekadar bersenang-
             });
         }
 
+        // Chart
+        function generateChart() {
+    let history = JSON.parse(localStorage.getItem("history")) || [];
+    let frequency = new Array(10).fill(0); // Array untuk menghitung frekuensi angka 0-9
+
+    // Hitung frekuensi setiap angka dalam riwayat
+    history.forEach(entry => {
+        entry.split("").forEach(num => {
+            frequency[parseInt(num)]++;
+        });
+    });
+
+    // Buat grafik menggunakan Chart.js
+    let ctx = document.getElementById('angkaChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            datasets: [{
+                label: 'Frekuensi Angka Muncul',
+                data: frequency,
+                backgroundColor: 'rgba(0, 183, 255, 0.5)',
+                borderColor: 'rgba(0, 183, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Panggil fungsi saat halaman dimuat
+document.addEventListener("DOMContentLoaded", generateChart);
     </script>
 
 </body>
