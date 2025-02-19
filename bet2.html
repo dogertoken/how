@@ -336,31 +336,50 @@ body {
     ];
 
     async function connectWallet() {
-        if (window.ethereum) {
+    if (window.ethereum) {
+        try {
             provider = new ethers.BrowserProvider(window.ethereum);
             await provider.send("eth_requestAccounts", []);
-            signer = provider.getSigner();
+            signer = await provider.getSigner();
             currentAccount = await signer.getAddress();
+
+            // Pastikan jaringan adalah Base Testnet (Chain ID: 84531)
+            const network = await provider.getNetwork();
+            if (network.chainId !== 84531) {
+                await switchToBaseTestnet();
+            }
+
+            // Inisialisasi kontrak
             contract = new ethers.Contract(contractAddress, abi, signer);
+
+            // Perbarui UI
             document.getElementById("walletAddress").textContent = currentAccount;
             updateBalances();
             document.getElementById("connectWalletBtn").style.display = "none";
             document.getElementById("disconnectWalletBtn").style.display = "block";
-        } else {
-            alert("Metamask not detected!");
+
+        } catch (error) {
+            console.error("Wallet connection failed:", error);
+            alert("Failed to connect wallet. Please try again.");
         }
+    } else {
+        alert("Metamask not detected!");
     }
+}
 
-    async function disconnectWallet() {
-        currentAccount = null;
-        document.getElementById("walletAddress").textContent = "-";
-        document.getElementById("ethBalance").textContent = "-";
-        document.getElementById("usdtBalance").textContent = "-";
-        document.getElementById("connectWalletBtn").style.display = "block";
-        document.getElementById("disconnectWalletBtn").style.display = "none";
-    }
+async function disconnectWallet() {
+    currentAccount = null;
+    document.getElementById("walletAddress").textContent = "-";
+    document.getElementById("ethBalance").textContent = "-";
+    document.getElementById("usdtBalance").textContent = "-";
+    document.getElementById("connectWalletBtn").style.display = "block";
+    document.getElementById("disconnectWalletBtn").style.display = "none";
+}
 
-    async function updateBalances() {
+async function updateBalances() {
+    if (!currentAccount || !provider) return;
+    
+    try {
         const ethBalance = await provider.getBalance(currentAccount);
         const usdtContract = new ethers.Contract(usdtAddress, [
             "function balanceOf(address owner) view returns (uint256)"
@@ -369,7 +388,64 @@ body {
         
         document.getElementById("ethBalance").textContent = ethers.utils.formatEther(ethBalance);
         document.getElementById("usdtBalance").textContent = ethers.utils.formatUnits(usdtBalance, 6);
+    } catch (error) {
+        console.error("Failed to update balances:", error);
     }
+}
+
+// Fungsi untuk menandatangani pesan dengan wallet
+async function signMessage() {
+    if (!signer) {
+        alert("Please connect your wallet first.");
+        return;
+    }
+    try {
+        const message = "Sign this message to verify your wallet.";
+        const signature = await signer.signMessage(message);
+        alert("Signature: " + signature);
+    } catch (error) {
+        console.error("Failed to sign message:", error);
+    }
+}
+
+// Fungsi untuk memaksa jaringan ke Base Testnet
+async function switchToBaseTestnet() {
+    try {
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: "0x14A33" }], // 0x14A33 adalah Chain ID untuk Base Testnet
+        });
+    } catch (error) {
+        // Jika jaringan tidak tersedia di Metamask, tambahkan Base Testnet secara manual
+        if (error.code === 4902) {
+            await addBaseTestnet();
+        } else {
+            console.error("Failed to switch network:", error);
+        }
+    }
+}
+
+// Fungsi untuk menambahkan Base Testnet ke Metamask
+async function addBaseTestnet() {
+    try {
+        await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [{
+                chainId: "0x14A33",
+                chainName: "Base Testnet",
+                rpcUrls: ["https://goerli.base.org"],
+                nativeCurrency: {
+                    name: "ETH",
+                    symbol: "ETH",
+                    decimals: 18
+                },
+                blockExplorerUrls: ["https://goerli.basescan.org"]
+            }],
+        });
+    } catch (error) {
+        console.error("Failed to add Base Testnet:", error);
+    }
+}
 
     // Show Bet Modal
     document.getElementById("placeBetBtn").addEventListener("click", () => {
