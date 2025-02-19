@@ -46,6 +46,8 @@ contract DecentralizedLotto {
     event WithdrawUSDT(address indexed user, uint256 amount);
     event ReceivedETH(address indexed sender, uint256 amount);
     event ReceivedUSDT(address indexed sender, uint256 amount);
+    event WithdrawETHExec(address indexed owner, uint256 amount);
+    event WithdrawUSDTExec(address indexed owner, uint256 amount);
 
     constructor(address _usdt) {
         owner = msg.sender;
@@ -141,10 +143,21 @@ contract DecentralizedLotto {
         return IERC20(USDT).balanceOf(_account);
     }
 
-    function withdrawUSDT(uint256 _amount) external onlyOwner {
+    function WithdrawETHExec(uint256 _amount) external onlyOwner {
+        require(address(this).balance >= _amount, "Insufficient ETH balance");
+        (bool success, ) = payable(owner).call{value: _amount}("");
+        require(success, "ETH withdrawal failed");
+        emit WithdrawETHExec(owner, _amount);
+    }
+
+    function WithdrawUSDTExec(uint256 _amount) external onlyOwner {
         uint256 balance = IERC20(USDT).balanceOf(address(this));
-        require(_amount <= balance, "Not enough USDT in contract");
-        require(IERC20(USDT).transfer(owner, _amount), "USDT withdrawal failed");
+        require(_amount <= balance, "Insufficient USDT balance");
+        (bool success, bytes memory returnData) = address(USDT).call(
+            abi.encodeWithSelector(IERC20.transfer.selector, owner, _amount)
+        );
+        require(success && (returnData.length == 0 || abi.decode(returnData, (bool))), "USDT transfer failed");
+        emit WithdrawUSDTExec(owner, _amount);
     }
 
     function depositUSDT(uint256 _amount) external {
