@@ -146,9 +146,12 @@ button {
     <option value="pie">Pie Chart</option>
 </select>
 
-<h3>Tabel Frekuensi (Per 10 Angka)</h3>
-<table id="frequencyTable" border="1"></table>
+<h3>Tabel Frekuensi Angka Utama (Per 10 Angka)</h3>
+<table id="frequencyTable69" border="1"></table>
 
+<h3>Tabel Frekuensi Powerball (Per 10 Angka)</h3>
+<table id="frequencyTable26" border="1"></table>
+    
     <script src="script.js"></script>
 
     <script>
@@ -158,7 +161,7 @@ button {
     const generateNumbersBtn = document.querySelector("#generate-numbers");
     const generatePowerBallBtn = document.querySelector("#generate-powerball");
 
-    // Statistik angka 1-69 dan powerball 1-26
+    // Statistik angka 1-69 dan Powerball 1-26
     let numberStats = Array(69).fill(0);
     let powerballStats = Array(26).fill(0);
 
@@ -178,7 +181,7 @@ button {
                 clearInterval(interval);
                 element.textContent = finalNumber;
                 updateStats([finalNumber], type);
-                updateFrequencyTable(); // Update tabel setiap angka keluar
+                updateFrequencyTables(); // Update tabel angka utama & Powerball
                 setTimeout(() => element.classList.remove("active"), 300);
             }
         }, 80);
@@ -233,20 +236,31 @@ button {
         });
     }
 
-    // **TABEL FREKUENSI (Per 10 Baris)**
-    function updateFrequencyTable() {
-        let table = document.getElementById("frequencyTable");
-        table.innerHTML = "";
+    // **TABEL FREKUENSI (Per 10 Baris untuk angka utama & Powerball)**
+    function updateFrequencyTables() {
+        let table69 = document.getElementById("frequencyTable69");
+        let table26 = document.getElementById("frequencyTable26");
+        table69.innerHTML = "";
+        table26.innerHTML = "";
 
+        // **Tabel untuk angka utama (1-69)**
         for (let i = 0; i < 69; i += 10) {
             let row = "<tr>";
-
             for (let j = 0; j < 10 && i + j < 69; j++) {
                 row += `<td>${i + j + 1}: ${numberStats[i + j]}</td>`;
             }
-
             row += "</tr>";
-            table.innerHTML += row;
+            table69.innerHTML += row;
+        }
+
+        // **Tabel untuk Powerball (1-26)**
+        for (let i = 0; i < 26; i += 10) {
+            let row = "<tr>";
+            for (let j = 0; j < 10 && i + j < 26; j++) {
+                row += `<td>${i + j + 1}: ${powerballStats[i + j]}</td>`;
+            }
+            row += "</tr>";
+            table26.innerHTML += row;
         }
     }
 
