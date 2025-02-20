@@ -120,10 +120,10 @@
 
         <!-- Lottery Balls -->
         <div class="lottery-balls">
-            <div class="lottery-ball">7</div>
-            <div class="lottery-ball">14</div>
-            <div class="lottery-ball">21</div>
-            <div class="lottery-ball">30</div>
+            <div class="lottery-ball" contenteditable="true">7</div>
+            <div class="lottery-ball" contenteditable="true">14</div>
+            <div class="lottery-ball" contenteditable="true">21</div>
+            <div class="lottery-ball" contenteditable="true">30</div>
         </div>
     </div>
 
@@ -297,6 +297,24 @@
 
     // Panggil updateDateTime pertama kali agar langsung muncul
     updateDateTime();
+
+    // Reset
+    function resetLotteryBalls() {
+        const now = new Date();
+        const hourUTC = now.getUTCHours();
+        const minuteUTC = now.getUTCMinutes();
+        
+        // Jika waktu UTC = 15:00 (pukul 15:00 UTC)
+        if (hourUTC === 15 && minuteUTC === 0) {
+            const balls = document.querySelectorAll(".lottery-ball");
+            balls.forEach(ball => {
+                ball.textContent = "-";
+            });
+        }
+    }
+
+    // Periksa setiap detik apakah sudah waktunya reset
+    setInterval(resetLotteryBalls, 1000);
     </script>
 
 </body>
