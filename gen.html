@@ -1,151 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotto Chain - Decentralized Lottery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+    <title>Powerball Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
     <style>
-        /* General Style */
-body {
-    font-family: 'Poppins', sans-serif;
-    text-align: center;
-    margin: center;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
-    color: white;
-    overflow-y: auto;
-}
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
 
-/* Navbar */
-.navbar {
-    width: 100%;
-    max-width: 1200px;
-    background: #0f3460;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    position: fixed;
-    top: 0;
-    z-index: 1000;
-    margin: 0 auto;
-    box-sizing: border-box;
-}
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            overflow-y: auto;
+            padding: 10px;
+        }
 
-/* Menampilkan menu secara default di mode PC */
-.nav-links {
-    display: flex;
-    gap: 20px;
-}
+        #number-container, #powerball-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
 
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-}
+        .number, .powerball {
+            font-size: 3rem;
+            font-weight: bold;
+            width: 90px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #273c75, #192a56);
+            box-shadow: 0 8px 25px rgba(0, 183, 255, 0.8), 0 4px 10px rgba(0, 183, 255, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-/* Sembunyikan hamburger di mode PC */
-.hamburger {
-    display: none;
-}
+        .active {
+            transform: scale(1.3); /* Membesar sedikit */
+            box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-/* Mode Mobile */
-@media (max-width: 768px) {
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        background: rgba(15, 52, 96, 0.9);
-        position: absolute;
-        top: 60px;
-        left: 0;
-        width: 100%;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
-        text-align: left;
-        align-items: flex-start;
-    }
-
-    .nav-links.active {
-        display: flex; /* Muncul saat toggle hamburger */
-    }
-
-    .hamburger {
-        display: block; /* Hanya muncul di mobile */
-        font-size: 2rem;
-        cursor: pointer;
-        color: white;
-    }
-}
-
-/* Hero Section */
-.hero {
-    width: 100%;
-    height: 550px;
-    background: url('your-image-url.jpg') no-repeat center center/cover; /* Replace with your image URL */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: white;
-    font-size: 3rem;
-    font-weight: bold;
-    animation: fadeIn 2s ease-in-out;
-}
-
-.hero h1 {
-    font-size: 3.5rem;
-    margin-bottom: 20px;
+        /* Menambah jarak antara judul dan angka */
+h1 {
+    font-size: 2.5rem;
     text-shadow: 0 0 15px rgba(0, 183, 255, 0.8);
+    margin-bottom: 40px; /* Tambah jarak */
 }
 
-.hero p {
-    font-size: 1.5rem;
-    margin-top: 10px;
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-.number {
-    font-size: 5rem;
-    font-weight: bold;
-    width: 80px;
-    height: 120px;
+/* Menambah jarak antara angka dan tombol */
+#number-container, #powerball-container {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 20px;
-    background: linear-gradient(145deg, #273c75, #192a56);
-    box-shadow: 0 8px 25px rgba(0, 183, 255, 0.8), 0 4px 10px rgba(0, 183, 255, 0.5);
-    transform: perspective(500px) rotateX(20deg);
-    animation: pulse 1.5s infinite alternate;
-}
-
-.buttons {
-    display: flex;
+    flex-wrap: wrap; /* Membuatnya responsif */
     gap: 15px;
-    margin-top: 30px;
-    flex-wrap: wrap;
     justify-content: center;
+    margin-top: 30px; /* Tambah jarak */
 }
 
+/* Menyesuaikan tombol agar tidak terlalu dekat */
 button {
-    padding: 15px 35px;
+    margin: 30px 10px; /* Tambah jarak vertikal dan horizontal */
+    padding: 15px 30px;
     font-size: 1.5rem;
     cursor: pointer;
     color: white;
@@ -156,503 +81,190 @@ button {
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
-button:hover {
-    transform: scale(1.1);
-    box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
-}
-
-/* Section Box */
-.section-box {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    margin: 20px auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
-    max-width: 800px;
-    width: 90%;
-}
-
-/* Footer */
-.footer {
-    padding: 20px;
-    margin-top: 20px;
-    background: #0f3460;
-    width: 100%;
-    text-align: center;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        background: #0f3460;
-        position: absolute;
-        top: 60px;
-        right: 0;
-        width: 100%;
-        text-align: center;
-        padding: 10px;
+/* Responsif untuk HP */
+@media (max-width: 600px) {
+    #number-container {
+        flex-wrap: wrap; /* Supaya angka tetap horizontal tapi bisa turun jika tidak muat */
+        max-width: 90%; /* Batasi lebar agar tidak terlalu besar di HP */
     }
 
-    .nav-links.active {
-        display: flex;
-    }
 
-    .hamburger {
-        display: block;
-    }
-}
-
-        h1, h2 {
-            text-shadow: 0 0 15px rgba(0, 183, 255, 0.8);
-            margin-bottom: 20px;
-        }
-
-        h1 { font-size: 2.5rem; }
-        h2 { font-size: 2rem; }
-
-        /* Main Container */
-        .container {
-            margin-top: 80px;
-            max-width: 900px;
-            text-align: left;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 183, 255, 0.3);
-        }
-
-        .section {
-            margin-bottom: 30px;
-        }
-
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            padding: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            text-align: center;
-        }
-
-        th {
-            background: rgba(0, 183, 255, 0.5);
-        }
-
-        /* Styling untuk setiap list item (li) */
-.section-box ul li, 
-.section-box ol li {
-    background: rgba(0, 183, 255, 0.1); /* Warna latar belakang */
-    border: 2px solid #00b7ff; /* Border berwarna biru */
-    border-radius: 12px; /* Sudut membulat */
-    padding: 15px 20px; /* Ruang dalam */
-    margin: 10px 0; /* Jarak antar item */
-    font-size: 1.2rem; /* Ukuran font */
-    display: flex; /* Agar kontennya sejajar */
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.2); /* Efek bayangan */
-    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease-in-out;
-    opacity: 0;
-    transform: translateY(20px);
-}
-
-/* Efek animasi muncul */
-.section-box ul li:nth-child(1),
-.section-box ol li:nth-child(1) { animation: fadeInUp 0.5s forwards 0.2s; }
-.section-box ul li:nth-child(2),
-.section-box ol li:nth-child(2) { animation: fadeInUp 0.5s forwards 0.4s; }
-.section-box ul li:nth-child(3),
-.section-box ol li:nth-child(3) { animation: fadeInUp 0.5s forwards 0.6s; }
-.section-box ul li:nth-child(4),
-.section-box ol li:nth-child(4) { animation: fadeInUp 0.5s forwards 0.8s; }
-.section-box ul li:nth-child(5),
-.section-box ol li:nth-child(5) { animation: fadeInUp 0.5s forwards 1s; }
-
-/* Hover effect */
-.section-box ul li:hover, 
-.section-box ol li:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(0, 183, 255, 0.4);
-}
-
-/* Animasi fadeInUp */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Join Section */
-#join p {
-    display: flex;
-    align-items: center;
-    margin: 10px 0;
-}
-
-#join i {
-    margin-right: 10px; /* Memberikan jarak antara ikon dan teks */
-}
-
-/* Responsif */
-@media (max-width: 768px) {
-    #join p {
-        flex-direction: column; /* Menata ikon dan teks secara vertikal pada layar kecil */
-        align-items: flex-start;
-    }
-
-    #join i {
-        margin-right: 0;
-        margin-bottom: 5px; /* Memberikan jarak antara ikon dan teks secara vertikal */
-    }
-}
-
-/* Footer */
-.footer {
-    padding: 20px;
-    margin-top: 20px;
-    background: #0f3460;
-    width: 100%;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box; /* Pastikan padding dan border tidak mengubah ukuran elemen */
-    }
-
-.section-box ul {
-    list-style: none;
-    padding: 0;
-}
-
-.section-box li {
-    margin: 10px 0;
-}
-
-.feature-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 15px;
-    border-radius: 8px;
-    text-decoration: none;
-    color: #f0f0f0;
-    transition: 0.3s;
-}
-
-.icon {
-    width: 50px; /* Ukuran ikon */
-    height: auto;
-}
-
-@keyframes pulse {
-    from {
-        transform: perspective(500px) rotateX(20deg) translateY(0);
-    }
-    to {
-        transform: perspective(500px) rotateX(20deg) translateY(-10px);
-    }
-}
-
-#angkaChart {
-    max-width: 600px; /* Sesuaikan dengan kebutuhan */
-    width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto; /* Pusatkan */
-}
-
-/* === RESPONSIF UNTUK TABLET & HP === */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2.5rem;
-    }
-
-    #container {
-        gap: 10px;
-    }
-
-    .number {
-        font-size: 4rem;
-        width: 70px;
-        height: 110px;
-    }
-
-    .buttons {
-        flex-wrap: nowrap; /* Tetap sejajar */
-    }
-
-    button {
-        font-size: 1.4rem;
-        padding: 12px 28px;
-    }
-}
-
-@media (max-width: 480px) {
-    h1 {
-        font-size: 2rem;
-    }
-
-    #container {
-        gap: 8px;
-    }
-
-    .number {
-        font-size: 3.5rem;
-        width: 60px;
-        height: 90px;
-    }
-
-    .buttons {
-        flex-wrap: nowrap; /* Tetap sejajar */
-        gap: 10px;
-    }
-
-    button {
-        font-size: 1.3rem;
-        padding: 12px 25px;
-    }
-}
-
-    .message-box {
-        text-align: center;
-        padding: 15px;
-        border-radius: 10px;
-        background: #f4f4f4;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        width: 90%;
-        max-width: 600px;
-        margin: 20px auto;
-    }
-
-    h2 {
-        font-size: 2rem;
-        margin-bottom: 10px;
-    }
-
-    p {
+    .number, .powerball {
+        width: 40px; /* Perkecil ukuran angka */
+        height: 50px;
         font-size: 1.2rem;
     }
 
-   /* RESPONSIF UNTUK HP */
-    @media (max-width: 768px) {
-        h2 {
-            font-size: 1.5rem;
-        }
-
-        p {
-            font-size: 1rem;
-        }
+    button {
+        width: 60%; /* Buat tombol lebih lebar di HP */
+        font-size: 1rem;
     }
-
-        @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
 }
 
-.shake {
-    animation: shake 0.5s ease;
-}
+        button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
+        }
+
+        canvas {
+            margin-top: 30px;
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            max-width: 90%;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="logo">Lotto Chain</div>
-        <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
-        <ul class="nav-links">
-            <a href="#about">1️⃣ About</a>
-            <a href="#features">2️⃣ Features</a>
-            <a href="#how-to-play">3️⃣ How to Play</a>
-            <a href="#prizes">4️⃣ Prizes</a>
-            <a href="#join">5️⃣ Join</a>
-        </ul>
-    </nav>
- 
-    <!-- Hero Section -->
-    <div class="hero">
-        <div>
-            <h1>Welcome to Lotto Chain</h1>
-            <p>Your Decentralized, Transparent, and Secure Lottery Platform</p>
-            <button class="hero-button">
-                <i class="fas fa-play-circle"></i> Play Now
-            </button>
-        </div>
-    </div>
-    
-    <!-- Main Content -->
-    <div class="container">
+    <h1>Powerball Generator</h1>
 
-        <div class="number" id="num1">0</div>
-        <div class="number" id="num2">0</div>
-        <div class="number" id="num3">0</div>
-        <div class="number" id="num4">0</div>
+    <div id="number-container">
+        <div class="number">--</div>
+        <div class="number">--</div>
+        <div class="number">--</div>
+        <div class="number">--</div>
+        <div class="number">--</div>
     </div>
 
-    <div class="buttons">
-        <button onclick="generateRandomNumbers()">Generate</button>
-        <button onclick="copyToClipboard()">Copy</button>
+    <button id="generate-numbers">Generate Numbers</button>
+
+    <div id="powerball-container">
+        <div class="powerball">--</div>
     </div>
 
-    <br><br>
-    <canvas id="angkaChart"></canvas>
-    <br>
+    <button id="generate-powerball">Generate Powerball</button>
 
-    <div id="stats">
-    <p>🔢 Angka Paling Sering Muncul: <span id="mostFrequent"><b>-</b></span></p>
-    <p>📉 Angka Paling Jarang Muncul: <span id="leastFrequent"><b>-</b></span></p>
-    <p>📊 Total Angka Dihasilkan: <span id="totalGenerated"><b>0</b></span></p>
-    </div>
-    <br>
+    <!-- Area Chart -->
+    <canvas id="numberChart"></canvas>
+    <canvas id="powerballChart"></canvas>
 
-    <div>
-    <h2>🎰 Semoga Hoki! 🎰</h2>
-    <p>Gunakan alat penghasil angka ini untuk mendapatkan kombinasi acak yang unik dan tidak terduga.
-<br><br>
-Setiap angka yang dihasilkan sepenuhnya acak dan tidak bisa diprediksi.
-<br><br>
-Dapatkan angka acak untuk keperluan undian, perhitungan, atau sekadar bersenang-senang!.</p>
-    </div>
-        
-        <!-- Join Section -->
-        <div id="join" class="section-box">
-            <center><h2>Join Lotto Chain Now!</h2></center>
-            <center><p>Experience a <strong>fair, secure, and decentralized</strong> lottery system.</p></center>
+    <label for="chartMode">Pilih Mode Chart:</label>
+<select id="chartMode">
+    <option value="bar">Bar Chart</option>
+    <option value="line">Line Chart</option>
+    <option value="pie">Pie Chart</option>
+</select>
 
-            <p><i class="fas fa-play"></i> <a href="#" style="color: #00b7ff;"> Play Now!</a></p>
-            <p><i class="fas fa-file-contract"></i> <a href="#" style="color: #00b7ff;"> Etherscan</a></p>
-            <p><i class="fab fa-telegram"></i> <a href="#" style="color: #00b7ff;"> Telegram</a></p>
-            <p><i class="fab fa-twitter"></i> <a href="#" style="color: #00b7ff;"> Twitter</a></p>
-        </div>
+<h3>Tabel Frekuensi</h3>
+<table id="frequencyTable" border="1">
+    <tr>
+        <th>Angka</th>
+        <th>Frekuensi</th>
+    </tr>
+</table>
 
-       <!-- Footer -->
-       <div class="footer">
-           © 2025 Lotto Chain. All rights reserved. Play responsibly.
-       </div>
+    <script src="script.js"></script>
 
     <script>
-        let angkaChart;
+document.addEventListener("DOMContentLoaded", function () {
+    const numberBoxes = document.querySelectorAll(".number");
+    const powerBallBox = document.querySelector(".powerball");
+    const generateNumbersBtn = document.querySelector("#generate-numbers");
+    const generatePowerBallBtn = document.querySelector("#generate-powerball");
 
-        function generateRandomNumbers() {
-            let angka = [0, 0, 0, 0];
-            let elements = [
-                document.getElementById("num1"),
-                document.getElementById("num2"),
-                document.getElementById("num3"),
-                document.getElementById("num4")
-            ];
-            let interval = [];
+    // Statistik angka 1-69 dan powerball 1-26
+    let numberStats = Array(69).fill(0);
+    let powerballStats = Array(26).fill(0);
 
-            // Animasi angka berputar
-            for (let i = 0; i < 4; i++) {
-                interval[i] = setInterval(() => {
-                    angka[i] = Math.floor(Math.random() * 10);
-                    elements[i].textContent = angka[i];
-                }, 50);
-            }
-
-            setTimeout(() => {
-    for (let i = 0; i < 4; i++) {
-        clearInterval(interval[i]);
-
-        // Tambahkan animasi shake
-        elements[i].classList.add("shake");
-
-        // Hapus animasi shake setelah 500ms
-        setTimeout(() => {
-            elements[i].classList.remove("shake");
-        }, 500);
+    function getRandomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    saveToHistory(angka.join(""));
-    updateChart();
-}, 2500);
-        }
 
-        function saveToHistory(newNumber) {
-            let history = JSON.parse(localStorage.getItem("history")) || [];
-            if (history.length >= 50) history.shift(); 
-            history.push(newNumber);
-            localStorage.setItem("history", JSON.stringify(history));
-        }
+    function animateNumberChange(element, min, max, type) {
+        element.classList.add("active");
+        let count = 0;
+        let finalNumber;
+        const interval = setInterval(() => {
+            finalNumber = getRandomNumber(min, max);
+            element.textContent = finalNumber;
+            count++;
+            if (count > 10) {
+                clearInterval(interval);
+                element.textContent = finalNumber;
+                updateStats([finalNumber], type);
+                updateFrequencyTable(); // Perbarui tabel setiap kali angka keluar
+                setTimeout(() => element.classList.remove("active"), 300);
+            }
+        }, 80);
+    }
 
-        function updateChart() {
-            let history = JSON.parse(localStorage.getItem("history")) || [];
-            let frequency = new Array(10).fill(0);
+    generateNumbersBtn.addEventListener("click", function () {
+        numberBoxes.forEach(box => animateNumberChange(box, 1, 69, "number"));
+    });
 
-            history.forEach(entry => {
-                entry.split("").forEach(num => {
-                    frequency[parseInt(num)]++;
-                });
-            });
+    generatePowerBallBtn.addEventListener("click", function () {
+        animateNumberChange(powerBallBox, 1, 26, "powerball");
+    });
 
-            angkaChart.data.datasets[0].data = frequency;
-            angkaChart.update();
+    // Inisialisasi Chart.js untuk angka utama (1-69)
+    const ctx1 = document.getElementById("numberChart").getContext("2d");
+    let numberChart = new Chart(ctx1, getChartConfig("bar", "Frekuensi Angka", numberStats, "blue"));
 
-            updateStats(frequency);
-        }
+    // Inisialisasi Chart.js untuk Powerball (1-26)
+    const ctx2 = document.getElementById("powerballChart").getContext("2d");
+    let powerballChart = new Chart(ctx2, getChartConfig("bar", "Frekuensi Powerball", powerballStats, "red"));
 
-        function updateStats(frequency) {
-            let maxFreq = Math.max(...frequency);
-            let minFreq = Math.min(...frequency.filter(f => f > 0));
-
-            let mostFrequent = frequency.map((f, i) => (f === maxFreq ? i : null)).filter(n => n !== null);
-            let leastFrequent = frequency.map((f, i) => (f === minFreq ? i : null)).filter(n => n !== null);
-            let totalGenerated = frequency.reduce((a, b) => a + b, 0);
-
-            document.getElementById("mostFrequent").textContent = mostFrequent.join(", ") || "-";
-            document.getElementById("leastFrequent").textContent = leastFrequent.join(", ") || "-";
-            document.getElementById("totalGenerated").textContent = totalGenerated;
-        }
-
-        function copyToClipboard() {
-            let angka = [
-                document.getElementById("num1").textContent,
-                document.getElementById("num2").textContent,
-                document.getElementById("num3").textContent,
-                document.getElementById("num4").textContent
-            ].join("");
-
-            navigator.clipboard.writeText(angka).then(() => {
-                alert("Angka berhasil disalin: " + angka);
-            });
-        }
-
-        window.onload = function () {
-            let ctx = document.getElementById('angkaChart').getContext('2d');
-            angkaChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
-                    datasets: [{
-                        label: 'Frekuensi Angka Muncul',
-                        data: new Array(10).fill(0),
-                        backgroundColor: 'rgba(0, 183, 255, 0.5)',
-                        borderColor: 'rgba(0, 183, 255, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: { responsive: true, scales: { y: { beginAtZero: true } } }
-            });
-
-            updateChart();
+    // Fungsi untuk mendapatkan konfigurasi Chart.js secara dinamis
+    function getChartConfig(type, label, data, color) {
+        return {
+            type: type,
+            data: {
+                labels: Array.from({ length: data.length }, (_, i) => i + 1),
+                datasets: [{
+                    label: label,
+                    data: data,
+                    backgroundColor: color,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: type !== "pie" ? { y: { beginAtZero: true } } : {}
+            }
         };
+    }
+
+    // Fungsi untuk update statistik dan chart
+    function updateStats(numbers, type) {
+        numbers.forEach(num => {
+            if (type === "number" && num >= 1 && num <= 69) {
+                numberStats[num - 1]++;
+                numberChart.data.datasets[0].data = numberStats;
+                numberChart.update();
+            } else if (type === "powerball" && num >= 1 && num <= 26) {
+                powerballStats[num - 1]++;
+                powerballChart.data.datasets[0].data = powerballStats;
+                powerballChart.update();
+            }
+        });
+    }
+
+    // **1. TABEL FREKUENSI**  
+    function updateFrequencyTable() {
+        let table = document.getElementById("frequencyTable");
+        table.innerHTML = "<tr><th>Angka</th><th>Frekuensi</th></tr>";
+
+        numberStats.forEach((count, index) => {
+            let row = `<tr><td>${index + 1}</td><td>${count}</td></tr>`;
+            table.innerHTML += row;
+        });
+    }
+
+    // **2. GANTI MODE CHART**  
+    document.getElementById("chartMode").addEventListener("change", function () {
+        let selectedMode = this.value;
         
-        function toggleMenu() {
-            document.querySelector(".nav-links").classList.toggle("active");
-        }
+        // Hapus chart lama
+        numberChart.destroy();
+        powerballChart.destroy();
+
+        // Buat chart baru dengan mode yang dipilih
+        numberChart = new Chart(ctx1, getChartConfig(selectedMode, "Frekuensi Angka", numberStats, "blue"));
+        powerballChart = new Chart(ctx2, getChartConfig(selectedMode, "Frekuensi Powerball", powerballStats, "red"));
+    });
+
+});
     </script>
 
 </body>
