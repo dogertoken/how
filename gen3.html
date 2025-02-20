@@ -23,12 +23,6 @@
             padding: 10px;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            text-shadow: 0 0 15px rgba(0, 183, 255, 0.8);
-            margin-bottom: 20px;
-        }
-
         #number-container, #powerball-container {
             display: flex;
             gap: 15px;
@@ -56,18 +50,54 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        button {
-            margin-top: 20px;
-            padding: 15px 35px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: white;
-            background: linear-gradient(135deg, #00b7ff, #007bff);
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 183, 255, 0.8);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+        /* Menambah jarak antara judul dan angka */
+h1 {
+    font-size: 2.5rem;
+    text-shadow: 0 0 15px rgba(0, 183, 255, 0.8);
+    margin-bottom: 40px; /* Tambah jarak */
+}
+
+/* Menambah jarak antara angka dan tombol */
+#number-container, #powerball-container {
+    display: flex;
+    flex-wrap: wrap; /* Membuatnya responsif */
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px; /* Tambah jarak */
+}
+
+/* Menyesuaikan tombol agar tidak terlalu dekat */
+button {
+    margin: 30px 10px; /* Tambah jarak vertikal dan horizontal */
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(135deg, #00b7ff, #007bff);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 183, 255, 0.8);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Responsif untuk HP */
+@media (max-width: 600px) {
+    #number-container, #powerball-container {
+        flex-direction: column; /* Supaya angka tersusun ke bawah jika layar kecil */
+        align-items: center;
+    }
+
+    .number, .powerball {
+        width: 70px; /* Perkecil ukuran angka */
+        height: 90px;
+        font-size: 2rem;
+    }
+
+    button {
+        width: 80%; /* Buat tombol lebih lebar di HP */
+        font-size: 1.2rem;
+    }
+}
 
         button:hover {
             transform: scale(1.1);
