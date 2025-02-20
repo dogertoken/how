@@ -82,10 +82,11 @@ button {
 
 /* Responsif untuk HP */
 @media (max-width: 600px) {
-    #number-container, #powerball-container {
-        flex-direction: column; /* Supaya angka tersusun ke bawah jika layar kecil */
-        align-items: center;
+    #number-container {
+        flex-wrap: wrap; /* Supaya angka tetap horizontal tapi bisa turun jika tidak muat */
+        max-width: 90%; /* Batasi lebar agar tidak terlalu besar di HP */
     }
+
 
     .number, .powerball {
         width: 50px; /* Perkecil ukuran angka */
