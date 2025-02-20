@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Angka Powerball</title>
+    <link rel="stylesheet" href="stylescss">
+    <style>
+      body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #f0f8ff;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.number-box, .powerball-box {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    background: #007bff;
+    color: white;
+    border-radius: 50%;
+    display: inline-block;
+    text-align: center;
+}
+
+.power {
+    background: #ff0000;
+}
+
+.buttons {
+    margin-bottom: 15px;
+}
+
+button {
+    font-size: 1.5rem;
+    padding: 10px 20px;
+    border: none;
+    background: #28a745;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #218838;
+}
+
+/* RESPONSIF UNTUK HP & TABLET */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+    .number {
+        font-size: 2rem;
+        width: 60px;
+        height: 60px;
+        line-height: 60px;
+    }
+    button {
+        font-size: 1.2rem;
+        padding: 8px 16px;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Powerball Number Generator</h1>
+        
+        <!-- Kotak angka utama -->
+        <div id="numbers" class="number-box">
+            <span class="number">-</span>
+            <span class="number">-</span>
+            <span class="number">-</span>
+            <span class="number">-</span>
+            <span class="number">-</span>
+        </div>
+
+        <!-- Tombol untuk generate angka utama -->
+        <div class="buttons">
+            <button id="generateNumbers">Generate Angka</button>
+        </div>
+
+        <!-- Kotak angka Powerball -->
+        <div id="powerball" class="powerball-box">
+            <span class="number power">-</span>
+        </div>
+
+        <!-- Tombol untuk generate Powerball -->
+        <div class="buttons">
+            <button id="generatePowerball">Generate Powerball</button>
+        </div>
+
+        <!-- Tombol reset -->
+        <div class="buttons">
+            <button id="reset">Reset</button>
+        </div>
+    </div>
+
+    <script src="scriptjs"></script>
+
+    <script>
+      document.getElementById("generateNumbers").addEventListener("click", function() {
+    let numbers = new Set();
+
+    // Generate 5 angka utama (1-69)
+    while (numbers.size < 5) {
+        numbers.add(Math.floor(Math.random() * 69) + 1);
+    }
+
+    // Sort angka utama
+    let sortedNumbers = [...numbers].sort((a, b) => a - b);
+
+    // Tampilkan angka utama
+    let numberElements = document.querySelectorAll(".number-box .number");
+    sortedNumbers.forEach((num, index) => {
+        numberElements[index].textContent = num;
+    });
+});
+
+document.getElementById("generatePowerball").addEventListener("click", function() {
+    // Generate angka Powerball (1-26)
+    let powerball = Math.floor(Math.random() * 26) + 1;
+    document.querySelector(".powerball-box .number").textContent = powerball;
+});
+
+document.getElementById("reset").addEventListener("click", function() {
+    document.querySelectorAll(".number-box .number, .powerball-box .number").forEach(num => {
+        num.textContent = "-";
+    });
+});
+    </script>
+</body>
+</html>
