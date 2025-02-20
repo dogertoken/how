@@ -176,49 +176,72 @@ button {
         });
 
         // Chart
-        let numberStats = Array(69).fill(0); // Statistik angka utama (1-69)
-let powerballStats = Array(26).fill(0); // Statistik Powerball (1-26)
+        document.addEventListener("DOMContentLoaded", function () {
+    let numberStats = Array(69).fill(0); // Statistik angka utama (1-69)
+    let powerballStats = Array(26).fill(0); // Statistik Powerball (1-26)
 
-// Inisialisasi Chart.js untuk angka utama
-const ctx1 = document.getElementById("numberChart").getContext("2d");
-const numberChart = new Chart(ctx1, {
-    type: "bar",
-    data: {
-        labels: Array.from({ length: 69 }, (_, i) => i + 1),
-        datasets: [{
-            label: "Frekuensi Angka",
-            data: numberStats,
-            backgroundColor: "blue",
-        }]
+    // Inisialisasi Chart.js untuk angka utama
+    const ctx1 = document.getElementById("numberChart").getContext("2d");
+    const numberChart = new Chart(ctx1, {
+        type: "bar",
+        data: {
+            labels: Array.from({ length: 69 }, (_, i) => i + 1),
+            datasets: [{
+                label: "Frekuensi Angka",
+                data: numberStats,
+                backgroundColor: "blue",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Inisialisasi Chart.js untuk Powerball
+    const ctx2 = document.getElementById("powerballChart").getContext("2d");
+    const powerballChart = new Chart(ctx2, {
+        type: "bar",
+        data: {
+            labels: Array.from({ length: 26 }, (_, i) => i + 1),
+            datasets: [{
+                label: "Frekuensi Powerball",
+                data: powerballStats,
+                backgroundColor: "red",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Fungsi untuk update statistik dan chart
+    function updateStats(numbers, type) {
+        if (type === "number") {
+            numbers.forEach(num => numberStats[num - 1]++);
+            numberChart.data.datasets[0].data = numberStats;
+            numberChart.update();
+        } else if (type === "powerball") {
+            numbers.forEach(num => powerballStats[num - 1]++);
+            powerballChart.data.datasets[0].data = powerballStats;
+            powerballChart.update();
+        }
     }
+
+    // Pastikan updateStats bisa dipanggil dari script.js
+    window.updateStats = updateStats;
 });
-
-// Inisialisasi Chart.js untuk Powerball
-const ctx2 = document.getElementById("powerballChart").getContext("2d");
-const powerballChart = new Chart(ctx2, {
-    type: "bar",
-    data: {
-        labels: Array.from({ length: 26 }, (_, i) => i + 1),
-        datasets: [{
-            label: "Frekuensi Powerball",
-            data: powerballStats,
-            backgroundColor: "red",
-        }]
-    }
-});
-
-// Fungsi untuk update statistik dan chart
-function updateStats(numbers, type) {
-    if (type === "number") {
-        numbers.forEach(num => numberStats[num - 1]++);
-        numberChart.data.datasets[0].data = numberStats;
-        numberChart.update();
-    } else if (type === "powerball") {
-        numbers.forEach(num => powerballStats[num - 1]++);
-        powerballChart.data.datasets[0].data = powerballStats;
-        powerballChart.update();
-    }
-}
     </script>
 
 </body>
