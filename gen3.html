@@ -3,24 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator Angka Powerball</title>
+    <title>Powerball Generator</title>
     <link rel="stylesheet" href="stylescss">
     <style>
-      body {
+        body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background: #f0f8ff;
-    margin: 0;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
     padding: 20px;
-}
-
-.container {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
 }
 
 h1 {
@@ -28,133 +19,129 @@ h1 {
     margin-bottom: 20px;
 }
 
-.number-box, .powerball-box {
+.container {
     display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
-.number {
-    font-size: 2.5rem;
-    font-weight: bold;
+#number-container, #powerball-container {
+    display: flex;
+    gap: 10px;
+}
+
+.number, .powerball {
     width: 70px;
     height: 70px;
-    line-height: 70px;
-    background: #007bff;
-    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 50%;
-    display: inline-block;
-    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
+    background: white;
+    color: black;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.power {
-    background: #ff0000;
+.powerball {
+    background: red;
+    color: white;
 }
 
-.buttons {
-    margin-bottom: 15px;
+.number:hover, .powerball:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 40px rgba(255, 255, 255, 0.8);
 }
 
 button {
-    font-size: 1.5rem;
     padding: 10px 20px;
+    font-size: 1.5rem;
+    background: #ffcc00;
     border: none;
-    background: #28a745;
-    color: white;
-    border-radius: 5px;
     cursor: pointer;
-    transition: 0.3s;
+    border-radius: 10px;
+    transition: background 0.3s ease;
 }
 
 button:hover {
-    background: #218838;
-}
-
-/* RESPONSIF UNTUK HP & TABLET */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2rem;
-    }
-    .number {
-        font-size: 2rem;
-        width: 60px;
-        height: 60px;
-        line-height: 60px;
-    }
-    button {
-        font-size: 1.2rem;
-        padding: 8px 16px;
-    }
+    background: #ff9900;
 }
     </style>
 </head>
 <body>
+
+    <h1>Powerball Generator</h1>
+
     <div class="container">
-        <h1>Powerball Number Generator</h1>
-        
-        <!-- Kotak angka utama -->
-        <div id="numbers" class="number-box">
-            <span class="number">-</span>
-            <span class="number">-</span>
-            <span class="number">-</span>
-            <span class="number">-</span>
-            <span class="number">-</span>
+        <div id="number-container">
+            <div class="number">--</div>
+            <div class="number">--</div>
+            <div class="number">--</div>
+            <div class="number">--</div>
+            <div class="number">--</div>
         </div>
 
-        <!-- Tombol untuk generate angka utama -->
-        <div class="buttons">
-            <button id="generateNumbers">Generate Angka</button>
+        <button id="generate-numbers">Generate Numbers</button>
+
+        <div id="powerball-container">
+            <div class="powerball">--</div>
         </div>
 
-        <!-- Kotak angka Powerball -->
-        <div id="powerball" class="powerball-box">
-            <span class="number power">-</span>
-        </div>
-
-        <!-- Tombol untuk generate Powerball -->
-        <div class="buttons">
-            <button id="generatePowerball">Generate Powerball</button>
-        </div>
-
-        <!-- Tombol reset -->
-        <div class="buttons">
-            <button id="reset">Reset</button>
-        </div>
+        <button id="generate-powerball">Generate Powerball</button>
     </div>
 
     <script src="scriptjs"></script>
 
     <script>
-      document.getElementById("generateNumbers").addEventListener("click", function() {
-    let numbers = new Set();
-
-    // Generate 5 angka utama (1-69)
-    while (numbers.size < 5) {
-        numbers.add(Math.floor(Math.random() * 69) + 1);
-    }
-
-    // Sort angka utama
-    let sortedNumbers = [...numbers].sort((a, b) => a - b);
-
-    // Tampilkan angka utama
-    let numberElements = document.querySelectorAll(".number-box .number");
-    sortedNumbers.forEach((num, index) => {
-        numberElements[index].textContent = num;
-    });
+        document.getElementById("generate-numbers").addEventListener("click", function() {
+    generateNumbers();
 });
 
-document.getElementById("generatePowerball").addEventListener("click", function() {
-    // Generate angka Powerball (1-26)
-    let powerball = Math.floor(Math.random() * 26) + 1;
-    document.querySelector(".powerball-box .number").textContent = powerball;
+document.getElementById("generate-powerball").addEventListener("click", function() {
+    generatePowerball();
 });
 
-document.getElementById("reset").addEventListener("click", function() {
-    document.querySelectorAll(".number-box .number, .powerball-box .number").forEach(num => {
-        num.textContent = "-";
-    });
-});
+function generateNumbers() {
+    let numberElements = document.querySelectorAll(".number");
+    let numbers = [];
+
+    let interval = setInterval(() => {
+        numberElements.forEach(el => {
+            el.textContent = Math.floor(Math.random() * 69) + 1;
+        });
+    }, 100);
+
+    setTimeout(() => {
+        clearInterval(interval);
+        while (numbers.length < 5) {
+            let num = Math.floor(Math.random() * 69) + 1;
+            if (!numbers.includes(num)) numbers.push(num);
+        }
+        numberElements.forEach((el, index) => {
+            el.textContent = numbers[index];
+            el.style.animation = "bounce 0.5s";
+        });
+    }, 1500);
+}
+
+function generatePowerball() {
+    let powerballElement = document.querySelector(".powerball");
+
+    let interval = setInterval(() => {
+        powerballElement.textContent = Math.floor(Math.random() * 26) + 1;
+    }, 100);
+
+    setTimeout(() => {
+        clearInterval(interval);
+        let powerballNumber = Math.floor(Math.random() * 26) + 1;
+        powerballElement.textContent = powerballNumber;
+        powerballElement.style.animation = "bounce 0.5s";
+    }, 1500);
+}
     </script>
+
 </body>
 </html>
