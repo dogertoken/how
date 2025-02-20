@@ -105,6 +105,14 @@ button {
             transform: scale(1.1);
             box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
         }
+
+        canvas {
+            margin-top: 30px;
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            max-width: 90%;
+        }
     </style>
 </head>
 <body>
@@ -126,6 +134,10 @@ button {
     </div>
 
     <button id="generate-powerball">Generate Powerball</button>
+
+    <!-- Area Chart -->
+    <canvas id="numberChart"></canvas>
+    <canvas id="powerballChart"></canvas>
 
     <script src="script.js"></script>
 
@@ -163,6 +175,50 @@ button {
             });
         });
 
+        // Chart
+        let numberStats = Array(69).fill(0); // Statistik angka utama (1-69)
+let powerballStats = Array(26).fill(0); // Statistik Powerball (1-26)
+
+// Inisialisasi Chart.js untuk angka utama
+const ctx1 = document.getElementById("numberChart").getContext("2d");
+const numberChart = new Chart(ctx1, {
+    type: "bar",
+    data: {
+        labels: Array.from({ length: 69 }, (_, i) => i + 1),
+        datasets: [{
+            label: "Frekuensi Angka",
+            data: numberStats,
+            backgroundColor: "blue",
+        }]
+    }
+});
+
+// Inisialisasi Chart.js untuk Powerball
+const ctx2 = document.getElementById("powerballChart").getContext("2d");
+const powerballChart = new Chart(ctx2, {
+    type: "bar",
+    data: {
+        labels: Array.from({ length: 26 }, (_, i) => i + 1),
+        datasets: [{
+            label: "Frekuensi Powerball",
+            data: powerballStats,
+            backgroundColor: "red",
+        }]
+    }
+});
+
+// Fungsi untuk update statistik dan chart
+function updateStats(numbers, type) {
+    if (type === "number") {
+        numbers.forEach(num => numberStats[num - 1]++);
+        numberChart.data.datasets[0].data = numberStats;
+        numberChart.update();
+    } else if (type === "powerball") {
+        numbers.forEach(num => powerballStats[num - 1]++);
+        powerballChart.data.datasets[0].data = powerballStats;
+        powerballChart.update();
+    }
+}
     </script>
 
 </body>
