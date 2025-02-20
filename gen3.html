@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Powerball Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
@@ -104,6 +105,16 @@ button {
             transform: scale(1.1);
             box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
         }
+
+        canvas {
+    max-width: 100%;
+    background: white;
+    border-radius: 10px;
+}
+.stats {
+    margin-top: 20px;
+    font-size: 1rem;
+}
     </style>
 </head>
 <body>
@@ -125,6 +136,14 @@ button {
     </div>
 
     <button id="generate-powerball">Generate Powerball</button>
+
+    <h2>Statistik</h2>
+    <canvas id="numberChart"></canvas>
+    <div class="stats">
+        <p>Total Angka yang Dihasilkan: <span id="total-count">0</span></p>
+        <p>Angka Paling Sering Muncul: <span id="most-frequent">-</span></p>
+        <p>Angka Paling Jarang Muncul: <span id="least-frequent">-</span></p>
+    </div>
 
     <script src="script.js"></script>
 
@@ -161,6 +180,76 @@ button {
                 animateNumberChange(powerBallBox, 1, 26);
             });
         });
+
+        // Chart
+        const totalCountSpan = document.getElementById("total-count");
+const mostFrequentSpan = document.getElementById("most-frequent");
+const leastFrequentSpan = document.getElementById("least-frequent");
+
+let numberFrequency = {};
+let totalNumbersGenerated = 0;
+
+function updateStats() {
+    totalCountSpan.textContent = totalNumbersGenerated;
+
+    let sortedEntries = Object.entries(numberFrequency).sort((a, b) => b[1] - a[1]);
+
+    if (sortedEntries.length > 0) {
+        mostFrequentSpan.textContent = sortedEntries[0][0] + " (" + sortedEntries[0][1] + "x)";
+        leastFrequentSpan.textContent = sortedEntries[sortedEntries.length - 1][0] + " (" + sortedEntries[sortedEntries.length - 1][1] + "x)";
+    }
+
+    updateChart();
+}
+
+function updateChart() {
+    numberChart.data.labels = Object.keys(numberFrequency).map(Number);
+    numberChart.data.datasets[0].data = Object.values(numberFrequency);
+    numberChart.update();
+}
+
+const ctx = document.getElementById("numberChart").getContext("2d");
+const numberChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+        labels: [],
+        datasets: [{
+            label: "Frekuensi Angka",
+            data: [],
+            backgroundColor: "rgba(0, 183, 255, 0.6)",
+            borderColor: "rgba(0, 183, 255, 1)",
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+        function animateNumberChange(element, min, max) {
+    let count = 0;
+    const interval = setInterval(() => {
+        let randomNum = getRandomNumber(min, max);
+        element.textContent = randomNum;
+        count++;
+        if (count > 15) {
+            clearInterval(interval);
+            let finalNum = getRandomNumber(min, max);
+            element.textContent = finalNum;
+
+            numberFrequency[finalNum] = (numberFrequency[finalNum] || 0) + 1;
+            totalNumbersGenerated++;
+
+            updateStats();
+        }
+    }, 100);
+        }
     </script>
 
 </body>
