@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Powerball Lottery</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        input {
+            width: 50px;
+            text-align: center;
+        }
+        button {
+            margin: 10px;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Powerball Lottery</h2>
+    
+    <button onclick="connectWallet()">🔗 Connect Wallet</button>
+    <button onclick="disconnectWallet()">❌ Disconnect</button>
+    <p id="walletAddress">Not connected</p>
+
+    <h3>Choose Your Numbers</h3>
+    <input type="number" id="num1" min="1" max="69">
+    <input type="number" id="num2" min="1" max="69">
+    <input type="number" id="num3" min="1" max="69">
+    <input type="number" id="num4" min="1" max="69">
+    <input type="number" id="num5" min="1" max="69">
+    <br>
+    <label>Powerball (1-26):</label>
+    <input type="number" id="powerball" min="1" max="26">
+    <br><br>
+
+    <label>Bet Currency:</label>
+    <select id="currency">
+        <option value="ETH">ETH</option>
+        <option value="USDT">USDT</option>
+    </select>
+    <br>
+
+    <label>PowerPlay:</label>
+    <input type="checkbox" id="powerplay">
+    <br><br>
+
+    <button onclick="placeBet()">Place Bet</button>
+
+    <script>
+        let web3;
+        let account;
+        const contractAddress = "0xYourContractAddress"; // Ganti dengan alamat kontrak
+        const contractABI = [ /* Copy ABI Smart Contract di sini */ ];
+
+        async function connectWallet() {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                try {
+                    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+                    account = accounts[0];
+                    document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+                } catch (error) {
+                    console.error("Wallet connection failed", error);
+                }
+            } else {
+                alert("Please install Metamask!");
+            }
+        }
+
+        function disconnectWallet() {
+            account = null;
+            document.getElementById("walletAddress").innerText = "Not connected";
+        }
+
+        async function placeBet() {
+            if (!account) {
+                alert("Connect your wallet first!");
+                return;
+            }
+
+            const numbers = [
+                parseInt(document.getElementById("num1").value),
+                parseInt(document.getElementById("num2").value),
+                parseInt(document.getElementById("num3").value),
+                parseInt(document.getElementById("num4").value),
+                parseInt(document.getElementById("num5").value)
+            ];
+            const powerball = parseInt(document.getElementById("powerball").value);
+            const currency = document.getElementById("currency").value;
+            const powerPlay = document.getElementById("powerplay").checked;
+            const betTimes = 1;
+
+            // Validasi angka
+            if (numbers.some(num => num < 1 || num > 69) || powerball < 1 || powerball > 26) {
+                alert("Invalid number selection!");
+                return;
+            }
+
+            const contract = new web3.eth.Contract(contractABI, contractAddress);
+            const isETH = currency === "ETH";
+            const betPrice = isETH ? web3.utils.toWei("0.0001", "ether") : "2000000";
+            const powerPlayPrice = powerPlay ? (isETH ? web3.utils.toWei("0.00005", "ether") : "1000000") : "0";
+            const totalCost = web3.utils.toBN(betPrice).add(web3.utils.toBN(powerPlayPrice));
+
+            try {
+                if (isETH) {
+                    await contract.methods.placeBet(numbers, powerball, betTimes, isETH, powerPlay)
+                        .send({ from: account, value: totalCost.toString() });
+                } else {
+                    alert("USDT betting requires an ERC20 approve transaction first.");
+                }
+                alert("Bet placed successfully!");
+            } catch (error) {
+                console.error("Transaction failed", error);
+                alert("Bet placement failed!");
+            }
+        }
+    </script>
+</body>
+</html>
