@@ -139,25 +139,20 @@ button {
     <canvas id="numberChart"></canvas>
     <canvas id="powerballChart"></canvas>
 
-    <label for="chartMode">Pilih Mode Chart:</label>
+    <h3>Pilih Mode Chart:</h3>
 <select id="chartMode">
     <option value="bar">Bar Chart</option>
     <option value="line">Line Chart</option>
     <option value="pie">Pie Chart</option>
 </select>
 
-<h3>Tabel Frekuensi</h3>
-<table id="frequencyTable" border="1">
-    <tr>
-        <th>Angka</th>
-        <th>Frekuensi</th>
-    </tr>
-</table>
+<h3>Tabel Frekuensi (Per 10 Angka)</h3>
+<table id="frequencyTable" border="1"></table>
 
     <script src="script.js"></script>
 
     <script>
-document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
     const numberBoxes = document.querySelectorAll(".number");
     const powerBallBox = document.querySelector(".powerball");
     const generateNumbersBtn = document.querySelector("#generate-numbers");
@@ -183,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 clearInterval(interval);
                 element.textContent = finalNumber;
                 updateStats([finalNumber], type);
-                updateFrequencyTable(); // Perbarui tabel setiap kali angka keluar
+                updateFrequencyTable(); // Update tabel setiap angka keluar
                 setTimeout(() => element.classList.remove("active"), 300);
             }
         }, 80);
@@ -205,7 +200,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const ctx2 = document.getElementById("powerballChart").getContext("2d");
     let powerballChart = new Chart(ctx2, getChartConfig("bar", "Frekuensi Powerball", powerballStats, "red"));
 
-    // Fungsi untuk mendapatkan konfigurasi Chart.js secara dinamis
     function getChartConfig(type, label, data, color) {
         return {
             type: type,
@@ -225,7 +219,6 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    // Fungsi untuk update statistik dan chart
     function updateStats(numbers, type) {
         numbers.forEach(num => {
             if (type === "number" && num >= 1 && num <= 69) {
@@ -240,21 +233,27 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // **1. TABEL FREKUENSI**  
+    // **TABEL FREKUENSI (Per 10 Baris)**
     function updateFrequencyTable() {
         let table = document.getElementById("frequencyTable");
-        table.innerHTML = "<tr><th>Angka</th><th>Frekuensi</th></tr>";
+        table.innerHTML = "";
 
-        numberStats.forEach((count, index) => {
-            let row = `<tr><td>${index + 1}</td><td>${count}</td></tr>`;
+        for (let i = 0; i < 69; i += 10) {
+            let row = "<tr>";
+
+            for (let j = 0; j < 10 && i + j < 69; j++) {
+                row += `<td>${i + j + 1}: ${numberStats[i + j]}</td>`;
+            }
+
+            row += "</tr>";
             table.innerHTML += row;
-        });
+        }
     }
 
-    // **2. GANTI MODE CHART**  
+    // **GANTI MODE CHART**
     document.getElementById("chartMode").addEventListener("change", function () {
         let selectedMode = this.value;
-        
+
         // Hapus chart lama
         numberChart.destroy();
         powerballChart.destroy();
@@ -263,7 +262,6 @@ document.addEventListener("DOMContentLoaded", function () {
         numberChart = new Chart(ctx1, getChartConfig(selectedMode, "Frekuensi Angka", numberStats, "blue"));
         powerballChart = new Chart(ctx2, getChartConfig(selectedMode, "Frekuensi Powerball", powerballStats, "red"));
     });
-
 });
     </script>
 
