@@ -148,38 +148,43 @@ button {
     const generateNumbersBtn = document.querySelector("#generate-numbers");
     const generatePowerBallBtn = document.querySelector("#generate-powerball");
 
-    // Statistik angka 1-69 dan powerball 1-26
-    let numberStats = Array(69).fill(0);
-    let powerballStats = Array(26).fill(0);
-
     function getRandomNumber(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    function animateNumberChange(element, min, max, type) {
+    function animateNumberChange(element, min, max) {
         element.classList.add("active");
         let count = 0;
-        let finalNumber;
         const interval = setInterval(() => {
-            finalNumber = getRandomNumber(min, max);
-            element.textContent = finalNumber;
+            element.textContent = getRandomNumber(min, max);
             count++;
             if (count > 10) {
                 clearInterval(interval);
+                let finalNumber = getRandomNumber(min, max);
                 element.textContent = finalNumber;
-                updateStats([finalNumber], type);
                 setTimeout(() => element.classList.remove("active"), 300);
+
+                // Update statistik setelah angka selesai dipilih
+                if (min === 1 && max === 69) {
+                    updateStats([finalNumber], "number");
+                } else if (min === 1 && max === 26) {
+                    updateStats([finalNumber], "powerball");
+                }
             }
         }, 80);
     }
 
     generateNumbersBtn.addEventListener("click", function () {
-        numberBoxes.forEach(box => animateNumberChange(box, 1, 69, "number"));
+        numberBoxes.forEach(box => animateNumberChange(box, 1, 69));
     });
 
     generatePowerBallBtn.addEventListener("click", function () {
-        animateNumberChange(powerBallBox, 1, 26, "powerball");
+        animateNumberChange(powerBallBox, 1, 26);
     });
+
+    // Inisialisasi statistik angka 1-69 dan 1-26
+    let numberStats = Array(69).fill(0);
+    let powerballStats = Array(26).fill(0);
 
     // Inisialisasi Chart.js untuk angka utama (1-69)
     const ctx1 = document.getElementById("numberChart").getContext("2d");
@@ -196,7 +201,13 @@ button {
         },
         options: {
             responsive: true,
-            scales: { y: { beginAtZero: true } }
+            maintainAspectRatio: false,
+            scales: { 
+                x: { 
+                    ticks: { autoSkip: true, maxTicksLimit: 10 } 
+                }, 
+                y: { beginAtZero: true }
+            }
         }
     });
 
@@ -215,7 +226,13 @@ button {
         },
         options: {
             responsive: true,
-            scales: { y: { beginAtZero: true } }
+            maintainAspectRatio: false,
+            scales: { 
+                x: { 
+                    ticks: { autoSkip: true, maxTicksLimit: 10 } 
+                }, 
+                y: { beginAtZero: true }
+            }
         }
     });
 
