@@ -143,97 +143,97 @@ button {
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const numberBoxes = document.querySelectorAll(".number");
-            const powerBallBox = document.querySelector(".powerball"); // Perbaikan selector
-            const generateNumbersBtn = document.querySelector("#generate-numbers"); // Perbaikan id
-            const generatePowerBallBtn = document.querySelector("#generate-powerball"); // Perbaikan id
+    const numberBoxes = document.querySelectorAll(".number");
+    const powerBallBox = document.querySelector(".powerball");
+    const generateNumbersBtn = document.querySelector("#generate-numbers");
+    const generatePowerBallBtn = document.querySelector("#generate-powerball");
 
-            function getRandomNumber(min, max) {
-                return Math.floor(Math.random() * (max - min + 1)) + min;
-            }
+    // Statistik angka 1-69 dan powerball 1-26
+    let numberStats = Array(69).fill(0);
+    let powerballStats = Array(26).fill(0);
 
-            function animateNumberChange(element, min, max) {
-                element.classList.add("active");
-                let count = 0;
-                const interval = setInterval(() => {
-                    element.textContent = getRandomNumber(min, max);
-                    count++;
-                    if (count > 10) {
-                        clearInterval(interval);
-                        element.textContent = getRandomNumber(min, max);
-                        setTimeout(() => element.classList.remove("active"), 300);
-                    }
-                }, 80);
-            }
-
-            generateNumbersBtn.addEventListener("click", function () {
-                numberBoxes.forEach(box => animateNumberChange(box, 1, 69));
-            });
-
-            generatePowerBallBtn.addEventListener("click", function () {
-                animateNumberChange(powerBallBox, 1, 26);
-            });
-        });
-
-        // Chart
-        // Inisialisasi statistik angka 0-9
-let numberStats = Array(10).fill(0);
-let powerballStats = Array(10).fill(0);
-
-// Inisialisasi Chart.js untuk angka utama (0-9)
-const ctx1 = document.getElementById("numberChart").getContext("2d");
-const numberChart = new Chart(ctx1, {
-    type: "bar",
-    data: {
-        labels: Array.from({ length: 10 }, (_, i) => i), // 0-9
-        datasets: [{
-            label: "Frekuensi Angka",
-            data: numberStats,
-            backgroundColor: "blue",
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: { y: { beginAtZero: true } }
+    function getRandomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-});
 
-// Inisialisasi Chart.js untuk Powerball (0-9)
-const ctx2 = document.getElementById("powerballChart").getContext("2d");
-const powerballChart = new Chart(ctx2, {
-    type: "bar",
-    data: {
-        labels: Array.from({ length: 10 }, (_, i) => i), // 0-9
-        datasets: [{
-            label: "Frekuensi Powerball",
-            data: powerballStats,
-            backgroundColor: "red",
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: { y: { beginAtZero: true } }
+    function animateNumberChange(element, min, max, type) {
+        element.classList.add("active");
+        let count = 0;
+        let finalNumber;
+        const interval = setInterval(() => {
+            finalNumber = getRandomNumber(min, max);
+            element.textContent = finalNumber;
+            count++;
+            if (count > 10) {
+                clearInterval(interval);
+                element.textContent = finalNumber;
+                updateStats([finalNumber], type);
+                setTimeout(() => element.classList.remove("active"), 300);
+            }
+        }, 80);
     }
-});
 
-// Fungsi untuk update statistik dan chart
-function updateStats(numbers, type) {
-    numbers.forEach(num => {
-        if (num >= 0 && num <= 9) { // Pastikan angka hanya 0-9
-            if (type === "number") {
-                numberStats[num]++;
+    generateNumbersBtn.addEventListener("click", function () {
+        numberBoxes.forEach(box => animateNumberChange(box, 1, 69, "number"));
+    });
+
+    generatePowerBallBtn.addEventListener("click", function () {
+        animateNumberChange(powerBallBox, 1, 26, "powerball");
+    });
+
+    // Inisialisasi Chart.js untuk angka utama (1-69)
+    const ctx1 = document.getElementById("numberChart").getContext("2d");
+    const numberChart = new Chart(ctx1, {
+        type: "bar",
+        data: {
+            labels: Array.from({ length: 69 }, (_, i) => i + 1), // 1-69
+            datasets: [{
+                label: "Frekuensi Angka",
+                data: numberStats,
+                backgroundColor: "blue",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // Inisialisasi Chart.js untuk Powerball (1-26)
+    const ctx2 = document.getElementById("powerballChart").getContext("2d");
+    const powerballChart = new Chart(ctx2, {
+        type: "bar",
+        data: {
+            labels: Array.from({ length: 26 }, (_, i) => i + 1), // 1-26
+            datasets: [{
+                label: "Frekuensi Powerball",
+                data: powerballStats,
+                backgroundColor: "red",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // Fungsi untuk update statistik dan chart
+    function updateStats(numbers, type) {
+        numbers.forEach(num => {
+            if (type === "number" && num >= 1 && num <= 69) {
+                numberStats[num - 1]++;
                 numberChart.data.datasets[0].data = numberStats;
                 numberChart.update();
-            } else if (type === "powerball") {
-                powerballStats[num]++;
+            } else if (type === "powerball" && num >= 1 && num <= 26) {
+                powerballStats[num - 1]++;
                 powerballChart.data.datasets[0].data = powerballStats;
                 powerballChart.update();
             }
-        }
-    });
-}
+        });
+    }
+});
     </script>
 
 </body>
