@@ -1,0 +1,169 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+interface IERC20 {
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    function balanceOf(address account) external view returns (uint256);
+}
+
+contract PowerballLotto {
+    address public owner;
+    address public USDT;
+    uint256 public ethBetPrice = 0.0001 ether;
+    uint256 public usdtBetPrice = 2 * 10**6; // 2 USDT per bet (USDT 6 decimal)
+    uint256 public powerPlayPrice = 1 * 10**6; // 1 USDT untuk PowerPlay
+
+    struct Bet {
+        address player;
+        uint8[5] numbers;
+        uint8 powerball;
+        uint256 betAmount;
+        bool isETH;
+        bool powerPlay;
+    }
+
+    struct Comment {
+        address user;
+        string text;
+        uint256 likes;
+    }
+
+    mapping(uint256 => Bet[]) public bets;
+    mapping(address => uint256) public ethWinnings;
+    mapping(address => uint256) public usdtWinnings;
+    mapping(uint256 => bytes32) public results; // Hash dari hasil undian
+    mapping(uint256 => Comment[]) public comments;
+
+    event BetPlaced(address indexed player, uint8[5] numbers, uint8 powerball, uint256 betAmount, bool isETH, bool powerPlay);
+    event WinnerSetETH(address indexed winner, uint256 amount);
+    event WinnerSetUSDT(address indexed winner, uint256 amount);
+    event LotteryResult(uint256 indexed drawId, uint8[5] numbers, uint8 powerball);
+    event CommentAdded(uint256 indexed drawId, address user, string text);
+    event CommentEdited(uint256 indexed drawId, address user, uint256 commentIndex, string newText);
+    event CommentDeleted(uint256 indexed drawId, address user, uint256 commentIndex);
+    event LikeAdded(uint256 indexed drawId, address user, uint256 commentIndex);
+    event WithdrawETH(address indexed user, uint256 amount);
+    event WithdrawUSDT(address indexed user, uint256 amount);
+    event ReceivedETH(address indexed sender, uint256 amount);
+    event ReceivedUSDT(address indexed sender, uint256 amount);
+    event WithdrawETHExec(address indexed owner, uint256 amount);
+    event WithdrawUSDTExec(address indexed owner, uint256 amount);
+
+    constructor(address _usdt) {
+        owner = msg.sender;
+        USDT = _usdt;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can call this function");
+        _;
+    }
+
+    function placeBet(
+        uint8[5] memory _numbers,
+        uint8 _powerball,
+        uint256 _times,
+        bool _isETH,
+        bool _powerPlay
+    ) external payable {
+        require(_numbers.length == 5, "Must pick 5 numbers");
+        require(_powerball >= 1 && _powerball <= 26, "Powerball must be 1-26");
+        for (uint8 i = 0; i < 5; i++) {
+            require(_numbers[i] >= 1 && _numbers[i] <= 69, "Numbers must be between 1-69");
+        }
+
+        uint256 totalCost = _times * (_isETH ? ethBetPrice : usdtBetPrice);
+        if (_powerPlay) {
+            totalCost += _times * powerPlayPrice; // Tambah biaya PowerPlay jika dipilih
+        }
+
+        if (_isETH) {
+            require(msg.value == totalCost, "Incorrect ETH amount");
+        } else {
+            require(IERC20(USDT).transferFrom(msg.sender, address(this), totalCost), "USDT transfer failed");
+        }
+
+        bets[block.timestamp].push(Bet(msg.sender, _numbers, _powerball, _times, _isETH, _powerPlay));
+        emit BetPlaced(msg.sender, _numbers, _powerball, _times, _isETH, _powerPlay);
+    }
+
+    function setLotteryResult(uint256 _drawId, uint8[5] memory _numbers, uint8 _powerball) external onlyOwner {
+        results[_drawId] = keccak256(abi.encodePacked(_numbers, _powerball));
+        emit LotteryResult(_drawId, _numbers, _powerball);
+    }
+
+    function setWinnerETH(address _winner, uint256 _amount) external onlyOwner {
+        ethWinnings[_winner] += _amount;
+        emit WinnerSetETH(_winner, _amount);
+    }
+
+    function setWinnerUSDT(address _winner, uint256 _amount) external onlyOwner {
+        usdtWinnings[_winner] += _amount;
+        emit WinnerSetUSDT(_winner, _amount);
+    }
+
+    function claimETH() external {
+        uint256 amount = ethWinnings[msg.sender];
+        require(amount > 0, "No ETH winnings");
+
+        ethWinnings[msg.sender] = 0;
+        (bool success, ) = payable(msg.sender).call{value: amount}("");
+        require(success, "ETH transfer failed");
+
+        emit WithdrawETH(msg.sender, amount);
+    }
+
+    function claimUSDT() external {
+        uint256 amount = usdtWinnings[msg.sender];
+        require(amount > 0, "No USDT winnings");
+
+        usdtWinnings[msg.sender] = 0;
+        require(IERC20(USDT).transfer(msg.sender, amount), "USDT transfer failed");
+
+        emit WithdrawUSDT(msg.sender, amount);
+    }
+
+    function addComment(uint256 _drawId, string memory _text) external {
+        comments[_drawId].push(Comment(msg.sender, _text, 0));
+        emit CommentAdded(_drawId, msg.sender, _text);
+    }
+
+    function editComment(uint256 _drawId, uint256 _commentIndex, string memory _newText) external {
+        require(comments[_drawId][_commentIndex].user == msg.sender, "Not your comment");
+        comments[_drawId][_commentIndex].text = _newText;
+        emit CommentEdited(_drawId, msg.sender, _commentIndex, _newText);
+    }
+
+    function deleteComment(uint256 _drawId, uint256 _commentIndex) external {
+        require(comments[_drawId][_commentIndex].user == msg.sender, "Not your comment");
+        delete comments[_drawId][_commentIndex];
+        emit CommentDeleted(_drawId, msg.sender, _commentIndex);
+    }
+
+    function contractUSDTBalance() external view returns (uint256) {
+        return IERC20(USDT).balanceOf(address(this));
+    }
+
+    function contractETHBalance() external view returns (uint256) {
+        return address(this).balance;
+    }
+
+    function withdrawETHExec(uint256 _amount) external onlyOwner {
+        require(address(this).balance >= _amount, "Insufficient ETH balance");
+        (bool success, ) = payable(owner).call{value: _amount}("");
+        require(success, "ETH withdrawal failed");
+        emit WithdrawETHExec(owner, _amount);
+    }
+
+    function withdrawUSDTExec(uint256 _amount) external onlyOwner {
+        uint256 balance = IERC20(USDT).balanceOf(address(this));
+        require(_amount <= balance, "Insufficient USDT balance");
+        require(IERC20(USDT).transfer(owner, _amount), "USDT transfer failed");
+        emit WithdrawUSDTExec(owner, _amount);
+    }
+
+    receive() external payable {
+        emit ReceivedETH(msg.sender, msg.value);
+    }
+}
