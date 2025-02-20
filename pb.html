@@ -20,13 +20,17 @@
             padding: 10px;
             cursor: pointer;
         }
+        #betHistory {
+            margin-top: 20px;
+            text-align: left;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
     <h2>Powerball Lottery</h2>
-    
-    <button onclick="connectWallet()">🔗 Connect Wallet</button>
-    <button onclick="disconnectWallet()">❌ Disconnect</button>
+
+    <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
     <p id="walletAddress">Not connected</p>
 
     <h3>Choose Your Numbers</h3>
@@ -45,38 +49,55 @@
         <option value="ETH">ETH</option>
         <option value="USDT">USDT</option>
     </select>
-    <br>
+    <p id="betPrice">Bet Price: 0.0001 ETH</p>
 
     <label>PowerPlay:</label>
-    <input type="checkbox" id="powerplay">
+    <input type="checkbox" id="powerplay" onchange="updateBetPrice()">
     <br><br>
 
     <button onclick="placeBet()">Place Bet</button>
 
+    <h3>My Bet History</h3>
+    <button onclick="fetchBetHistory()">🔍 Refresh History</button>
+    <div id="betHistory"></div>
+
     <script>
         let web3;
         let account;
-        const contractAddress = "0xYourContractAddress"; // Ganti dengan alamat kontrak
+        const contractAddress = "0xYourContractAddress"; // Ganti dengan alamat smart contract
         const contractABI = [ /* Copy ABI Smart Contract di sini */ ];
+        const usdtAddress = "0xYourUSDTContract"; // Ganti dengan alamat token USDT
+        const usdtABI = [ /* ABI ERC-20 */ ];
 
-        async function connectWallet() {
-            if (window.ethereum) {
-                web3 = new Web3(window.ethereum);
-                try {
-                    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-                    account = accounts[0];
-                    document.getElementById("walletAddress").innerText = `Connected: ${account}`;
-                } catch (error) {
-                    console.error("Wallet connection failed", error);
-                }
-            } else {
-                alert("Please install Metamask!");
-            }
+        function updateBetPrice() {
+            const currency = document.getElementById("currency").value;
+            const powerPlay = document.getElementById("powerplay").checked;
+            let price = (currency === "ETH") ? 0.0001 : 2;
+            if (powerPlay) price *= 1.5;
+            document.getElementById("betPrice").innerText = `Bet Price: ${price} ${currency}`;
         }
 
-        function disconnectWallet() {
-            account = null;
-            document.getElementById("walletAddress").innerText = "Not connected";
+        async function toggleWallet() {
+            if (account) {
+                account = null;
+                document.getElementById("walletAddress").innerText = "Not connected";
+                document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
+            } else {
+                if (window.ethereum) {
+                    web3 = new Web3(window.ethereum);
+                    try {
+                        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+                        account = accounts[0];
+                        document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+                        document.getElementById("walletButton").innerText = "❌ Disconnect";
+                        fetchBetHistory();
+                    } catch (error) {
+                        console.error("Wallet connection failed", error);
+                    }
+                } else {
+                    alert("Please install Metamask!");
+                }
+            }
         }
 
         async function placeBet() {
@@ -95,9 +116,7 @@
             const powerball = parseInt(document.getElementById("powerball").value);
             const currency = document.getElementById("currency").value;
             const powerPlay = document.getElementById("powerplay").checked;
-            const betTimes = 1;
 
-            // Validasi angka
             if (numbers.some(num => num < 1 || num > 69) || powerball < 1 || powerball > 26) {
                 alert("Invalid number selection!");
                 return;
@@ -105,23 +124,56 @@
 
             const contract = new web3.eth.Contract(contractABI, contractAddress);
             const isETH = currency === "ETH";
-            const betPrice = isETH ? web3.utils.toWei("0.0001", "ether") : "2000000";
-            const powerPlayPrice = powerPlay ? (isETH ? web3.utils.toWei("0.00005", "ether") : "1000000") : "0";
+            const betPrice = isETH ? web3.utils.toWei("0.0001", "ether") : web3.utils.toWei("2", "mwei");
+            const powerPlayPrice = powerPlay ? (isETH ? web3.utils.toWei("0.00005", "ether") : web3.utils.toWei("1", "mwei")) : "0";
             const totalCost = web3.utils.toBN(betPrice).add(web3.utils.toBN(powerPlayPrice));
 
             try {
                 if (isETH) {
-                    await contract.methods.placeBet(numbers, powerball, betTimes, isETH, powerPlay)
+                    await contract.methods.placeBet(numbers, powerball, isETH, powerPlay)
                         .send({ from: account, value: totalCost.toString() });
                 } else {
-                    alert("USDT betting requires an ERC20 approve transaction first.");
+                    const usdtContract = new web3.eth.Contract(usdtABI, usdtAddress);
+                    const allowance = await usdtContract.methods.allowance(account, contractAddress).call();
+
+                    if (web3.utils.toBN(allowance).lt(totalCost)) {
+                        await usdtContract.methods.approve(contractAddress, totalCost.toString())
+                            .send({ from: account });
+                    }
+
+                    await contract.methods.placeBet(numbers, powerball, isETH, powerPlay)
+                        .send({ from: account });
                 }
                 alert("Bet placed successfully!");
+                fetchBetHistory();
             } catch (error) {
                 console.error("Transaction failed", error);
                 alert("Bet placement failed!");
             }
         }
+
+        async function fetchBetHistory() {
+            if (!account) {
+                alert("Connect your wallet first!");
+                return;
+            }
+
+            const contract = new web3.eth.Contract(contractABI, contractAddress);
+            try {
+                const bets = await contract.methods.getUserBets(account).call();
+                let historyHTML = "<ul>";
+                bets.forEach(bet => {
+                    historyHTML += `<li>${bet.numbers.join(", ")} | Powerball: ${bet.powerball}</li>`;
+                });
+                historyHTML += "</ul>";
+                document.getElementById("betHistory").innerHTML = historyHTML;
+            } catch (error) {
+                console.error("Failed to fetch bet history", error);
+                document.getElementById("betHistory").innerText = "Failed to load history.";
+            }
+        }
+
+        document.getElementById("currency").addEventListener("change", updateBetPrice);
     </script>
 </body>
 </html>
