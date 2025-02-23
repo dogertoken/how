@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Powerball Lottery</title>
+    <title>LottoBalls Lottery</title>
     <script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
     <style>
         body {
@@ -49,7 +49,7 @@
         <option value="ETH">ETH</option>
         <option value="USDT">USDT</option>
     </select>
-    <p id="betPrice">Bet Price: 0.0001 ETH</p>
+    <p id="betPrice">Bet Price: 0.00072 ETH</p>
 
     <label>PowerPlay:</label>
     <input type="checkbox" id="powerplay" onchange="updateBetPrice()">
@@ -72,7 +72,7 @@
         function updateBetPrice() {
             const currency = document.getElementById("currency").value;
             const powerPlay = document.getElementById("powerplay").checked;
-            let price = (currency === "ETH") ? 0.0001 : 2;
+            let price = (currency === "ETH") ? 0.00072 : 2;
             if (powerPlay) price *= 1.5;
             document.getElementById("betPrice").innerText = `Bet Price: ${price} ${currency}`;
         }
@@ -124,8 +124,8 @@
 
             const contract = new web3.eth.Contract(contractABI, contractAddress);
             const isETH = currency === "ETH";
-            const betPrice = isETH ? web3.utils.toWei("0.0001", "ether") : web3.utils.toWei("2", "mwei");
-            const powerPlayPrice = powerPlay ? (isETH ? web3.utils.toWei("0.00005", "ether") : web3.utils.toWei("1", "mwei")) : "0";
+            const betPrice = isETH ? web3.utils.toWei("0.00072", "ether") : web3.utils.toWei("2", "mwei");
+            const powerPlayPrice = powerPlay ? (isETH ? web3.utils.toWei("0.000036", "ether") : web3.utils.toWei("1", "mwei")) : "0";
             const totalCost = web3.utils.toBN(betPrice).add(web3.utils.toBN(powerPlayPrice));
 
             try {
