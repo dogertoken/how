@@ -1,16 +1,17 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html>
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalender Indonesia</title>
+    <title>Kalender Canggih</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-      body {
+        body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: #f8f9fa;
     text-align: center;
     margin: 0;
-    padding: 0;
+    padding: 20px;
 }
 
 .container {
@@ -20,161 +21,187 @@
     background: white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-button {
-    padding: 10px;
-    margin: 5px;
-    border: none;
-    cursor: pointer;
-    background-color: #007bff;
-    color: white;
-    border-radius: 5px;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-h2 {
-    margin-top: 20px;
+h1, h3 {
     color: #333;
 }
 
-#crypto-section, #nft-calendar, #wallet-section, #ai-predictions {
+#calendar {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+#calendar th, #calendar td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+#calendar th {
+    background-color: #007bff;
+    color: white;
+}
+
+#calendar td {
+    background-color: #f8f9fa;
+}
+
+#crypto-section, #wallet-section, #info-section {
     margin-top: 20px;
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 10px;
     background: #fafafa;
-  }
+}
+
+button {
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Kalender Masehi, Jawa & Hijriyah</h1>
-        <div class="year-selector">
-            <button id="prev-year">&laquo; Tahun Sebelumnya</button>
-            <span id="current-year"></span>
-            <button id="next-year">Tahun Berikutnya &raquo;</button>
-        </div>
-        <div class="month-pagination">
-            <button id="prev-month">&laquo; Bulan Sebelumnya</button>
-            <span id="current-month"></span>
-            <button id="next-month">Bulan Berikutnya &raquo;</button>
-        </div>
-        <p id="time"></p>
-        <p id="date"></p>
-        <p id="hijri-date"></p>
-        <p id="javanese-date"></p>
-        <p id="weather"></p>
-        <p id="moon-phase"></p>
-        <p id="eclipse"></p>
-        <p id="quote"></p>
-        <div id="holiday-list">
-            <h2>Hari Libur & Hari Besar</h2>
-            <ul id="holidays"></ul>
-        </div>
-        <div id="prayer-times">
-            <h2>Waktu Sholat</h2>
-            <ul>
-                <li>Subuh: <span id="subuh"></span></li>
-                <li>Dzuhur: <span id="dzuhur"></span></li>
-                <li>Ashar: <span id="ashar"></span></li>
-                <li>Maghrib: <span id="maghrib"></span></li>
-                <li>Isya: <span id="isya"></span></li>
-            </ul>
-        </div>
-        <div id="custom-events">
-            <h2>Tambahkan Acara</h2>
-            <input type="date" id="event-date">
-            <input type="text" id="event-name" placeholder="Nama Acara">
-            <button id="add-event">Tambah</button>
-            <ul id="event-list"></ul>
-        </div>
-        <button id="toggle-theme">Ganti Tema</button><div id="crypto-section">
-        <h2>Harga Kripto Real-Time</h2>
-        <p>Bitcoin: <span id="btc-price"></span> USD</p>
-        <p>Ethereum: <span id="eth-price"></span> USD</p>
-        <p>TON: <span id="ton-price"></span> USD</p>
-    </div>
-    
-    <div id="nft-calendar">
-        <h2>Koleksi NFT Kalender</h2>
-        <button id="mint-nft">Mint NFT Kalender</button>
-        <p id="nft-status"></p>
-    </div>
-    
-    <div id="wallet-section">
-        <h2>Wallet Kripto</h2>
-        <button id="connect-wallet">Koneksikan Wallet</button>
-        <button id="disconnect-wallet">Putuskan Wallet</button>
-        <p id="wallet-status">Wallet belum terhubung</p>
-    </div>
-    
-    <div id="ai-predictions">
-        <h2>Prediksi AI</h2>
-        <p>Prediksi Cuaca: <span id="ai-weather"></span></p>
-        <p>Prediksi Harga Kripto: <span id="ai-crypto"></span></p>
-        <p>Prediksi Gerhana: <span id="ai-eclipse"></span></p>
-    </div>
-</div>
-<script src="script.js"></script>
+        <h1>Kalender Masehi - Jawa - Islam</h1>
+        <div id="current-time"></div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().toLocaleString("id-ID", { month: "long" });
-    document.getElementById("current-year").textContent = currentYear;
-    document.getElementById("current-month").textContent = currentMonth;
+        <!-- Pilihan Tahun -->
+        <label for="year-select">Pilih Tahun:</label>
+        <select id="year-select"></select>
 
+        <!-- Navigasi Bulan -->
+        <div class="month-navigation">
+            <button id="prev-month">← Bulan Sebelumnya</button>
+            <span id="current-month-year"></span>
+            <button id="next-month">Bulan Berikutnya →</button>
+        </div>
+
+        <!-- Kalender -->
+        <table id="calendar">
+            <thead>
+                <tr>
+                    <th>Min</th><th>Sen</th><th>Sel</th><th>Rab</th>
+                    <th>Kam</th><th>Jum</th><th>Sab</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <!-- Informasi Tambahan -->
+        <div id="info-section">
+            <h3>Hari Libur & Hari Besar</h3>
+            <ul id="holiday-list"></ul>
+
+            <h3>Prediksi AI</h3>
+            <p><strong>Cuaca:</strong> <span id="ai-weather"></span></p>
+            <p><strong>Harga Kripto:</strong> <span id="ai-crypto"></span></p>
+            <p><strong>Gerhana:</strong> <span id="ai-eclipse"></span></p>
+        </div>
+
+        <!-- Integrasi Kripto -->
+        <div id="crypto-section">
+            <h3>Harga Kripto (USD)</h3>
+            <p>Bitcoin: $<span id="btc-price">-</span></p>
+            <p>Ethereum: $<span id="eth-price">-</span></p>
+            <p>TON: $<span id="ton-price">-</span></p>
+        </div>
+
+        <!-- Wallet Crypto -->
+        <div id="wallet-section">
+            <h3>Metamask Wallet</h3>
+            <button id="connect-wallet">Koneksikan Wallet</button>
+            <button id="disconnect-wallet">Putuskan Wallet</button>
+            <p id="wallet-status">Wallet belum terhubung</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const yearSelect = document.getElementById("year-select");
+    const monthYearDisplay = document.getElementById("current-month-year");
+    const calendarBody = document.querySelector("#calendar tbody");
+    
+    const currentDate = new Date();
+    let currentYear = currentDate.getFullYear();
+    let currentMonth = currentDate.getMonth();
+
+    // ** 1. Menampilkan Waktu Real-Time **
     function updateTime() {
-        document.getElementById("time").textContent = new Date().toLocaleTimeString();
+        document.getElementById("current-time").textContent = new Date().toLocaleTimeString();
     }
     setInterval(updateTime, 1000);
-
-    async function fetchCryptoPrices() {
-        try {
-            let response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,ton&vs_currencies=usd");
-            let data = await response.json();
-            document.getElementById("btc-price").textContent = data.bitcoin.usd;
-            document.getElementById("eth-price").textContent = data.ethereum.usd;
-            document.getElementById("ton-price").textContent = data.ton.usd;
-        } catch (error) {
-            console.error("Error fetching crypto prices:", error);
+    
+    // ** 2. Generate Pilihan Tahun **
+    function generateYearOptions() {
+        for (let i = currentYear - 50; i <= currentYear + 50; i++) {
+            let option = document.createElement("option");
+            option.value = i;
+            option.textContent = i;
+            yearSelect.appendChild(option);
         }
+        yearSelect.value = currentYear;
     }
-    fetchCryptoPrices();
-    setInterval(fetchCryptoPrices, 60000);
+    
+    // ** 3. Membuat Kalender **
+    function renderCalendar(year, month) {
+        calendarBody.innerHTML = "";
+        monthYearDisplay.textContent = new Date(year, month).toLocaleString("id-ID", { month: "long", year: "numeric" });
 
-    document.getElementById("connect-wallet").addEventListener("click", async () => {
-        if (window.ethereum) {
-            try {
-                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-                document.getElementById("wallet-status").textContent = "Terhubung: " + accounts[0];
-            } catch (error) {
-                console.error("Wallet connection failed:", error);
+        let firstDay = new Date(year, month, 1).getDay();
+        let daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        let row = document.createElement("tr");
+        for (let i = 0; i < firstDay; i++) row.appendChild(document.createElement("td"));
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            let cell = document.createElement("td");
+            cell.textContent = day;
+            row.appendChild(cell);
+            if ((firstDay + day) % 7 === 0) {
+                calendarBody.appendChild(row);
+                row = document.createElement("tr");
             }
-        } else {
-            alert("Metamask tidak ditemukan!");
         }
-    });
-
-    document.getElementById("disconnect-wallet").addEventListener("click", () => {
-        document.getElementById("wallet-status").textContent = "Wallet belum terhubung";
-    });
-
-    function getRandomPrediction() {
-        const predictions = ["Cuaca cerah", "Hujan deras", "Kripto naik 5%", "Gerhana bulan pekan depan"];
-        return predictions[Math.floor(Math.random() * predictions.length)];
+        calendarBody.appendChild(row);
     }
 
-    document.getElementById("ai-weather").textContent = getRandomPrediction();
-    document.getElementById("ai-crypto").textContent = getRandomPrediction();
-    document.getElementById("ai-eclipse").textContent = getRandomPrediction();
-});
-</script>
+    // ** 4. Navigasi Bulan **
+    document.getElementById("prev-month").addEventListener("click", () => {
+        if (currentMonth === 0) {
+            currentYear--;
+            currentMonth = 11;
+        } else {
+            currentMonth--;
+        }
+        renderCalendar(currentYear, currentMonth);
+    });
 
+    document.getElementById("next-month").addEventListener("click", () => {
+        if (currentMonth === 11) {
+            currentYear++;
+            currentMonth = 0;
+        } else {
+            currentMonth++;
+        }
+        renderCalendar(currentYear, currentMonth);
+    });
+
+    generateYearOptions();
+    renderCalendar(currentYear, currentMonth);
+});
+    </script>
 </body>
-      </html>
+</html>
