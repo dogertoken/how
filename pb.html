@@ -5,27 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LottoBalls Lottery</title>
     <script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
-    <style>
+        <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             text-align: center;
-            margin: 20px;
-        }
-        input {
-            width: 50px;
-            text-align: center;
-        }
-        button {
-            margin: 10px;
-            padding: 10px;
-            cursor: pointer;
-        }
-        #betHistory {
-            margin-top: 20px;
-            text-align: left;
-            display: inline-block;
-        }
-    </style>
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            overflow-y: auto;
+            margin: 0;
+            padding: 20px;
+        }.buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    button {
+        padding: 15px 35px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: white;
+        background: linear-gradient(135deg, #00b7ff, #007bff);
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 183, 255, 0.8);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
+    }
+
+    .section-box {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        margin: 20px auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
+        max-width: 800px;
+        width: 90%;
+    }
+
+    input, select {
+        padding: 10px;
+        margin: 10px;
+        border-radius: 5px;
+        border: none;
+        text-align: center;
+        font-size: 1rem;
+    }
+
+    #betHistory {
+        text-align: left;
+        display: inline-block;
+        width: 100%;
+        max-width: 600px;
+    }
+        </style>
 </head>
 <body>
     <h2>Lottoballs Lottery</h2>
