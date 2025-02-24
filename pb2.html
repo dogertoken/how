@@ -62,21 +62,23 @@
     }
 
 .input-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Jarak antar input */
-    flex-wrap: nowrap; /* Mencegah turun ke bawah */
-    overflow-x: auto; /* Jika tidak muat, bisa di-scroll horizontal */
-    padding: 3px 2px 15px 2px; /* padding: atas 3px, kanan 2px, bawah 15px, kiri 2px */
-}
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 3px 2px 15px 2px;
+        }
 
-.input-container input {
-    width: 50px; /* Lebar lebih kecil agar kotak */
-    aspect-ratio: 1/1; /* Membuat input berbentuk kotak */
-    text-align: center;
-    font-size: 18px; /* Agar angka tetap terbaca jelas */
-    border-radius: 5px; /* Opsional: agar sudut sedikit melengkung */
-}
+        .input-container input {
+            width: 50px;
+            aspect-ratio: 1/1;
+            text-align: center;
+            font-size: 18px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
     #betHistory {
         text-align: left;
         display: block;
