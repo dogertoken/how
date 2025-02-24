@@ -45,30 +45,36 @@
     }
 
     .section-box {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 20px;
-        margin: 20px auto;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
-        max-width: 800px;
-        width: 95%;
-    }
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
+    max-width: 800px;
+    width: 95%;
+    text-align: center;
+}
 
-    input, select {
-        padding: 10px;
-        margin: 10px;
-        border-radius: 5px;
-        border: none;
-        text-align: center;
-        font-size: 1rem;
-    }
+.input-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Jarak antar input */
+    flex-wrap: nowrap; /* Mencegah turun ke bawah */
+    overflow-x: auto; /* Jika tidak muat, bisa di-scroll horizontal */
+    padding-bottom: 10px;
+}
+
+.input-container input {
+    width: 50px; /* Batasi ukuran input */
+    text-align: center;
+}
 
     #betHistory {
         text-align: left;
         display: block;
         width: 95%;
         max-width: 600px;
-        margin: 0 auto;
+        margin: center;
     }
 </style>
 
