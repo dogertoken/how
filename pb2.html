@@ -62,16 +62,16 @@
     flex-wrap: nowrap; /* Mencegah turun ke bawah */
     overflow-x: auto; /* Jika tidak muat, bisa di-scroll horizontal */
     padding-bottom: 15px;
+    padding-top: 3px; /* Menambah ruang atas 3 piksel */
 }
 
 .input-container input {
     width: 40px; /* Lebar lebih kecil agar kotak */
     aspect-ratio: 1/1; /* Membuat input berbentuk kotak */
     text-align: center;
-    font-size: 15px; /* Agar angka tetap terbaca jelas */
+    font-size: 18px; /* Agar angka tetap terbaca jelas */
     border-radius: 5px; /* Opsional: agar sudut sedikit melengkung */
 }
-
     #betHistory {
         text-align: left;
         display: block;
@@ -99,7 +99,9 @@
     </div>
     
     <label>Lottoballs (1-26):</label>
+    <div class="input-container">
     <input type="number" id="powerball" min="1" max="26">
+    </div>
     <br><br>
 
     <label>Bet Currency:</label>
