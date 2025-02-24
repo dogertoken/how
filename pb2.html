@@ -61,8 +61,7 @@
     gap: 10px; /* Jarak antar input */
     flex-wrap: nowrap; /* Mencegah turun ke bawah */
     overflow-x: auto; /* Jika tidak muat, bisa di-scroll horizontal */
-    padding-bottom: 15px;
-    padding-top: 3px; /* Menambah ruang atas 3 piksel */
+    padding: 3px 2px 15px 2px; /* padding: atas 3px, kanan 2px, bawah 15px, kiri 2px */
 }
 
 .input-container input {
@@ -101,7 +100,7 @@ div class="section-box">
     
     <h3>Lottoballs (1-26):</h3>
 <div class="input-container">
-    <input type="number" id="powerball" min="1" max="26" placeholder="1/26">
+    <input type="number" id="powerball" min="1" max="26" placeholder="1/26" oninput="validateInputII(this)">
 </div>
 <br>
 
@@ -249,6 +248,20 @@ div class="section-box">
         input.value = "";
     }
 }
+
+    function validateInputII(input) {
+    let value = input.value;
+    
+    // Batasi maksimal 2 digit
+    if (value.length > 2) {
+        input.value = value.slice(0, 2);
+    }
+
+    // Pastikan angka dalam rentang 1-69
+    if (value !== "" && (parseInt(value) < 1 || parseInt(value) > 26)) {
+        input.value = "";
+    }
+    }
 
         document.getElementById("currency").addEventListener("change", updateBetPrice);
 </script>
