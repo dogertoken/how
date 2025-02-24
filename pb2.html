@@ -88,21 +88,22 @@
 </div>
 <p id="walletAddress">Not connected</p>
 
-<div class="section-box">
+div class="section-box">
     <h3>Choose Your Numbers</h3><br>
     <div class="input-container">
-        <input type="number" id="num1" min="1" max="69">
-        <input type="number" id="num2" min="1" max="69">
-        <input type="number" id="num3" min="1" max="69">
-        <input type="number" id="num4" min="1" max="69">
-        <input type="number" id="num5" min="1" max="69">
+        <input type="number" id="num1" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
+        <input type="number" id="num2" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
+        <input type="number" id="num3" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
+        <input type="number" id="num4" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
+        <input type="number" id="num5" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
     </div><br>
+</div>
     
     <h3>Lottoballs (1-26):</h3>
-    <div class="input-container">
-    <input type="number" id="powerball" min="1" max="26">
-    </div>
-    <br>
+<div class="input-container">
+    <input type="number" id="powerball" min="1" max="26" placeholder="1/26">
+</div>
+<br>
 
     <label>Bet Currency:</label>
     <select id="currency">
@@ -234,6 +235,20 @@
                 document.getElementById("betHistory").innerText = "Failed to load history.";
             }
         }
+
+    function validateInput(input) {
+    let value = input.value;
+    
+    // Batasi maksimal 2 digit
+    if (value.length > 2) {
+        input.value = value.slice(0, 2);
+    }
+
+    // Pastikan angka dalam rentang 1-69
+    if (value !== "" && (parseInt(value) < 1 || parseInt(value) > 69)) {
+        input.value = "";
+    }
+}
 
         document.getElementById("currency").addEventListener("change", updateBetPrice);
 </script>
