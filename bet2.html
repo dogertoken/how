@@ -251,17 +251,19 @@ body {
     max-width: 150px; /* Sesuaikan ukuran logo */
 }
 
-        .label-style {
+        /* Label */
+.label-style {
     font-size: 18px;
     font-weight: bold;
     color: #fff;
+    margin-bottom: 5px;
     display: block;
-    margin-bottom: 8px;
 }
 
+/* Dropdown (Select Box) */
 .select-style {
     font-size: 16px;
-    padding: 10px 15px;
+    padding: 10px 40px 10px 15px;
     border-radius: 8px;
     border: 2px solid #00b7ff;
     background: rgba(255, 255, 255, 0.1);
@@ -272,15 +274,19 @@ body {
     transition: all 0.3s ease;
     outline: none;
     appearance: none;
-    width: 100%;
-    max-width: 300px;
+    width: 200px; /* Sesuai agar tidak kepanjangan */
+    position: relative;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%2300b7ff"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
 }
 
-/* Efek saat diklik atau mendapatkan fokus */
+/* Efek saat klik atau fokus */
 .select-style:focus {
     box-shadow: 0 6px 15px rgba(0, 183, 255, 0.5);
     border-color: #0077cc;
-}
+    }
     </style>
 </head>
 <body>
