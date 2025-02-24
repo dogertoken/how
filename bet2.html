@@ -250,6 +250,37 @@ body {
     margin: 0 auto;
     max-width: 150px; /* Sesuaikan ukuran logo */
 }
+
+        .label-style {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.select-style {
+    font-size: 16px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 2px solid #00b7ff;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.3);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    appearance: none;
+    width: 100%;
+    max-width: 300px;
+}
+
+/* Efek saat diklik atau mendapatkan fokus */
+.select-style:focus {
+    box-shadow: 0 6px 15px rgba(0, 183, 255, 0.5);
+    border-color: #0077cc;
+}
     </style>
 </head>
 <body>
@@ -304,10 +335,10 @@ body {
         <label for="betCount">Bet Count (1x / 99x)</label>
         <input type="number" id="betCount" placeholder="1 / 99" min="1" max="99" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)" />
 
-        <label for="paymentMethod">Payment Method:</label>
-        <select id="paymentMethod">
-            <option value="eth">ETH</option>
-            <option value="usdt">USDT</option>
+        <label for="paymentMethod" class="label-style">Payment Method:</label>
+        <select id="paymentMethod" class="select-style">
+            <option value="USDT">USDT</option>
+            <option value="ETH">ETH</option>
         </select>
 
         <button class="btn" id="calculatePriceBtn">Calculate Price</button>
