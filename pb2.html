@@ -65,9 +65,10 @@
 
     #betHistory {
         text-align: left;
-        display: inline-block;
+        display: block;
         width: 95%;
         max-width: 600px;
+        margin: 0 auto;
     }
 </style>
 
@@ -80,12 +81,14 @@
 
 <div class="section-box">
     <h3>Choose Your Numbers</h3>
-    <input type="number" id="num1" min="1" max="69">
-    <input type="number" id="num2" min="1" max="69">
-    <input type="number" id="num3" min="1" max="69">
-    <input type="number" id="num4" min="1" max="69">
-    <input type="number" id="num5" min="1" max="69">
-    <br>
+    <div class="input-container">
+        <input type="number" id="num1" min="1" max="69">
+        <input type="number" id="num2" min="1" max="69">
+        <input type="number" id="num3" min="1" max="69">
+        <input type="number" id="num4" min="1" max="69">
+        <input type="number" id="num5" min="1" max="69">
+    </div>
+    
     <label>Lottoballs (1-26):</label>
     <input type="number" id="powerball" min="1" max="26">
     <br><br>
@@ -108,7 +111,7 @@
     <h3>My Bet History</h3>
     <button onclick="fetchBetHistory()">🔍 Refresh History</button>
 </div>
-
+    
 <script>
     let web3;
         let account;
