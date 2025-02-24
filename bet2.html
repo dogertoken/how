@@ -112,17 +112,24 @@ body {
 }
 
 /* Modal Background */
+/* Modal Background */
 #betModal {
     display: none;
-    position: fixed;
+    position: fixed; /* Menempel di layar */
     z-index: 1000;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
     width: 95%;
-    height: 95%;
+    max-width: 600px; /* Maksimum lebar modal */
+    height: auto;
+    max-height: 90vh; /* Batas tinggi agar tidak melebihi layar */
     background-color: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(20px);
+    transform: translate(-50%, -50%);
     animation: fadeIn 0.5s ease;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
 }
 
 /* Modal Content - Center Align */
