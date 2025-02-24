@@ -62,23 +62,32 @@
     }
 
 .input-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            padding: 3px 2px 15px 2px;
-        }
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 3px 2px 15px 2px;
+}
 
-        .input-container input {
-            width: 50px;
-            aspect-ratio: 1/1;
-            text-align: center;
-            font-size: 18px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            box-shadow: 0 2px 5px rgba(0, 183, 255, 0.2);
-        }
+.input-container input {
+    width: 50px;
+    aspect-ratio: 1/1;
+    text-align: center;
+    font-size: 18px;
+    border-radius: 10px; /* Membuat sudut lebih halus */
+    border: none;
+    background: linear-gradient(145deg, #e6e6e6, #ffffff); /* Efek pencahayaan 3D */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.7); /* Efek bayangan luar */
+    transition: all 0.2s ease-in-out;
+}
+
+.input-container input:focus {
+    outline: none;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    box-shadow: inset 4px 4px 6px rgba(0, 0, 0, 0.2), inset -4px -4px 6px rgba(255, 255, 255, 0.7); /* Efek tombol ditekan */
+}
+        
     #betHistory {
         text-align: left;
         display: block;
