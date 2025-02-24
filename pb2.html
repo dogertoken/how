@@ -51,7 +51,7 @@
         border-radius: 10px;
         box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
         max-width: 800px;
-        width: 90%;
+        width: 95%;
     }
 
     input, select {
@@ -66,7 +66,7 @@
     #betHistory {
         text-align: left;
         display: inline-block;
-        width: 100%;
+        width: 95%;
         max-width: 600px;
     }
 </style>
@@ -75,7 +75,6 @@
 <body>
     <h2>Lottoballs Lottery</h2><div class="buttons">
     <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
-    <button onclick="fetchBetHistory()">🔍 Refresh History</button>
 </div>
 <p id="walletAddress">Not connected</p>
 
@@ -107,6 +106,7 @@
 
 <div class="section-box" id="betHistory">
     <h3>My Bet History</h3>
+    <button onclick="fetchBetHistory()">🔍 Refresh History</button>
 </div>
 
 <script>
