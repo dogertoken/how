@@ -1,0 +1,180 @@
+<!DOCTYPE html><html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalender Indonesia</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+      body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    padding: 10px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+h2 {
+    margin-top: 20px;
+    color: #333;
+}
+
+#crypto-section, #nft-calendar, #wallet-section, #ai-predictions {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #fafafa;
+  }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kalender Masehi, Jawa & Hijriyah</h1>
+        <div class="year-selector">
+            <button id="prev-year">&laquo; Tahun Sebelumnya</button>
+            <span id="current-year"></span>
+            <button id="next-year">Tahun Berikutnya &raquo;</button>
+        </div>
+        <div class="month-pagination">
+            <button id="prev-month">&laquo; Bulan Sebelumnya</button>
+            <span id="current-month"></span>
+            <button id="next-month">Bulan Berikutnya &raquo;</button>
+        </div>
+        <p id="time"></p>
+        <p id="date"></p>
+        <p id="hijri-date"></p>
+        <p id="javanese-date"></p>
+        <p id="weather"></p>
+        <p id="moon-phase"></p>
+        <p id="eclipse"></p>
+        <p id="quote"></p>
+        <div id="holiday-list">
+            <h2>Hari Libur & Hari Besar</h2>
+            <ul id="holidays"></ul>
+        </div>
+        <div id="prayer-times">
+            <h2>Waktu Sholat</h2>
+            <ul>
+                <li>Subuh: <span id="subuh"></span></li>
+                <li>Dzuhur: <span id="dzuhur"></span></li>
+                <li>Ashar: <span id="ashar"></span></li>
+                <li>Maghrib: <span id="maghrib"></span></li>
+                <li>Isya: <span id="isya"></span></li>
+            </ul>
+        </div>
+        <div id="custom-events">
+            <h2>Tambahkan Acara</h2>
+            <input type="date" id="event-date">
+            <input type="text" id="event-name" placeholder="Nama Acara">
+            <button id="add-event">Tambah</button>
+            <ul id="event-list"></ul>
+        </div>
+        <button id="toggle-theme">Ganti Tema</button><div id="crypto-section">
+        <h2>Harga Kripto Real-Time</h2>
+        <p>Bitcoin: <span id="btc-price"></span> USD</p>
+        <p>Ethereum: <span id="eth-price"></span> USD</p>
+        <p>TON: <span id="ton-price"></span> USD</p>
+    </div>
+    
+    <div id="nft-calendar">
+        <h2>Koleksi NFT Kalender</h2>
+        <button id="mint-nft">Mint NFT Kalender</button>
+        <p id="nft-status"></p>
+    </div>
+    
+    <div id="wallet-section">
+        <h2>Wallet Kripto</h2>
+        <button id="connect-wallet">Koneksikan Wallet</button>
+        <button id="disconnect-wallet">Putuskan Wallet</button>
+        <p id="wallet-status">Wallet belum terhubung</p>
+    </div>
+    
+    <div id="ai-predictions">
+        <h2>Prediksi AI</h2>
+        <p>Prediksi Cuaca: <span id="ai-weather"></span></p>
+        <p>Prediksi Harga Kripto: <span id="ai-crypto"></span></p>
+        <p>Prediksi Gerhana: <span id="ai-eclipse"></span></p>
+    </div>
+</div>
+<script src="script.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().toLocaleString("id-ID", { month: "long" });
+    document.getElementById("current-year").textContent = currentYear;
+    document.getElementById("current-month").textContent = currentMonth;
+
+    function updateTime() {
+        document.getElementById("time").textContent = new Date().toLocaleTimeString();
+    }
+    setInterval(updateTime, 1000);
+
+    async function fetchCryptoPrices() {
+        try {
+            let response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,ton&vs_currencies=usd");
+            let data = await response.json();
+            document.getElementById("btc-price").textContent = data.bitcoin.usd;
+            document.getElementById("eth-price").textContent = data.ethereum.usd;
+            document.getElementById("ton-price").textContent = data.ton.usd;
+        } catch (error) {
+            console.error("Error fetching crypto prices:", error);
+        }
+    }
+    fetchCryptoPrices();
+    setInterval(fetchCryptoPrices, 60000);
+
+    document.getElementById("connect-wallet").addEventListener("click", async () => {
+        if (window.ethereum) {
+            try {
+                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+                document.getElementById("wallet-status").textContent = "Terhubung: " + accounts[0];
+            } catch (error) {
+                console.error("Wallet connection failed:", error);
+            }
+        } else {
+            alert("Metamask tidak ditemukan!");
+        }
+    });
+
+    document.getElementById("disconnect-wallet").addEventListener("click", () => {
+        document.getElementById("wallet-status").textContent = "Wallet belum terhubung";
+    });
+
+    function getRandomPrediction() {
+        const predictions = ["Cuaca cerah", "Hujan deras", "Kripto naik 5%", "Gerhana bulan pekan depan"];
+        return predictions[Math.floor(Math.random() * predictions.length)];
+    }
+
+    document.getElementById("ai-weather").textContent = getRandomPrediction();
+    document.getElementById("ai-crypto").textContent = getRandomPrediction();
+    document.getElementById("ai-eclipse").textContent = getRandomPrediction();
+});
+</script>
+
+</body>
+      </html>
