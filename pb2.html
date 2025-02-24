@@ -94,6 +94,12 @@
             margin-bottom: 10px;
         }
 
+        .form-group-column {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
         label {
             font-size: 18px;
             font-weight: bold;
@@ -109,12 +115,13 @@
         p {
             font-size: 16px;
             font-weight: bold;
+            margin-top: 5px;
         }
 
         input[type="checkbox"] {
             transform: scale(2);
             margin-left: 10px;
-    }
+        }
 </style>
 
 </head>
@@ -145,7 +152,7 @@
             <select id="currency">
                 <option value="USDT">USDT</option>
                 <option value="ETH">ETH</option>
-            </select><br>
+            </select>
             <p id="betPrice">Bet Price: 2 USDT</p>
         </div>
 
