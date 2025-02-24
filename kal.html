@@ -1,207 +1,111 @@
-<!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html><html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalender Canggih</title>
+    <title>Simulator Trading Kripto</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    text-align: center;
-    margin: 0;
-    padding: 20px;
-}
-
-.container {
-    width: 90%;
-    max-width: 800px;
-    margin: 20px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-h1, h3 {
-    color: #333;
-}
-
-#calendar {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-}
-
-#calendar th, #calendar td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: center;
-}
-
-#calendar th {
-    background-color: #007bff;
-    color: white;
-}
-
-#calendar td {
-    background-color: #f8f9fa;
-}
-
-#crypto-section, #wallet-section, #info-section {
-    margin-top: 20px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    background: #fafafa;
-}
-
-button {
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    background-color: #007bff;
-    color: white;
-    border-radius: 5px;
-    margin: 5px;
-}
-
-button:hover {
-    background-color: #0056b3;
-        }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; text-align: center; } .container { max-width: 600px; margin: 20px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); } .market, .trade { margin: 20px 0; } button { padding: 10px; margin: 5px; border: none; background: #28a745; color: white; border-radius: 5px; cursor: pointer; } button:hover { background: #218838; } canvas { max-width: 100%; margin: 20px 0; } ul { list-style-type: none; padding: 0; } li { background: #eee; margin: 5px 0; padding: 10px; border-radius: 5px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Kalender Masehi - Jawa - Islam</h1>
-        <div id="current-time"></div>
-
-        <!-- Pilihan Tahun -->
-        <label for="year-select">Pilih Tahun:</label>
-        <select id="year-select"></select>
-
-        <!-- Navigasi Bulan -->
-        <div class="month-navigation">
-            <button id="prev-month">← Bulan Sebelumnya</button>
-            <span id="current-month-year"></span>
-            <button id="next-month">Bulan Berikutnya →</button>
+        <h1>Simulator Trading Kripto</h1>
+        <div class="market">
+            <label for="market">Pilih Aset:</label>
+            <select id="market" onchange="updateMarket()">
+                <option value="bitcoin">Bitcoin</option>
+                <option value="ethereum">Ethereum</option>
+                <option value="binancecoin">Binance Coin</option>
+            </select>
         </div>
-
-        <!-- Kalender -->
-        <table id="calendar">
-            <thead>
-                <tr>
-                    <th>Min</th><th>Sen</th><th>Sel</th><th>Rab</th>
-                    <th>Kam</th><th>Jum</th><th>Sab</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-        <!-- Informasi Tambahan -->
-        <div id="info-section">
-            <h3>Hari Libur & Hari Besar</h3>
-            <ul id="holiday-list"></ul>
-
-            <h3>Prediksi AI</h3>
-            <p><strong>Cuaca:</strong> <span id="ai-weather"></span></p>
-            <p><strong>Harga Kripto:</strong> <span id="ai-crypto"></span></p>
-            <p><strong>Gerhana:</strong> <span id="ai-eclipse"></span></p>
-        </div>
-
-        <!-- Integrasi Kripto -->
-        <div id="crypto-section">
-            <h3>Harga Kripto (USD)</h3>
-            <p>Bitcoin: $<span id="btc-price">-</span></p>
-            <p>Ethereum: $<span id="eth-price">-</span></p>
-            <p>TON: $<span id="ton-price">-</span></p>
-        </div>
-
-        <!-- Wallet Crypto -->
-        <div id="wallet-section">
-            <h3>Metamask Wallet</h3>
-            <button id="connect-wallet">Koneksikan Wallet</button>
-            <button id="disconnect-wallet">Putuskan Wallet</button>
-            <p id="wallet-status">Wallet belum terhubung</p>
-        </div>
+        <h2>Saldo: <span id="balance">$10000</span></h2>
+        <h2>Harga Saat Ini: <span id="price">Loading...</span></h2><div class="trade">
+        <input type="number" id="amount" placeholder="Jumlah USD" min="1">
+        <button onclick="buyCrypto()">Beli</button>
+        <button onclick="sellCrypto()">Jual</button>
     </div>
-
-    <script src="script.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-    const yearSelect = document.getElementById("year-select");
-    const monthYearDisplay = document.getElementById("current-month-year");
-    const calendarBody = document.querySelector("#calendar tbody");
     
-    const currentDate = new Date();
-    let currentYear = currentDate.getFullYear();
-    let currentMonth = currentDate.getMonth();
-
-    // ** 1. Menampilkan Waktu Real-Time **
-    function updateTime() {
-        document.getElementById("current-time").textContent = new Date().toLocaleTimeString();
-    }
-    setInterval(updateTime, 1000);
-    
-    // ** 2. Generate Pilihan Tahun **
-    function generateYearOptions() {
-        for (let i = currentYear - 50; i <= currentYear + 50; i++) {
-            let option = document.createElement("option");
-            option.value = i;
-            option.textContent = i;
-            yearSelect.appendChild(option);
-        }
-        yearSelect.value = currentYear;
-    }
-    
-    // ** 3. Membuat Kalender **
-    function renderCalendar(year, month) {
-        calendarBody.innerHTML = "";
-        monthYearDisplay.textContent = new Date(year, month).toLocaleString("id-ID", { month: "long", year: "numeric" });
-
-        let firstDay = new Date(year, month, 1).getDay();
-        let daysInMonth = new Date(year, month + 1, 0).getDate();
-
-        let row = document.createElement("tr");
-        for (let i = 0; i < firstDay; i++) row.appendChild(document.createElement("td"));
-
-        for (let day = 1; day <= daysInMonth; day++) {
-            let cell = document.createElement("td");
-            cell.textContent = day;
-            row.appendChild(cell);
-            if ((firstDay + day) % 7 === 0) {
-                calendarBody.appendChild(row);
-                row = document.createElement("tr");
+    <canvas id="priceChart"></canvas>
+    <h3>Riwayat Transaksi</h3>
+    <ul id="history"></ul>
+</div>
+<script>
+    let balance = 10000;
+    let holdings = 0;
+    let currentPrice = 0;
+    let market = "bitcoin";
+    let priceHistory = [];
+    const ctx = document.getElementById('priceChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Harga Kripto',
+                data: [],
+                borderColor: 'blue',
+                borderWidth: 1,
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                x: { display: true },
+                y: { beginAtZero: false }
             }
         }
-        calendarBody.appendChild(row);
+    });
+    function fetchPrice() {
+        fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${market}&vs_currencies=usd`)
+            .then(response => response.json())
+            .then(data => {
+                currentPrice = data[market].usd;
+                document.getElementById('price').innerText = `$${currentPrice}`;
+                updateChart();
+            });
     }
-
-    // ** 4. Navigasi Bulan **
-    document.getElementById("prev-month").addEventListener("click", () => {
-        if (currentMonth === 0) {
-            currentYear--;
-            currentMonth = 11;
-        } else {
-            currentMonth--;
+    function updateChart() {
+        priceHistory.push(currentPrice);
+        if (priceHistory.length > 20) priceHistory.shift();
+        chart.data.labels = priceHistory.map((_, i) => i + 1);
+        chart.data.datasets[0].data = priceHistory;
+        chart.update();
+    }
+    function buyCrypto() {
+        const amount = parseFloat(document.getElementById('amount').value);
+        if (amount > 0 && balance >= amount) {
+            balance -= amount;
+            holdings += amount / currentPrice;
+            updateUI(`Beli $${amount} ${market.toUpperCase()}`);
         }
-        renderCalendar(currentYear, currentMonth);
-    });
-
-    document.getElementById("next-month").addEventListener("click", () => {
-        if (currentMonth === 11) {
-            currentYear++;
-            currentMonth = 0;
-        } else {
-            currentMonth++;
+    }
+    function sellCrypto() {
+        const amount = parseFloat(document.getElementById('amount').value);
+        if (amount > 0 && holdings * currentPrice >= amount) {
+            balance += amount;
+            holdings -= amount / currentPrice;
+            updateUI(`Jual $${amount} ${market.toUpperCase()}`);
         }
-        renderCalendar(currentYear, currentMonth);
-    });
+    }
+    function updateUI(action) {
+        document.getElementById('balance').innerText = `$${balance.toFixed(2)}`;
+        const history = document.getElementById('history');
+        const li = document.createElement('li');
+        li.innerText = `${new Date().toLocaleTimeString()} - ${action}`;
+        history.prepend(li);
+    }
+    function updateMarket() {
+        market = document.getElementById('market').value;
+        priceHistory = [];
+        chart.data.labels = [];
+        chart.data.datasets[0].data = [];
+        fetchPrice();
+    }
+    setInterval(fetchPrice, 5000);
+    fetchPrice();
+</script>
 
-    generateYearOptions();
-    renderCalendar(currentYear, currentMonth);
-});
-    </script>
 </body>
 </html>
