@@ -250,7 +250,42 @@ body {
     margin: 0 auto;
     max-width: 150px; /* Sesuaikan ukuran logo */
 }
+        /* Label */
+.label-style {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 5px;
+    display: block;
+}
 
+/* Dropdown (Select Box) */
+.select-style {
+    font-size: 16px;
+    padding: 10px 40px 10px 15px;
+    border-radius: 8px;
+    border: 2px solid #00b7ff;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.3);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    appearance: none;
+    width: 200px; /* Sesuai agar tidak kepanjangan */
+    position: relative;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%2300b7ff"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+}
+
+/* Efek saat klik atau fokus */
+.select-style:focus {
+    box-shadow: 0 6px 15px rgba(0, 183, 255, 0.5);
+    border-color: #0077cc;
+}
     </style>
 </head>
 <body>
@@ -305,8 +340,8 @@ body {
         <label for="betCount">Bet Count (1x / 99x)</label>
         <input type="number" id="betCount" placeholder="1 / 99" min="1" max="99" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)" />
 
-        <label for="paymentMethod">Payment Method:</label>
-        <select id="paymentMethod">
+        <label for="paymentMethod" class="label-style">Payment Method:</label>
+        <select id="paymentMethod" class="select-style">
             <option value="USDT">USDT</option>
             <option value="ETH">ETH</option>
         </select>
@@ -314,7 +349,7 @@ body {
         <button class="btn" id="calculatePriceBtn">Calculate Price</button>
 
         <div id="priceDetails" style="display:none;">
-            <p>Total Price: <span id="totalPrice"></span> <span id="currencyType"></span></p>
+            <center><p style="font-size: 16px; font-weight: bold; color: #33ff33; font-family: 'Courier New', monospace; background: #101010; padding: 5px 10px; border-radius: 5px; display: inline-block;">Total Price: <span id="totalPrice"></span> <span id="currencyType"></span></p></center>
            <center><button class="btn" id="confirmBetBtn" style="display:none;">Confirm Bet</button></center>
         </div>
     </div>
