@@ -7,19 +7,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            text-align: center;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: white;
-            overflow-y: auto;
-            margin: 0;
-            padding: 20px;
-        }.buttons {
+            body {
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Ubah dari flex-start ke center */
+    align-items: center;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: white;
+    overflow-y: auto;
+    margin: 0;
+    padding: 20px;
+    width: 100vw; /* Pastikan body memenuhi layar */
+            }
+            
+        .buttons {
         display: flex;
         gap: 15px;
         margin-top: 30px;
@@ -47,13 +51,16 @@
     .section-box {
     background: rgba(255, 255, 255, 0.1);
     padding: 20px;
-    margin: 20px auto;
+    margin: 20px auto; /* Pastikan margin auto agar tetap di tengah */
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
     max-width: 900px;
-    width: 95%;
+    width: 100%; /* Pastikan memenuhi parent */
     text-align: center;
-}
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    }
 
 .input-container {
     display: flex;
@@ -118,8 +125,8 @@
 </div>
 
 <div class="section-box" id="betHistory">
-    <h3>My Bet History</h3>
-    <button onclick="fetchBetHistory()">🔍 Refresh History</button>
+    <center><h3>My Bet History</h3>
+    <button onclick="fetchBetHistory()">🔍 Refresh History</button></center>
 </div>
     
 <script>
