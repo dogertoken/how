@@ -319,49 +319,18 @@ button:hover {
     justify-content: center;
     align-items: center;
     box-sizing: border-box; /* Pastikan padding dan border tidak mengubah ukuran elemen */
-    }
-
-        .section-box ul h3 {
+}
+   .list-title {
     font-size: 1.5rem;
-    color: #00b7ff;
-    margin-bottom: 10px;
     font-weight: bold;
-    text-transform: uppercase;
     text-align: center;
-    letter-spacing: 2px;
-    position: relative;
-    display: inline-block;
-    padding: 10px 20px;
-    
-    /* Efek 3D */
-    text-shadow: 3px 3px 10px rgba(0, 183, 255, 0.8), 
-                 -3px -3px 10px rgba(0, 255, 200, 0.8);
-
-    /* Animasi muncul */
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 1s ease-out forwards;
-}
-
-/* Efek hover untuk lebih modern */
-.section-box ul h3:hover {
-    transform: scale(1.1) rotateX(10deg) rotateY(10deg);
-    transition: all 0.3s ease-in-out;
-    text-shadow: 5px 5px 20px rgba(0, 183, 255, 1), 
-                 -5px -5px 20px rgba(0, 255, 200, 1);
-}
-
-/* Animasi masuk */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+    padding: 12px;
+    margin-bottom: 8px;
+    background: rgba(0, 183, 255, 0.1); /* Sesuai dengan desain */
+    border-radius: 8px;
+    color: #00b7ff;
+    border: 2px solid #00b7ff;
+   }
     </style>
 </head>
 <body>
@@ -402,25 +371,18 @@ button:hover {
         </div>
 
         <!-- Features -->
-         <div id="features" class="section-box">
-            <ul>
-               <h3>Transparency & Security</h3>
-               <li>✅ 100% <b>Transparent & Secure</b> – All results are recorded on the blockchain.</li>
+        <div id="features" class="section-box">
+    <center><h2>Why Choose Lotto Chain?</h2></center>
+    <ul>
+        <li class="list-title"><strong>Main Features:</strong></li> <!-- Judul dalam box -->
+        <li>✅ 100% <b>Transparent & Secure</b> – All results are recorded on the blockchain.</li>
+        <li>✅ <b>Instant Prize Distribution</b> – Winners receive payouts automatically.</li>
+        <li>✅ <b>No Manipulation</b> – No interference from third parties.</li>
+        <li>✅ <b>Multi-Blockchain Support</b> – Play on Ethereum, BSC, and other networks.</li>
+        <li>✅ <b>No House Edge in Lotto Pools</b> – Winnings are purely based on pooled bets.</li>
+    </ul>
+        </div>
         
-               <h3>Instant Prize Distribution</h3>
-               <li>✅ <b>Instant Prize Distribution</b> – Winners receive payouts automatically.</li>
-        
-               <h3>No Manipulation</h3>
-               <li>✅ <b>No Manipulation</b> – No interference from third parties.</li>
-        
-               <h3>Multi-Blockchain Support</h3>
-               <li>✅ <b>Multi-Blockchain Support</b> – Play on Ethereum, BSC, and other networks.</li>
-        
-                <h3>No House Edge</h3>
-                <li>✅ <b>No House Edge in Lotto Pools</b> – Winnings are purely based on pooled bets.</li>
-            </ul>
-         </div>
-
          <!-- How to Play -->
          <div id="how-to-play" class="section-box">
          <center><h2>How to Play?</h2></center>
