@@ -323,18 +323,16 @@ button:hover {
 /* Mode PC (Lebar minimal 768px) */
 @media (min-width: 768px) {
     .lottery-menu {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Menyesuaikan jumlah kolom otomatis */
-        gap: 30px; /* Jarak antar elemen */
-        justify-content: center; /* Tengah secara horizontal */
-        max-width: 900px; /* Batas lebar maksimal agar tidak terlalu melebar */
-        margin: auto; /* Pusatkan elemen */
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-evenly; /* Meratakan item di tengah */
+        align-items: center; /* Memastikan posisi vertikal sejajar */
+        gap: 30px;
     }
 
     .pool {
-        width: 100%; /* Pastikan elemen menyesuaikan ukuran */
-        max-width: 280px; /* Batasi lebar maksimum */
-        text-align: center; /* Pusatkan teks */
+        width: calc(33.33% - 40px); /* Mengurangi padding agar lebih proporsional */
+        max-width: 280px;
     }
 }
 
@@ -416,21 +414,21 @@ button:hover {
 
         <!-- Features -->
          <div id="features" class="section-box">
-         <center><h2>🎰 4D Pools</h2>
+         <center><h2>🎰 4D Pools</h2></center>
              <div class="lottery-menu">
              <a href="hk" class="pool hk" target="_blank">🇭🇰 Hongkong (HK)</a>
              <a href="sgp" class="pool sgp" target="_blank">🇸🇬 Singapore (SGP)</a>
              <a href="syd" class="pool syd" target="_blank">🇦🇺 Sydney (SYD)</a>
              <a href="chi" class="pool chi" target="_blank">🇨🇳 China (CHI)</a>
              <a href="mc" class="pool mc" target="_blank">🇰🇭 Cambodia (MC)</a>
-             <a href="be" class="pool be" target="_blank">🎯 Bull Eye (BE)</a><br></center>
+             <a href="be" class="pool be" target="_blank">🎯 Bull Eye (BE)</a><br>
          </div>
         </div>
 
         <div id="features" class="section-box">
-        <center><h2>🎰 Lottery Pools</h2>
+        <center><h2>🎰 Lottery Pools</h2></center>
         <div class="lottery-menu">
-            <a href="lottery" class="pool chi" target="_blank">🎰 LottoBalls (LB)</a><br></center>
+            <a href="lottery" class="pool chi" target="_blank">🎰 LottoBalls (LB)</a><br>
         </div>
         </div>
 
