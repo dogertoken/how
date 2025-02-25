@@ -236,7 +236,7 @@ button:hover {
     border: 2px solid #00b7ff; /* Border berwarna biru */
     border-radius: 12px; /* Sudut membulat */
     padding: 15px 20px; /* Ruang dalam */
-    margin: 20px 0; /* Jarak antar item */
+    margin: 10px 0; /* Jarak antar item */
     font-size: 1.2rem; /* Ukuran font */
     display: flex; /* Agar kontennya sejajar */
     align-items: center;
@@ -245,12 +245,6 @@ button:hover {
     transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease-in-out;
     opacity: 0;
     transform: translateY(20px);
-}
-
-        .section-box ul, 
-.section-box ol {
-    padding: 0;
-    margin: 0 auto; /* Memastikan daftar ada di tengah */
 }
 
 /* Efek animasi muncul */
@@ -320,6 +314,62 @@ button:hover {
     align-items: center;
     box-sizing: border-box; /* Pastikan padding dan border tidak mengubah ukuran elemen */
 }
+        .lottery-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Mode PC (Lebar minimal 768px) */
+@media (min-width: 768px) {
+    .lottery-menu {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center; /* Membantu meratakan baris bawah */
+        align-items: center;
+        gap: 30px;
+        max-width: 900px; /* Batasi lebar agar posisi lebih stabil */
+        margin: auto; /* Memastikan tetap berada di tengah */
+    }
+}
+        
+/* Pool styling tetap */
+.pool {
+    padding: 18px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.3);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: white;
+    text-align: center;
+}
+
+.pool:hover {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 15px rgba(0, 183, 255, 0.5);
+    transform: scale(1.07);
+}
+
+.pool {
+    background: #0f3460; /* Warna biru */
+}
+
+.pool:hover {
+    filter: brightness(1.2); /* Membuat warna lebih cerah saat di-hover */
+}
+
+/* Warna berbeda untuk tiap pool */
+.hk { border-left: 6px solid #ff3333; }
+.sgp { border-left: 6px solid #ff9933; }
+.syd { border-left: 6px solid #33ff33; }
+.chi { border-left: 6px solid #3399ff; }
+.be { border-left: 6px solid #9933ff; }
+.mc { border-left: 6px solid #ffff00; }
     </style>
 </head>
 <body>
@@ -329,11 +379,11 @@ button:hover {
         <div class="logo">Lotto Chain</div>
         <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
         <ul class="nav-links">
-            <a href="#about">1️⃣ About</a>
-            <a href="#features">2️⃣ Features</a>
-            <a href="#how-to-play">3️⃣ How to Play</a>
-            <a href="#prizes">4️⃣ Prizes</a>
-            <a href="#join">5️⃣ Join</a>
+            <a href="#features">1️⃣ 4D Pools</a>
+            <a href="#prizes">2️⃣ Prizes</a>
+            <a href="lottery">3️⃣ LottoBalls (LB)</a>
+            <a href="hk">4️⃣ Hong Kong (HK)</a>
+            <a href="syd">5️⃣ Sydney (SYD)</a>
         </ul>
     </nav>
  
@@ -361,27 +411,18 @@ button:hover {
 
         <!-- Features Section -->
         <div id="features" class="section-box">
-            <center><h2>Why Choose Lotto Chain?</h2></center>
+            <center>
+                <h2>Why Choose Lotto Chain?</h2>
+            </center>
             <ul>
                 <li>✅ <strong>100% Transparent & Secure</strong> – All results are recorded on the blockchain.</li>
                 <li>✅ <strong>Instant Prize Distribution</strong> – Winners receive payouts automatically.</li>
                 <li>✅ <strong>No Manipulation</strong> – No interference from third parties.</li>
                 <li>✅ <strong>Multi-Blockchain Support</strong> – Play on Ethereum, BSC, and other networks.</li>
-                <li>✅ <strong>No House Edge in Lotto Pools</strong> – Winnings are purely based on pooled bets.</li>
+                 <li>✅ <strong>No House Edge in Lotto Pools</strong> – Winnings are purely based on pooled bets.</li>
             </ul>
         </div>
-        
-         <!-- How to Play -->
-         <div id="how-to-play" class="section-box">
-         <center><h2>How to Play?</h2></center>
-             <ol>
-                 <li>🎲 **Choose Your Bet Type** – Lotto Pools (HK, SG, etc.) or VRF Lottery.</li>
-                 <li>📢 **Pick Your Numbers & Place a Bet** – Choose numbers for **6D, 5D, 4D, 3D, or 2D**.</li>
-                 <li>📝 **Confirm & Submit** – Your bet is recorded on the blockchain.</li>
-                 <li>🏆 **Check Results & Claim Winnings** – Payouts are automatically sent to winners.</li>
-             </ol>
-         </div>
-        
+
         <!-- Join Section -->
         <div id="join" class="section-box">
             <center><h2>Join Lotto Chain Now!</h2></center>
