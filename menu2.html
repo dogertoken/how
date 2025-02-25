@@ -320,18 +320,18 @@ button:hover {
     gap: 25px;
 }
 
-/* Mode PC (Lebar minimal 768px, bisa diubah sesuai kebutuhan) */
+/* Mode PC: Gunakan Grid Agar Simetris */
 @media (min-width: 768px) {
     .lottery-menu {
-        flex-direction: row; /* Mengubah menjadi horizontal */
-        flex-wrap: wrap; /* Memungkinkan item pindah ke baris berikutnya */
-        justify-content: center; /* Tengah secara horizontal */
-        gap: 30px; /* Jarak antar item */
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 kolom sejajar */
+        gap: 30px; /* Jarak antar elemen */
+        justify-content: center; /* Tengah */
+        align-items: stretch; /* Semua elemen memiliki tinggi yang sama */
     }
 
     .pool {
-        width: calc(33.33% - 20px); /* Menyesuaikan ukuran agar tiga kolom */
-        max-width: 300px; /* Batasi lebar maksimum */
+        width: 100%; /* Pastikan semua elemen mengikuti grid */
     }
 }
 
@@ -349,6 +349,10 @@ button:hover {
     text-decoration: none;
     color: white;
     text-align: center;
+    display: flex; /* Agar isi tetap rata */
+    align-items: center;
+    justify-content: center;
+    height: 80px; /* Pastikan semua tinggi sama */
 }
 
 .pool:hover {
