@@ -284,27 +284,38 @@ button:hover {
     }
 }
 
-/* Join Section */
+        /* Join Section */
+#join {
+    display: flex;
+    justify-content: center; /* Memastikan ikon dan teks berada di tengah */
+    gap: 20px; /* Memberikan jarak antar ikon */
+    flex-wrap: wrap; /* Agar tetap responsif */
+}
+
 #join p {
     display: flex;
     align-items: center;
-    margin: 10px 0;
+    gap: 10px; /* Jarak antara ikon dan teks */
+    font-size: 1.2rem;
 }
 
+/* Ikon Styling */
 #join i {
-    margin-right: 10px; /* Memberikan jarak antara ikon dan teks */
+    font-size: 1.5rem;
+    color: #00b7ff; /* Warna ikon */
 }
 
-/* Responsif */
+/* Responsif untuk layar kecil */
 @media (max-width: 768px) {
-    #join p {
-        flex-direction: column; /* Menata ikon dan teks secara vertikal pada layar kecil */
-        align-items: flex-start;
+    #join {
+        flex-direction: column; /* Menata ikon dan teks secara vertikal */
+        align-items: center;
     }
 
-    #join i {
-        margin-right: 0;
-        margin-bottom: 5px; /* Memberikan jarak antara ikon dan teks secara vertikal */
+    #join p {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
     }
 }
 
@@ -415,10 +426,6 @@ button:hover {
             <p>Lotto Chain is a blockchain-based number betting platform that carries a decentralized system. Unlike conventional lottery systems that are controlled by a single entity, Lotto Chain runs on blockchain technology, ensuring transparency, security and fairness in every number draw carried out.</p>
         </div>
 
-        <!-- Features -->
-<div id="features" class="section-box">
-<center><h2>Why Choose Lotto Chain?</h2></center>
-</div>
         <!-- Features -->
 <div id="features" class="section-box">
 <center><h3>100% Transparent & Secure:</h3></center>
