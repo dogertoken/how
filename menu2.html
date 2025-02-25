@@ -325,18 +325,17 @@ button:hover {
     .lottery-menu {
         flex-direction: row;
         flex-wrap: wrap;
-        justify-content: center; /* Memastikan elemen selalu berada di tengah */
-        align-items: center;
+        justify-content: center; /* Meratakan item di tengah */
+        align-items: center; /* Memastikan posisi vertikal sejajar */
         gap: 30px;
     }
 
     .pool {
-        width: calc(33.33% - 40px); /* Menghindari ukuran yang tidak proporsional */
+        width: calc(33.33% - 40px); /* Mengurangi padding agar lebih proporsional */
         max-width: 280px;
-        min-width: 200px; /* Agar tetap fleksibel */
     }
 }
-
+        
 /* Pool styling tetap */
 .pool {
     padding: 18px;
