@@ -247,6 +247,16 @@ button:hover {
     transform: translateY(20px);
 }
 
+        .section-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Memastikan elemen di dalamnya tetap center */
+    justify-content: center; 
+    width: 100%; /* Memastikan lebarnya penuh */
+    max-width: 600px; /* Bisa disesuaikan agar tidak terlalu melebar */
+    margin: 0 auto; /* Untuk memastikan posisi di tengah */
+        }
+
 /* Efek animasi muncul */
 .section-box ul li:nth-child(1),
 .section-box ol li:nth-child(1) { animation: fadeInUp 0.5s forwards 0.2s; }
