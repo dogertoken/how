@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotto Chain - Decentralized Lottery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* General Style */
+body {
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    margin: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background: linear-gradient(135deg, #0d0d0d, #3d0075);
+    color: white;
+    overflow-y: auto;
+}
+
+/* Navbar */
+.navbar {
+    width: 100%;
+    max-width: 1200px;
+    background: #5a009d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Menampilkan menu secara default di mode PC */
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Sembunyikan hamburger di mode PC */
+.hamburger {
+    display: none;
+}
+
+/* Mode Mobile */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        background: rgba(90, 0, 157, 0.9);
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2);
+        text-align: left;
+        align-items: flex-start;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .hamburger {
+        display: block;
+        font-size: 2rem;
+        cursor: pointer;
+        color: white;
+    }
+}
+
+/* Hero Section */
+.hero {
+    width: 100%;
+    height: 500px;
+    background: url('your-image-url.jpg') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px rgba(138, 43, 226, 0.8);
+}
+
+.hero p {
+    font-size: 1.5rem;
+    margin-top: 10px;
+}
+
+/* Buttons */
+.buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+button {
+    padding: 15px 35px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(135deg, #5a009d, #8a2be2);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.8);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 30px rgba(138, 43, 226, 1);
+}
+
+/* Section Box */
+.section-box {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2);
+    max-width: 800px;
+    width: 90%;
+}
+
+/* Footer */
+.footer {
+    padding: 20px;
+    margin-top: 20px;
+    background: #5a009d;
+    width: 100%;
+    text-align: center;
+}
+
+/* Lottery Balls */
+.lottery-balls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.lottery-ball {
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle at 30% 30%, #5a009d, #8a2be2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 8px 15px rgba(138, 43, 226, 0.6), 0 4px 10px rgba(0, 0, 0, 0.4);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    border: 3px solid white;
+}
+
+/* Animasi bola */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.lottery-ball:nth-child(1) { animation: bounce 1s infinite 0.1s; }
+.lottery-ball:nth-child(2) { animation: bounce 1s infinite 0.2s; }
+.lottery-ball:nth-child(3) { animation: bounce 1s infinite 0.3s; }
+.lottery-ball:nth-child(4) { animation: bounce 1s infinite 0.4s; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .lottery-balls {
+        flex-wrap: wrap;
+    }
+    .lottery-ball {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">Lotto Chain</div>
+        <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
+        <ul class="nav-links">
+            <a href="#features">1️⃣ 4D Pools</a>
+            <a href="#prizes">2️⃣ Prizes</a>
+            <a href="lottery">3️⃣ LottoBalls (LB)</a>
+            <a href="hk">4️⃣ Hong Kong (HK)</a>
+            <a href="syd">5️⃣ Sydney (SYD)</a>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Results (HK)</h1>
+        <p id="current-date-time"></p>
+
+        <!-- Lottery Balls -->
+        <div class="lottery-balls">
+            <div class="lottery-ball">7</div>
+            <div class="lottery-ball">14</div>
+            <div class="lottery-ball">21</div>
+            <div class="lottery-ball">30</div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container">
+
+        <div id="features" class="section-box">
+        <center><h2>🎰 4D Pools</h2></center>
+            <div class="lottery-menu">
+            <a href="hk" class="pool hk" target="_blank">🇭🇰 Hongkong (HK)</a>
+            <a href="sgp" class="pool sgp" target="_blank">🇸🇬 Singapore (SGP)</a>
+            <a href="syd" class="pool syd" target="_blank">🇦🇺 Sydney (SYD)</a>
+            <a href="chi" class="pool chi" target="_blank">🇨🇳 China (CHI)</a>
+            <a href="mc" class="pool mc" target="_blank">🇰🇭 Cambodia (MC)</a>
+            <a href="be" class="pool be" target="_blank">🎯 Bull Eye (BE)</a><br>
+        </div>
+        </div>
+
+        <div id="features" class="section-box">
+        <center><h2>🎰 Lottery Pools</h2></center>
+        <div class="lottery-menu">
+            <a href="lottery" class="pool chi" target="_blank">🎰 LottoBalls (LB)</a><br>
+        </div>
+        </div>
+
+        <!-- Prize Table -->
+        <div id="prizes" class="section-box">
+        <center><h2>4D USDT Prize Payouts</h2></center>
+            <table>
+                <tr>
+                    <th>Bet Type</th>
+                    <th>Prize Multiplier</th>
+                    <th>Example (0.5 USDT)</th>
+                </tr>
+                <tr>
+                    <td>4D</td>
+                    <td>50,000%</td>
+                    <td>250 USDT</td>
+                </tr>
+                <tr>
+                    <td>3D</td>
+                    <td>5,000%</td>
+                    <td>25 USDT</td>
+                </tr>
+                <tr>
+                    <td>2D</td>
+                    <td>500%</td>
+                    <td>2.5 USDT</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Prize Table -->
+        <div id="prizes" class="section-box">
+        <center><h2>4D ETH Prize Payouts</h2></center>
+            <table>
+                <tr>
+                    <th>Bet Type</th>
+                    <th>Prize Multiplier</th>
+                    <th>Example (0.00015 ETH)</th>
+                </tr>
+                <tr>
+                    <td>4D</td>
+                    <td>50,000%</td>
+                    <td>0.075 ETH</td>
+                </tr>
+                <tr>
+                    <td>3D</td>
+                    <td>5,000%</td>
+                    <td>0.0075 ETH</td>
+                </tr>
+                <tr>
+                    <td>2D</td>
+                    <td>500%</td>
+                    <td>0.00075 ETH</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Prize Table -->
+        <div id="prizes" class="section-box">
+        <center><h2>Lottery USDT Prize Payouts</h2></center>
+            <table>
+                <tr>
+                    <th>Bet Type</th>
+                    <th>Compatibility</th>
+                    <th>Prize (USDT)</th>
+                </tr>
+                <tr>
+                    <td>Jackpot</td>
+                    <td>5 Numbers + LottoBalls</td>
+                    <td>All Pools USDT + ETH</td>
+                </tr>
+                <tr>
+                    <td>2nd</td>
+                    <td>5 Numbers</td>
+                    <td>50% Pools USDT + ETH</td>
+                </tr>
+                <tr>
+                    <td>3rd</td>
+                    <td>4 Numbers + LottoBalls</td>
+                    <td>25% Pools USDT + ETH</td>
+                </tr>
+                <tr>
+                    <td>4th</td>
+                    <td>4 Numbers</td>
+                    <td>100 USDT</td>
+                </tr>
+                <tr>
+                    <td>5th</td>
+                    <td>3 Numbers + LottoBalls</td>
+                    <td>100 USDT</td>
+                </tr>
+                <tr>
+                    <td>6th</td>
+                    <td>3 Numbers</td>
+                    <td>7 USDT</td>
+                </tr>
+                <tr>
+                    <td>7th</td>
+                    <td>2 Numbers + LottoBalls</td>
+                    <td>7 USDT</td>
+                </tr>
+                <tr>
+                    <td>8th</td>
+                    <td>1 Numbers + LottoBalls</td>
+                    <td>4 USDT</td>
+                </tr>
+                <tr>
+                    <td>9th</td>
+                    <td>LottoBalls Only</td>
+                    <td>4 USDT</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Prize Table -->
+        <div id="prizes" class="section-box">
+        <center><h2>Lottery ETH Prize Payouts</h2></center>
+            <table>
+                <tr>
+                    <th>Bet Type</th>
+                    <th>Compatibility</th>
+                    <th>Prize (ETH)</th>
+                </tr>
+                <tr>
+                    <td>Jackpot</td>
+                    <td>5 Numbers + LottoBalls</td>
+                    <td>All Pools ETH + USDT</td>
+                </tr>
+                <tr>
+                    <td>2nd</td>
+                    <td>5 Numbers</td>
+                    <td>50% Pools ETH + USDT</td>
+                </tr>
+                <tr>
+                    <td>3rd</td>
+                    <td>4 Numbers + LottoBalls</td>
+                    <td>25% Pools ETH + USDT</td>
+                </tr>
+                <tr>
+                    <td>4th</td>
+                    <td>4 Numbers</td>
+                    <td>0.036 ETH</td>
+                </tr>
+                <tr>
+                    <td>5th</td>
+                    <td>3 Numbers + LottoBalls</td>
+                    <td>0.036 ETH</td>
+                </tr>
+                <tr>
+                    <td>6th</td>
+                    <td>3 Numbers</td>
+                    <td>0.00252 ETH</td>
+                </tr>
+                <tr>
+                    <td>7th</td>
+                    <td>2 Numbers + LottoBalls</td>
+                    <td>0.00252 ETH</td>
+                </tr>
+                <tr>
+                    <td>8th</td>
+                    <td>1 Numbers + LottoBalls</td>
+                    <td>0.00144 ETH</td>
+                </tr>
+                <tr>
+                    <td>9th</td>
+                    <td>LottoBalls Only</td>
+                    <td>0.00144 ETH</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Join Section -->
+        <div id="join" class="section-box">
+            <center><h2>Join Lotto Chain Now!</h2></center>
+            <center><p>Experience a <strong>fair, secure, and decentralized</strong> lottery system.</p></center>
+
+            <p><i class="fas fa-play"></i> <a href="#" style="color: #00b7ff;"> Play Now!</a></p>
+            <p><i class="fas fa-file-contract"></i> <a href="#" style="color: #00b7ff;"> Etherscan</a></p>
+            <p><i class="fab fa-telegram"></i> <a href="#" style="color: #00b7ff;"> Telegram</a></p>
+            <p><i class="fab fa-twitter"></i> <a href="#" style="color: #00b7ff;"> Twitter</a></p>
+        </div>
+
+       <!-- Footer -->
+       <div class="footer">
+           © 2025 Lotto Chain. All rights reserved. Play responsibly.
+       </div>
+
+    <script>
+        function updateDateTime() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Menambahkan 1 karena bulan dimulai dari 0
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        
+        const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        
+        document.getElementById('current-date-time').textContent = formattedDateTime;
+    }
+
+    // Update setiap detik
+    setInterval(updateDateTime, 1000);
+
+    // Panggil updateDateTime pertama kali agar langsung muncul
+    updateDateTime();
+        
+        function toggleMenu() {
+            document.querySelector(".nav-links").classList.toggle("active");
+        }
+    </script>
+
+</body>
+  </html>
