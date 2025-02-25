@@ -337,6 +337,29 @@ button:hover {
         text-align: center; /* Pusatkan teks */
     }
 }
+        .lottery-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Mode PC (Lebar minimal 768px) */
+@media (min-width: 768px) {
+    .lottery-menu {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Menyesuaikan jumlah kolom otomatis */
+        gap: 30px; /* Jarak antar elemen */
+        justify-content: center; /* Tengah secara horizontal */
+        max-width: 900px; /* Batas lebar maksimal agar tidak terlalu melebar */
+        margin: auto; /* Pusatkan elemen */
+    }
+
+    .pool {
+        width: 100%; /* Pastikan elemen menyesuaikan ukuran */
+        max-width: 280px; /* Batasi lebar maksimum */
+        text-align: center; /* Pusatkan teks */
+    }
+}
 
 /* Pool styling tetap */
 .pool {
@@ -352,10 +375,6 @@ button:hover {
     text-decoration: none;
     color: white;
     text-align: center;
-    display: flex; /* Agar isi tetap rata */
-    align-items: center;
-    justify-content: center;
-    height: 80px; /* Pastikan semua tinggi sama */
 }
 
 .pool:hover {
