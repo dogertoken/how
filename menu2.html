@@ -315,46 +315,63 @@ button:hover {
     box-sizing: border-box; /* Pastikan padding dan border tidak mengubah ukuran elemen */
     }
         .lottery-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
 
-          .pool {
-            padding: 18px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            cursor: pointer;
-            font-size: 20px;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0, 183, 255, 0.3);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: white;
-        }
+/* Mode PC (Lebar minimal 768px, bisa diubah sesuai kebutuhan) */
+@media (min-width: 768px) {
+    .lottery-menu {
+        flex-direction: row; /* Mengubah menjadi horizontal */
+        flex-wrap: wrap; /* Memungkinkan item pindah ke baris berikutnya */
+        justify-content: center; /* Tengah secara horizontal */
+        gap: 30px; /* Jarak antar item */
+    }
 
-        .pool:hover {
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 6px 15px rgba(0, 183, 255, 0.5);
-            transform: scale(1.07);
-        }
+    .pool {
+        width: calc(33.33% - 20px); /* Menyesuaikan ukuran agar tiga kolom */
+        max-width: 300px; /* Batasi lebar maksimum */
+    }
+}
 
-        .pool {
-            background: #0f3460; /* Warna biru */
-        }
+/* Pool styling tetap */
+.pool {
+    padding: 18px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.3);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: white;
+    text-align: center;
+}
 
-        .pool:hover {
-            filter: brightness(1.2); /* Membuat warna lebih cerah saat di-hover */
-        }
+.pool:hover {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 15px rgba(0, 183, 255, 0.5);
+    transform: scale(1.07);
+}
 
-        /* Warna berbeda untuk tiap pool */
-        .hk { border-left: 6px solid #ff3333; }
-        .sgp { border-left: 6px solid #ff9933; }
-        .syd { border-left: 6px solid #33ff33; }
-        .chi { border-left: 6px solid #3399ff; }
-        .be { border-left: 6px solid #9933ff; }
-        .mc { border-left: 6px solid #ffff00; }
+.pool {
+    background: #0f3460; /* Warna biru */
+}
+
+.pool:hover {
+    filter: brightness(1.2); /* Membuat warna lebih cerah saat di-hover */
+}
+
+/* Warna berbeda untuk tiap pool */
+.hk { border-left: 6px solid #ff3333; }
+.sgp { border-left: 6px solid #ff9933; }
+.syd { border-left: 6px solid #33ff33; }
+.chi { border-left: 6px solid #3399ff; }
+.be { border-left: 6px solid #9933ff; }
+.mc { border-left: 6px solid #ffff00; }
     </style>
 </head>
 <body>
