@@ -2,10 +2,10 @@
     <!-- CSS -->
     <style>
         .slot-machine {
-            filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.5)); /* Efek shadow */
+            filter: drop-shadow(5px 5px 15px rgba(0, 0, 0, 0.6)); /* Efek shadow */
         }
         .body {
-            fill: url(#gold-gradient); /* Efek emas */
+            fill: url(#metal-gradient); /* Efek metal */
             stroke: black;
             stroke-width: 5;
         }
@@ -18,17 +18,22 @@
             font-family: Arial, sans-serif;
             font-size: 80px;
             font-weight: bold;
-            fill: #D32F2F; /* Warna merah untuk angka 777 */
+            fill: #FF0000; /* Warna merah terang untuk angka 777 */
             text-anchor: middle;
+        }
+        .handle {
+            fill: red;
+            stroke: black;
+            stroke-width: 3;
         }
     </style>
 
-    <!-- Gradasi Emas -->
+    <!-- Gradasi Metalik -->
     <defs>
-        <linearGradient id="gold-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#FFD700; stop-opacity:1" />  <!-- Emas terang -->
-            <stop offset="50%" style="stop-color:#FFC107; stop-opacity:1" />  <!-- Kuning emas -->
-            <stop offset="100%" style="stop-color:#B8860B; stop-opacity:1" />  <!-- Emas gelap -->
+        <linearGradient id="metal-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#C0C0C0; stop-opacity:1" />  <!-- Silver terang -->
+            <stop offset="50%" style="stop-color:#A0A0A0; stop-opacity:1" />  <!-- Abu-abu medium -->
+            <stop offset="100%" style="stop-color:#707070; stop-opacity:1" />  <!-- Abu-abu gelap -->
         </linearGradient>
     </defs>
 
@@ -48,7 +53,7 @@
         <text class="text" x="330" y="230">7</text>
 
         <!-- Pegangan kanan mesin slot -->
-        <circle cx="410" cy="180" r="15" fill="red" stroke="black" stroke-width="3"/>
+        <circle class="handle" cx="410" cy="180" r="15"/>
         <rect x="400" y="195" width="20" height="60" fill="black"/>
     </g>
 </svg>
