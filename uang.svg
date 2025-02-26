@@ -24,7 +24,7 @@
     <circle cx="250" cy="250" r="200" fill="url(#circleGradient)" stroke="#0055FF" stroke-width="10"/>
 
     <!-- Kotak Uang Biru (Dibuat Simetris) -->
-    <rect x="150" y="190" width="200" height="120" rx="15" fill="#0055FF" stroke="#3377ff" stroke-width="6"/>
+    <rect x="150" y="190" width="200" height="120" rx="15" fill="#0055FF" stroke="#80aaff" stroke-width="6"/>
 
     <!-- Batik di dalam Uang -->
     <rect x="150" y="190" width="200" height="120" rx="15" fill="url(#batikPattern)"/>
