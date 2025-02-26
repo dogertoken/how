@@ -1,44 +1,39 @@
 <svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <style>
-        /* Efek 3D pada Huruf "L" */
-        .l-shadow {
-            fill: rgba(0, 0, 0, 0.3);
-            transform: translate(6px, 6px);
-        }
-        .l-main {
-            fill: #F5F5DC; /* Warna putih tulang */
-            stroke: #D8D8D8;
-            stroke-width: 6;
-            filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.3));
-        }
-        .ball {
-            fill: url(#blue-gradient);
-            stroke: #F5F5DC; /* Warna putih tulang */
-            stroke-width: 10;
-            filter: drop-shadow(10px 10px 20px rgba(0, 0, 0, 0.6));
-        }
-        .highlight {
-            fill: rgba(255, 255, 255, 0.6);
-        }
-    </style>
-
-    <!-- Gradasi Biru -->
     <defs>
-        <radialGradient id="blue-gradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" style="stop-color:#4A90E2; stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#003366; stop-opacity:1" />
+        <!-- Gradasi untuk Efek 3D pada Lingkaran -->
+        <radialGradient id="circleGradient" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#FFFFFF; stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#E0E0E0; stop-opacity:1" />
         </radialGradient>
+
+        <!-- Batik Motif -->
+        <pattern id="batikPattern" patternUnits="userSpaceOnUse" width="20" height="20">
+            <circle cx="5" cy="5" r="3" fill="rgba(255,255,255,0.3)"/>
+            <circle cx="15" cy="15" r="3" fill="rgba(255,255,255,0.3)"/>
+        </pattern>
+
+        <!-- Efek Cahaya (Shimmer) -->
+        <linearGradient id="shimmer" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.2)"/>
+            <stop offset="50%" stop-color="rgba(255,255,255,0.7)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0.2)"/>
+        </linearGradient>
     </defs>
 
-    <!-- Bola Lotre -->
-    <circle class="ball" cx="250" cy="250" r="120"/>
+    <!-- Lingkaran 3D Putih -->
+    <circle cx="250" cy="250" r="200" fill="url(#circleGradient)" stroke="#0044CC" stroke-width="10"/>
 
-    <!-- Highlight Glossy -->
-    <ellipse class="highlight" cx="230" cy="220" rx="50" ry="20"/>
+    <!-- Kotak Uang Biru -->
+    <rect x="160" y="200" width="180" height="100" rx="15" fill="#0055FF" stroke="#0033AA" stroke-width="6"/>
 
-    <!-- Huruf "L" Lentur dengan Shadow -->
-    <g transform="translate(190,200) scale(2)">
-        <path class="l-shadow" d="M15,15 Q10,50 20,85 L65,85 Q60,50 55,15 Z"/>
-        <path class="l-main" d="M15,15 Q10,50 20,85 L65,85 Q60,50 55,15 Z"/>
-    </g>
+    <!-- Batik di dalam Uang -->
+    <rect x="160" y="200" width="180" height="100" rx="15" fill="url(#batikPattern)"/>
+
+    <!-- Simbol Uang -->
+    <text x="250" y="265" font-size="50" text-anchor="middle" fill="white" font-weight="bold">$</text>
+
+    <!-- Efek Cahaya Shimmer -->
+    <rect x="160" y="200" width="180" height="100" rx="15" fill="url(#shimmer)" opacity="0.5">
+        <animate attributeName="x" from="160" to="340" dur="2s" repeatCount="indefinite"/>
+    </rect>
 </svg>
