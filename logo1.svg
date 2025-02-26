@@ -8,7 +8,7 @@
 
         <!-- Filter Glow -->
         <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="5" result="blur"/>
+            <feGaussianBlur stdDeviation="8" result="blur"/>
             <feMerge>
                 <feMergeNode in="blur"/>
                 <feMergeNode in="SourceGraphic"/>
@@ -16,32 +16,38 @@
         </filter>
     </defs>
 
-    <!-- Ikon Play -->
-    <polygon points="60,50 150,100 60,150" fill="url(#gradPlay)" stroke="#AAAAAA" stroke-width="2" stroke-linejoin="round"/>
+    <!-- Ikon Play dengan Sudut Lebih Halus -->
+    <path d="M70,55 Q60,100 70,145 L145,100 Q135,95 70,55" fill="url(#gradPlay)" stroke="#AAAAAA" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
 
     <!-- Animasi CSS -->
     <style>
         /* Efek Hover */
-        svg:hover polygon {
-            transform: scale(1.1);
-            transition: transform 0.3s ease, filter 0.3s ease;
+        svg:hover path {
+            transform: scale(1.15);
+            transition: transform 0.25s ease, filter 0.25s ease;
             filter: url(#glow);
         }
 
         /* Efek Klik */
-        svg:active polygon {
-            transform: scale(0.95);
+        svg:active path {
+            transform: scale(0.9);
             filter: none;
         }
 
-        /* Efek Berdenyut */
+        /* Efek Berdenyut Lebih Intens */
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
+            50% { transform: scale(1.08); }
         }
 
-        polygon {
-            animation: pulse 2s infinite ease-in-out;
+        /* Efek Bounce untuk Ikon */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        path {
+            animation: pulse 1.5s infinite ease-in-out, bounce 1s infinite alternate ease-in-out;
             transform-origin: center;
         }
     </style>
