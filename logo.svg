@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 800 1300">
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 760 1235">
   <defs>
     <!-- Gradasi Kristal -->
     <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -20,7 +20,7 @@
   </defs>
 
   <!-- Grup utama untuk animasi bounce -->
-  <g id="mainShape" transform="translate(400, 450)">
+  <g id="mainShape" transform="translate(380, 430) scale(0.95)">
     <!-- Kristal -->
     <path fill="url(#blueGradient)" d="M0,-450 C-100,-200 -300,100 0,450 C300,100 100,-200 0,-450 Z">
       <animateTransform attributeName="transform" type="translate" values="0,0; 0,-20; 0,0" dur="1.5s" repeatCount="indefinite" keyTimes="0; 0.5; 1" calcMode="spline" keySplines="0.5 0 0.5 1; 0.5 0 0.5 1"/>
@@ -33,9 +33,9 @@
   </g>
 
   <!-- Bagian bawah kubus 3D -->
-  <polygon fill="url(#cubeGradient)" points="400,920 250,1100 400,1300 550,1100"/>
-  <polygon fill="#002288" points="400,920 550,1100 400,1300 250,1100"/>
-  <polygon fill="#0055FF" points="400,920 250,1100 550,1100"/>
-  <polygon fill="rgba(255,255,255,0.2)" points="400,920 250,1100 400,1300" opacity="0.7"/>
-  <polygon fill="rgba(0,0,0,0.2)" points="400,920 550,1100 400,1300" opacity="0.5"/>
+  <polygon fill="url(#cubeGradient)" points="380,875 245,1050 380,1235 515,1050"/>
+  <polygon fill="#002288" points="380,875 515,1050 380,1235 245,1050"/>
+  <polygon fill="#0055FF" points="380,875 245,1050 515,1050"/>
+  <polygon fill="rgba(255,255,255,0.2)" points="380,875 245,1050 380,1235" opacity="0.7"/>
+  <polygon fill="rgba(0,0,0,0.2)" points="380,875 515,1050 380,1235" opacity="0.5"/>
 </svg>
