@@ -1,24 +1,33 @@
-<svg width="200" height="100" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-    <!-- Background Uang -->
-    <rect x="10" y="10" width="180" height="80" rx="10" fill="green" stroke="darkgreen" stroke-width="3"/>
-    
-    <!-- Motif Batik -->
-    <pattern id="batikPattern" patternUnits="userSpaceOnUse" width="20" height="20">
-        <circle cx="5" cy="5" r="3" fill="rgba(255,255,255,0.3)"/>
-        <circle cx="15" cy="15" r="3" fill="rgba(255,255,255,0.3)"/>
-    </pattern>
-    <rect x="10" y="10" width="180" height="80" rx="10" fill="url(#batikPattern)"/>
-    
-    <!-- Simbol Uang -->
-    <text x="100" y="60" font-size="40" text-anchor="middle" fill="white" font-weight="bold">$</text>
-    
-    <!-- Efek Cahaya (Shimmer) -->
-    <linearGradient id="shimmer" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="rgba(255,255,255,0.2)"/>
-        <stop offset="50%" stop-color="rgba(255,255,255,0.7)"/>
-        <stop offset="100%" stop-color="rgba(255,255,255,0.2)"/>
-    </linearGradient>
-    <rect x="10" y="10" width="180" height="80" rx="10" fill="url(#shimmer)" opacity="0.5">
-        <animate attributeName="x" from="10" to="190" dur="2s" repeatCount="indefinite"/>
-    </rect>
+<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+    <!-- CSS -->
+    <style>
+        @keyframes rotate3D {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        .link {
+            fill: #8000FF; /* Ungu Solid */
+            stroke: #F8F1E7; /* Putih Tulang */
+            stroke-width: 15;
+            transform-origin: center;
+            animation: rotate3D 3s linear infinite;
+        }
+    </style>
+
+    <!-- JavaScript -->
+    <script>
+        function stopRotation() {
+            let link = document.getElementById("chain");
+            link.style.animation = "none"; // Hentikan animasi saat diklik
+        }
+    </script>
+
+    <!-- Link Rantai 3D -->
+    <g id="chain" class="link" onclick="stopRotation()">
+        <!-- Bagian Atas -->
+        <ellipse cx="250" cy="150" rx="100" ry="50" transform="rotate(30, 250, 150)"/>
+        <!-- Bagian Bawah -->
+        <ellipse cx="250" cy="350" rx="100" ry="50" transform="rotate(-30, 250, 350)"/>
+    </g>
 </svg>
