@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logo Uang 3D dengan Animasi</title>
+    <title>Logo Uang 3D dengan Batik</title>
     <style>
         body {
             display: flex;
@@ -23,9 +23,24 @@
             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
             transform-origin: center;
             animation: float 3s ease-in-out infinite, rotate 6s linear infinite;
+            overflow: hidden;
         }
 
+        /* Pola batik */
         .money::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 20%), 
+                              radial-gradient(circle, rgba(255,255,255,0.2) 15%, transparent 30%);
+            background-size: 30px 30px, 50px 50px;
+            background-position: 0 0, 10px 10px;
+            opacity: 0.7;
+        }
+
+        /* Simbol uang */
+        .money::after {
             content: "$";
             font-size: 50px;
             font-weight: bold;
@@ -35,18 +50,6 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .money::after {
-            content: "";
-            width: 90%;
-            height: 70%;
-            background: rgba(255, 255, 255, 0.2);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 8px;
         }
 
         /* Animasi melayang */
