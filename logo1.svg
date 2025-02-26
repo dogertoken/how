@@ -1,38 +1,31 @@
 <svg width="256px" height="256px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+  <defs>
+    <!-- Gradient untuk efek kilauan -->
+    <linearGradient id="shine" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#005BFF">
+        <animate attributeName="stop-color" values="#005BFF;#06F3FF;#005BFF" dur="3s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#06F3FF">
+        <animate attributeName="stop-color" values="#06F3FF;#005BFF;#06F3FF" dur="3s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+  </defs>
+
   <style>
-    /* Animasi berdenyut */
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    /* Animasi pergerakan */
+    /* Animasi naik-turun ringan */
     @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
+      0% { transform: translateY(0px); opacity: 1; }
+      50% { transform: translateY(-5px); opacity: 0.9; }
+      100% { transform: translateY(0px); opacity: 1; }
     }
 
-    /* Animasi warna */
-    @keyframes colorChange {
-      0% { fill: #005BFF; }
-      50% { fill: #06F3FF; }
-      100% { fill: #005BFF; }
-    }
-
-    /* Efek animasi diterapkan */
     .main-icon {
-      animation: float 3s ease-in-out infinite, pulse 2s ease-in-out infinite;
-    }
-    
-    .color-animate {
-      animation: colorChange 4s linear infinite;
+      animation: float 4s ease-in-out infinite;
     }
   </style>
 
   <g class="main-icon">
-    <path class="color-animate" d="M579.3 245c-27.6-18.8-47.5-38.7-60.1-53.2-12.6 14.5-32.6 34.3-60.3 53.2-51.7 35.2-110.9 54.6-176.4 57.9v232.9c0 8.5 1.1 18.4 3.4 29.4 0 0 28.5 179.4 233.3 272.1 0 0 148.7-56.3 214-214 15.2-34.7 22.4-65.8 22.4-87.5V302.9c-65.5-3.3-124.7-22.7-176.3-57.9z"/>
+    <path fill="url(#shine)" d="M579.3 245c-27.6-18.8-47.5-38.7-60.1-53.2-12.6 14.5-32.6 34.3-60.3 53.2-51.7 35.2-110.9 54.6-176.4 57.9v232.9c0 8.5 1.1 18.4 3.4 29.4 0 0 28.5 179.4 233.3 272.1 0 0 148.7-56.3 214-214 15.2-34.7 22.4-65.8 22.4-87.5V302.9c-65.5-3.3-124.7-22.7-176.3-57.9z"/>
   </g>
 
 </svg>
