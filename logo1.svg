@@ -1,54 +1,54 @@
 <svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-        <!-- Gradasi untuk Efek 3D -->
-        <linearGradient id="gradPlay" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="white"/>
-            <stop offset="100%" stop-color="#CCCCCC"/>
-        </linearGradient>
+  <defs>
+    <!-- Gradien untuk efek 3D -->
+    <linearGradient id="gradPlay" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="white"/>
+      <stop offset="100%" stop-color="#CCCCCC"/>
+    </linearGradient>
+    <!-- Filter Glow untuk efek hover -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+         <feMergeNode in="blur"/>
+         <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
 
-        <!-- Filter Glow -->
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="6" result="blur"/>
-            <feMerge>
-                <feMergeNode in="blur"/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-        </filter>
-    </defs>
+  <!-- Ikon Play dengan sudut bulat (tidak runcing) -->
+  <!-- Titik-titik didasarkan pada segitiga dengan vertex:
+       A = (60,50), B = (150,100), C = (60,150)
+       dengan offset dan arc radius 10 untuk pembulatan. -->
+  <path d="
+    M 69 55
+    A 10 10 0 0 1 60 60
+    L 141 95
+    A 10 10 0 0 1 141 105
+    L 69 145
+    A 10 10 0 0 1 60 140
+    Z" 
+    fill="url(#gradPlay)" stroke="#AAAAAA" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
 
-    <!-- Ikon Play dengan Sudut Tidak Runcing -->
-    <path d="M70,60 Q65,100 70,140 L135,100 Q125,95 70,60" fill="url(#gradPlay)" stroke="#AAAAAA" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" rx="15" ry="15"/>
-
-    <!-- Animasi CSS -->
-    <style>
-        /* Efek Hover */
-        svg:hover path {
-            transform: scale(1.12);
-            transition: transform 0.25s ease, filter 0.25s ease;
-            filter: url(#glow);
-        }
-
-        /* Efek Klik */
-        svg:active path {
-            transform: scale(0.9);
-            filter: none;
-        }
-
-        /* Efek Berdenyut Lebih Smooth */
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.06); }
-        }
-
-        /* Efek Bounce Lebih Halus */
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-4px); }
-        }
-
-        path {
-            animation: pulse 1.8s infinite ease-in-out, bounce 1.2s infinite alternate ease-in-out;
-            transform-origin: center;
-        }
-    </style>
+  <style>
+    /* Efek Hover: Perbesar dan glow */
+    svg:hover path {
+      transform: scale(1.1);
+      transition: transform 0.3s ease, filter 0.3s ease;
+      filter: url(#glow);
+    }
+    /* Efek Klik: Sedikit mengecil */
+    svg:active path {
+      transform: scale(0.95);
+      filter: none;
+    }
+    /* Animasi Pulse untuk kesan dinamis */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    path {
+      animation: pulse 2s infinite ease-in-out;
+      transform-origin: center;
+    }
+  </style>
 </svg>
