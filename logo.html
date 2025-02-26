@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Uang 3D dengan Animasi</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+
+        .money {
+            width: 200px;
+            height: 100px;
+            background: linear-gradient(45deg, #4CAF50, #2E7D32);
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+            transform-origin: center;
+            animation: float 3s ease-in-out infinite, rotate 6s linear infinite;
+        }
+
+        .money::before {
+            content: "$";
+            font-size: 50px;
+            font-weight: bold;
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .money::after {
+            content: "";
+            width: 90%;
+            height: 70%;
+            background: rgba(255, 255, 255, 0.2);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 8px;
+        }
+
+        /* Animasi melayang */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* Animasi rotasi */
+        @keyframes rotate {
+            0% {
+                transform: rotateY(0deg);
+            }
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="money"></div>
+</body>
+</html>
