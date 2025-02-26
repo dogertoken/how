@@ -23,17 +23,17 @@
     <!-- Lingkaran 3D Putih -->
     <circle cx="250" cy="250" r="200" fill="url(#circleGradient)" stroke="#0044CC" stroke-width="10"/>
 
-    <!-- Kotak Uang Biru -->
-    <rect x="160" y="200" width="200" height="120" rx="15" fill="#0055FF" stroke="#0033AA" stroke-width="6"/>
+    <!-- Kotak Uang Biru (Dibuat Simetris) -->
+    <rect x="150" y="190" width="200" height="120" rx="15" fill="#0055FF" stroke="#0033AA" stroke-width="6"/>
 
     <!-- Batik di dalam Uang -->
-    <rect x="160" y="200" width="200" height="120" rx="15" fill="url(#batikPattern)"/>
+    <rect x="150" y="190" width="200" height="120" rx="15" fill="url(#batikPattern)"/>
 
     <!-- Simbol Uang -->
-    <text x="250" y="272" font-size="60" text-anchor="middle" fill="white" font-weight="bold">🎰</text>
+    <text x="250" y="260" font-size="60" text-anchor="middle" fill="white" font-weight="bold">🎰</text>
 
     <!-- Efek Cahaya Shimmer -->
-    <rect x="160" y="200" width="200" height="120" rx="15" fill="url(#shimmer)" opacity="0.5">
-        <animate attributeName="x" from="160" to="340" dur="2s" repeatCount="indefinite"/>
+    <rect x="150" y="190" width="200" height="120" rx="15" fill="url(#shimmer)" opacity="0.5">
+        <animate attributeName="x" from="150" to="350" dur="2s" repeatCount="indefinite"/>
     </rect>
 </svg>
