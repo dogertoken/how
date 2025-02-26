@@ -1,34 +1,37 @@
-<svg width="256px" height="256px" viewBox="0 0 24 24" fill="none" 
-     xmlns="http://www.w3.org/2000/svg">
+<svg width="256px" height="256px" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   
-  <!-- Bayangan 3D -->
+  <!-- Definisi Gradien -->
   <defs>
-    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="black" flood-opacity="0.3"/>
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00C6FF"/>
+      <stop offset="100%" stop-color="#0072FF"/>
+    </linearGradient>
+    
+    <!-- Efek Glow -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
     </filter>
-    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="white" stop-opacity="0.6"/>
-      <stop offset="100%" stop-color="white" stop-opacity="0"/>
-    </radialGradient>
   </defs>
   
-  <!-- Latar belakang transparan -->
-  <rect width="24" height="24" rx="5" fill="black" opacity="0.6"/>
-  
-  <!-- Grup dengan animasi hover -->
-  <g filter="url(#shadow)">
-    <!-- Ikon Play -->
-    <path d="M5 17.3336V6.66698C5 5.78742 5 5.34715 5.18509 5.08691C5.34664 4.85977 5.59564 4.71064 5.87207 4.67499C6.18868 4.63415 6.57701 4.84126 7.35254 5.25487L17.3525 10.5882L17.3562 10.5898C18.2132 11.0469 18.642 11.2756 18.7826 11.5803C18.9053 11.8462 18.9053 12.1531 18.7826 12.4189C18.6418 12.7241 18.212 12.9537 17.3525 13.4121L7.35254 18.7454C6.57645 19.1593 6.1888 19.3657 5.87207 19.3248C5.59564 19.2891 5.34664 19.1401 5.18509 18.9129C5 18.6527 5 18.2132 5 17.3336Z" 
-          stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <animateTransform attributeName="transform" type="scale" from="1" to="1.1" 
-                        begin="mouseover" end="mouseout" dur="0.2s" fill="freeze"/>
-    </path>
+  <!-- Animasi Kristal -->
+  <g filter="url(#glow)">
+    <polygon points="100,10 140,80 100,150 60,80" fill="url(#blueGradient)" stroke="#00BFFF" stroke-width="3">
+      <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100"
+                        dur="4s" repeatCount="indefinite"/>
+    </polygon>
+
+    <polygon points="100,150 140,120 100,180 60,120" fill="url(#blueGradient)" stroke="#007FFF" stroke-width="2">
+      <animate attributeName="opacity" values="1;0.7;1" dur="2s" repeatCount="indefinite"/>
+    </polygon>
   </g>
 
-  <!-- Efek glow -->
-  <circle cx="12" cy="12" r="10" fill="url(#glow)">
-    <animate attributeName="opacity" values="0.2; 0.6; 0.2" 
-             dur="2s" repeatCount="indefinite"/>
+  <!-- Efek Bersinar -->
+  <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(0,183,255,0.5)" stroke-width="2">
+    <animate attributeName="stroke-opacity" values="0.2; 1; 0.2" dur="3s" repeatCount="indefinite"/>
   </circle>
   
 </svg>
