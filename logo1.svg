@@ -1,22 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 424">
   <defs>
+    <!-- Gradien warna utama -->
     <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00D4FF"/>
-      <stop offset="100%" stop-color="#0044AA"/>
+      <stop offset="0%" stop-color="#FF5733"/>
+      <stop offset="100%" stop-color="#C70039"/>
     </linearGradient>
+    
+    <!-- Gradien bayangan -->
     <linearGradient id="shadowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#002244"/>
-      <stop offset="100%" stop-color="#001122"/>
+      <stop offset="0%" stop-color="#900C3F"/>
+      <stop offset="100%" stop-color="#581845"/>
     </linearGradient>
   </defs>
 
   <!-- Bentuk utama -->
-  <path fill="url(#mainGradient)" d="M437,0h74L357,152c-55.77,55-146.19,55-202,0L.94,0H75L192,116a91.11,91.11,0,0,0,127.91,0Z">
-    <animateTransform attributeName="transform" type="scale" values="1; 1.05; 1" dur="2s" repeatCount="indefinite"/>
-  </path>
+  <polygon fill="url(#mainGradient)" points="256,10 460,160 370,370 142,370 52,160">
+    <animateTransform attributeName="transform" type="scale" values="1; 1.05; 1" dur="1.5s" repeatCount="indefinite"/>
+  </polygon>
 
   <!-- Bayangan -->
-  <path fill="url(#shadowGradient)" opacity="0.5" d="M74,424H0L155,270c55.77-55,146.19-55,202,0L512,424H438L320,307a91.11,91.11,0,0,0-127.91,0Z">
+  <polygon fill="url(#shadowGradient)" opacity="0.6" points="256,390 370,370 142,370">
     <animateTransform attributeName="transform" type="translate" values="0 0; 0 -3; 0 0" dur="1.5s" repeatCount="indefinite"/>
-  </path>
+  </polygon>
 </svg>
