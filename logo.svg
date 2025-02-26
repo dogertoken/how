@@ -19,17 +19,17 @@
     </linearGradient>
   </defs>
 
-  <!-- Grup utama dengan animasi rotasi seperti bumi -->
+  <!-- Grup utama untuk rotasi bumi -->
   <g transform="translate(400, 450)">
     <g id="mainShape">
-      <!-- Kristal dengan rotasi -->
+      <!-- Kristal yang berputar -->
       <path fill="url(#blueGradient)" d="M0,-450 C-100,-200 -300,100 0,450 C300,100 100,-200 0,-450 Z">
         <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="6s" repeatCount="indefinite"/>
       </path>
 
       <!-- Efek refleksi -->
       <path fill="url(#lightEffect)" opacity="0.6" d="M0,-400 C-80,-180 -250,100 0,400 C250,100 80,-180 0,-400 Z">
-        <animateTransform attributeName="transform" type="translate" values="-20,0; 20,0; -20,0" dur="3s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="6s" repeatCount="indefinite"/>
       </path>
     </g>
   </g>
