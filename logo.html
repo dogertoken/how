@@ -1,112 +1,69 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logo Uang 3D dengan Batik dan Efek Cahaya</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Crystal Diamond</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: radial-gradient(circle, #0a0a0a, #000000);
+      overflow: hidden;
+    }
+    
+    .diamond {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      transform-style: preserve-3d;
+      animation: rotate 5s infinite linear;
+    }
 
-        .money {
-            width: 200px;
-            height: 100px;
-            background: linear-gradient(45deg, #4CAF50, #2E7D32);
-            border-radius: 10px;
-            position: relative;
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
-            transform-origin: center;
-            animation: float 3s ease-in-out infinite, rotate 6s linear infinite;
-            overflow: hidden;
-        }
+    .face {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(45deg, rgba(0,200,255,0.8), rgba(0,100,255,0.6));
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      opacity: 0.9;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+      transition: all 0.5s ease;
+    }
 
-        /* Pola Batik SVG */
-        .money::before {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="10" fill="rgba(255,255,255,0.3)"/><circle cx="50" cy="50" r="10" fill="rgba(255,255,255,0.3)"/><circle cx="80" cy="20" r="10" fill="rgba(255,255,255,0.3)"/><circle cx="20" cy="80" r="10" fill="rgba(255,255,255,0.3)"/></svg>');
-            background-size: 40px 40px;
-            opacity: 0.6;
-        }
+    /* Bentuk Kristal */
+    .top { transform: rotateX(90deg) translateZ(50px); }
+    .bottom { transform: rotateX(-90deg) translateZ(50px); }
+    .front { transform: rotateY(0deg) translateZ(50px); }
+    .back { transform: rotateY(180deg) translateZ(50px); }
+    .left { transform: rotateY(-90deg) translateZ(50px); }
+    .right { transform: rotateY(90deg) translateZ(50px); }
 
-        /* Simbol uang */
-        .money::after {
-            content: "$";
-            font-size: 50px;
-            font-weight: bold;
-            color: white;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-shadow: 2px 2px 10px rgba(255, 255, 0, 0.8);
-            animation: glow 1.5s infinite alternate;
-        }
+    /* Efek Berputar */
+    @keyframes rotate {
+      0% { transform: rotateX(0deg) rotateY(0deg); }
+      100% { transform: rotateX(360deg) rotateY(360deg); }
+    }
 
-        /* Efek shimmer */
-        .shimmer {
-            position: absolute;
-            width: 150%;
-            height: 150%;
-            background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0) 70%);
-            top: 0;
-            left: -100%;
-            transform: rotate(20deg);
-            animation: shimmer 3s infinite linear;
-        }
-
-        /* Animasi melayang */
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-15px);
-            }
-        }
-
-        /* Animasi rotasi */
-        @keyframes rotate {
-            0% {
-                transform: rotateY(0deg);
-            }
-            100% {
-                transform: rotateY(360deg);
-            }
-        }
-
-        /* Efek shimmer bergerak */
-        @keyframes shimmer {
-            0% {
-                left: -100%;
-            }
-            100% {
-                left: 100%;
-            }
-        }
-
-        /* Efek glow pada simbol uang */
-        @keyframes glow {
-            0% {
-                text-shadow: 2px 2px 10px rgba(255, 255, 0, 0.5);
-            }
-            100% {
-                text-shadow: 2px 2px 20px rgba(255, 255, 0, 1);
-            }
-        }
-    </style>
+    /* Efek Cahaya */
+    .diamond:hover .face {
+      opacity: 1;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 1);
+    }
+  </style>
 </head>
 <body>
-    <div class="money">
-        <div class="shimmer"></div>
-    </div>
+
+  <div class="diamond">
+    <div class="face top"></div>
+    <div class="face bottom"></div>
+    <div class="face front"></div>
+    <div class="face back"></div>
+    <div class="face left"></div>
+    <div class="face right"></div>
+  </div>
+
 </body>
 </html>
