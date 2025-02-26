@@ -30,7 +30,7 @@
     <rect x="160" y="200" width="180" height="100" rx="15" fill="url(#batikPattern)"/>
 
     <!-- Simbol Uang -->
-    <text x="250" y="280" font-size="70" text-anchor="middle" fill="white" font-weight="bold">🎰</text>
+    <text x="250" y="277" font-size="60" text-anchor="middle" fill="white" font-weight="bold">🎰</text>
 
     <!-- Efek Cahaya Shimmer -->
     <rect x="160" y="200" width="180" height="100" rx="15" fill="url(#shimmer)" opacity="0.5">
