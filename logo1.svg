@@ -2,24 +2,35 @@
   <defs>
     <!-- Gradien warna utama -->
     <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF5733"/>
-      <stop offset="100%" stop-color="#C70039"/>
+      <stop offset="0%" stop-color="#1E90FF"/>
+      <stop offset="100%" stop-color="#0044CC"/>
     </linearGradient>
     
-    <!-- Gradien bayangan -->
+    <!-- Efek refleksi -->
+    <radialGradient id="highlight" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.7)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+
+    <!-- Bayangan -->
     <linearGradient id="shadowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#900C3F"/>
-      <stop offset="100%" stop-color="#581845"/>
+      <stop offset="0%" stop-color="#002288"/>
+      <stop offset="100%" stop-color="#000066"/>
     </linearGradient>
   </defs>
 
-  <!-- Bentuk utama -->
-  <polygon fill="url(#mainGradient)" points="256,10 460,160 370,370 142,370 52,160">
-    <animateTransform attributeName="transform" type="scale" values="1; 1.05; 1" dur="1.5s" repeatCount="indefinite"/>
+  <!-- Bagian atas -->
+  <polygon fill="url(#mainGradient)" points="256,0 450,150 256,300 62,150">
+    <animateTransform attributeName="transform" type="translate" values="0 0; 0 -10; 0 0" dur="2s" repeatCount="indefinite"/>
   </polygon>
 
-  <!-- Bayangan -->
-  <polygon fill="url(#shadowGradient)" opacity="0.6" points="256,390 370,370 142,370">
-    <animateTransform attributeName="transform" type="translate" values="0 0; 0 -3; 0 0" dur="1.5s" repeatCount="indefinite"/>
+  <!-- Efek refleksi -->
+  <polygon fill="url(#highlight)" opacity="0.5" points="256,10 420,150 256,290 92,150">
+    <animateTransform attributeName="transform" type="scale" values="1; 1.02; 1" dur="2s" repeatCount="indefinite"/>
+  </polygon>
+
+  <!-- Bagian bawah (bayangan) -->
+  <polygon fill="url(#shadowGradient)" points="256,310 370,370 142,370">
+    <animateTransform attributeName="transform" type="translate" values="0 0; 0 -5; 0 0" dur="2s" repeatCount="indefinite"/>
   </polygon>
 </svg>
