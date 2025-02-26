@@ -7,17 +7,19 @@
         }
 
         .eth-logo {
-            fill: url(#gradient); /* Gradasi warna */
             transform-origin: center;
             animation: rotate3D 6s linear infinite;
+            filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.3)); /* Efek bayangan */
         }
     </style>
 
-    <!-- Gradasi warna untuk efek 3D -->
+    <!-- Gradasi warna Ethereum -->
     <defs>
-        <linearGradient id="gradient" x1="50%" y1="0%" x2="50%" y2="100%">
-            <stop offset="0%" style="stop-color:#627EEA; stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#3F5EFB; stop-opacity:1" />
+        <linearGradient id="eth-gradient" x1="50%" y1="0%" x2="50%" y2="100%">
+            <stop offset="0%" style="stop-color:#141414; stop-opacity:1" />  <!-- Hitam -->
+            <stop offset="30%" style="stop-color:#3A3A3A; stop-opacity:1" />  <!-- Abu-abu tua -->
+            <stop offset="60%" style="stop-color:#627EEA; stop-opacity:1" />  <!-- Biru Ethereum -->
+            <stop offset="100%" style="stop-color:#C0C0C0; stop-opacity:1" /> <!-- Putih keabu-abuan -->
         </linearGradient>
     </defs>
 
@@ -32,8 +34,8 @@
     <!-- Logo Ethereum -->
     <g id="ethereum" class="eth-logo" onclick="stopAnimation()">
         <!-- Bagian atas -->
-        <polygon points="250,50 100,250 400,250"/>
+        <polygon points="250,50 100,250 400,250" fill="url(#eth-gradient)"/>
         <!-- Bagian bawah -->
-        <polygon points="250,450 100,270 400,270"/>
+        <polygon points="250,450 100,270 400,270" fill="url(#eth-gradient)"/>
     </g>
 </svg>
