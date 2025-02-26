@@ -1,44 +1,32 @@
 <svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
     <style>
         .ball {
-            fill: url(#lotto-gradient);
-            stroke: #FFD700;
-            stroke-width: 5;
-            filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.5));
+            fill: url(#blue-gradient);
+            stroke: #F5F5DC; /* Warna putih tulang */
+            stroke-width: 10;
+            filter: drop-shadow(8px 8px 15px rgba(0, 0, 0, 0.6));
         }
         .text {
             font-family: Arial, sans-serif;
-            font-size: 80px;
+            font-size: 120px;
             font-weight: bold;
-            fill: white;
+            fill: #F5F5DC; /* Warna putih tulang */
             text-anchor: middle;
-        }
-        .chain {
-            stroke: #D4AF37;
-            stroke-width: 8;
-            fill: none;
+            text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
         }
     </style>
 
-    <!-- Gradasi Bola -->
+    <!-- Gradasi Biru -->
     <defs>
-        <radialGradient id="lotto-gradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" style="stop-color:#6A0DAD; stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#4B0082; stop-opacity:1" />
+        <radialGradient id="blue-gradient" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#4A90E2; stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#003366; stop-opacity:1" />
         </radialGradient>
     </defs>
 
     <!-- Bola Lotre -->
-    <circle class="ball" cx="250" cy="250" r="100"/>
+    <circle class="ball" cx="250" cy="250" r="120"/>
 
-    <!-- Angka di Bola -->
-    <text class="text" x="250" y="270">7</text>
-
-    <!-- Rantai Blockchain -->
-    <g class="chain">
-        <circle cx="150" cy="250" r="20"/>
-        <circle cx="100" cy="250" r="20"/>
-        <circle cx="350" cy="250" r="20"/>
-        <circle cx="400" cy="250" r="20"/>
-    </g>
+    <!-- Huruf "L" di Tengah -->
+    <text class="text" x="250" y="290">L</text>
 </svg>
