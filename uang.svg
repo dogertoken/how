@@ -2,42 +2,38 @@
     <!-- CSS -->
     <style>
         @keyframes rotate3D {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
         }
 
-        .link {
-            fill: url(#gradient); /* Gunakan gradasi */
-            stroke: #F8F1E7; /* Putih Tulang */
-            stroke-width: 10;
+        .eth-logo {
+            fill: url(#gradient); /* Gradasi warna */
             transform-origin: center;
-            animation: rotate3D 4s linear infinite;
+            animation: rotate3D 6s linear infinite;
         }
     </style>
 
     <!-- Gradasi warna untuk efek 3D -->
     <defs>
-        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#8000FF; stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#4B0082; stop-opacity:1" />
+        <linearGradient id="gradient" x1="50%" y1="0%" x2="50%" y2="100%">
+            <stop offset="0%" style="stop-color:#627EEA; stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#3F5EFB; stop-opacity:1" />
         </linearGradient>
     </defs>
 
     <!-- JavaScript -->
     <script>
         function stopAnimation() {
-            let chain = document.getElementById("chain");
-            chain.style.animation = "none"; // Hentikan animasi saat diklik
+            let eth = document.getElementById("ethereum");
+            eth.style.animation = "none"; // Hentikan animasi saat diklik
         }
     </script>
 
-    <!-- Rantai 3D -->
-    <g id="chain" class="link" onclick="stopAnimation()">
-        <!-- Mata rantai atas -->
-        <rect x="180" y="100" width="140" height="80" rx="40" transform="rotate(30,250,150)"/>
-        <!-- Mata rantai tengah -->
-        <rect x="180" y="210" width="140" height="80" rx="40"/>
-        <!-- Mata rantai bawah -->
-        <rect x="180" y="320" width="140" height="80" rx="40" transform="rotate(-30,250,350)"/>
+    <!-- Logo Ethereum -->
+    <g id="ethereum" class="eth-logo" onclick="stopAnimation()">
+        <!-- Bagian atas -->
+        <polygon points="250,50 100,250 400,250"/>
+        <!-- Bagian bawah -->
+        <polygon points="250,450 100,270 400,270"/>
     </g>
 </svg>
