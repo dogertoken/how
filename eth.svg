@@ -8,17 +8,28 @@
       <stop offset="0%" style="stop-color:#FFFFFF; stop-opacity:0.8"/>
       <stop offset="100%" style="stop-color:#00A2FF; stop-opacity:0"/>
     </radialGradient>
+    <linearGradient id="cubeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0044CC; stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#001166; stop-opacity:1"/>
+    </linearGradient>
   </defs>
 
-  <!-- Bagian utama berubah menjadi kristal dengan sisi lebih melengkung -->
+  <!-- Bagian utama berbentuk kristal -->
   <path fill="url(#blueGradient)" d="M400,0 C300,250 100,550 400,900 C700,550 500,250 400,0 Z"/>
   
   <!-- Efek refleksi -->
   <path fill="url(#lightEffect)" opacity="0.6" d="M400,50 C320,270 150,550 400,850 C650,550 480,270 400,50 Z"/>
   
-  <!-- Bagian bawah berbentuk prisma unik -->
-  <polygon fill="#0055FF" opacity="0.7" points="400,920 200,1100 400,1300 600,1100"/>
-  
-  <!-- Highlight bagian bawah -->
-  <polygon fill="#0099FF" opacity="0.5" points="400,940 230,1080 400,1270 570,1080"/>
+  <!-- Bagian bawah diubah menjadi kubus 3D -->
+  <!-- Sisi kiri kubus -->
+  <polygon fill="url(#cubeGradient)" points="400,920 250,1100 400,1300 550,1100"/>
+  <!-- Sisi kanan kubus -->
+  <polygon fill="#002288" points="400,920 550,1100 400,1300 250,1100"/>
+  <!-- Sisi atas kubus -->
+  <polygon fill="#0055FF" points="400,920 250,1100 550,1100"/>
+
+  <!-- Efek highlight di sisi kiri -->
+  <polygon fill="rgba(255,255,255,0.2)" points="400,920 250,1100 400,1300" opacity="0.7"/>
+  <!-- Efek shadow di sisi kanan -->
+  <polygon fill="rgba(0,0,0,0.2)" points="400,920 550,1100 400,1300" opacity="0.5"/>
 </svg>
