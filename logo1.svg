@@ -1,33 +1,23 @@
-<svg width="200px" height="200px" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Glow Effect -->
-    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" style="stop-color:rgba(0, 200, 255, 1); stop-opacity:0.9" />
-      <stop offset="100%" style="stop-color:rgba(0, 100, 255, 0.1); stop-opacity:0" />
-    </radialGradient>
-
-    <!-- Crystal Gradient -->
-    <linearGradient id="crystalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#00d4ff; stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#007bff; stop-opacity:0.8" />
-      <stop offset="100%" style="stop-color:#0044ff; stop-opacity:1" />
+    <linearGradient id="prismGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color: #00C6FF; stop-opacity: 1" />
+      <stop offset="50%" style="stop-color: #0072FF; stop-opacity: 1" />
+      <stop offset="100%" style="stop-color: #0052D4; stop-opacity: 1" />
     </linearGradient>
+    <filter id="glassEffect">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feSpecularLighting result="specOut" specularExponent="20" lighting-color="#FFFFFF">
+        <fePointLight x="100" y="50" z="200"/>
+      </feSpecularLighting>
+      <feComposite in="specOut" in2="SourceAlpha" operator="in" result="specOut"/>
+      <feMerge>
+        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="specOut"/>
+      </feMerge>
+    </filter>
   </defs>
-
-  <!-- Background Glow -->
-  <circle cx="100" cy="100" r="90" fill="url(#glow)">
-    <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" />
-  </circle>
-
-  <!-- Rotating Crystal -->
-  <g transform="translate(100,100)">
-    <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="5s" repeatCount="indefinite"/>
-    <polygon points="0,-80 70,-10 40,80 0,60 -40,80 -70,-10" 
-      fill="url(#crystalGradient)" stroke="rgba(255,255,255,0.6)" stroke-width="2"
-      filter="drop-shadow(0px 0px 10px rgba(0, 255, 255, 0.8))"/>
-
-    <!-- Inner Facets -->
-    <polygon points="0,-80 40,80 0,60" fill="rgba(255,255,255,0.2)" />
-    <polygon points="0,-80 -40,80 0,60" fill="rgba(255,255,255,0.1)" />
-  </g>
+  <polygon points="100,20 160,80 130,160 70,160 40,80" fill="url(#prismGradient)" stroke="white" stroke-width="2" filter="url(#glassEffect)">
+    <animateTransform attributeType="XML" attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="5s" repeatCount="indefinite"/>
+  </polygon>
 </svg>
