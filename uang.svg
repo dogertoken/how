@@ -2,8 +2,9 @@
     <!-- CSS -->
     <style>
         @keyframes rotate3D {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(10deg) scale(1.05); }
+            100% { transform: rotate(0deg) scale(1); }
         }
 
         .link {
@@ -11,23 +12,25 @@
             stroke: #F8F1E7; /* Putih Tulang */
             stroke-width: 15;
             transform-origin: center;
-            animation: rotate3D 3s linear infinite;
+            animation: rotate3D 3s ease-in-out infinite;
         }
     </style>
 
     <!-- JavaScript -->
     <script>
-        function stopRotation() {
-            let link = document.getElementById("chain");
-            link.style.animation = "none"; // Hentikan animasi saat diklik
+        function stopAnimation() {
+            let chain = document.getElementById("chain");
+            chain.style.animation = "none"; // Hentikan animasi saat diklik
         }
     </script>
 
-    <!-- Link Rantai 3D -->
-    <g id="chain" class="link" onclick="stopRotation()">
-        <!-- Bagian Atas -->
-        <ellipse cx="250" cy="150" rx="100" ry="50" transform="rotate(30, 250, 150)"/>
-        <!-- Bagian Bawah -->
-        <ellipse cx="250" cy="350" rx="100" ry="50" transform="rotate(-30, 250, 350)"/>
+    <!-- Rantai 3D -->
+    <g id="chain" class="link" onclick="stopAnimation()">
+        <!-- Mata rantai atas -->
+        <ellipse cx="250" cy="150" rx="120" ry="50" transform="rotate(30, 250, 150)"/>
+        <!-- Mata rantai tengah -->
+        <ellipse cx="250" cy="250" rx="120" ry="50"/>
+        <!-- Mata rantai bawah -->
+        <ellipse cx="250" cy="350" rx="120" ry="50" transform="rotate(-30, 250, 350)"/>
     </g>
 </svg>
