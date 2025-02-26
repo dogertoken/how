@@ -3,7 +3,7 @@
         <!-- Gradasi untuk Efek 3D pada Lingkaran -->
         <radialGradient id="circleGradient" cx="50%" cy="50%" r="50%">
             <stop offset="0%" style="stop-color:#FFFFFF; stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#1a1a2e; stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#16213e; stop-opacity:1" />
         </radialGradient>
 
         <!-- Batik Motif -->
