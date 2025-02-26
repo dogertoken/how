@@ -1,32 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 424">
   <defs>
-    <!-- Gradasi modern untuk efek 3D -->
-    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FF6A00; stop-opacity:1"/>
-      <stop offset="100%" style="stop-color:#D9006C; stop-opacity:1"/>
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D4FF"/>
+      <stop offset="100%" stop-color="#0044AA"/>
     </linearGradient>
-    
-    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0057FF; stop-opacity:1"/>
-      <stop offset="100%" style="stop-color:#6A00D9; stop-opacity:1"/>
+    <linearGradient id="shadowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#002244"/>
+      <stop offset="100%" stop-color="#001122"/>
     </linearGradient>
   </defs>
 
-  <!-- Bagian Atas -->
-  <path fill="url(#grad1)" d="M400,30 H470 L350,180 Q250,250 150,180 L30,30 H100 L250,150 A100,100 0,0,0,400,30 Z">
-    <animateTransform attributeName="transform" type="scale" values="1 1; 1.03 1.03; 1 1" dur="1s" repeatCount="indefinite"/>
+  <!-- Bentuk utama -->
+  <path fill="url(#mainGradient)" d="M437,0h74L357,152c-55.77,55-146.19,55-202,0L.94,0H75L192,116a91.11,91.11,0,0,0,127.91,0Z">
+    <animateTransform attributeName="transform" type="scale" values="1; 1.05; 1" dur="2s" repeatCount="indefinite"/>
   </path>
 
-  <!-- Bagian Bawah -->
-  <path fill="url(#grad2)" d="M100,470 H30 L150,320 Q250,250 350,320 L470,470 H400 L250,350 A100,100 0,0,0,100,470 Z">
-    <animateTransform attributeName="transform" type="scale" values="1 1; 1.03 1.03; 1 1" dur="1s" repeatCount="indefinite"/>
+  <!-- Bayangan -->
+  <path fill="url(#shadowGradient)" opacity="0.5" d="M74,424H0L155,270c55.77-55,146.19-55,202,0L512,424H438L320,307a91.11,91.11,0,0,0-127.91,0Z">
+    <animateTransform attributeName="transform" type="translate" values="0 0; 0 -3; 0 0" dur="1.5s" repeatCount="indefinite"/>
   </path>
-
-  <!-- Efek 3D -->
-  <g opacity="0.3">
-    <polygon fill="#000000" points="100,30 250,150 240,170 90,50"/>
-    <polygon fill="#000000" points="400,30 250,150 260,170 410,50"/>
-    <polygon fill="#000000" points="100,470 250,350 240,330 90,450"/>
-    <polygon fill="#000000" points="400,470 250,350 260,330 410,450"/>
-  </g>
 </svg>
