@@ -3,7 +3,7 @@
         <!-- Gradasi untuk Efek 3D pada Lingkaran -->
         <radialGradient id="circleGradient" cx="50%" cy="50%" r="50%">
             <stop offset="0%" style="stop-color:#FFFFFF; stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#0044cc; stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#E0E0E0; stop-opacity:1" />
         </radialGradient>
 
         <!-- Batik Motif -->
@@ -21,16 +21,16 @@
     </defs>
 
     <!-- Lingkaran 3D Putih -->
-    <circle cx="250" cy="250" r="200" fill="url(#circleGradient)" stroke="#0036a3" stroke-width="10"/>
+    <circle cx="250" cy="250" r="200" fill="url(#circleGradient)" stroke="#0044CC" stroke-width="10"/>
 
     <!-- Kotak Uang Biru (Dibuat Simetris) -->
-    <rect x="150" y="190" width="200" height="120" rx="15" fill="#ccdaf5" stroke="#99b4eb" stroke-width="6"/>
+    <rect x="150" y="190" width="200" height="120" rx="15" fill="#0055FF" stroke="#0033AA" stroke-width="6"/>
 
     <!-- Batik di dalam Uang -->
     <rect x="150" y="190" width="200" height="120" rx="15" fill="url(#batikPattern)"/>
 
     <!-- Simbol Uang -->
-    <text x="250" y="267" font-size="60" text-anchor="middle" fill="white" font-weight="bold">Lotto</text>
+    <text x="250" y="260" font-size="60" text-anchor="middle" fill="white" font-weight="bold">🎰</text>
 
     <!-- Efek Cahaya Shimmer -->
     <rect x="150" y="190" width="200" height="120" rx="15" fill="url(#shimmer)" opacity="0.5">
