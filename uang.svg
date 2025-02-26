@@ -2,19 +2,26 @@
     <!-- CSS -->
     <style>
         @keyframes rotate3D {
-            0% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(10deg) scale(1.05); }
-            100% { transform: rotate(0deg) scale(1); }
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
         }
 
         .link {
-            fill: #8000FF; /* Ungu Solid */
+            fill: url(#gradient); /* Gunakan gradasi */
             stroke: #F8F1E7; /* Putih Tulang */
-            stroke-width: 15;
+            stroke-width: 10;
             transform-origin: center;
-            animation: rotate3D 3s ease-in-out infinite;
+            animation: rotate3D 4s linear infinite;
         }
     </style>
+
+    <!-- Gradasi warna untuk efek 3D -->
+    <defs>
+        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#8000FF; stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4B0082; stop-opacity:1" />
+        </linearGradient>
+    </defs>
 
     <!-- JavaScript -->
     <script>
@@ -27,10 +34,10 @@
     <!-- Rantai 3D -->
     <g id="chain" class="link" onclick="stopAnimation()">
         <!-- Mata rantai atas -->
-        <ellipse cx="250" cy="150" rx="120" ry="50" transform="rotate(30, 250, 150)"/>
+        <rect x="180" y="100" width="140" height="80" rx="40" transform="rotate(30,250,150)"/>
         <!-- Mata rantai tengah -->
-        <ellipse cx="250" cy="250" rx="120" ry="50"/>
+        <rect x="180" y="210" width="140" height="80" rx="40"/>
         <!-- Mata rantai bawah -->
-        <ellipse cx="250" cy="350" rx="120" ry="50" transform="rotate(-30, 250, 350)"/>
+        <rect x="180" y="320" width="140" height="80" rx="40" transform="rotate(-30,250,350)"/>
     </g>
 </svg>
