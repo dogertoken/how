@@ -1,18 +1,20 @@
 <svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
     <style>
+        /* Efek 3D pada Huruf "L" */
+        .l-shadow {
+            fill: rgba(0, 0, 0, 0.3);
+            transform: translate(8px, 8px);
+        }
+        .l-main {
+            fill: #F5F5DC; /* Warna putih tulang */
+            stroke: #D8D8D8;
+            stroke-width: 6;
+        }
         .ball {
             fill: url(#blue-gradient);
-            stroke: #F5F5DC; /* Warna putih tulang */
+            stroke: #F5F5DC; /* Lingkaran putih tulang */
             stroke-width: 10;
             filter: drop-shadow(8px 8px 15px rgba(0, 0, 0, 0.6));
-        }
-        .text {
-            font-family: Arial, sans-serif;
-            font-size: 120px;
-            font-weight: bold;
-            fill: #F5F5DC; /* Warna putih tulang */
-            text-anchor: middle;
-            text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
         }
     </style>
 
@@ -27,6 +29,9 @@
     <!-- Bola Lotre -->
     <circle class="ball" cx="250" cy="250" r="120"/>
 
-    <!-- Huruf "L" di Tengah -->
-    <text class="text" x="250" y="290">L</text>
+    <!-- Huruf "L" 3D dengan Shadow -->
+    <g transform="translate(190,200) scale(2)">
+        <path class="l-shadow" d="M10,10 L10,90 L60,90 L60,70 L30,70 L30,10 Z"/>
+        <path class="l-main" d="M10,10 L10,90 L60,90 L60,70 L30,70 L30,10 Z"/>
+    </g>
 </svg>
