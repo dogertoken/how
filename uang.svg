@@ -1,41 +1,47 @@
 <svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
     <!-- CSS -->
     <style>
-        @keyframes rotate3D {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
+        .slot-machine {
+            filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.4)); /* Efek shadow */
         }
-
-        .eth-logo {
-            transform-origin: center;
-            animation: rotate3D 6s linear infinite;
-            filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.3)); /* Efek bayangan */
+        .reel {
+            fill: url(#metal-gradient); /* Efek metalik */
+        }
+        .text {
+            font-family: Arial, sans-serif;
+            font-size: 80px;
+            font-weight: bold;
+            fill: #D32F2F; /* Warna merah untuk angka 777 */
+            text-anchor: middle;
         }
     </style>
 
-    <!-- Gradasi warna Ethereum -->
+    <!-- Definisi Gradasi Metalik -->
     <defs>
-        <linearGradient id="eth-gradient" x1="50%" y1="0%" x2="50%" y2="100%">
-            <stop offset="0%" style="stop-color:#141414; stop-opacity:1" />  <!-- Hitam -->
-            <stop offset="30%" style="stop-color:#3A3A3A; stop-opacity:1" />  <!-- Abu-abu tua -->
-            <stop offset="60%" style="stop-color:#627EEA; stop-opacity:1" />  <!-- Biru Ethereum -->
-            <stop offset="100%" style="stop-color:#C0C0C0; stop-opacity:1" /> <!-- Putih keabu-abuan -->
+        <linearGradient id="metal-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#E0E0E0; stop-opacity:1" />  <!-- Silver terang -->
+            <stop offset="50%" style="stop-color:#B0B0B0; stop-opacity:1" />  <!-- Abu-abu medium -->
+            <stop offset="100%" style="stop-color:#808080; stop-opacity:1" />  <!-- Abu-abu gelap -->
         </linearGradient>
     </defs>
 
-    <!-- JavaScript -->
-    <script>
-        function stopAnimation() {
-            let eth = document.getElementById("ethereum");
-            eth.style.animation = "none"; // Hentikan animasi saat diklik
-        }
-    </script>
+    <!-- Mesin Slot -->
+    <g class="slot-machine">
+        <!-- Badan mesin -->
+        <rect x="100" y="100" width="300" height="250" rx="20" ry="20" fill="url(#metal-gradient)" stroke="black" stroke-width="5"/>
+        
+        <!-- Gulungan slot -->
+        <rect class="reel" x="130" y="130" width="80" height="150" rx="10" ry="10"/>
+        <rect class="reel" x="210" y="130" width="80" height="150" rx="10" ry="10"/>
+        <rect class="reel" x="290" y="130" width="80" height="150" rx="10" ry="10"/>
 
-    <!-- Logo Ethereum -->
-    <g id="ethereum" class="eth-logo" onclick="stopAnimation()">
-        <!-- Bagian atas -->
-        <polygon points="250,50 100,250 400,250" fill="url(#eth-gradient)"/>
-        <!-- Bagian bawah -->
-        <polygon points="250,450 100,270 400,270" fill="url(#eth-gradient)"/>
+        <!-- Angka 777 -->
+        <text class="text" x="170" y="230">7</text>
+        <text class="text" x="250" y="230">7</text>
+        <text class="text" x="330" y="230">7</text>
+
+        <!-- Pegangan kanan mesin slot -->
+        <circle cx="410" cy="180" r="15" fill="red" stroke="black" stroke-width="3"/>
+        <rect x="400" y="195" width="20" height="60" fill="black"/>
     </g>
 </svg>
