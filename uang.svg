@@ -1,59 +1,44 @@
 <svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <!-- CSS -->
     <style>
-        .slot-machine {
-            filter: drop-shadow(5px 5px 15px rgba(0, 0, 0, 0.6)); /* Efek shadow */
-        }
-        .body {
-            fill: url(#metal-gradient); /* Efek metal */
-            stroke: black;
+        .ball {
+            fill: url(#lotto-gradient);
+            stroke: #FFD700;
             stroke-width: 5;
-        }
-        .reel {
-            fill: white;
-            stroke: black;
-            stroke-width: 3;
+            filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.5));
         }
         .text {
             font-family: Arial, sans-serif;
             font-size: 80px;
             font-weight: bold;
-            fill: #FF0000; /* Warna merah terang untuk angka 777 */
+            fill: white;
             text-anchor: middle;
         }
-        .handle {
-            fill: red;
-            stroke: black;
-            stroke-width: 3;
+        .chain {
+            stroke: #D4AF37;
+            stroke-width: 8;
+            fill: none;
         }
     </style>
 
-    <!-- Gradasi Metalik -->
+    <!-- Gradasi Bola -->
     <defs>
-        <linearGradient id="metal-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#C0C0C0; stop-opacity:1" />  <!-- Silver terang -->
-            <stop offset="50%" style="stop-color:#A0A0A0; stop-opacity:1" />  <!-- Abu-abu medium -->
-            <stop offset="100%" style="stop-color:#707070; stop-opacity:1" />  <!-- Abu-abu gelap -->
-        </linearGradient>
+        <radialGradient id="lotto-gradient" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#6A0DAD; stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4B0082; stop-opacity:1" />
+        </radialGradient>
     </defs>
 
-    <!-- Mesin Slot -->
-    <g class="slot-machine">
-        <!-- Badan mesin -->
-        <rect class="body" x="100" y="100" width="300" height="250" rx="20" ry="20"/>
-        
-        <!-- Gulungan slot -->
-        <rect class="reel" x="130" y="130" width="80" height="150" rx="10" ry="10"/>
-        <rect class="reel" x="210" y="130" width="80" height="150" rx="10" ry="10"/>
-        <rect class="reel" x="290" y="130" width="80" height="150" rx="10" ry="10"/>
+    <!-- Bola Lotre -->
+    <circle class="ball" cx="250" cy="250" r="100"/>
 
-        <!-- Angka 777 -->
-        <text class="text" x="170" y="230">7</text>
-        <text class="text" x="250" y="230">7</text>
-        <text class="text" x="330" y="230">7</text>
+    <!-- Angka di Bola -->
+    <text class="text" x="250" y="270">7</text>
 
-        <!-- Pegangan kanan mesin slot -->
-        <circle class="handle" cx="410" cy="180" r="15"/>
-        <rect x="400" y="195" width="20" height="60" fill="black"/>
+    <!-- Rantai Blockchain -->
+    <g class="chain">
+        <circle cx="150" cy="250" r="20"/>
+        <circle cx="100" cy="250" r="20"/>
+        <circle cx="350" cy="250" r="20"/>
+        <circle cx="400" cy="250" r="20"/>
     </g>
 </svg>
