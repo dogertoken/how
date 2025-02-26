@@ -1,36 +1,56 @@
 <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <!-- Gradasi Bulu -->
-    <defs>
-        <radialGradient id="furGradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#FFD38C"/>
-            <stop offset="100%" stop-color="#D87D36"/>
-        </radialGradient>
-    </defs>
+    <style>
+        /* Animasi Mata Berkedip */
+        @keyframes blink {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.1); }
+        }
+        .eye {
+            animation: blink 3s infinite;
+            transform-origin: center;
+        }
 
-    <!-- Kepala (Oval) -->
-    <ellipse cx="250" cy="270" rx="180" ry="200" fill="url(#furGradient)" stroke="#9B5D30" stroke-width="10"/>
+        /* Efek Hover Hidung */
+        .nose:hover {
+            fill: red;
+            cursor: pointer;
+        }
 
-    <!-- Telinga (Lebih tegak) -->
+        /* Mulut bergerak */
+        .mouth {
+            transition: d 0.3s ease-in-out;
+        }
+    </style>
+
+    <script>
+        function toggleMouth() {
+            let mouth = document.getElementById("mouth");
+            let isOpen = mouth.getAttribute("d").includes("380");
+            mouth.setAttribute("d", isOpen ? "M230,340 Q250,380 270,340" : "M230,340 Q250,400 270,340");
+        }
+    </script>
+
+    <!-- Kepala -->
+    <ellipse cx="250" cy="270" rx="180" ry="200" fill="#FFD38C" stroke="#9B5D30" stroke-width="10"/>
+
+    <!-- Telinga -->
     <polygon points="100,100 180,20 210,130" fill="#D87D36" stroke="#9B5D30" stroke-width="5"/>
     <polygon points="400,100 320,20 290,130" fill="#D87D36" stroke="#9B5D30" stroke-width="5"/>
 
     <!-- Mata -->
-    <circle cx="180" cy="230" r="20" fill="black"/>
-    <circle cx="320" cy="230" r="20" fill="black"/>
+    <g class="eye">
+        <circle cx="180" cy="230" r="20" fill="black"/>
+        <circle cx="320" cy="230" r="20" fill="black"/>
+    </g>
     <circle cx="185" cy="225" r="5" fill="white"/>
     <circle cx="325" cy="225" r="5" fill="white"/>
 
     <!-- Hidung -->
-    <ellipse cx="250" cy="310" rx="30" ry="20" fill="black"/>
+    <ellipse class="nose" cx="250" cy="310" rx="30" ry="20" fill="black"/>
 
     <!-- Mulut -->
-    <path d="M230,340 Q250,380 270,340" stroke="black" stroke-width="5" fill="none"/>
+    <path id="mouth" class="mouth" d="M230,340 Q250,380 270,340" stroke="black" stroke-width="5" fill="none" onclick="toggleMouth()"/>
 
-    <!-- Bayangan bawah (hanya bagian depan) -->
-    <ellipse cx="250" cy="460" rx="100" ry="20" fill="rgba(0,0,0,0.2)" clip-path="url(#faceClip)"/>
-
-    <!-- Masking bayangan agar tidak kena bagian belakang -->
-    <clipPath id="faceClip">
-        <ellipse cx="250" cy="270" rx="180" ry="200"/>
-    </clipPath>
+    <!-- Bayangan bawah -->
+    <ellipse cx="250" cy="460" rx="100" ry="20" fill="rgba(0,0,0,0.2)"/>
 </svg>
