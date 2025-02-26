@@ -1,14 +1,29 @@
-<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 200 200" width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <!-- Gradasi untuk Efek 3D -->
+        <radialGradient id="grad3D" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#FFFFFF; stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#CCCCCC; stop-opacity:1"/>
+        </radialGradient>
+    </defs>
+
+    <!-- Lingkaran Luar (Efek 3D) -->
+    <circle cx="100" cy="100" r="90" fill="url(#grad3D)" stroke="#AAAAAA" stroke-width="4"/>
+
+    <!-- Ikon Play -->
+    <polygon points="80,65 140,100 80,135" fill="white"/>
+
+    <!-- Animasi CSS -->
     <style>
-        /* Efek Hover & Klik */
-        .play-button {
-            transition: transform 0.2s ease, filter 0.3s ease;
-        }
-        .play-button:hover {
+        /* Efek Hover */
+        svg:hover circle {
             transform: scale(1.1);
-            filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.7));
+            transition: transform 0.3s ease, filter 0.3s ease;
+            filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.8));
         }
-        .play-button:active {
+
+        /* Efek Klik */
+        svg:active circle {
             transform: scale(0.95);
             filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.5));
         }
@@ -18,23 +33,10 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
-        .pulse {
+
+        circle {
             animation: pulse 2s infinite ease-in-out;
+            transform-origin: center;
         }
     </style>
-
-    <!-- Lingkaran Luar (3D Effect) -->
-    <circle cx="100" cy="100" r="90" fill="url(#grad3D)" class="play-button pulse"/>
-    
-    <!-- Gradient untuk Efek 3D -->
-    <defs>
-        <radialGradient id="grad3D" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" style="stop-color:#FFFFFF; stop-opacity:1"/>
-            <stop offset="100%" style="stop-color:#DDDDDD; stop-opacity:1"/>
-        </radialGradient>
-    </defs>
-
-    <!-- Ikon Play -->
-    <polygon points="80,65 140,100 80,135" fill="white"/>
-
 </svg>
