@@ -19,19 +19,17 @@
     </linearGradient>
   </defs>
 
-  <!-- Grup utama untuk rotasi -->
-  <g transform="translate(400, 450)">
-    <g id="mainShape">
-      <!-- Kristal yang berputar -->
-      <path fill="url(#blueGradient)" d="M0,-450 C-100,-200 -300,100 0,450 C300,100 100,-200 0,-450 Z">
-        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="6s" repeatCount="indefinite" />
-      </path>
+  <!-- Grup utama untuk animasi bounce -->
+  <g id="mainShape" transform="translate(400, 450)">
+    <!-- Kristal -->
+    <path fill="url(#blueGradient)" d="M0,-450 C-100,-200 -300,100 0,450 C300,100 100,-200 0,-450 Z">
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-20; 0,0" dur="1.5s" repeatCount="indefinite" keyTimes="0; 0.5; 1" calcMode="spline" keySplines="0.5 0 0.5 1; 0.5 0 0.5 1"/>
+    </path>
 
-      <!-- Efek refleksi -->
-      <path fill="url(#lightEffect)" opacity="0.6" d="M0,-400 C-80,-180 -250,100 0,400 C250,100 80,-180 0,-400 Z">
-        <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="-360 0 0" dur="6s" repeatCount="indefinite" />
-      </path>
-    </g>
+    <!-- Efek refleksi -->
+    <path fill="url(#lightEffect)" opacity="0.6" d="M0,-400 C-80,-180 -250,100 0,400 C250,100 80,-180 0,-400 Z">
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-20; 0,0" dur="1.5s" repeatCount="indefinite" keyTimes="0; 0.5; 1" calcMode="spline" keySplines="0.5 0 0.5 1; 0.5 0 0.5 1"/>
+    </path>
   </g>
 
   <!-- Bagian bawah kubus 3D -->
