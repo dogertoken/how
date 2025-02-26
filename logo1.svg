@@ -2,33 +2,42 @@
     <defs>
         <!-- Gradasi untuk Efek 3D -->
         <linearGradient id="gradPlay" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#FFFFFF; stop-opacity:1"/>
-            <stop offset="100%" style="stop-color:#DDDDDD; stop-opacity:1"/>
+            <stop offset="0%" stop-color="white"/>
+            <stop offset="100%" stop-color="#CCCCCC"/>
         </linearGradient>
+
+        <!-- Filter Glow -->
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="5" result="blur"/>
+            <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
     </defs>
 
     <!-- Ikon Play -->
-    <polygon points="70,50 150,100 70,150" fill="url(#gradPlay)" stroke="#BBBBBB" stroke-width="2" stroke-linejoin="round"/>
+    <polygon points="60,50 150,100 60,150" fill="url(#gradPlay)" stroke="#AAAAAA" stroke-width="2" stroke-linejoin="round"/>
 
     <!-- Animasi CSS -->
     <style>
         /* Efek Hover */
         svg:hover polygon {
-            transform: scale(1.15);
+            transform: scale(1.1);
             transition: transform 0.3s ease, filter 0.3s ease;
-            filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.8));
+            filter: url(#glow);
         }
 
         /* Efek Klik */
         svg:active polygon {
-            transform: scale(0.9);
-            filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.5));
+            transform: scale(0.95);
+            filter: none;
         }
 
         /* Efek Berdenyut */
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.03); }
         }
 
         polygon {
