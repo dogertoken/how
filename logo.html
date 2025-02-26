@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logo Uang 3D dengan Batik</title>
+    <title>Logo Uang 3D dengan Batik dan Efek Cahaya</title>
     <style>
         body {
             display: flex;
@@ -26,17 +26,15 @@
             overflow: hidden;
         }
 
-        /* Pola batik */
+        /* Pola Batik SVG */
         .money::before {
             content: "";
             position: absolute;
             width: 100%;
             height: 100%;
-            background-image: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 20%), 
-                              radial-gradient(circle, rgba(255,255,255,0.2) 15%, transparent 30%);
-            background-size: 30px 30px, 50px 50px;
-            background-position: 0 0, 10px 10px;
-            opacity: 0.7;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="10" fill="rgba(255,255,255,0.3)"/><circle cx="50" cy="50" r="10" fill="rgba(255,255,255,0.3)"/><circle cx="80" cy="20" r="10" fill="rgba(255,255,255,0.3)"/><circle cx="20" cy="80" r="10" fill="rgba(255,255,255,0.3)"/></svg>');
+            background-size: 40px 40px;
+            opacity: 0.6;
         }
 
         /* Simbol uang */
@@ -49,7 +47,20 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            text-shadow: 2px 2px 10px rgba(255, 255, 0, 0.8);
+            animation: glow 1.5s infinite alternate;
+        }
+
+        /* Efek shimmer */
+        .shimmer {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0) 70%);
+            top: 0;
+            left: -100%;
+            transform: rotate(20deg);
+            animation: shimmer 3s infinite linear;
         }
 
         /* Animasi melayang */
@@ -71,9 +82,31 @@
                 transform: rotateY(360deg);
             }
         }
+
+        /* Efek shimmer bergerak */
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        /* Efek glow pada simbol uang */
+        @keyframes glow {
+            0% {
+                text-shadow: 2px 2px 10px rgba(255, 255, 0, 0.5);
+            }
+            100% {
+                text-shadow: 2px 2px 20px rgba(255, 255, 0, 1);
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="money"></div>
+    <div class="money">
+        <div class="shimmer"></div>
+    </div>
 </body>
 </html>
