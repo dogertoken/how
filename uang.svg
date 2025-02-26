@@ -21,7 +21,7 @@
     </defs>
 
     <!-- Lingkaran 3D Putih -->
-    <circle cx="250" cy="250" r="200" fill="url(#circleGradient)" stroke="#0044CC" stroke-width="10"/>
+    <circle cx="250" cy="250" r="200" fill="url(#circleGradient)" stroke="#ffffff" stroke-width="10"/>
 
     <!-- Kotak Uang Biru (Dibuat Simetris) -->
     <rect x="150" y="190" width="200" height="120" rx="15" fill="#e6ecfa" stroke="#b3c7f0" stroke-width="6"/>
