@@ -6,13 +6,140 @@
     <title>Presale Token</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.4/web3.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; display: none; }
-        .container { width: 50%; margin: auto; padding: 20px; }
-        .btn { padding: 10px; margin: 5px; cursor: pointer; background-color: blue; color: white; border: none; }
-        .progress { width: 100%; background: #eee; border-radius: 5px; margin-top: 10px; }
-        .progress-bar { height: 20px; background: green; width: 0%; border-radius: 5px; }
-        input { padding: 8px; margin: 5px; width: 100px; text-align: center; }
-        #wallet-btn { background-color: darkred; }
+        /* 1. Body dengan latar belakang galaksi dan planet */
+body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    color: white;
+    background: black;
+}
+
+/* 2. Animasi latar belakang bintang */
+@keyframes stars {
+    0% { background-position: 0 0; }
+    100% { background-position: 10000px 10000px; }
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 3. Background dengan bintang dan planet */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://source.unsplash.com/1600x900/?milkyway,galaxy,stars') no-repeat center center/cover;
+    animation: stars 200s linear infinite;
+    z-index: -2;
+}
+
+body::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 300px;
+    background: url('https://source.unsplash.com/400x400/?planet,saturn,space') no-repeat center center/cover;
+    transform-origin: center;
+    animation: rotate 100s linear infinite;
+    z-index: -1;
+}
+
+/* 4. Container utama */
+.container {
+    width: 50%;
+    margin: auto;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+/* 5. Tombol */
+.btn {
+    padding: 12px 20px;
+    margin: 10px;
+    cursor: pointer;
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: 0.3s;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+}
+
+.btn:hover {
+    background: linear-gradient(45deg, #ff4b2b, #ff416c);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 1);
+}
+
+/* 6. Tombol Wallet */
+#wallet-btn {
+    background: linear-gradient(45deg, #ff0000, #8b0000);
+    box-shadow: 0 0 10px rgba(255, 69, 0, 0.8);
+}
+
+#wallet-btn:hover {
+    background: linear-gradient(45deg, #8b0000, #ff0000);
+    box-shadow: 0 0 15px rgba(255, 69, 0, 1);
+}
+
+/* 7. Progress bar */
+.progress {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 20px;
+    background: linear-gradient(45deg, #00ffcc, #00ff99);
+    width: 0%;
+    border-radius: 10px;
+    transition: width 0.5s;
+}
+
+/* 8. Input field */
+input {
+    padding: 10px;
+    margin: 5px;
+    width: 120px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+}
+
+input:focus {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* 9. Animasi tambahan */
+@keyframes glow {
+    0% { box-shadow: 0 0 10px #ff416c; }
+    50% { box-shadow: 0 0 20px #ff4b2b; }
+    100% { box-shadow: 0 0 10px #ff416c; }
+}
+
+.btn, #wallet-btn {
+    animation: glow 1.5s infinite alternate;
+}
     </style>
 </head>
 <body>
