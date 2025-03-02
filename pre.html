@@ -20,6 +20,7 @@
     <div class="container">
         <h1>Presale Token</h1>
         <button class="btn" id="wallet-btn" onclick="toggleWallet()">Konek Wallet</button>
+        <p id="balance" style="font-weight: bold;"></p>
         
         <p><strong>Progress:</strong> <span id="progress-text">0% (0 / 100 ETH)</span></p>
         <div class="progress">
@@ -109,10 +110,11 @@ async function checkWallet() {
         const accounts = await web3.eth.getAccounts();
         if (accounts.length > 0) {
             walletAddress = accounts[0];
-            await verifySignature(walletAddress); // Verifikasi signature
+            await verifySignature(walletAddress);
             contract = new web3.eth.Contract(abi, contractAddress);
             document.getElementById("wallet-btn").innerText = "Diskonek Wallet";
             updateProgress();
+            getBalance();
         }
     }
 }
@@ -124,13 +126,13 @@ async function connectWallet() {
         const accounts = await web3.eth.requestAccounts();
         walletAddress = accounts[0];
 
-        // Signature keamanan
         const signature = await web3.eth.personal.sign(signatureMessage, walletAddress, "");
         localStorage.setItem("walletSignature", signature);
 
         contract = new web3.eth.Contract(abi, contractAddress);
         document.getElementById("wallet-btn").innerText = "Diskonek Wallet";
         updateProgress();
+        getBalance();
     } else {
         alert("Silakan install MetaMask!");
     }
@@ -144,11 +146,19 @@ async function verifySignature(address) {
         return;
     }
 
-    // Verifikasi apakah wallet benar-benar pernah menandatangani pesan
     const signer = await web3.eth.personal.ecRecover(signatureMessage, storedSignature);
     if (signer.toLowerCase() !== address.toLowerCase()) {
         alert("Signature tidak valid! Silakan konek ulang.");
         disconnectWallet();
+    }
+}
+
+// Fungsi mendapatkan saldo ETH pengguna
+async function getBalance() {
+    if (walletAddress) {
+        const balance = await web3.eth.getBalance(walletAddress);
+        const ethBalance = web3.utils.fromWei(balance, "ether");
+        document.getElementById("balance").innerText = `Saldo ETH: ${ethBalance} ETH`;
     }
 }
 
@@ -158,6 +168,7 @@ function disconnectWallet() {
     contract = null;
     localStorage.removeItem("walletSignature");
     document.getElementById("wallet-btn").innerText = "Konek Wallet";
+    document.getElementById("balance").innerText = "";
     alert("Wallet terputus!");
 }
 
@@ -207,6 +218,7 @@ async function buyTokens() {
         await contract.methods.buyTokens().send({ from: accounts[0], value: web3.utils.toWei(ethInput, "ether") });
         alert("Berhasil membeli token!");
         updateProgress();
+        getBalance();
     } catch (error) {
         console.error("Gagal membeli token:", error);
         alert("Transaksi gagal!");
@@ -225,7 +237,8 @@ async function claimTokens() {
         console.error("Gagal klaim token:", error);
         alert("Klaim gagal!");
     }
-            }
-    </script>
+}
+</script>
+
 </body>
 </html>
