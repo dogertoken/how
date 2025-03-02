@@ -3,48 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RainbowKit Without npm</title>
-    
-    <!-- React & ReactDOM via CDN -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-
-    <!-- Babel (untuk JSX) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.21.0/babel.min.js"></script>
-
-    <!-- RainbowKit & Wagmi via Skypack -->
-    <script type="module">
-        import { createRoot } from "https://cdn.skypack.dev/react-dom@18";
-        import { getDefaultWallets, RainbowKitProvider, ConnectButton } from "https://cdn.skypack.dev/@rainbow-me/rainbowkit";
-        import { configureChains, createClient, WagmiConfig } from "https://cdn.skypack.dev/wagmi";
-        import { mainnet, polygon, bsc } from "https://cdn.skypack.dev/wagmi/chains";
-        import { publicProvider } from "https://cdn.skypack.dev/wagmi/providers/public";
-
-        const { chains, provider } = configureChains([mainnet, polygon, bsc], [publicProvider()]);
-        const { connectors } = getDefaultWallets({ appName: "My DApp", chains });
-
-        const wagmiClient = createClient({
-            autoConnect: true,
-            connectors,
-            provider,
-        });
-
-        function App() {
-            return React.createElement(WagmiConfig, { client: wagmiClient },
-                React.createElement(RainbowKitProvider, { chains },
-                    React.createElement("div", null, 
-                        React.createElement("h1", null, "RainbowKit Without npm"),
-                        React.createElement(ConnectButton, null)
-                    )
-                )
-            );
-        }
-
-        const root = createRoot(document.getElementById("root"));
-        root.render(React.createElement(App));
-    </script>
+    <title>Multi Wallet Connector</title>
 </head>
 <body>
-    <div id="root"></div>
+    <button id="connectWallet">Connect Wallet</button>
+    <p id="walletAddress"></p>
+
+    <script>
+        async function connectWallet() {
+            const providerOptions = {
+                // MetaMask (default)
+                injected: {
+                    display: {
+                        name: "MetaMask",
+                        description: "Connect with MetaMask"
+                    },
+                    package: null
+                },
+
+                // WalletConnect (support Binance, Bybit, OKX)
+                walletconnect: {
+                    package: window.WalletConnectProvider.default,
+                    options: {
+                        rpc: {
+                            56: "https://bsc-dataseed.binance.org/" // Binance Smart Chain
+                        },
+                        bridge: "https://bridge.walletconnect.org"
+                    }
+                },
+
+                // Binance Wallet
+                "custom-binance": {
+                    display: {
+                        name: "Binance Wallet",
+                        description: "Connect with Binance Chain Wallet",
+                        logo: "https://cryptologos.cc/logos/binance-coin-bnb-logo.svg?v=010" // Logo Binance
+                    },
+                    package: true,
+                    connector: async () => {
+                        if (window.BinanceChain) {
+                            await window.BinanceChain.request({ method: "eth_requestAccounts" });
+                            return window.BinanceChain;
+                        } else {
+                            alert("Binance Wallet not installed");
+                            return null;
+                        }
+                    }
+                },
+
+                // OKX Wallet
+                "custom-okx": {
+                    display: {
+                        name: "OKX Wallet",
+                        description: "Connect with OKX Wallet",
+                        logo: "https://cryptoicons.org/api/icon/okb/64" // Logo OKX
+                    },
+                    package: true,
+                    connector: async () => {
+                        if (window.okxwallet) {
+                            await window.okxwallet.request({ method: "eth_requestAccounts" });
+                            return window.okxwallet;
+                        } else {
+                            alert("OKX Wallet not installed");
+                            return null;
+                        }
+                    }
+                }
+            };
+
+            const web3Modal = new window.Web3Modal.default({
+                cacheProvider: false,
+                providerOptions
+            });
+
+            const instance = await web3Modal.connect();
+            const provider = new ethers.providers.Web3Provider(instance);
+            const signer = provider.getSigner();
+            const address = await signer.getAddress();
+
+            document.getElementById("walletAddress").innerText = `Connected: ${address}`;
+        }
+
+        document.getElementById("connectWallet").addEventListener("click", connectWallet);
+    </script>
 </body>
 </html>
