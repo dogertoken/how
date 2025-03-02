@@ -4,37 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Presale Token</title>
-    <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.4/web3.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; display: none; }
+        .container { width: 50%; margin: auto; padding: 20px; }
+        .btn { padding: 10px; margin: 5px; cursor: pointer; background-color: blue; color: white; border: none; }
+        .progress { width: 100%; background: #eee; border-radius: 5px; margin-top: 10px; }
+        .progress-bar { height: 20px; background: green; width: 0%; border-radius: 5px; }
+        input { padding: 8px; margin: 5px; width: 100px; text-align: center; }
+        #wallet-btn { background-color: darkred; }
+    </style>
 </head>
-<body style="display: none;">  <!-- Halaman disembunyikan sampai kode benar -->
+<body>
 
-    <div id="auth-container">
-        <h2>Masukkan Kode Rahasia</h2>
-        <input type="password" id="secret-code" placeholder="Masukkan kode">
-        <button onclick="checkSecret()">Submit</button>
-    </div>
-
-    <div id="main-container" style="display: none;">
-        <button id="wallet-btn" onclick="toggleWallet()">Konek Wallet</button>
-        <h3>Progress Presale</h3>
-        <div id="progress-bar-container">
-            <div id="progress-bar"></div>
+    <div class="container">
+        <h1>Presale Token</h1>
+        <button class="btn" id="wallet-btn" onclick="toggleWallet()">Konek Wallet</button>
+        
+        <p><strong>Progress:</strong> <span id="progress-text">0% (0 / 100 ETH)</span></p>
+        <div class="progress">
+            <div id="progress-bar" class="progress-bar"></div>
         </div>
-        <p id="progress-text">0% (0 / 100 ETH)</p>
 
-        <h3>Beli Token</h3>
-        <input type="number" id="ethAmount" placeholder="Jumlah ETH" oninput="calculateTokens()">
-        <p>Anda akan menerima: <span id="tokenAmount">0</span> token</p>
-        <button onclick="buyTokens()">Beli</button>
+        <input type="number" id="ethAmount" placeholder="Masukkan ETH" step="0.01" oninput="calculateTokens()">
+        <p><strong>Anda akan mendapatkan:</strong> <span id="tokenAmount">0</span> TOKEN</p>
 
-        <h3>Klaim Token</h3>
-        <button onclick="claimTokens()">Klaim</button>
+        <button class="btn" onclick="buyTokens()">Beli Token</button>
+        <button class="btn" onclick="claimTokens()">Klaim Token</button>
+
+        <p id="status" style="color: red;"></p>
     </div>
 
     <script src="app.js"></script>
     <script>
-      const secretCode = "1234";  // Ganti dengan kode rahasia Anda
 const signatureMessage = "Konfirmasi untuk akses presale token."; // Pesan yang harus ditandatangani
 const contractAddress = "0xYOUR_CONTRACT_ADDRESS"; // Ganti dengan alamat kontrak
 
@@ -85,23 +87,12 @@ let web3;
 let contract;
 let walletAddress = null;
 
-const secretCode = "1234";  // Ganti dengan kode rahasia Anda
-
-// Fungsi untuk memeriksa kode rahasia
-function checkSecret() {
-    let userCode = document.getElementById("secret-code").value;
-    if (userCode === secretCode) {
-        document.getElementById("auth-container").style.display = "none";
-        document.getElementById("main-container").style.display = "block";
-        document.body.style.display = "block";
-        checkWallet();
-    } else {
-        alert("Kode salah!");
-    }
-}
-
-// Fungsi koneksi wallet & lainnya tetap sama seperti sebelumnya
-
+// Cek apakah wallet sudah terkoneksi sebelumnya
+window.onload = async function () {
+    document.body.style.display = "block";
+    await checkWallet();
+};
+        
 // Fungsi untuk konek & diskonek wallet
 async function toggleWallet() {
     if (!walletAddress) {
@@ -234,7 +225,7 @@ async function claimTokens() {
         console.error("Gagal klaim token:", error);
         alert("Klaim gagal!");
     }
-  }
+            }
     </script>
 </body>
 </html>
