@@ -85,17 +85,22 @@ let web3;
 let contract;
 let walletAddress = null;
 
-// Cek apakah wallet sudah terkoneksi sebelumnya
-window.onload = async function () {
-    let userCode = prompt("Masukkan Kode Rahasia:");
-    if (userCode !== secretCode) {
-        alert("Kode salah!");
-        window.location.href = "about:blank";
-    } else {
+const secretCode = "1234";  // Ganti dengan kode rahasia Anda
+
+// Fungsi untuk memeriksa kode rahasia
+function checkSecret() {
+    let userCode = document.getElementById("secret-code").value;
+    if (userCode === secretCode) {
+        document.getElementById("auth-container").style.display = "none";
+        document.getElementById("main-container").style.display = "block";
         document.body.style.display = "block";
-        await checkWallet();
+        checkWallet();
+    } else {
+        alert("Kode salah!");
     }
-};
+}
+
+// Fungsi koneksi wallet & lainnya tetap sama seperti sebelumnya
 
 // Fungsi untuk konek & diskonek wallet
 async function toggleWallet() {
