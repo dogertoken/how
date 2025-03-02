@@ -3,88 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi Wallet Connector</title>
+    <title>RainbowKit Without npm</title>
+
+    <!-- React & ReactDOM via CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Babel (untuk JSX) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.21.0/babel.min.js"></script>
+
+    <!-- CSS RainbowKit -->
+    <link rel="stylesheet" href="https://unpkg.com/@rainbow-me/rainbowkit/dist/index.css">
 </head>
 <body>
-    <button id="connectWallet">Connect Wallet</button>
-    <p id="walletAddress"></p>
+    <div id="root"></div>
 
-    <script>
-        async function connectWallet() {
-            const providerOptions = {
-                // MetaMask (default)
-                injected: {
-                    display: {
-                        name: "MetaMask",
-                        description: "Connect with MetaMask"
-                    },
-                    package: null
-                },
+    <script type="text/babel">
+        // Import library dengan UNPKG
+        const { createElement, StrictMode } = React;
+        const { createRoot } = ReactDOM;
+        
+        // Import library Wagmi & RainbowKit
+        async function loadDependencies() {
+            const wagmi = await import("https://unpkg.com/wagmi@1.1.4/dist/wagmi.js");
+            const rainbowkit = await import("https://unpkg.com/@rainbow-me/rainbowkit@1.0.0/dist/rainbowkit.js");
+            
+            const { configureChains, createClient, WagmiConfig } = wagmi;
+            const { getDefaultWallets, RainbowKitProvider, ConnectButton } = rainbowkit;
+            const { mainnet, polygon, bsc } = wagmi.chains;
+            const { publicProvider } = wagmi.providers;
 
-                // WalletConnect (support Binance, Bybit, OKX)
-                walletconnect: {
-                    package: window.WalletConnectProvider.default,
-                    options: {
-                        rpc: {
-                            56: "https://bsc-dataseed.binance.org/" // Binance Smart Chain
-                        },
-                        bridge: "https://bridge.walletconnect.org"
-                    }
-                },
+            // Konfigurasi blockchain & provider
+            const { chains, provider } = configureChains([mainnet, polygon, bsc], [publicProvider()]);
+            const { connectors } = getDefaultWallets({ appName: "My DApp", chains });
 
-                // Binance Wallet
-                "custom-binance": {
-                    display: {
-                        name: "Binance Wallet",
-                        description: "Connect with Binance Chain Wallet",
-                        logo: "https://cryptologos.cc/logos/binance-coin-bnb-logo.svg?v=010" // Logo Binance
-                    },
-                    package: true,
-                    connector: async () => {
-                        if (window.BinanceChain) {
-                            await window.BinanceChain.request({ method: "eth_requestAccounts" });
-                            return window.BinanceChain;
-                        } else {
-                            alert("Binance Wallet not installed");
-                            return null;
-                        }
-                    }
-                },
-
-                // OKX Wallet
-                "custom-okx": {
-                    display: {
-                        name: "OKX Wallet",
-                        description: "Connect with OKX Wallet",
-                        logo: "https://cryptoicons.org/api/icon/okb/64" // Logo OKX
-                    },
-                    package: true,
-                    connector: async () => {
-                        if (window.okxwallet) {
-                            await window.okxwallet.request({ method: "eth_requestAccounts" });
-                            return window.okxwallet;
-                        } else {
-                            alert("OKX Wallet not installed");
-                            return null;
-                        }
-                    }
-                }
-            };
-
-            const web3Modal = new window.Web3Modal.default({
-                cacheProvider: false,
-                providerOptions
+            // Konfigurasi Wagmi Client
+            const wagmiClient = createClient({
+                autoConnect: true,
+                connectors,
+                provider,
             });
 
-            const instance = await web3Modal.connect();
-            const provider = new ethers.providers.Web3Provider(instance);
-            const signer = provider.getSigner();
-            const address = await signer.getAddress();
+            // Komponen utama
+            function App() {
+                return createElement(WagmiConfig, { client: wagmiClient },
+                    createElement(RainbowKitProvider, { chains },
+                        createElement("div", null, 
+                            createElement("h1", null, "RainbowKit Without npm"),
+                            createElement(ConnectButton, null)
+                        )
+                    )
+                );
+            }
 
-            document.getElementById("walletAddress").innerText = `Connected: ${address}`;
+            // Render ke root
+            const root = createRoot(document.getElementById("root"));
+            root.render(createElement(StrictMode, null, createElement(App)));
         }
 
-        document.getElementById("connectWallet").addEventListener("click", connectWallet);
+        // Load dependencies dan jalankan aplikasi
+        loadDependencies();
     </script>
 </body>
 </html>
