@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presale Token</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.4/web3.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; display: none; }
+        .container { width: 50%; margin: auto; padding: 20px; }
+        .btn { padding: 10px; margin: 5px; cursor: pointer; background-color: blue; color: white; border: none; }
+        .progress { width: 100%; background: #eee; border-radius: 5px; margin-top: 10px; }
+        .progress-bar { height: 20px; background: green; width: 0%; border-radius: 5px; }
+        input { padding: 8px; margin: 5px; width: 100px; text-align: center; }
+        #wallet-btn { background-color: darkred; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Presale Token</h1>
+        <button class="btn" id="wallet-btn" onclick="toggleWallet()">Konek Wallet</button>
+        
+        <p><strong>Progress:</strong> <span id="progress-text">0% (0 / 100 ETH)</span></p>
+        <div class="progress">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+
+        <input type="number" id="ethAmount" placeholder="Masukkan ETH" step="0.01" oninput="calculateTokens()">
+        <p><strong>Anda akan mendapatkan:</strong> <span id="tokenAmount">0</span> TOKEN</p>
+
+        <button class="btn" onclick="buyTokens()">Beli Token</button>
+        <button class="btn" onclick="claimTokens()">Klaim Token</button>
+
+        <p id="status" style="color: red;"></p>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+      const secretCode = "1234";  // Ganti dengan kode rahasia Anda
+const signatureMessage = "Konfirmasi untuk akses presale token."; // Pesan yang harus ditandatangani
+const contractAddress = "0xYOUR_CONTRACT_ADDRESS"; // Ganti dengan alamat kontrak
+
+const abi = [ 
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "getPresaleProgress",
+        "outputs": [
+            { "name": "percentage", "type": "uint256" },
+            { "name": "raised", "type": "uint256" },
+            { "name": "cap", "type": "uint256" }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [{ "name": "ethAmount", "type": "uint256" }],
+        "name": "getTokenAmount",
+        "outputs": [{ "name": "tokenAmount", "type": "uint256" }],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [],
+        "name": "buyTokens",
+        "outputs": [],
+        "payable": true,
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [],
+        "name": "claimTokens",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+];
+
+let web3;
+let contract;
+let walletAddress = null;
+
+// Cek apakah wallet sudah terkoneksi sebelumnya
+window.onload = async function () {
+    let userCode = prompt("Masukkan Kode Rahasia:");
+    if (userCode !== secretCode) {
+        alert("Kode salah!");
+        window.location.href = "about:blank";
+    } else {
+        document.body.style.display = "block";
+        await checkWallet();
+    }
+};
+
+// Fungsi untuk konek & diskonek wallet
+async function toggleWallet() {
+    if (!walletAddress) {
+        await connectWallet();
+    } else {
+        disconnectWallet();
+    }
+}
+
+// Cek apakah wallet sudah tersimpan di localStorage
+async function checkWallet() {
+    if (window.ethereum) {
+        web3 = new Web3(window.ethereum);
+        const accounts = await web3.eth.getAccounts();
+        if (accounts.length > 0) {
+            walletAddress = accounts[0];
+            await verifySignature(walletAddress); // Verifikasi signature
+            contract = new web3.eth.Contract(abi, contractAddress);
+            document.getElementById("wallet-btn").innerText = "Diskonek Wallet";
+            updateProgress();
+        }
+    }
+}
+
+// Koneksi wallet & verifikasi signature
+async function connectWallet() {
+    if (window.ethereum) {
+        web3 = new Web3(window.ethereum);
+        const accounts = await web3.eth.requestAccounts();
+        walletAddress = accounts[0];
+
+        // Signature keamanan
+        const signature = await web3.eth.personal.sign(signatureMessage, walletAddress, "");
+        localStorage.setItem("walletSignature", signature);
+
+        contract = new web3.eth.Contract(abi, contractAddress);
+        document.getElementById("wallet-btn").innerText = "Diskonek Wallet";
+        updateProgress();
+    } else {
+        alert("Silakan install MetaMask!");
+    }
+}
+
+// Fungsi untuk memverifikasi signature
+async function verifySignature(address) {
+    const storedSignature = localStorage.getItem("walletSignature");
+    if (!storedSignature) {
+        alert("Silakan konek dan verifikasi wallet Anda!");
+        return;
+    }
+
+    // Verifikasi apakah wallet benar-benar pernah menandatangani pesan
+    const signer = await web3.eth.personal.ecRecover(signatureMessage, storedSignature);
+    if (signer.toLowerCase() !== address.toLowerCase()) {
+        alert("Signature tidak valid! Silakan konek ulang.");
+        disconnectWallet();
+    }
+}
+
+// Diskonek wallet
+function disconnectWallet() {
+    walletAddress = null;
+    contract = null;
+    localStorage.removeItem("walletSignature");
+    document.getElementById("wallet-btn").innerText = "Konek Wallet";
+    alert("Wallet terputus!");
+}
+
+// Update progress presale
+async function updateProgress() {
+    if (!contract) return;
+
+    try {
+        const result = await contract.methods.getPresaleProgress().call();
+        let percentage = result.percentage;
+        let raised = web3.utils.fromWei(result.raised, "ether");
+        let cap = web3.utils.fromWei(result.cap, "ether");
+
+        document.getElementById("progress-text").innerText = `${percentage}% (${raised} / ${cap} ETH)`;
+        document.getElementById("progress-bar").style.width = percentage + "%";
+    } catch (error) {
+        console.error("Gagal mendapatkan data presale:", error);
+    }
+}
+
+// Hitung jumlah token yang akan didapat sebelum beli
+async function calculateTokens() {
+    let ethInput = document.getElementById("ethAmount").value;
+    if (!contract || ethInput <= 0) {
+        document.getElementById("tokenAmount").innerText = "0";
+        return;
+    }
+
+    try {
+        const tokenAmount = await contract.methods.getTokenAmount(web3.utils.toWei(ethInput, "ether")).call();
+        document.getElementById("tokenAmount").innerText = web3.utils.fromWei(tokenAmount, "ether");
+    } catch (error) {
+        console.error("Gagal menghitung token:", error);
+    }
+}
+
+// Fungsi beli token
+async function buyTokens() {
+    let ethInput = document.getElementById("ethAmount").value;
+    if (!contract || ethInput <= 0) {
+        alert("Masukkan jumlah ETH yang valid!");
+        return;
+    }
+
+    try {
+        const accounts = await web3.eth.getAccounts();
+        await contract.methods.buyTokens().send({ from: accounts[0], value: web3.utils.toWei(ethInput, "ether") });
+        alert("Berhasil membeli token!");
+        updateProgress();
+    } catch (error) {
+        console.error("Gagal membeli token:", error);
+        alert("Transaksi gagal!");
+    }
+}
+
+// Fungsi klaim token
+async function claimTokens() {
+    if (!contract) return;
+
+    try {
+        const accounts = await web3.eth.getAccounts();
+        await contract.methods.claimTokens().send({ from: accounts[0] });
+        alert("Token berhasil diklaim!");
+    } catch (error) {
+        console.error("Gagal klaim token:", error);
+        alert("Klaim gagal!");
+    }
+  }
+    </script>
+</body>
+</html>
