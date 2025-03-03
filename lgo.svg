@@ -1,12 +1,15 @@
 <svg width="3000px" height="3000px" viewBox="0 0 74.604 74.604" xmlns="http://www.w3.org/2000/svg">
-    <!-- Lapisan Bawah untuk Efek 3D -->
+    <!-- Efek Kedalaman (Sisi 3D) -->
     <g transform="translate(-866.585 -1763.329)">
+        <!-- Bagian samping bawah -->
         <path d="M903.884,1800.629c0,5,0,10,0,15a37.3,37.3,0,0,0,37.3-36h-6a31.3,31.3,0,0,1-31.3,31Z" fill="#0056b3"/>
+        <!-- Bagian samping sisi kanan -->
         <path d="M909.514,1763.8v5a31.3,31.3,0,0,1,31.151,26h5A37.26,37.26,0,0,0,909.514,1763.8Z" fill="#0091cc"/>
     </g>
     
     <!-- Lapisan Utama (Pie Chart) -->
     <g transform="translate(-866.585 -1763.329)">
+        <!-- Bagian depan pie -->
         <path d="M903.884,1763.329a37.3,37.3,0,1,0,37.3,37.3h-37.3Z" fill="url(#grad1)"/>
         <path d="M909.514,1763.8v30.848h31.151A37.26,37.26,0,0,0,909.514,1763.8Z" fill="url(#grad2)"/>
     </g>
