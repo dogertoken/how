@@ -19,12 +19,12 @@
 
         .chart-container {
             position: relative;
-            max-width: 400px;
+            width: 400px;
+            height: 400px;
         }
 
         canvas {
-            filter: drop-shadow(8px 8px 12px rgba(0, 0, 0, 0.5));
-            transform: perspective(600px) rotateX(20deg);
+            filter: drop-shadow(5px 5px 8px rgba(0, 0, 0, 0.5));
         }
     </style>
 </head>
@@ -35,14 +35,33 @@
     </div>
 
     <script>
+        // Buat gradasi untuk efek 3D
+        function createGradient(ctx, color1, color2) {
+            let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, color1);
+            gradient.addColorStop(1, color2);
+            return gradient;
+        }
+
+        // Dapatkan konteks canvas
+        const ctx = document.getElementById('tokenomicsChart').getContext('2d');
+
+        // Warna dengan efek gradasi 3D
+        const backgroundColors = [
+            createGradient(ctx, "#ff6384", "#cc2e56"),
+            createGradient(ctx, "#36a2eb", "#1f6bb8"),
+            createGradient(ctx, "#ffce56", "#d8a100"),
+            createGradient(ctx, "#4bc0c0", "#329292")
+        ];
+
         // Data Tokenomics
         const data = {
             labels: ["Tim (40%)", "Investor (30%)", "Ekosistem (20%)", "Airdrop (10%)"],
             datasets: [{
                 data: [40, 30, 20, 10],
-                backgroundColor: ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0"],
-                hoverOffset: 10, // Efek membesar saat diklik
-                borderWidth: 3, // Tambahkan jarak antar slice
+                backgroundColor: backgroundColors,
+                hoverOffset: 12, // Efek membesar saat diklik
+                borderWidth: 3, // Jarak antar segmen
                 borderColor: "#fff"
             }]
         };
@@ -70,7 +89,6 @@
         };
 
         // Render Chart
-        const ctx = document.getElementById('tokenomicsChart').getContext('2d');
         const tokenomicsChart = new Chart(ctx, config);
     </script>
 
