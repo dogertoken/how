@@ -1,39 +1,20 @@
-<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-        <!-- Gradasi untuk Efek 3D pada Lingkaran -->
-        <radialGradient id="circleGradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" style="stop-color:transparent; stop-opacity:1" />
-            <stop offset="100%" style="stop-color:transparent; stop-opacity:1" />
-        </radialGradient>
-
-        <!-- Batik Motif -->
-        <pattern id="batikPattern" patternUnits="userSpaceOnUse" width="20" height="20">
-            <circle cx="5" cy="5" r="3" fill="rgba(255,255,255,0.3)"/>
-            <circle cx="15" cy="15" r="3" fill="rgba(255,255,255,0.3)"/>
-        </pattern>
-
-        <!-- Efek Cahaya (Shimmer) -->
-        <linearGradient id="shimmer" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="rgba(255,255,255,0.2)"/>
-            <stop offset="50%" stop-color="rgba(255,255,255,0.7)"/>
-            <stop offset="100%" stop-color="rgba(255,255,255,0.2)"/>
-        </linearGradient>
-    </defs>
-
-    <!-- Lingkaran 3D Putih -->
-    <circle cx="250" cy="250" r="200" fill="url(#circleGradient)" stroke="#0055FF" stroke-width="10"/>
-
-    <!-- Kotak Uang Biru (Dibuat Simetris) -->
-    <rect x="150" y="190" width="200" height="120" rx="15" fill="#0055FF" stroke="#80aaff" stroke-width="6"/>
-
-    <!-- Batik di dalam Uang -->
-    <rect x="150" y="190" width="200" height="120" rx="15" fill="url(#batikPattern)"/>
-
-    <!-- Simbol Uang -->
-    <text x="250" y="267" font-size="60" text-anchor="middle" fill="white" font-weight="bold">🎰</text>
-
-    <!-- Efek Cahaya Shimmer -->
-    <rect x="150" y="190" width="200" height="120" rx="15" fill="url(#shimmer)" opacity="0.5">
-        <animate attributeName="x" from="150" to="350" dur="2s" repeatCount="indefinite"/>
-    </rect>
+<svg width="1000px" height="1000px" viewBox="0 0 74.604 74.604" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+  <style>
+    @keyframes shake {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(-2px, 1px); }
+      50% { transform: translate(2px, -1px); }
+      75% { transform: translate(-2px, -1px); }
+      100% { transform: translate(0, 0); }
+    }
+    .shaking {
+      animation: shake 0.3s infinite linear;
+    }
+  </style>
+  <g class="shaking">
+    <g id="pie_chart" data-name="pie chart" transform="translate(-866.585 -1763.329)">
+      <path id="Path_390" data-name="Path 390" d="M903.884,1763.329a37.3,37.3,0,1,0,37.3,37.3h-37.3Z" fill="#007bff"></path>
+      <path id="Path_391" data-name="Path 391" d="M909.514,1763.8v30.848h31.151A37.26,37.26,0,0,0,909.514,1763.8Z" fill="#00b7ff"></path>
+    </g>
+  </g>
 </svg>
