@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tokenomik Pie Chart 3D Interaktif</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             display: flex;
@@ -15,120 +16,52 @@
             font-family: Arial, sans-serif;
         }
 
-        .pie-container {
-            position: relative;
-            width: 300px;
-            height: 300px;
+        canvas {
+            max-width: 400px;
         }
-
-        svg {
-            width: 100%;
-            height: 100%;
-            transform: rotate(-90deg);
-        }
-
-        path {
-            transition: transform 0.4s ease, filter 0.4s ease;
-            transform-origin: center;
-            cursor: pointer;
-        }
-
-        .slice:hover {
-            filter: brightness(1.2);
-        }
-
-        .selected {
-            transform: scale(1.1) translate(10px, 10px);
-            filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.5));
-        }
-
-        .tooltip {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 5px;
-            font-size: 14px;
-            opacity: 0;
-            transition: opacity 0.3s, transform 0.3s;
-            transform: translateY(-10px);
-            pointer-events: none;
-        }
-
-        .legend {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .legend div {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 5px;
-        }
-
-        .legend span {
-            display: inline-block;
-            width: 15px;
-            height: 15px;
-            margin-right: 10px;
-            border-radius: 3px;
-        }
-
-        .tim { background: #ff6384; }
-        .investor { background: #36a2eb; }
-        .ekosistem { background: #ffce56; }
-        .airdrop { background: #4bc0c0; }
-
     </style>
 </head>
 <body>
 
-    <div class="pie-container">
-        <svg viewBox="0 0 32 32">
-            <circle r="16" cx="16" cy="16" fill="white"/>
-            <path class="slice" d="M16,16 L16,0 A16,16 0 0,1 30.97,10.62 Z" fill="#ff6384" data-info="Tim (40%)"></path>
-            <path class="slice" d="M16,16 L30.97,10.62 A16,16 0 0,1 25.88,25.88 Z" fill="#36a2eb" data-info="Investor (30%)"></path>
-            <path class="slice" d="M16,16 L25.88,25.88 A16,16 0 0,1 10.62,30.97 Z" fill="#ffce56" data-info="Ekosistem (20%)"></path>
-            <path class="slice" d="M16,16 L10.62,30.97 A16,16 0 0,1 0,16 Z" fill="#4bc0c0" data-info="Airdrop (10%)"></path>
-        </svg>
-        <div class="tooltip" id="tooltip">Klik untuk melihat detail</div>
-    </div>
-
-    <div class="legend">
-        <div><span class="tim"></span> Tim (40%)</div>
-        <div><span class="investor"></span> Investor (30%)</div>
-        <div><span class="ekosistem"></span> Ekosistem (20%)</div>
-        <div><span class="airdrop"></span> Airdrop (10%)</div>
-    </div>
+    <canvas id="tokenomicsChart"></canvas>
 
     <script>
-        const slices = document.querySelectorAll('.slice');
-        const tooltip = document.getElementById("tooltip");
+        // Data Tokenomics
+        const data = {
+            labels: ["Tim (40%)", "Investor (30%)", "Ekosistem (20%)", "Airdrop (10%)"],
+            datasets: [{
+                data: [40, 30, 20, 10],
+                backgroundColor: ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0"],
+                hoverOffset: 15, // Efek membesar saat diklik
+                borderWidth: 2,
+                borderColor: "#fff"
+            }]
+        };
 
-        slices.forEach(slice => {
-            slice.addEventListener("click", function(event) {
-                // Reset semua slice sebelum memperbesar yang diklik
-                slices.forEach(s => s.classList.remove("selected"));
+        // Konfigurasi Chart
+        const config = {
+            type: 'pie',
+            data: data,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        };
 
-                // Tambahkan efek membesar & naik pada slice yang diklik
-                this.classList.add("selected");
-
-                // Ambil posisi klik untuk menampilkan tooltip
-                let x = event.clientX;
-                let y = event.clientY;
-
-                tooltip.style.left = x + "px";
-                tooltip.style.top = y + "px";
-                tooltip.innerHTML = this.getAttribute("data-info");
-                tooltip.style.opacity = "1";
-
-                // Sembunyikan tooltip setelah 2 detik
-                setTimeout(() => {
-                    tooltip.style.opacity = "0";
-                }, 2000);
-            });
-        });
+        // Render Chart
+        const ctx = document.getElementById('tokenomicsChart').getContext('2d');
+        const tokenomicsChart = new Chart(ctx, config);
     </script>
 
 </body>
