@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tokenomik Pie Chart 3D Interaktif</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <style>
         body {
             display: flex;
@@ -16,14 +17,22 @@
             font-family: Arial, sans-serif;
         }
 
-        canvas {
+        .chart-container {
+            position: relative;
             max-width: 400px;
+        }
+
+        canvas {
+            filter: drop-shadow(8px 8px 12px rgba(0, 0, 0, 0.5));
+            transform: perspective(600px) rotateX(20deg);
         }
     </style>
 </head>
 <body>
 
-    <canvas id="tokenomicsChart"></canvas>
+    <div class="chart-container">
+        <canvas id="tokenomicsChart"></canvas>
+    </div>
 
     <script>
         // Data Tokenomics
@@ -32,8 +41,8 @@
             datasets: [{
                 data: [40, 30, 20, 10],
                 backgroundColor: ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0"],
-                hoverOffset: 15, // Efek membesar saat diklik
-                borderWidth: 2,
+                hoverOffset: 10, // Efek membesar saat diklik
+                borderWidth: 3, // Tambahkan jarak antar slice
                 borderColor: "#fff"
             }]
         };
@@ -44,6 +53,7 @@
             data: data,
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'bottom'
