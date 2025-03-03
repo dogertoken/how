@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tokenomik Pie Chart 3D Interaktif</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+
+        .pie-container {
+            position: relative;
+        }
+
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            transform: rotate(-90deg);
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+        }
+
+        .pie-chart::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #ff6384 0% 40%,       /* 40% Tim */
+                #36a2eb 40% 70%,      /* 30% Investor */
+                #ffce56 70% 90%,      /* 20% Ekosistem */
+                #4bc0c0 90% 100%      /* 10% Airdrop */
+            );
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .pie-chart:active::before {
+            transform: scale(1.1); /* Efek zoom saat ditekan */
+        }
+
+        /* Efek 3D bayangan */
+        .shadow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.2);
+            filter: blur(5px);
+            transform: translateY(8px);
+            z-index: -1;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateY(-10px);
+            pointer-events: none;
+        }
+
+        .pie-container:active .tooltip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Legend */
+        .legend {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .legend div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+
+        .legend span {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            margin-right: 10px;
+            border-radius: 3px;
+        }
+
+        .tim { background: #ff6384; }
+        .investor { background: #36a2eb; }
+        .ekosistem { background: #ffce56; }
+        .airdrop { background: #4bc0c0; }
+
+    </style>
+</head>
+<body>
+
+    <div class="pie-container">
+        <div class="pie-chart" onclick="showTooltip(event)"></div>
+        <div class="shadow"></div>
+        <div class="tooltip" id="tooltip">Klik untuk melihat detail</div>
+    </div>
+
+    <div class="legend">
+        <div><span class="tim"></span> Tim (40%)</div>
+        <div><span class="investor"></span> Investor (30%)</div>
+        <div><span class="ekosistem"></span> Ekosistem (20%)</div>
+        <div><span class="airdrop"></span> Airdrop (10%)</div>
+    </div>
+
+    <script>
+        function showTooltip(event) {
+            let tooltip = document.getElementById("tooltip");
+            let x = event.clientX;
+            let y = event.clientY;
+
+            tooltip.style.left = x + "px";
+            tooltip.style.top = y + "px";
+            tooltip.innerHTML = "Tokenomik: Pembagian Alokasi";
+            tooltip.style.opacity = "1";
+
+            setTimeout(() => {
+                tooltip.style.opacity = "0";
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>
