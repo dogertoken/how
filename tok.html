@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tokenomik Pie Chart 3D Interaktif</title>
+    <title>Tokenomik Pie Chart 3D</title>
     <style>
         body {
             display: flex;
@@ -17,48 +17,45 @@
 
         .pie-container {
             position: relative;
-        }
-
-        .pie-chart {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            position: relative;
-            overflow: hidden;
-            transform: rotate(-90deg);
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+            width: 220px;
+            height: 220px;
+            perspective: 600px;
             cursor: pointer;
         }
 
-        .pie-chart::before {
-            content: "";
-            position: absolute;
+        .pie-chart {
             width: 100%;
             height: 100%;
             border-radius: 50%;
+            position: relative;
             background: conic-gradient(
                 #ff6384 0% 40%,       /* 40% Tim */
                 #36a2eb 40% 70%,      /* 30% Investor */
                 #ffce56 70% 90%,      /* 20% Ekosistem */
                 #4bc0c0 90% 100%      /* 10% Airdrop */
             );
-            transition: transform 0.3s ease-in-out;
+            box-shadow: inset 0px -15px 20px rgba(0, 0, 0, 0.4);
+            transform-style: preserve-3d;
+            transform: rotateX(15deg) rotateY(0deg);
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
         }
 
-        .pie-chart:active::before {
-            transform: scale(1.1); /* Efek zoom saat ditekan */
-        }
-
-        /* Efek 3D bayangan */
-        .shadow {
+        /* Efek tebal pie chart */
+        .pie-chart::after {
+            content: "";
             position: absolute;
             width: 100%;
-            height: 100%;
+            height: 20px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.2), transparent);
             border-radius: 50%;
-            background: rgba(0, 0, 0, 0.2);
-            filter: blur(5px);
-            transform: translateY(8px);
-            z-index: -1;
+            top: 100%;
+            left: 0;
+        }
+
+        /* Efek animasi saat ditekan */
+        .pie-container:active .pie-chart {
+            transform: rotateX(25deg) rotateY(15deg) translateY(-5px);
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         /* Tooltip */
@@ -66,18 +63,13 @@
             position: absolute;
             background: rgba(0, 0, 0, 0.8);
             color: white;
-            padding: 5px 10px;
+            padding: 8px 12px;
             border-radius: 5px;
-            font-size: 12px;
+            font-size: 14px;
             opacity: 0;
             transition: opacity 0.3s, transform 0.3s;
             transform: translateY(-10px);
             pointer-events: none;
-        }
-
-        .pie-container:active .tooltip {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         /* Legend */
@@ -110,9 +102,8 @@
 </head>
 <body>
 
-    <div class="pie-container">
-        <div class="pie-chart" onclick="showTooltip(event)"></div>
-        <div class="shadow"></div>
+    <div class="pie-container" onclick="showTooltip(event)">
+        <div class="pie-chart"></div>
         <div class="tooltip" id="tooltip">Klik untuk melihat detail</div>
     </div>
 
@@ -131,7 +122,7 @@
 
             tooltip.style.left = x + "px";
             tooltip.style.top = y + "px";
-            tooltip.innerHTML = "Tokenomik: Pembagian Alokasi";
+            tooltip.innerHTML = "Tokenomik: Alokasi Persentase";
             tooltip.style.opacity = "1";
 
             setTimeout(() => {
