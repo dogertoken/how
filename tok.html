@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tokenomik Pie Chart 3D</title>
+    <title>Tokenomik Pie Chart 3D Interaktif</title>
     <style>
         body {
             display: flex;
@@ -17,44 +17,41 @@
 
         .pie-container {
             position: relative;
-            width: 220px;
-            height: 220px;
+            width: 250px;
+            height: 250px;
             perspective: 600px;
-            cursor: pointer;
         }
 
         .pie-chart {
+            position: relative;
             width: 100%;
             height: 100%;
-            border-radius: 50%;
-            position: relative;
-            background: conic-gradient(
-                #ff6384 0% 40%,       /* 40% Tim */
-                #36a2eb 40% 70%,      /* 30% Investor */
-                #ffce56 70% 90%,      /* 20% Ekosistem */
-                #4bc0c0 90% 100%      /* 10% Airdrop */
-            );
-            box-shadow: inset 0px -15px 20px rgba(0, 0, 0, 0.4);
             transform-style: preserve-3d;
-            transform: rotateX(15deg) rotateY(0deg);
-            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            transform: rotateX(15deg);
         }
 
-        /* Efek tebal pie chart */
-        .pie-chart::after {
-            content: "";
+        .slice {
             position: absolute;
             width: 100%;
-            height: 20px;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.2), transparent);
-            border-radius: 50%;
-            top: 100%;
-            left: 0;
+            height: 100%;
+            clip-path: polygon(50% 50%, 100% 50%, 100% 0, 50% 0);
+            transform-origin: 50% 50%;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
         }
 
-        /* Efek animasi saat ditekan */
-        .pie-container:active .pie-chart {
-            transform: rotateX(25deg) rotateY(15deg) translateY(-5px);
+        .slice:hover {
+            cursor: pointer;
+        }
+
+        /* Warna masing-masing bagian */
+        .slice-1 { background: #ff6384; transform: rotate(0deg); }
+        .slice-2 { background: #36a2eb; transform: rotate(144deg); }
+        .slice-3 { background: #ffce56; transform: rotate(252deg); }
+        .slice-4 { background: #4bc0c0; transform: rotate(324deg); }
+
+        /* Efek interaktif saat diklik */
+        .selected {
+            transform: translateY(-10px) scale(1.1) !important;
             box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
         }
 
@@ -102,8 +99,13 @@
 </head>
 <body>
 
-    <div class="pie-container" onclick="showTooltip(event)">
-        <div class="pie-chart"></div>
+    <div class="pie-container">
+        <div class="pie-chart">
+            <div class="slice slice-1" data-info="Tim (40%)"></div>
+            <div class="slice slice-2" data-info="Investor (30%)"></div>
+            <div class="slice slice-3" data-info="Ekosistem (20%)"></div>
+            <div class="slice slice-4" data-info="Airdrop (10%)"></div>
+        </div>
         <div class="tooltip" id="tooltip">Klik untuk melihat detail</div>
     </div>
 
@@ -115,20 +117,32 @@
     </div>
 
     <script>
-        function showTooltip(event) {
-            let tooltip = document.getElementById("tooltip");
-            let x = event.clientX;
-            let y = event.clientY;
+        const slices = document.querySelectorAll('.slice');
+        const tooltip = document.getElementById("tooltip");
 
-            tooltip.style.left = x + "px";
-            tooltip.style.top = y + "px";
-            tooltip.innerHTML = "Tokenomik: Alokasi Persentase";
-            tooltip.style.opacity = "1";
+        slices.forEach(slice => {
+            slice.addEventListener("click", function(event) {
+                // Reset semua slice sebelum memperbesar yang diklik
+                slices.forEach(s => s.classList.remove("selected"));
 
-            setTimeout(() => {
-                tooltip.style.opacity = "0";
-            }, 2000);
-        }
+                // Tambahkan efek membesar & naik pada slice yang diklik
+                this.classList.add("selected");
+
+                // Ambil posisi klik untuk menampilkan tooltip
+                let x = event.clientX;
+                let y = event.clientY;
+
+                tooltip.style.left = x + "px";
+                tooltip.style.top = y + "px";
+                tooltip.innerHTML = this.getAttribute("data-info");
+                tooltip.style.opacity = "1";
+
+                // Sembunyikan tooltip setelah 2 detik
+                setTimeout(() => {
+                    tooltip.style.opacity = "0";
+                }, 2000);
+            });
+        });
     </script>
 
 </body>
