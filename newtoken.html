@@ -17,7 +17,7 @@
 </head>
 <body>
 
-    <h1>Token Baru di Solana</h1>
+    <h1>Token Baru di Solana (Jupiter API)</h1>
     
     <label for="filter">Filter:</label>
     <select id="filter" onchange="updateTable()">
@@ -51,19 +51,18 @@
 
         async function getNewTokens() {
             try {
-                const response = await fetch("https://api.geckoterminal.com/api/v2/networks/solana/pools?include=base_token");
+                const response = await fetch("https://token.jup.ag/all");
                 const data = await response.json();
 
-                if (!data.data) throw new Error("Data tidak ditemukan");
-
-                tokensData = data.data.map(pool => ({
-                    name: pool.attributes.base_token.name,
-                    symbol: pool.attributes.base_token.symbol,
-                    price: pool.attributes.price_usd || 0,
-                    volume_24h: pool.attributes.volume_usd.h24 || 0,
-                    price_change_24h: pool.attributes.price_change.h24 || 0,
-                    logo: pool.attributes.base_token.logo_url || 'https://via.placeholder.com/40',
-                    link: `https://www.geckoterminal.com/solana/pools/${pool.id}`
+                // Konversi objek ke array dan filter hanya token yang memiliki harga
+                tokensData = Object.values(data).map(token => ({
+                    name: token.name,
+                    symbol: token.symbol,
+                    price: token.price || 0,
+                    volume_24h: token.volume24h || 0,
+                    price_change_24h: token.change24h || 0,
+                    logo: token.logoURI || 'https://via.placeholder.com/40',
+                    link: `https://jup.ag/swap/${token.address}`
                 }));
 
                 updateTable();
