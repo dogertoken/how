@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana New Tokens</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        h1 { color: #333; }
+        .container { max-width: 900px; margin: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        img { width: 40px; height: 40px; border-radius: 50%; }
+        select { margin: 10px; padding: 5px; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+    <h1>Solana New Tokens</h1>
+    
+    <label for="filter">Filter:</label>
+    <select id="filter" onchange="updateTable()">
+        <option value="new">Token Terbaru</option>
+        <option value="popular">Terpopuler (Volume Tertinggi)</option>
+        <option value="top-gain">Kenaikan Tertinggi</option>
+        <option value="low-price">Harga Terendah</option>
+        <option value="rugpull">Rugpull (Volume & Harga Jatuh)</option>
+    </select>
+
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Logo</th>
+                    <th>Nama Token</th>
+                    <th>Harga</th>
+                    <th>Volume 24h</th>
+                    <th>Perubahan (%)</th>
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody id="token-list">
+                <tr><td colspan="6">Memuat data...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let tokensData = [];
+
+        async function getNewTokens() {
+            try {
+                const response = await fetch("https://public-api.birdeye.so/public/token/new", {
+                    headers: { "X-API-KEY": "YOUR_BIRDEYE_API_KEY" }
+                });
+                const data = await response.json();
+                tokensData = data.data.tokens;
+                updateTable();
+            } catch (error) {
+                document.getElementById("token-list").innerHTML = "<tr><td colspan='6'>Gagal mengambil data.</td></tr>";
+                console.error("Error fetching tokens:", error);
+            }
+        }
+
+        function updateTable() {
+            let filter = document.getElementById("filter").value;
+            let filteredTokens = [...tokensData];
+
+            if (filter === "popular") {
+                filteredTokens.sort((a, b) => b.volume_24h - a.volume_24h);
+            } else if (filter === "top-gain") {
+                filteredTokens.sort((a, b) => b.priceChange24hPercent - a.priceChange24hPercent);
+            } else if (filter === "low-price") {
+                filteredTokens.sort((a, b) => a.price - b.price);
+            } else if (filter === "rugpull") {
+                filteredTokens = filteredTokens.filter(token => token.volume_24h < 10000 && token.priceChange24hPercent < -50);
+            }
+
+            let html = "";
+            filteredTokens.forEach(token => {
+                html += `
+                    <tr>
+                        <td><img src="${token.logoURI || 'https://via.placeholder.com/40'}" alt="Logo"></td>
+                        <td>${token.name} (${token.symbol})</td>
+                        <td>$${parseFloat(token.price).toFixed(4)}</td>
+                        <td>$${parseFloat(token.volume_24h).toLocaleString()}</td>
+                        <td>${token.priceChange24hPercent.toFixed(2)}%</td>
+                        <td><a href="https://birdeye.so/token/${token.address}" target="_blank">Detail</a></td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("token-list").innerHTML = html || "<tr><td colspan='6'>Tidak ada data tersedia.</td></tr>";
+        }
+
+        getNewTokens();
+    </script>
+
+</body>
+</html>
