@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Token Baru di Solana</title>
+    <title>Solana New Tokens</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; }
         h1 { color: #333; }
@@ -51,11 +51,21 @@
 
         async function getNewTokens() {
             try {
-                const response = await fetch("https://api.geckoterminal.com/api/v2/networks/solana/pools", {
-                    headers: { "accept": "application/json" }
-                });
+                const response = await fetch("https://api.geckoterminal.com/api/v2/networks/solana/pools?include=base_token");
                 const data = await response.json();
-                tokensData = data.data;
+
+                if (!data.data) throw new Error("Data tidak ditemukan");
+
+                tokensData = data.data.map(pool => ({
+                    name: pool.attributes.base_token.name,
+                    symbol: pool.attributes.base_token.symbol,
+                    price: pool.attributes.price_usd || 0,
+                    volume_24h: pool.attributes.volume_usd.h24 || 0,
+                    price_change_24h: pool.attributes.price_change.h24 || 0,
+                    logo: pool.attributes.base_token.logo_url || 'https://via.placeholder.com/40',
+                    link: `https://www.geckoterminal.com/solana/pools/${pool.id}`
+                }));
+
                 updateTable();
             } catch (error) {
                 document.getElementById("token-list").innerHTML = "<tr><td colspan='6'>Gagal mengambil data.</td></tr>";
@@ -68,25 +78,25 @@
             let filteredTokens = [...tokensData];
 
             if (filter === "popular") {
-                filteredTokens.sort((a, b) => b.attributes.volume_24h_quote - a.attributes.volume_24h_quote);
+                filteredTokens.sort((a, b) => b.volume_24h - a.volume_24h);
             } else if (filter === "top-gain") {
-                filteredTokens.sort((a, b) => b.attributes.price_change_24h - a.attributes.price_change_24h);
+                filteredTokens.sort((a, b) => b.price_change_24h - a.price_change_24h);
             } else if (filter === "low-price") {
-                filteredTokens.sort((a, b) => a.attributes.price_usd - b.attributes.price_usd);
+                filteredTokens.sort((a, b) => a.price - b.price);
             } else if (filter === "rugpull") {
-                filteredTokens = filteredTokens.filter(token => token.attributes.volume_24h_quote < 10000 && token.attributes.price_change_24h < -50);
+                filteredTokens = filteredTokens.filter(token => token.volume_24h < 10000 && token.price_change_24h < -50);
             }
 
             let html = "";
             filteredTokens.forEach(token => {
                 html += `
                     <tr>
-                        <td><img src="${token.attributes.logo_url || 'https://via.placeholder.com/40'}" alt="Logo"></td>
-                        <td>${token.attributes.name} (${token.attributes.symbol})</td>
-                        <td>$${parseFloat(token.attributes.price_usd).toFixed(4)}</td>
-                        <td>$${parseFloat(token.attributes.volume_24h_quote).toLocaleString()}</td>
-                        <td>${token.attributes.price_change_24h.toFixed(2)}%</td>
-                        <td><a href="https://www.geckoterminal.com/solana/pools/${token.id}" target="_blank">Detail</a></td>
+                        <td><img src="${token.logo}" alt="Logo"></td>
+                        <td>${token.name} (${token.symbol})</td>
+                        <td>$${parseFloat(token.price).toFixed(4)}</td>
+                        <td>$${parseFloat(token.volume_24h).toLocaleString()}</td>
+                        <td>${token.price_change_24h.toFixed(2)}%</td>
+                        <td><a href="${token.link}" target="_blank">Detail</a></td>
                     </tr>
                 `;
             });
