@@ -51,13 +51,16 @@
 
         async function getNewTokens() {
             try {
+                console.log("Mengambil data dari API Jupiter...");
                 const response = await fetch("https://token.jup.ag/all");
-                const data = await response.json();
+                if (!response.ok) throw new Error("Gagal fetch data dari Jupiter");
 
-                // Konversi objek ke array dan filter hanya token yang memiliki harga
+                const data = await response.json();
+                console.log("Data berhasil diambil:", data);
+
                 tokensData = Object.values(data).map(token => ({
-                    name: token.name,
-                    symbol: token.symbol,
+                    name: token.name || "Unknown",
+                    symbol: token.symbol || "N/A",
                     price: token.price || 0,
                     volume_24h: token.volume24h || 0,
                     price_change_24h: token.change24h || 0,
@@ -67,12 +70,13 @@
 
                 updateTable();
             } catch (error) {
-                document.getElementById("token-list").innerHTML = "<tr><td colspan='6'>Gagal mengambil data.</td></tr>";
                 console.error("Error fetching tokens:", error);
+                document.getElementById("token-list").innerHTML = "<tr><td colspan='6'>Gagal mengambil data.</td></tr>";
             }
         }
 
         function updateTable() {
+            console.log("Memperbarui tabel dengan data token...");
             let filter = document.getElementById("filter").value;
             let filteredTokens = [...tokensData];
 
@@ -101,6 +105,7 @@
             });
 
             document.getElementById("token-list").innerHTML = html || "<tr><td colspan='6'>Tidak ada data tersedia.</td></tr>";
+            console.log("Tabel berhasil diperbarui!");
         }
 
         getNewTokens();
