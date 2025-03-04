@@ -145,9 +145,13 @@ input:focus {
 <body>
 
     <div class="container">
+        <h1>Presale Token</h1>        
+    <div class="container">
         <h1>Presale Token</h1>
         <button class="btn" id="wallet-btn" onclick="toggleWallet()">Konek Wallet</button>
         <p id="balance" style="font-weight: bold;"></p>
+        <p id="status" style="color: red;"></p>
+    </div>
         
         <p><strong>Progress:</strong> <span id="progress-text">0% (0 / 100 ETH)</span></p>
         <div class="progress">
@@ -165,63 +169,21 @@ input:focus {
 
     <script src="app.js"></script>
     <script>
-const signatureMessage = "Konfirmasi untuk akses presale token."; // Pesan yang harus ditandatangani
-const contractAddress = "0xYOUR_CONTRACT_ADDRESS"; // Ganti dengan alamat kontrak
+const signatureMessage = "Konfirmasi untuk akses presale token."; 
+const contractAddress = "0xYOUR_CONTRACT_ADDRESS"; 
 
-const abi = [ 
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "getPresaleProgress",
-        "outputs": [
-            { "name": "percentage", "type": "uint256" },
-            { "name": "raised", "type": "uint256" },
-            { "name": "cap", "type": "uint256" }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [{ "name": "ethAmount", "type": "uint256" }],
-        "name": "getTokenAmount",
-        "outputs": [{ "name": "tokenAmount", "type": "uint256" }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [],
-        "name": "buyTokens",
-        "outputs": [],
-        "payable": true,
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [],
-        "name": "claimTokens",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    }
-];
+const abi = [ /* Masukkan ABI Kontrak di sini */ ];
 
 let web3;
 let contract;
 let walletAddress = null;
 
-// Cek apakah wallet sudah terkoneksi sebelumnya
+// Cek status wallet saat halaman dimuat
 window.onload = async function () {
-    document.body.style.display = "block";
     await checkWallet();
 };
-        
-// Fungsi untuk konek & diskonek wallet
+
+// Fungsi untuk toggle koneksi wallet
 async function toggleWallet() {
     if (!walletAddress) {
         await connectWallet();
@@ -230,7 +192,7 @@ async function toggleWallet() {
     }
 }
 
-// Cek apakah wallet sudah tersimpan di localStorage
+// Cek apakah wallet sudah terkoneksi sebelumnya
 async function checkWallet() {
     if (window.ethereum) {
         web3 = new Web3(window.ethereum);
@@ -240,7 +202,6 @@ async function checkWallet() {
             await verifySignature(walletAddress);
             contract = new web3.eth.Contract(abi, contractAddress);
             document.getElementById("wallet-btn").innerText = "Diskonek Wallet";
-            updateProgress();
             getBalance();
         }
     }
@@ -249,23 +210,26 @@ async function checkWallet() {
 // Koneksi wallet & verifikasi signature
 async function connectWallet() {
     if (window.ethereum) {
-        web3 = new Web3(window.ethereum);
-        const accounts = await web3.eth.requestAccounts();
-        walletAddress = accounts[0];
+        try {
+            web3 = new Web3(window.ethereum);
+            const accounts = await web3.eth.requestAccounts();
+            walletAddress = accounts[0];
 
-        const signature = await web3.eth.personal.sign(signatureMessage, walletAddress, "");
-        localStorage.setItem("walletSignature", signature);
+            const signature = await web3.eth.personal.sign(signatureMessage, walletAddress, "");
+            localStorage.setItem("walletSignature", signature);
 
-        contract = new web3.eth.Contract(abi, contractAddress);
-        document.getElementById("wallet-btn").innerText = "Diskonek Wallet";
-        updateProgress();
-        getBalance();
+            contract = new web3.eth.Contract(abi, contractAddress);
+            document.getElementById("wallet-btn").innerText = "Diskonek Wallet";
+            getBalance();
+        } catch (error) {
+            console.error("Gagal menghubungkan wallet:", error);
+        }
     } else {
         alert("Silakan install MetaMask!");
     }
 }
 
-// Fungsi untuk memverifikasi signature
+// Verifikasi signature wallet
 async function verifySignature(address) {
     const storedSignature = localStorage.getItem("walletSignature");
     if (!storedSignature) {
@@ -280,16 +244,20 @@ async function verifySignature(address) {
     }
 }
 
-// Fungsi mendapatkan saldo ETH pengguna
+// Ambil saldo ETH pengguna
 async function getBalance() {
     if (walletAddress) {
-        const balance = await web3.eth.getBalance(walletAddress);
-        const ethBalance = web3.utils.fromWei(balance, "ether");
-        document.getElementById("balance").innerText = `Saldo ETH: ${ethBalance} ETH`;
+        try {
+            const balance = await web3.eth.getBalance(walletAddress);
+            const ethBalance = web3.utils.fromWei(balance, "ether");
+            document.getElementById("balance").innerText = `Saldo ETH: ${ethBalance} ETH`;
+        } catch (error) {
+            console.error("Gagal mengambil saldo:", error);
+        }
     }
 }
 
-// Diskonek wallet
+// Fungsi diskonek wallet
 function disconnectWallet() {
     walletAddress = null;
     contract = null;
@@ -332,23 +300,52 @@ async function calculateTokens() {
     }
 }
 
+ // Fungsi Kalkulasi 
+ const rate = 365487; // 1 ETH = 365487 TOKEN
+
+// Fungsi untuk menghitung estimasi token
+function calculateTokens() {
+    let ethInput = parseFloat(document.getElementById("ethAmount").value);
+    let tokenAmount = 0;
+
+    // Cek jika input valid dan lebih besar dari 0
+    if (!isNaN(ethInput) && ethInput > 0) {
+        tokenAmount = ethInput * rate; // Menghitung estimasi token
+    }
+
+    // Tampilkan hasil estimasi
+    document.getElementById("tokenAmount").innerText = tokenAmount.toLocaleString(); // Format angka
+}
+
 // Fungsi beli token
 async function buyTokens() {
-    let ethInput = document.getElementById("ethAmount").value;
-    if (!contract || ethInput <= 0) {
-        alert("Masukkan jumlah ETH yang valid!");
+    let ethInput = parseFloat(document.getElementById("ethAmount").value);
+    
+    if (!contract || isNaN(ethInput) || ethInput < 0.05 || ethInput > 10) {
+        alert("Masukkan jumlah ETH yang valid! (Minimal 0.05 ETH, Maksimal 10 ETH)");
         return;
     }
 
     try {
-        const accounts = await web3.eth.getAccounts();
-        await contract.methods.buyTokens().send({ from: accounts[0], value: web3.utils.toWei(ethInput, "ether") });
-        alert("Berhasil membeli token!");
-        updateProgress();
-        getBalance();
+        const weiAmount = web3.utils.toWei(ethInput.toString(), "ether");
+
+        // Pastikan pengguna sudah konek wallet
+        if (!walletAddress) {
+            alert("Silakan konek wallet terlebih dahulu!");
+            return;
+        }
+
+        // Kirim transaksi ke kontrak
+        const transaction = await web3.eth.sendTransaction({
+            from: walletAddress,
+            to: contractAddress,
+            value: weiAmount
+        });
+
+        alert("Pembelian berhasil! Tx Hash: " + transaction.transactionHash);
     } catch (error) {
         console.error("Gagal membeli token:", error);
-        alert("Transaksi gagal!");
+        alert("Transaksi gagal. Coba lagi.");
     }
 }
 
@@ -358,8 +355,26 @@ async function claimTokens() {
 
     try {
         const accounts = await web3.eth.getAccounts();
+        
+        // Ambil jumlah token yang bisa diklaim
+        let claimableTokens = await contract.methods.getClaimableTokens(accounts[0]).call();
+        
+        // Konversi jumlah token (jika perlu, tergantung pada desimal token)
+        let formattedTokens = web3.utils.fromWei(claimableTokens, "ether");
+
+        if (claimableTokens <= 0) {
+            alert("Tidak ada token yang bisa diklaim.");
+            return;
+        }
+
+        // Konfirmasi ke pengguna
+        let confirmClaim = confirm(`Anda akan mengklaim ${formattedTokens} token. Lanjutkan?`);
+        if (!confirmClaim) return;
+
+        // Eksekusi transaksi klaim
         await contract.methods.claimTokens().send({ from: accounts[0] });
-        alert("Token berhasil diklaim!");
+
+        alert(`Berhasil mengklaim ${formattedTokens} token!`);
     } catch (error) {
         console.error("Gagal klaim token:", error);
         alert("Klaim gagal!");
