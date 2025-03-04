@@ -51,9 +51,9 @@
 
         async function getNewTokens() {
             try {
-                const response = await fetch("https://api.dexscreener.com/latest/dex/tokens/solana");
+                const response = await fetch("https://api.dexscreener.com/latest/dex/pairs/solana");
                 const data = await response.json();
-                tokensData = data.pairs; // Sesuai struktur API Dexscreener
+                tokensData = data.pairs; // Menggunakan pasangan token terbaru
                 updateTable();
             } catch (error) {
                 document.getElementById("token-list").innerHTML = "<tr><td colspan='6'>Gagal mengambil data.</td></tr>";
@@ -79,7 +79,7 @@
             filteredTokens.forEach(token => {
                 html += `
                     <tr>
-                        <td><img src="${token.info.imageUrl || 'https://via.placeholder.com/40'}" alt="Logo"></td>
+                        <td><img src="${token.info?.imageUrl || 'https://via.placeholder.com/40'}" alt="Logo"></td>
                         <td>${token.baseToken.name} (${token.baseToken.symbol})</td>
                         <td>$${parseFloat(token.priceUsd).toFixed(4)}</td>
                         <td>$${parseFloat(token.volume.h24).toLocaleString()}</td>
