@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solana New Tokens</title>
+    <title>Token Baru di Solana</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; }
         h1 { color: #333; }
@@ -17,7 +17,7 @@
 </head>
 <body>
 
-    <h1>Solana New Tokens</h1>
+    <h1>Token Baru di Solana</h1>
     
     <label for="filter">Filter:</label>
     <select id="filter" onchange="updateTable()">
@@ -51,9 +51,11 @@
 
         async function getNewTokens() {
             try {
-                const response = await fetch("https://api.dexscreener.com/latest/dex/pairs/solana");
+                const response = await fetch("https://api.geckoterminal.com/api/v2/networks/solana/pools", {
+                    headers: { "accept": "application/json" }
+                });
                 const data = await response.json();
-                tokensData = data.pairs; // Menggunakan pasangan token terbaru
+                tokensData = data.data;
                 updateTable();
             } catch (error) {
                 document.getElementById("token-list").innerHTML = "<tr><td colspan='6'>Gagal mengambil data.</td></tr>";
@@ -66,25 +68,25 @@
             let filteredTokens = [...tokensData];
 
             if (filter === "popular") {
-                filteredTokens.sort((a, b) => b.volume.h24 - a.volume.h24);
+                filteredTokens.sort((a, b) => b.attributes.volume_24h_quote - a.attributes.volume_24h_quote);
             } else if (filter === "top-gain") {
-                filteredTokens.sort((a, b) => b.priceChange.h24 - a.priceChange.h24);
+                filteredTokens.sort((a, b) => b.attributes.price_change_24h - a.attributes.price_change_24h);
             } else if (filter === "low-price") {
-                filteredTokens.sort((a, b) => a.priceUsd - b.priceUsd);
+                filteredTokens.sort((a, b) => a.attributes.price_usd - b.attributes.price_usd);
             } else if (filter === "rugpull") {
-                filteredTokens = filteredTokens.filter(token => token.volume.h24 < 10000 && token.priceChange.h24 < -50);
+                filteredTokens = filteredTokens.filter(token => token.attributes.volume_24h_quote < 10000 && token.attributes.price_change_24h < -50);
             }
 
             let html = "";
             filteredTokens.forEach(token => {
                 html += `
                     <tr>
-                        <td><img src="${token.info?.imageUrl || 'https://via.placeholder.com/40'}" alt="Logo"></td>
-                        <td>${token.baseToken.name} (${token.baseToken.symbol})</td>
-                        <td>$${parseFloat(token.priceUsd).toFixed(4)}</td>
-                        <td>$${parseFloat(token.volume.h24).toLocaleString()}</td>
-                        <td>${token.priceChange.h24.toFixed(2)}%</td>
-                        <td><a href="https://dexscreener.com/solana/${token.pairAddress}" target="_blank">Detail</a></td>
+                        <td><img src="${token.attributes.logo_url || 'https://via.placeholder.com/40'}" alt="Logo"></td>
+                        <td>${token.attributes.name} (${token.attributes.symbol})</td>
+                        <td>$${parseFloat(token.attributes.price_usd).toFixed(4)}</td>
+                        <td>$${parseFloat(token.attributes.volume_24h_quote).toLocaleString()}</td>
+                        <td>${token.attributes.price_change_24h.toFixed(2)}%</td>
+                        <td><a href="https://www.geckoterminal.com/solana/pools/${token.id}" target="_blank">Detail</a></td>
                     </tr>
                 `;
             });
