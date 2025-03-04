@@ -6,153 +6,93 @@
     <title>Presale Token</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.4/web3.min.js"></script>
     <style>
-        /* 1. Body dengan latar belakang galaksi dan planet */
-body {
-    font-family: 'Arial', sans-serif;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    color: white;
-    background: black;
-}
+        /* Styling dengan animasi */
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            color: white;
+            background: black;
+        }
 
-/* 2. Animasi latar belakang bintang */
-@keyframes stars {
-    0% { background-position: 0 0; }
-    100% { background-position: 10000px 10000px; }
-}
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://source.unsplash.com/1600x900/?milkyway,galaxy,stars') no-repeat center center/cover;
+            z-index: -2;
+        }
 
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
+        .container {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            position: relative;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
 
-/* 3. Background dengan bintang dan planet */
-body::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('https://source.unsplash.com/1600x900/?milkyway,galaxy,stars') no-repeat center center/cover;
-    animation: stars 200s linear infinite;
-    z-index: -2;
-}
+        .btn {
+            padding: 12px 20px;
+            cursor: pointer;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
 
-body::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 300px;
-    height: 300px;
-    background: url('https://source.unsplash.com/400x400/?planet,saturn,space') no-repeat center center/cover;
-    transform-origin: center;
-    animation: rotate 100s linear infinite;
-    z-index: -1;
-}
+        .btn:hover {
+            background: linear-gradient(45deg, #ff4b2b, #ff416c);
+        }
 
-/* 4. Container utama */
-.container {
-    width: 50%;
-    margin: auto;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 15px;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-}
+        .progress {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-top: 10px;
+        }
 
-/* 5. Tombol */
-.btn {
-    padding: 12px 20px;
-    margin: 10px;
-    cursor: pointer;
-    background: linear-gradient(45deg, #ff416c, #ff4b2b);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: 0.3s;
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
-}
+        .progress-bar {
+            height: 20px;
+            background: linear-gradient(45deg, #00ffcc, #00ff99);
+            width: 0%;
+            border-radius: 10px;
+            transition: width 0.5s;
+        }
 
-.btn:hover {
-    background: linear-gradient(45deg, #ff4b2b, #ff416c);
-    box-shadow: 0 0 15px rgba(255, 0, 0, 1);
-}
+        input {
+            padding: 10px;
+            margin: 5px;
+            width: 120px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
 
-/* 6. Tombol Wallet */
-#wallet-btn {
-    background: linear-gradient(45deg, #ff0000, #8b0000);
-    box-shadow: 0 0 10px rgba(255, 69, 0, 0.8);
-}
-
-#wallet-btn:hover {
-    background: linear-gradient(45deg, #8b0000, #ff0000);
-    box-shadow: 0 0 15px rgba(255, 69, 0, 1);
-}
-
-/* 7. Progress bar */
-.progress {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    margin-top: 10px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 20px;
-    background: linear-gradient(45deg, #00ffcc, #00ff99);
-    width: 0%;
-    border-radius: 10px;
-    transition: width 0.5s;
-}
-
-/* 8. Input field */
-input {
-    padding: 10px;
-    margin: 5px;
-    width: 120px;
-    text-align: center;
-    border: none;
-    border-radius: 5px;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 16px;
-    outline: none;
-    transition: 0.3s;
-}
-
-input:focus {
-    background: rgba(255, 255, 255, 0.4);
-}
-
-/* 9. Animasi tambahan */
-@keyframes glow {
-    0% { box-shadow: 0 0 10px #ff416c; }
-    50% { box-shadow: 0 0 20px #ff4b2b; }
-    100% { box-shadow: 0 0 10px #ff416c; }
-}
-
-.btn, #wallet-btn {
-    animation: glow 1.5s infinite alternate;
-}
+        input:focus {
+            background: rgba(255, 255, 255, 0.4);
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Presale Token</h1>        
-    <div class="container">
         <h1>Presale Token</h1>
         <button class="btn" id="wallet-btn" onclick="toggleWallet()">Konek Wallet</button>
-        <p id="balance" style="font-weight: bold;"></p>
-        <p id="status" style="color: red;"></p>
-    </div>
-        
+        <p id="balance"></p>
         <p><strong>Progress:</strong> <span id="progress-text">0% (0 / 100 ETH)</span></p>
         <div class="progress">
             <div id="progress-bar" class="progress-bar"></div>
@@ -167,220 +107,108 @@ input:focus {
         <p id="status" style="color: red;"></p>
     </div>
 
-    <script src="app.js"></script>
     <script>
-const signatureMessage = "Konfirmasi untuk akses presale token."; 
-const contractAddress = "0xYOUR_CONTRACT_ADDRESS"; 
+        const contractAddress = "0xYOUR_CONTRACT_ADDRESS";
+        const abi = [ /* ABI Kontrak */ ];
+        let web3, contract, walletAddress = null;
+        const rate = 365487;
 
-const abi = [ /* Masukkan ABI Kontrak di sini */ ];
-
-let web3;
-let contract;
-let walletAddress = null;
-
-// Cek status wallet saat halaman dimuat
-window.onload = async function () {
-    await checkWallet();
-};
-
-// Fungsi untuk toggle koneksi wallet
-async function toggleWallet() {
-    if (!walletAddress) {
-        await connectWallet();
-    } else {
-        disconnectWallet();
-    }
-}
-
-// Cek apakah wallet sudah terkoneksi sebelumnya
-async function checkWallet() {
-    if (window.ethereum) {
-        web3 = new Web3(window.ethereum);
-        const accounts = await web3.eth.getAccounts();
-        if (accounts.length > 0) {
-            walletAddress = accounts[0];
-            await verifySignature(walletAddress);
-            contract = new web3.eth.Contract(abi, contractAddress);
-            document.getElementById("wallet-btn").innerText = "Diskonek Wallet";
-            getBalance();
-        }
-    }
-}
-
-// Koneksi wallet & verifikasi signature
-async function connectWallet() {
-    if (window.ethereum) {
-        try {
-            web3 = new Web3(window.ethereum);
-            const accounts = await web3.eth.requestAccounts();
-            walletAddress = accounts[0];
-
-            const signature = await web3.eth.personal.sign(signatureMessage, walletAddress, "");
-            localStorage.setItem("walletSignature", signature);
-
-            contract = new web3.eth.Contract(abi, contractAddress);
-            document.getElementById("wallet-btn").innerText = "Diskonek Wallet";
-            getBalance();
-        } catch (error) {
-            console.error("Gagal menghubungkan wallet:", error);
-        }
-    } else {
-        alert("Silakan install MetaMask!");
-    }
-}
-
-// Verifikasi signature wallet
-async function verifySignature(address) {
-    const storedSignature = localStorage.getItem("walletSignature");
-    if (!storedSignature) {
-        alert("Silakan konek dan verifikasi wallet Anda!");
-        return;
-    }
-
-    const signer = await web3.eth.personal.ecRecover(signatureMessage, storedSignature);
-    if (signer.toLowerCase() !== address.toLowerCase()) {
-        alert("Signature tidak valid! Silakan konek ulang.");
-        disconnectWallet();
-    }
-}
-
-// Ambil saldo ETH pengguna
-async function getBalance() {
-    if (walletAddress) {
-        try {
-            const balance = await web3.eth.getBalance(walletAddress);
-            const ethBalance = web3.utils.fromWei(balance, "ether");
-            document.getElementById("balance").innerText = `Saldo ETH: ${ethBalance} ETH`;
-        } catch (error) {
-            console.error("Gagal mengambil saldo:", error);
-        }
-    }
-}
-
-// Fungsi diskonek wallet
-function disconnectWallet() {
-    walletAddress = null;
-    contract = null;
-    localStorage.removeItem("walletSignature");
-    document.getElementById("wallet-btn").innerText = "Konek Wallet";
-    document.getElementById("balance").innerText = "";
-    alert("Wallet terputus!");
-}
-
-// Update progress presale
-async function updateProgress() {
-    if (!contract) return;
-
-    try {
-        const result = await contract.methods.getPresaleProgress().call();
-        let percentage = result.percentage;
-        let raised = web3.utils.fromWei(result.raised, "ether");
-        let cap = web3.utils.fromWei(result.cap, "ether");
-
-        document.getElementById("progress-text").innerText = `${percentage}% (${raised} / ${cap} ETH)`;
-        document.getElementById("progress-bar").style.width = percentage + "%";
-    } catch (error) {
-        console.error("Gagal mendapatkan data presale:", error);
-    }
-}
-
-// Hitung jumlah token yang akan didapat sebelum beli
-async function calculateTokens() {
-    let ethInput = document.getElementById("ethAmount").value;
-    if (!contract || ethInput <= 0) {
-        document.getElementById("tokenAmount").innerText = "0";
-        return;
-    }
-
-    try {
-        const tokenAmount = await contract.methods.getTokenAmount(web3.utils.toWei(ethInput, "ether")).call();
-        document.getElementById("tokenAmount").innerText = web3.utils.fromWei(tokenAmount, "ether");
-    } catch (error) {
-        console.error("Gagal menghitung token:", error);
-    }
-}
-
- // Fungsi Kalkulasi 
- const rate = 365487; // 1 ETH = 365487 TOKEN
-
-// Fungsi untuk menghitung estimasi token
-function calculateTokens() {
-    let ethInput = parseFloat(document.getElementById("ethAmount").value);
-    let tokenAmount = 0;
-
-    // Cek jika input valid dan lebih besar dari 0
-    if (!isNaN(ethInput) && ethInput > 0) {
-        tokenAmount = ethInput * rate; // Menghitung estimasi token
-    }
-
-    // Tampilkan hasil estimasi
-    document.getElementById("tokenAmount").innerText = tokenAmount.toLocaleString(); // Format angka
-}
-
-// Fungsi beli token
-async function buyTokens() {
-    let ethInput = parseFloat(document.getElementById("ethAmount").value);
-    
-    if (!contract || isNaN(ethInput) || ethInput < 0.05 || ethInput > 10) {
-        alert("Masukkan jumlah ETH yang valid! (Minimal 0.05 ETH, Maksimal 10 ETH)");
-        return;
-    }
-
-    try {
-        const weiAmount = web3.utils.toWei(ethInput.toString(), "ether");
-
-        // Pastikan pengguna sudah konek wallet
-        if (!walletAddress) {
-            alert("Silakan konek wallet terlebih dahulu!");
-            return;
+        async function toggleWallet() {
+            if (!walletAddress) {
+                await connectWallet();
+            } else {
+                disconnectWallet();
+            }
         }
 
-        // Kirim transaksi ke kontrak
-        const transaction = await web3.eth.sendTransaction({
-            from: walletAddress,
-            to: contractAddress,
-            value: weiAmount
-        });
+        async function connectWallet() {
+            if (window.ethereum) {
+                try {
+                    web3 = new Web3(window.ethereum);
+                    const accounts = await web3.eth.requestAccounts();
+                    walletAddress = accounts[0];
+                    contract = new web3.eth.Contract(abi, contractAddress);
+                    document.getElementById("wallet-btn").innerText = "Diskonek Wallet";
+                    getBalance();
+                } catch (error) {
+                    alert("Gagal koneksi wallet!");
+                }
+            } else {
+                alert("Silakan install MetaMask!");
+            }
+        }
 
-        alert("Pembelian berhasil! Tx Hash: " + transaction.transactionHash);
-    } catch (error) {
-        console.error("Gagal membeli token:", error);
-        alert("Transaksi gagal. Coba lagi.");
-    }
-}
+        function disconnectWallet() {
+            walletAddress = null;
+            contract = null;
+            document.getElementById("wallet-btn").innerText = "Konek Wallet";
+            document.getElementById("balance").innerText = "";
+            alert("Wallet terputus!");
+        }
 
-// Fungsi klaim token
+        async function getBalance() {
+            if (walletAddress) {
+                try {
+                    const balance = await web3.eth.getBalance(walletAddress);
+                    document.getElementById("balance").innerText = `Saldo ETH: ${web3.utils.fromWei(balance, "ether")} ETH`;
+                } catch (error) {
+                    console.error("Gagal mengambil saldo:", error);
+                }
+            }
+        }
+
+        function calculateTokens() {
+            let ethInput = parseFloat(document.getElementById("ethAmount").value);
+            document.getElementById("tokenAmount").innerText = ethInput > 0 ? (ethInput * rate).toLocaleString() : "0";
+        }
+
+        async function buyTokens() {
+            let ethInput = parseFloat(document.getElementById("ethAmount").value);
+            if (!walletAddress || isNaN(ethInput) || ethInput < 0.05 || ethInput > 10) {
+                alert("Masukkan jumlah ETH yang valid!");
+                return;
+            }
+
+            try {
+                await web3.eth.sendTransaction({
+                    from: walletAddress,
+                    to: contractAddress,
+                    value: web3.utils.toWei(ethInput.toString(), "ether")
+                });
+
+                alert("Pembelian berhasil!");
+            } catch (error) {
+                alert("Transaksi gagal!");
+            }
+        }
+
+        // Fungsi klaim token
 async function claimTokens() {
-    if (!contract) return;
+    if (!contract) {
+        alert("Kontrak belum terhubung!");
+        return;
+    }
 
     try {
         const accounts = await web3.eth.getAccounts();
-        
-        // Ambil jumlah token yang bisa diklaim
-        let claimableTokens = await contract.methods.getClaimableTokens(accounts[0]).call();
-        
-        // Konversi jumlah token (jika perlu, tergantung pada desimal token)
-        let formattedTokens = web3.utils.fromWei(claimableTokens, "ether");
+        const claimableTokens = await contract.methods.getClaimableTokens(accounts[0]).call();
 
+        // Pastikan ada token yang bisa diklaim
         if (claimableTokens <= 0) {
             alert("Tidak ada token yang bisa diklaim.");
             return;
         }
 
-        // Konfirmasi ke pengguna
-        let confirmClaim = confirm(`Anda akan mengklaim ${formattedTokens} token. Lanjutkan?`);
-        if (!confirmClaim) return;
-
-        // Eksekusi transaksi klaim
+        // Panggil fungsi klaim dari kontrak
         await contract.methods.claimTokens().send({ from: accounts[0] });
 
-        alert(`Berhasil mengklaim ${formattedTokens} token!`);
+        alert("Token berhasil diklaim!");
     } catch (error) {
-        console.error("Gagal klaim token:", error);
-        alert("Klaim gagal!");
+        console.error("Gagal mengklaim token:", error);
+        alert("Terjadi kesalahan saat mengklaim token. Silakan coba lagi.");
     }
 }
-</script>
+    </script>
 
 </body>
 </html>
