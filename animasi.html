@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buaya 3D dengan Three.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <script>
+        // Setup scene, kamera, dan renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Buat tubuh buaya (kotak hijau)
+        const bodyGeometry = new THREE.BoxGeometry(3, 1, 1);
+        const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0x228B22 });
+        const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+        scene.add(body);
+
+        // Buat kepala buaya (kotak kecil)
+        const headGeometry = new THREE.BoxGeometry(1.5, 0.8, 0.8);
+        const headMaterial = new THREE.MeshBasicMaterial({ color: 0x228B22 });
+        const head = new THREE.Mesh(headGeometry, headMaterial);
+        head.position.set(2.25, 0, 0);
+        scene.add(head);
+
+        // Buat mata buaya (bola putih)
+        const eyeGeometry = new THREE.SphereGeometry(0.15, 32, 32);
+        const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+        const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+        leftEye.position.set(2.7, 0.3, 0.3);
+        rightEye.position.set(2.7, 0.3, -0.3);
+        scene.add(leftEye, rightEye);
+
+        // Buat bola mata hitam
+        const pupilGeometry = new THREE.SphereGeometry(0.07, 32, 32);
+        const pupilMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        const leftPupil = new THREE.Mesh(pupilGeometry, pupilMaterial);
+        const rightPupil = new THREE.Mesh(pupilGeometry, pupilMaterial);
+        leftPupil.position.set(2.8, 0.3, 0.3);
+        rightPupil.position.set(2.8, 0.3, -0.3);
+        scene.add(leftPupil, rightPupil);
+
+        // Buat ekor buaya
+        const tailGeometry = new THREE.BoxGeometry(2, 0.6, 0.6);
+        const tail = new THREE.Mesh(tailGeometry, bodyMaterial);
+        tail.position.set(-2.5, 0, 0);
+        scene.add(tail);
+
+        // Buat animasi menggigit
+        function animate() {
+            requestAnimationFrame(animate);
+            head.rotation.x = Math.sin(Date.now() * 0.005) * 0.3; // Gerakan naik turun kepala
+            renderer.render(scene, camera);
+        }
+
+        // Posisi awal kamera
+        camera.position.z = 5;
+
+        animate(); // Jalankan animasi
+    </script>
+</body>
+</html>
