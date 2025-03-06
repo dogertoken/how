@@ -432,6 +432,8 @@ button:hover {
 </ul>
 </div>
 
+        <div id="google_translate_element"></div>
+        
         <!-- Join Section -->
         <div id="join" class="section-box">
             <center><h2>Join Lotto Chain Now!</h2></center>
@@ -452,6 +454,20 @@ button:hover {
         function toggleMenu() {
             document.querySelector(".nav-links").classList.toggle("active");
         }
+    </script>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'id', // Ganti sesuai bahasa default situsmu
+                includedLanguages: 'af,ar,az,be,bg,bn,ca,cs,cy,da,de,el,en,eo,es,et,eu,fa,fi,fr,ga,gl,gu,he,hi,hr,hu,hy,id,is,it,ja,ka,kk,km,kn,ko,ky,la,lt,lv,mk,ml,mn,mr,ms,mt,my,ne,nl,no,pa,pl,pt,ro,ru,si,sk,sl,sq,sr,sv,sw,ta,te,th,tl,tr,uk,ur,uz,vi,zh,zu', // Tambahkan bahasa yang ingin disertakan
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+
+    <script type="text/javascript" 
+        src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
     </script>
 
 </body>
