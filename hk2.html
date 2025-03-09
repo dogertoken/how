@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decentralized Lotto</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.10.0/ethers.umd.min.js"></script>
+    <script defer src="script.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        button { padding: 10px; margin: 10px; cursor: pointer; }
+        input { padding: 8px; margin: 10px; }
+    </style>
+</head>
+<body>
+
+    <h2>Decentralized Lotto - Base Testnet</h2>
+    <button id="walletButton">Connect Wallet</button>
+    <p id="walletAddress">Not Connected</p>
+
+    <h3>Place a Bet</h3>
+    <input type="number" id="betNumber" placeholder="Enter number (0-9999)" min="0" max="9999">
+    <input type="number" id="betTimes" placeholder="Number of bets (1-99)" min="1" max="99">
+    <select id="betCurrency">
+        <option value="ETH">ETH</option>
+        <option value="USDT">USDT</option>
+    </select>
+    <button onclick="placeBet()">Place Bet</button>
+    <style>
+      const provider = new ethers.BrowserProvider(window.ethereum);
+let signer, userAddress;
+const contractAddress = "0xYourContractAddress"; // Ganti dengan alamat kontrak di Base Testnet
+const usdtAddress = "0xYourUSDTAddress"; // Ganti dengan alamat USDT di Base Testnet
+
+const contractABI = [
+    "function placeBet(uint256, uint256, bool) external payable",
+    "function claimETH() external",
+    "function claimUSDT() external",
+    "function contractETHBalance() external view returns (uint256)",
+    "function contractUSDTBalance() external view returns (uint256)"
+];
+
+let contract;
+
+// **Konektor Wallet**
+document.getElementById("walletButton").addEventListener("click", async () => {
+    if (!window.ethereum) return alert("MetaMask not detected!");
+
+    try {
+        const accounts = await provider.send("eth_requestAccounts", []);
+        signer = await provider.getSigner();
+        userAddress = await signer.getAddress();
+
+        document.getElementById("walletAddress").innerText = `Connected: ${userAddress}`;
+        document.getElementById("walletButton").innerText = "Disconnect Wallet";
+
+        contract = new ethers.Contract(contractAddress, contractABI, signer);
+    } catch (error) {
+        console.error("Wallet connection failed", error);
+    }
+});
+
+// **Pasang Taruhan**
+async function placeBet() {
+    if (!contract || !signer) return alert("Connect wallet first!");
+
+    const betNumber = document.getElementById("betNumber").value;
+    const betTimes = document.getElementById("betTimes").value;
+    const isETH = document.getElementById("betCurrency").value === "ETH";
+    const ethBetPrice = ethers.parseEther("0.0001");
+    const usdtBetPrice = 500000; // 0.5 USDT (6 desimal)
+
+    const totalCost = isETH ? ethBetPrice * BigInt(betTimes) : usdtBetPrice * betTimes;
+
+    try {
+        let tx;
+        if (isETH) {
+            tx = await contract.placeBet(betNumber, betTimes, true, { value: totalCost });
+        } else {
+            const usdtContract = new ethers.Contract(usdtAddress, ["function approve(address, uint256) public returns (bool)"], signer);
+            await usdtContract.approve(contractAddress, totalCost);
+            tx = await contract.placeBet(betNumber, betTimes, false);
+        }
+
+        await tx.wait();
+        alert("Bet placed successfully!");
+    } catch (error) {
+        console.error("Bet failed", error);
+        alert("Bet failed! Check console for details.");
+    }
+    }
+    </style>
+</body>
+</html>
