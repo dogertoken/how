@@ -142,8 +142,8 @@
     <p id="ethBalance">ETH Balance: -</p>
     <p id="usdtBalance">USDT Balance: -</p>
     <p id="signature">Signature: -</p>
+
 <div class="section-box">
-  
     <h3>Choose Numbers</h3><br>
     <div class="input-container">
         <input type="number" id="num1" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
@@ -187,7 +187,16 @@
 </div>
     
 <script>
-        let web3;
+
+        function updateBetPrice() {
+            const currency = document.getElementById("currency").value;
+            const powerPlay = document.getElementById("powerplay").checked;
+            let price = (currency === "ETH") ? 0.00072 : 2;
+            if (powerPlay) price *= 1.5;
+            document.getElementById("betPrice").innerText = `Bet Price: ${price} ${currency}`;
+        }
+
+let web3;
         let account;
         const contractAddress = "0xYourContractAddress"; // Ganti dengan alamat smart contract
         const contractABI = [ /* Copy ABI Smart Contract di sini */ ];
@@ -330,8 +339,38 @@
                 console.error("Failed to fetch bet history", error);
                 document.getElementById("betHistory").innerText = "Failed to load history.";
             }
-        }
+                }
+
+    function validateInput(input) {
+    let value = input.value;
+    
+    // Batasi maksimal 2 digit
+    if (value.length > 2) {
+        input.value = value.slice(0, 2);
+    }
+
+    // Pastikan angka dalam rentang 1-69
+    if (value !== "" && (parseInt(value) < 1 || parseInt(value) > 69)) {
+        input.value = "";
+    }
+}
+
+    function validateInputII(input) {
+    let value = input.value;
+    
+    // Batasi maksimal 2 digit
+    if (value.length > 2) {
+        input.value = value.slice(0, 2);
+    }
+
+    // Pastikan angka dalam rentang 1-69
+    if (value !== "" && (parseInt(value) < 1 || parseInt(value) > 26)) {
+        input.value = "";
+    }
+    }
+
+        document.getElementById("currency").addEventListener("change", updateBetPrice);
 </script>
-            
+
 </body>
-  </html>
+</html>
