@@ -10,11 +10,13 @@
 
     <h2>Crypto Betting Platform</h2>
 
-    <!-- Tombol Koneksi Wallet -->
-    <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
-    <p id="walletAddress">Not connected</p>
-    <p id="ethBalance">ETH Balance: -</p>
-    <p id="usdtBalance">USDT Balance: -</p>
+    
+<!-- HTML Wallet Connector -->
+<button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
+<p id="walletAddress">Not connected</p>
+<p id="ethBalance">ETH Balance: -</p>
+<p id="usdtBalance">USDT Balance: -</p>
+<p id="signature">Signature: -</p>
 
     <script>
     let web3;
@@ -147,14 +149,7 @@
         document.getElementById("usdtBalance").innerText = `USDT Balance: ${web3.utils.fromWei(balanceUSDT, "mwei")} USDT`;
     }
 
-</script>
-
-<!-- HTML Wallet Connector -->
-<button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
-<p id="walletAddress">Not connected</p>
-<p id="ethBalance">ETH Balance: -</p>
-<p id="usdtBalance">USDT Balance: -</p>
-<p id="signature">Signature: -</p>
+    </script>
 
 </body>
 </html>
