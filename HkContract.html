@@ -7,12 +7,12 @@ interface IERC20 {
     function balanceOf(address account) external view returns (uint256);
 }
 
-contract DecentralizedLotto {
+contract LottoChainDecentralizedHKPool {
     address public owner;
     address public USDT;
     uint256 public minBet = 1;
     uint256 public maxBet = 99;
-    uint256 public ethBetPrice = 0.0001 ether;
+    uint256 public ethBetPrice = 0.000175 ether;
     uint256 public usdtBetPrice = 0.5 * 10**6; // 0.5 USDT (USDT 6 decimal)
 
     struct Bet {
