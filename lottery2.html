@@ -12,7 +12,6 @@
     <p id="walletAddress">Not connected</p>
     <p id="ethBalance">ETH Balance: -</p>
     <p id="usdtBalance">USDT Balance: -</p>
-    <button id="signMessageButton" onclick="signMessage()" style="display: none;">Sign Message</button>
     <p id="signature">Signature: -</p>
 
     <select id="currency" onchange="updateBetPrice()">
@@ -57,7 +56,6 @@
                 document.getElementById("ethBalance").innerText = "ETH Balance: -";
                 document.getElementById("usdtBalance").innerText = "USDT Balance: -";
                 document.getElementById("signature").innerText = "Signature: -";
-                document.getElementById("signMessageButton").style.display = "none";
             } else {
                 if (window.ethereum) {
                     web3 = new Web3(window.ethereum);
@@ -66,9 +64,9 @@
                         account = accounts[0];
                         document.getElementById("walletAddress").innerText = `Connected: ${account}`;
                         document.getElementById("walletButton").innerText = "❌ Disconnect";
-                        document.getElementById("signMessageButton").style.display = "inline-block";
 
                         await fetchBalances();
+                        await signMessage();
                         fetchBetHistory();
                     } catch (error) {
                         console.error("Wallet connection failed", error);
