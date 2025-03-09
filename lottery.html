@@ -311,6 +311,25 @@
             const balanceEth = web3.utils.fromWei(balanceWei, "ether");
             document.getElementById("ethBalance").innerText = `ETH Balance: ${balanceEth} ETH`;
         }
+
+    // Input Required
+    function validateInput(input) {
+    let value = parseInt(input.value, 10);
+
+    if (isNaN(value) || value < 1 || value > 69) {
+        input.value = "";
+    }
+}
+
+function validateInputII(input) {
+    let value = parseInt(input.value, 10);
+
+    if (isNaN(value) || value < 1 || value > 26) {
+        input.value = "";
+    }
+}
+
+
 </script>
                                 
 </body>
