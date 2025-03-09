@@ -136,61 +136,45 @@
 
 </head>
 <body>
-    <h2 class="title">Lottoballs Lottery</h2>
-<div class="container">
-    <button id="comnectWalley">🔗 Connect Wallet</button>
-    <div class="info">
-        <p id="walletAddress">Not connected<br></p>
-        <p id="ethBalance">ETH Balance: -</p>
-        <p id="usdtBalance">USDT Balance: -</p>
-        <p id="signature">Signature: -</p>
-    </div>
-</div>
-
-<div class="section-box">
-    <h3>Choose Numbers</h3><br>
-    <div class="input-container">
-        <input type="number" id="num1" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
-        <input type="number" id="num2" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
-        <input type="number" id="num3" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
-        <input type="number" id="num4" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
-        <input type="number" id="num5" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
-    </div><br>
     
-    <h3>Choose Lottoballs Numbers</h3>
-<div class="input-container">
-    <input type="number" id="powerball" min="1" max="26" placeholder="1/26" oninput="validateInputII(this)">
-</div>
-<br>
-
-    <div class="form-group">
-            <label>Bet Currency:</label>
-            <select id="currency">
-                <option value="USDT">USDT</option>
-                <option value="ETH">ETH</option>
-            </select>
-        </div>
-    <div>
-        <p id="betPrice" style="font-size: 16px; font-weight: bold; color: #33ff33; font-family: 'Courier New', monospace; background: #101010; padding: 5px 10px; border-radius: 5px; display: inline-block;">
-    Bet Price: 2 USDT
-        </p>
-    </div>
-
-        <div class="form-group">
-            <label>LottoPlay ×2:</label>
-            <input type="checkbox" id="powerplay" onchange="updateBetPrice()">
-        </div>
-        <br><br>
-
-    <button onclick="placeBet()">Place Bet</button><br>
-</div>
-
-<div class="section-box" id="betHistory">
-    <center><h3>My Bet History</h3>
-    <button onclick="fetchBetHistory()">🔍 Refresh History</button></center><br>
-</div>
     
-<script>
+<scrip<h2>Crypto Betting Platform</h2>
+
+    <!-- Tombol Koneksi Wallet -->
+    <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
+    <p id="walletAddress">Not connected</p>
+    <p id="ethBalance">ETH Balance: -</p>
+    <p id="usdtBalance">USDT Balance: -</p>
+    <p id="signature">Signature: -</p>
+
+    <!-- Pilihan Mata Uang -->
+    <label for="currency">Choose currency:</label>
+    <select id="currency">
+        <option value="ETH">ETH</option>
+        <option value="USDT">USDT</option>
+    </select>
+
+    <!-- PowerPlay Option -->
+    <label for="powerplay">PowerPlay:</label>
+    <input type="checkbox" id="powerplay">
+    <p id="betPrice">Bet Price: 0.00072 ETH</p>
+
+    <!-- Input Taruhan -->
+    <h3>Enter your numbers (1-69) and Powerball (1-26):</h3>
+    <input type="number" id="num1" min="1" max="69" oninput="validateInput(this)">
+    <input type="number" id="num2" min="1" max="69" oninput="validateInput(this)">
+    <input type="number" id="num3" min="1" max="69" oninput="validateInput(this)">
+    <input type="number" id="num4" min="1" max="69" oninput="validateInput(this)">
+    <input type="number" id="num5" min="1" max="69" oninput="validateInput(this)">
+    <input type="number" id="powerball" min="1" max="26" oninput="validateInputII(this)">
+    <br><br>
+
+    <!-- Tombol Pasang Taruhan -->
+    <button onclick="placeBet()">Place Bet</button>
+
+    <!-- Riwayat Taruhan -->
+    <h3>Bet History</h3>
+    <div id="betHistory">No history yet.</div>t>
 
 function updateBetPrice() {
     const currency = document.getElementById("currency").value;
