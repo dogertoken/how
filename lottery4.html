@@ -192,22 +192,22 @@
     
 <script>
 
-        function updateBetPrice() {
-            const currency = document.getElementById("currency").value;
-            const powerPlay = document.getElementById("powerplay").checked;
-            let price = (currency === "ETH") ? 0.00072 : 2;
-            if (powerPlay) price *= 1.5;
-            document.getElementById("betPrice").innerText = `Bet Price: ${price} ${currency}`;
-        }
+function updateBetPrice() {
+    const currency = document.getElementById("currency").value;
+    const powerPlay = document.getElementById("powerplay").checked;
+    let price = (currency === "ETH") ? 0.00072 : 2;
+    if (powerPlay) price *= 1.5;
+    document.getElementById("betPrice").innerText = `Bet Price: ${price} ${currency}`;
+}
 
 let web3;
-        let account;
-        const contractAddress = "0xYourContractAddress"; // Ganti dengan alamat smart contract
-        const contractABI = [ /* Copy ABI Smart Contract di sini */ ];
-        const usdtAddress = "0xYourUSDTContract"; // Ganti dengan alamat token USDT
-        const usdtABI = [ /* ABI ERC-20 */ ];
+let account;
+const contractAddress = "0xYourContractAddress"; // Ganti dengan alamat smart contract
+const contractABI = [ /* Copy ABI Smart Contract di sini */ ];
+const usdtAddress = "0xYourUSDTContract"; // Ganti dengan alamat token USDT
+const usdtABI = [ /* ABI ERC-20 */ ];
 
-       const BASE_SEPOLIA_CHAIN_ID = "0x14A34"; // Chain ID Base Sepolia dalam format hex
+const BASE_SEPOLIA_CHAIN_ID = "0x14A34"; // Chain ID Base Sepolia dalam format hex
 
 async function switchToBaseSepolia() {
     if (!window.ethereum) {
@@ -216,14 +216,12 @@ async function switchToBaseSepolia() {
     }
 
     try {
-        // Cek apakah pengguna sudah di jaringan Base Sepolia
         const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
         if (currentChainId === BASE_SEPOLIA_CHAIN_ID) {
             console.log("Already on Base Sepolia!");
             return true;
         }
 
-        // Jika belum, paksa pindah jaringan
         await window.ethereum.request({
             method: "wallet_switchEthereumChain",
             params: [{ chainId: BASE_SEPOLIA_CHAIN_ID }],
@@ -232,7 +230,6 @@ async function switchToBaseSepolia() {
         console.log("Switched to Base Sepolia!");
         return true;
     } catch (error) {
-        // Jika jaringan tidak ada di Metamask, tambahkan secara otomatis
         if (error.code === 4902) {
             try {
                 await window.ethereum.request({
@@ -241,11 +238,7 @@ async function switchToBaseSepolia() {
                         chainId: BASE_SEPOLIA_CHAIN_ID,
                         chainName: "Base Sepolia",
                         rpcUrls: ["https://sepolia.base.org"],
-                        nativeCurrency: {
-                            name: "ETH",
-                            symbol: "ETH",
-                            decimals: 18
-                        },
+                        nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
                         blockExplorerUrls: ["https://sepolia.basescan.org"]
                     }]
                 });
@@ -265,7 +258,6 @@ async function switchToBaseSepolia() {
     }
 }
 
-// Fungsi koneksi wallet dengan pengecekan jaringan lebih awal
 async function toggleWallet() {
     if (account) {
         account = null;
@@ -278,16 +270,15 @@ async function toggleWallet() {
         if (window.ethereum) {
             web3 = new Web3(window.ethereum);
             try {
-                // Paksa pengguna ke jaringan Base Sepolia sebelum koneksi
                 const switched = await switchToBaseSepolia();
-                if (!switched) return; // Jangan lanjutkan jika gagal pindah jaringan
+                if (!switched) return;
 
                 const accounts = await ethereum.request({ method: "eth_requestAccounts" });
                 account = accounts[0];
                 document.getElementById("walletAddress").innerText = `Connected: ${account}`;
                 document.getElementById("walletButton").innerText = "❌ Disconnect";
 
-                await signMessage(); // Signature langsung setelah koneksi wallet
+                await signMessage();
                 await fetchBalances();
                 fetchBetHistory();
             } catch (error) {
@@ -299,7 +290,6 @@ async function toggleWallet() {
     }
 }
 
-// Fungsi untuk menandatangani pesan
 async function signMessage() {
     if (!account) {
         alert("Connect your wallet first!");
@@ -314,14 +304,9 @@ async function signMessage() {
             params: [encodedMessage, account]
         });
 
-        // Memotong signature menjadi format pendek
         const shortSignature = signature.slice(0, 10) + "..." + signature.slice(-10);
-
-        // Menampilkan signature yang sudah disingkat
         const signatureElement = document.getElementById("signature");
         signatureElement.innerText = `Signature: ${shortSignature}`;
-
-        // Menambahkan tooltip untuk menampilkan signature penuh saat dihover
         signatureElement.setAttribute("title", `Full Signature: ${signature}`);
 
         console.log("Full Signature:", signature);
@@ -331,97 +316,90 @@ async function signMessage() {
     }
 }
 
-        async function fetchBalances() {
-            if (!account) return;
+async function fetchBalances() {
+    if (!account) return;
 
-            // Ambil saldo ETH
-            const balanceWei = await web3.eth.getBalance(account);
-            const balanceEth = web3.utils.fromWei(balanceWei, "ether");
-            document.getElementById("ethBalance").innerText = `ETH Balance: ${balanceEth} ETH`;
+    const balanceWei = await web3.eth.getBalance(account);
+    const balanceEth = web3.utils.fromWei(balanceWei, "ether");
+    document.getElementById("ethBalance").innerText = `ETH Balance: ${balanceEth} ETH`;
 
-            // Ambil saldo USDT
+    const usdtContract = new web3.eth.Contract(usdtABI, usdtAddress);
+    const balanceUSDT = await usdtContract.methods.balanceOf(account).call();
+    document.getElementById("usdtBalance").innerText = `USDT Balance: ${web3.utils.fromWei(balanceUSDT, "mwei")} USDT`;
+}
+
+async function placeBet() {
+    if (!account) {
+        alert("Connect your wallet first!");
+        return;
+    }
+
+    const numbers = [
+        parseInt(document.getElementById("num1").value),
+        parseInt(document.getElementById("num2").value),
+        parseInt(document.getElementById("num3").value),
+        parseInt(document.getElementById("num4").value),
+        parseInt(document.getElementById("num5").value)
+    ];
+    const powerball = parseInt(document.getElementById("powerball").value);
+    const currency = document.getElementById("currency").value;
+    const powerPlay = document.getElementById("powerplay").checked;
+
+    if (numbers.some(num => num < 1 || num > 69) || powerball < 1 || powerball > 26) {
+        alert("Invalid number selection!");
+        return;
+    }
+
+    const contract = new web3.eth.Contract(contractABI, contractAddress);
+    const isETH = currency === "ETH";
+    const betPrice = isETH ? web3.utils.toWei("0.00072", "ether") : web3.utils.toWei("2", "mwei");
+    const powerPlayPrice = powerPlay ? (isETH ? web3.utils.toWei("0.000036", "ether") : web3.utils.toWei("1", "mwei")) : "0";
+    const totalCost = web3.utils.toBN(betPrice).add(web3.utils.toBN(powerPlayPrice));
+
+    try {
+        if (isETH) {
+            await contract.methods.placeBet(numbers, powerball, isETH, powerPlay)
+                .send({ from: account, value: totalCost.toString() });
+        } else {
             const usdtContract = new web3.eth.Contract(usdtABI, usdtAddress);
-            const balanceUSDT = await usdtContract.methods.balanceOf(account).call();
-            document.getElementById("usdtBalance").innerText = `USDT Balance: ${web3.utils.fromWei(balanceUSDT, "mwei")} USDT`;
+            const allowance = await usdtContract.methods.allowance(account, contractAddress).call();
+
+            if (web3.utils.toBN(allowance).lt(totalCost)) {
+                await usdtContract.methods.approve(contractAddress, totalCost.toString())
+                    .send({ from: account });
+            }
+
+            await contract.methods.placeBet(numbers, powerball, isETH, powerPlay)
+                .send({ from: account });
         }
+        alert("Bet placed successfully!");
+        fetchBetHistory();
+    } catch (error) {
+        console.error("Transaction failed", error);
+        alert("Bet placement failed!");
+    }
+}
 
-        async function placeBet() {
-            if (!account) {
-                alert("Connect your wallet first!");
-                return;
-            }
+async function fetchBetHistory() {
+    if (!account) return;
+    const contract = new web3.eth.Contract(contractABI, contractAddress);
+    try {
+        const bets = await contract.methods.getUserBets(account).call();
+        let historyHTML = "<ul>";
+        bets.forEach(bet => {
+            historyHTML += `<li>${bet.numbers.join(", ")} | Powerball: ${bet.powerball}</li>`;
+        });
+        historyHTML += "</ul>";
+        document.getElementById("betHistory").innerHTML = historyHTML;
+    } catch (error) {
+        console.error("Failed to fetch bet history", error);
+    }
+}
 
-            const numbers = [
-                parseInt(document.getElementById("num1").value),
-                parseInt(document.getElementById("num2").value),
-                parseInt(document.getElementById("num3").value),
-                parseInt(document.getElementById("num4").value),
-                parseInt(document.getElementById("num5").value)
-            ];
-            const powerball = parseInt(document.getElementById("powerball").value);
-            const currency = document.getElementById("currency").value;
-            const powerPlay = document.getElementById("powerplay").checked;
-
-            if (numbers.some(num => num < 1 || num > 69) || powerball < 1 || powerball > 26) {
-                alert("Invalid number selection!");
-                return;
-            }
-
-            const contract = new web3.eth.Contract(contractABI, contractAddress);
-            const isETH = currency === "ETH";
-            const betPrice = isETH ? web3.utils.toWei("0.00072", "ether") : web3.utils.toWei("2", "mwei");
-            const powerPlayPrice = powerPlay ? (isETH ? web3.utils.toWei("0.000036", "ether") : web3.utils.toWei("1", "mwei")) : "0";
-            const totalCost = web3.utils.toBN(betPrice).add(web3.utils.toBN(powerPlayPrice));
-
-            try {
-                if (isETH) {
-                    await contract.methods.placeBet(numbers, powerball, isETH, powerPlay)
-                        .send({ from: account, value: totalCost.toString() });
-                } else {
-                    const usdtContract = new web3.eth.Contract(usdtABI, usdtAddress);
-                    const allowance = await usdtContract.methods.allowance(account, contractAddress).call();
-
-                    if (web3.utils.toBN(allowance).lt(totalCost)) {
-                        await usdtContract.methods.approve(contractAddress, totalCost.toString())
-                            .send({ from: account });
-                    }
-
-                    await contract.methods.placeBet(numbers, powerball, isETH, powerPlay)
-                        .send({ from: account });
-                }
-                alert("Bet placed successfully!");
-                fetchBetHistory();
-            } catch (error) {
-                console.error("Transaction failed", error);
-                alert("Bet placement failed!");
-            }
-        }
-
-        async function fetchBetHistory() {
-            if (!account) {
-                alert("Connect your wallet first!");
-                return;
-            }
-
-            const contract = new web3.eth.Contract(contractABI, contractAddress);
-            try {
-                const bets = await contract.methods.getUserBets(account).call();
-                let historyHTML = "<ul>";
-                bets.forEach(bet => {
-                    historyHTML += `<li>${bet.numbers.join(", ")} | Powerball: ${bet.powerball}</li>`;
-                });
-                historyHTML += "</ul>";
-                document.getElementById("betHistory").innerHTML = historyHTML;
-            } catch (error) {
-                console.error("Failed to fetch bet history", error);
-                document.getElementById("betHistory").innerText = "Failed to load history.";
-            }
-                }
-
-    function validateInput(input) {
-    let value = input.value;
+document.getElementById("currency").addEventListener("change", updateBetPrice);
     
-    // Batasi maksimal 2 digit
+   // Batadi 2 digit
+   Batasi maksimal 2 digit
     if (value.length > 2) {
         input.value = value.slice(0, 2);
     }
