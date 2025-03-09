@@ -141,6 +141,8 @@
 <p id="walletAddress">Not connected</p>
 <p id="ethBalance">ETH Balance: -</p>
 <p id="usdtBalance">USDT Balance: -</p>
+<button id="signMessageButton" onclick="signMessage()" style="display:none;">✍️ Sign Message</button>
+<p id="signature">Signature: -</p>
 
 <div class="section-box">
     <h3>Choose Numbers</h3><br>
@@ -201,7 +203,7 @@
             document.getElementById("betPrice").innerText = `Bet Price: ${price} ${currency}`;
         }
 
-    let web3;
+           let web3;
 let account = null;
 const usdtContractAddress = "USDT_CONTRACT_ADDRESS"; // Ganti dengan alamat kontrak USDT
 
@@ -212,6 +214,8 @@ async function toggleWallet() {
         document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
         document.getElementById("ethBalance").innerText = "ETH Balance: -";
         document.getElementById("usdtBalance").innerText = "USDT Balance: -";
+        document.getElementById("signature").innerText = "Signature: -";
+        document.getElementById("signMessageButton").style.display = "none";
     } else {
         if (window.ethereum) {
             web3 = new Web3(window.ethereum);
@@ -220,6 +224,7 @@ async function toggleWallet() {
                 account = accounts[0];
                 document.getElementById("walletAddress").innerText = `Connected: ${account}`;
                 document.getElementById("walletButton").innerText = "❌ Disconnect";
+                document.getElementById("signMessageButton").style.display = "inline-block";
                 
                 await fetchBalances();
                 fetchBetHistory();
@@ -250,13 +255,31 @@ async function fetchBalances() {
     document.getElementById("usdtBalance").innerText = `USDT Balance: ${web3.utils.fromWei(balanceUSDT, "mwei")} USDT`;
 }
 
+// Fungsi untuk menandatangani pesan
+async function signMessage() {
+    if (!account) {
+        alert("Connect your wallet first!");
+        return;
+    }
+    
+    try {
+        const message = "Sign this message to verify your wallet.";
+        const signature = await web3.eth.personal.sign(message, account);
+        
+        document.getElementById("signature").innerText = `Signature: ${signature}`;
+        console.log("Signed message:", signature);
+    } catch (error) {
+        console.error("Failed to sign message", error);
+    }
+}
+
 async function placeBet() {
     if (!account) {
         alert("Connect your wallet first!");
         return;
     }
 }
-
+    
             const numbers = [
                 parseInt(document.getElementById("num1").value),
                 parseInt(document.getElementById("num2").value),
