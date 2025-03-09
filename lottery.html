@@ -123,9 +123,11 @@
         }
 
         p {
-            font-size: 16px;
-            font-weight: bold;
-            margin-top: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 5px;
+    display: block; /* Pastikan elemen tetap blok */
+    width: 100%; /* Sesuai lebar kontainer */
         }
 
         input[type="checkbox"] {
@@ -138,10 +140,10 @@
 <body>
     <h2>Lottoballs Lottery</h2><div class="buttons">
     <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button><br>
-    <p id="walletAddress">Not connected<hr></p>
-    <p id="ethBalance">ETH Balance: -<hr></p>
-    <p id="usdtBalance">USDT Balance: -<hr></p>
-    <p id="signature">Signature: -<hr></p><br>
+    <p id="walletAddress">Not connected</p>
+    <p id="ethBalance">ETH Balance: -</p>
+    <p id="usdtBalance">USDT Balance: -</p>
+    <p id="signature">Signature: -</p>
 
 <div class="section-box">
     <h3>Choose Numbers</h3><br>
