@@ -320,10 +320,13 @@
 });
 
     function validateLottoNumber(input) {
-        let value = input.value.replace(/\D/g, ""); // Hanya angka
-        if (value.length > 4) value = value.slice(0, 4); // Maksimal 4 digit
-        while (value.length < 2) value = "0" + value; // Minimal 2 digit
-        input.value = value;
+    let value = input.value.replace(/\D/g, ""); // Hanya angka
+    if (value.length > 4) value = value.slice(0, 4); // Maksimal 4 digit
+    
+    // Jika kurang dari 2 digit, kosongkan input tanpa otomatis menambahkan "00"
+    if (value.length > 0 && value.length < 2) return;
+
+    input.value = value;
     }
 
     function updateBetPrice() {
