@@ -1,417 +1,160 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LottoBalls Lottery</title>
-    <script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            text-align: center;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: white;
-            overflow-y: auto;
-            margin: 0;
-            padding: 20px;
-            width: 100vw;
-        }
-            
-        .buttons {
-        display: flex;
-        gap: 15px;
-        margin-top: 30px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    button {
-        padding: 15px 35px;
-        font-size: 1.2rem;
-        cursor: pointer;
-        color: white;
-        background: linear-gradient(135deg, #00b7ff, #007bff);
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 183, 255, 0.8);
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    button:hover {
-        transform: scale(1.1);
-        box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
-    }
-
-    .section-box {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    margin: 20px; /* Pastikan margin auto agar tetap di tengah */
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
-    max-width: 900px;
-    width: 95%; /* Pastikan memenuhi parent */
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    }
-
-.input-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding: 3px 2px 15px 2px;
-}
-
-.input-container input {
-    width: 55px;
-    aspect-ratio: 1/1;
-    text-align: center;
-    font-size: 18px;
-    border-radius: 8px;
-    border: 2px solid #ddd;
-    background: #f9f9f9;
-    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.5);
-    transition: all 0.2s ease-in-out;
-}
-
-.input-container input:focus {
-    outline: none;
-    border-color: #00b7ff;
-    background: #ffffff;
-    box-shadow: 3px 3px 8px rgba(0, 183, 255, 0.4), inset -2px -2px 5px rgba(255, 255, 255, 0.8);
-}
-        
-    #betHistory {
-        text-align: left;
-        display: block;
-        width: 95%;
-        max-width: 900px;
-        margin: center;
-    }
-
-    .form-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .form-group-column {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        label {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        select {
-            font-size: 16px;
-            padding: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        p {
-            font-size: 16px;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        input[type="checkbox"] {
-            transform: scale(2);
-            margin-left: 10px;
-        }
-</style>
-
+    <title>Crypto Betting</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
 </head>
 <body>
-    
-    
-<h2>Crypto Betting Platform</h2>
+
+    <h2>Crypto Betting Platform</h2>
 
     <!-- Tombol Koneksi Wallet -->
     <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
     <p id="walletAddress">Not connected</p>
     <p id="ethBalance">ETH Balance: -</p>
     <p id="usdtBalance">USDT Balance: -</p>
-    <p id="signature">Signature: -</p>
-
-    <!-- Pilihan Mata Uang -->
-    <label for="currency">Choose currency:</label>
-    <select id="currency">
-        <option value="ETH">ETH</option>
-        <option value="USDT">USDT</option>
-    </select>
-
-    <!-- PowerPlay Option -->
-    <label for="powerplay">PowerPlay:</label>
-    <input type="checkbox" id="powerplay">
-    <p id="betPrice">Bet Price: 0.00072 ETH</p>
-
-    <!-- Input Taruhan -->
-    <h3>Enter your numbers (1-69) and Powerball (1-26):</h3>
-    <input type="number" id="num1" min="1" max="69" oninput="validateInput(this)">
-    <input type="number" id="num2" min="1" max="69" oninput="validateInput(this)">
-    <input type="number" id="num3" min="1" max="69" oninput="validateInput(this)">
-    <input type="number" id="num4" min="1" max="69" oninput="validateInput(this)">
-    <input type="number" id="num5" min="1" max="69" oninput="validateInput(this)">
-    <input type="number" id="powerball" min="1" max="26" oninput="validateInputII(this)">
-    <br><br>
-
-    <!-- Tombol Pasang Taruhan -->
-    <button onclick="placeBet()">Place Bet</button>
-
-    <!-- Riwayat Taruhan -->
-    <h3>Bet History</h3>
-    <div id="betHistory">No history yet.</div>
 
     <script>
+    let web3;
+    let account;
+    const contractAddress = "0xYourContractAddress"; // Ganti dengan alamat smart contract
+    const contractABI = [ /* Copy ABI Smart Contract di sini */ ];
+    const usdtAddress = "0xYourUSDTContract"; // Ganti dengan alamat token USDT
+    const usdtABI = [ /* ABI ERC-20 */ ];
+    const BASE_SEPOLIA_CHAIN_ID = "0x14A34"; // Chain ID Base Sepolia dalam format hex
 
-function updateBetPrice() {
-    const currency = document.getElementById("currency").value;
-    const powerPlay = document.getElementById("powerplay").checked;
-    let price = (currency === "ETH") ? 0.00072 : 2;
-    if (powerPlay) price *= 1.5;
-    document.getElementById("betPrice").innerText = `Bet Price: ${price} ${currency}`;
-}
-
-let web3;
-let account;
-const contractAddress = "0xYourContractAddress"; // Ganti dengan alamat smart contract
-const contractABI = [ /* Copy ABI Smart Contract di sini */ ];
-const usdtAddress = "0xYourUSDTContract"; // Ganti dengan alamat token USDT
-const usdtABI = [ /* ABI ERC-20 */ ];
-
-const BASE_SEPOLIA_CHAIN_ID = "0x14A34"; // Chain ID Base Sepolia dalam format hex
-
-async function switchToBaseSepolia() {
-    if (!window.ethereum) {
-        alert("Metamask is required!");
-        return false;
-    }
-
-    try {
-        const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
-        if (currentChainId === BASE_SEPOLIA_CHAIN_ID) {
-            console.log("Already on Base Sepolia!");
-            return true;
-        }
-
-        await window.ethereum.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: BASE_SEPOLIA_CHAIN_ID }],
-        });
-
-        console.log("Switched to Base Sepolia!");
-        return true;
-    } catch (error) {
-        if (error.code === 4902) {
-            try {
-                await window.ethereum.request({
-                    method: "wallet_addEthereumChain",
-                    params: [{
-                        chainId: BASE_SEPOLIA_CHAIN_ID,
-                        chainName: "Base Sepolia",
-                        rpcUrls: ["https://sepolia.base.org"],
-                        nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-                        blockExplorerUrls: ["https://sepolia.basescan.org"]
-                    }]
-                });
-
-                console.log("Base Sepolia added and switched!");
-                return true;
-            } catch (addError) {
-                console.error("Failed to add Base Sepolia network", addError);
-                alert("Failed to add Base Sepolia. Please add it manually in Metamask.");
-                return false;
-            }
-        } else {
-            console.error("Failed to switch network", error);
-            alert("Please switch to Base Sepolia Testnet manually.");
+    async function switchToBaseSepolia() {
+        if (!window.ethereum) {
+            alert("Metamask is required!");
             return false;
         }
-    }
-}
 
-async function toggleWallet() {
-    if (account) {
-        account = null;
-        document.getElementById("walletAddress").innerText = "Not connected";
-        document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
-        document.getElementById("ethBalance").innerText = "ETH Balance: -";
-        document.getElementById("usdtBalance").innerText = "USDT Balance: -";
-        document.getElementById("signature").innerText = "Signature: -";
-    } else {
-        if (window.ethereum) {
-            web3 = new Web3(window.ethereum);
-            try {
-                const switched = await switchToBaseSepolia();
-                if (!switched) return;
-
-                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-                account = accounts[0];
-                document.getElementById("walletAddress").innerText = `Connected: ${account}`;
-                document.getElementById("walletButton").innerText = "❌ Disconnect";
-
-                await signMessage();
-                await fetchBalances();
-                fetchBetHistory();
-            } catch (error) {
-                console.error("Wallet connection failed", error);
-            }
-        } else {
-            alert("Please install Metamask!");
-        }
-    }
-}
-
-async function signMessage() {
-    if (!account) {
-        alert("Connect your wallet first!");
-        return;
-    }
-
-    try {
-        const message = "Sign this message to verify your wallet.";
-        const encodedMessage = web3.utils.utf8ToHex(message);
-        const signature = await ethereum.request({
-            method: "personal_sign",
-            params: [encodedMessage, account]
-        });
-
-        const shortSignature = signature.slice(0, 10) + "..." + signature.slice(-10);
-        const signatureElement = document.getElementById("signature");
-        signatureElement.innerText = `Signature: ${shortSignature}`;
-        signatureElement.setAttribute("title", `Full Signature: ${signature}`);
-
-        console.log("Full Signature:", signature);
-    } catch (error) {
-        console.error("Failed to sign message", error);
-        alert("Signing failed!");
-    }
-}
-
-async function fetchBalances() {
-    if (!account) return;
-
-    const balanceWei = await web3.eth.getBalance(account);
-    const balanceEth = web3.utils.fromWei(balanceWei, "ether");
-    document.getElementById("ethBalance").innerText = `ETH Balance: ${balanceEth} ETH`;
-
-    const usdtContract = new web3.eth.Contract(usdtABI, usdtAddress);
-    const balanceUSDT = await usdtContract.methods.balanceOf(account).call();
-    document.getElementById("usdtBalance").innerText = `USDT Balance: ${web3.utils.fromWei(balanceUSDT, "mwei")} USDT`;
-}
-
-async function placeBet() {
-    if (!account) {
-        alert("Connect your wallet first!");
-        return;
-    }
-
-    const numbers = [
-        parseInt(document.getElementById("num1").value),
-        parseInt(document.getElementById("num2").value),
-        parseInt(document.getElementById("num3").value),
-        parseInt(document.getElementById("num4").value),
-        parseInt(document.getElementById("num5").value)
-    ];
-    const powerball = parseInt(document.getElementById("powerball").value);
-    const currency = document.getElementById("currency").value;
-    const powerPlay = document.getElementById("powerplay").checked;
-
-    if (numbers.some(num => num < 1 || num > 69) || powerball < 1 || powerball > 26) {
-        alert("Invalid number selection!");
-        return;
-    }
-
-    const contract = new web3.eth.Contract(contractABI, contractAddress);
-    const isETH = currency === "ETH";
-    const betPrice = isETH ? web3.utils.toWei("0.00072", "ether") : web3.utils.toWei("2", "mwei");
-    const powerPlayPrice = powerPlay ? (isETH ? web3.utils.toWei("0.000036", "ether") : web3.utils.toWei("1", "mwei")) : "0";
-    const totalCost = web3.utils.toBN(betPrice).add(web3.utils.toBN(powerPlayPrice));
-
-    try {
-        if (isETH) {
-            await contract.methods.placeBet(numbers, powerball, isETH, powerPlay)
-                .send({ from: account, value: totalCost.toString() });
-        } else {
-            const usdtContract = new web3.eth.Contract(usdtABI, usdtAddress);
-            const allowance = await usdtContract.methods.allowance(account, contractAddress).call();
-
-            if (web3.utils.toBN(allowance).lt(totalCost)) {
-                await usdtContract.methods.approve(contractAddress, totalCost.toString())
-                    .send({ from: account });
+        try {
+            const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
+            if (currentChainId === BASE_SEPOLIA_CHAIN_ID) {
+                console.log("Already on Base Sepolia!");
+                return true;
             }
 
-            await contract.methods.placeBet(numbers, powerball, isETH, powerPlay)
-                .send({ from: account });
+            await window.ethereum.request({
+                method: "wallet_switchEthereumChain",
+                params: [{ chainId: BASE_SEPOLIA_CHAIN_ID }],
+            });
+
+            console.log("Switched to Base Sepolia!");
+            return true;
+        } catch (error) {
+            if (error.code === 4902) {
+                try {
+                    await window.ethereum.request({
+                        method: "wallet_addEthereumChain",
+                        params: [{
+                            chainId: BASE_SEPOLIA_CHAIN_ID,
+                            chainName: "Base Sepolia",
+                            rpcUrls: ["https://sepolia.base.org"],
+                            nativeCurrency: {
+                                name: "ETH",
+                                symbol: "ETH",
+                                decimals: 18
+                            },
+                            blockExplorerUrls: ["https://sepolia.basescan.org"]
+                        }]
+                    });
+
+                    console.log("Base Sepolia added and switched!");
+                    return true;
+                } catch (addError) {
+                    console.error("Failed to add Base Sepolia network", addError);
+                    alert("Failed to add Base Sepolia. Please add it manually in Metamask.");
+                    return false;
+                }
+            } else {
+                console.error("Failed to switch network", error);
+                alert("Please switch to Base Sepolia Testnet manually.");
+                return false;
+            }
         }
-        alert("Bet placed successfully!");
-        fetchBetHistory();
-    } catch (error) {
-        console.error("Transaction failed", error);
-        alert("Bet placement failed!");
-    }
-}
-
-async function fetchBetHistory() {
-    if (!account) return;
-    const contract = new web3.eth.Contract(contractABI, contractAddress);
-    try {
-        const bets = await contract.methods.getUserBets(account).call();
-        let historyHTML = "<ul>";
-        bets.forEach(bet => {
-            historyHTML += `<li>${bet.numbers.join(", ")} | Powerball: ${bet.powerball}</li>`;
-        });
-        historyHTML += "</ul>";
-        document.getElementById("betHistory").innerHTML = historyHTML;
-    } catch (error) {
-        console.error("Failed to fetch bet history", error);
-    }
-}
-
-document.getElementById("currency").addEventListener("change", updateBetPrice);
-    
-   // Batadi 2 digit
-   Batasi maksimal 2 digit
-    if (value.length > 2) {
-        input.value = value.slice(0, 2);
     }
 
-    // Pastikan angka dalam rentang 1-69
-    if (value !== "" && (parseInt(value) < 1 || parseInt(value) > 69)) {
-        input.value = "";
-    }
+    async function toggleWallet() {
+        if (account) {
+            account = null;
+            document.getElementById("walletAddress").innerText = "Not connected";
+            document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
+            document.getElementById("ethBalance").innerText = "ETH Balance: -";
+            document.getElementById("usdtBalance").innerText = "USDT Balance: -";
+            document.getElementById("signature").innerText = "Signature: -";
+        } else {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                try {
+                    const switched = await switchToBaseSepolia();
+                    if (!switched) return; 
+
+                    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+                    account = accounts[0];
+                    document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+                    document.getElementById("walletButton").innerText = "❌ Disconnect";
+
+                    await signMessage();
+                    await fetchBalances();
+                    fetchBetHistory();
+                } catch (error) {
+                    console.error("Wallet connection failed", error);
+                }
+            } else {
+                alert("Please install Metamask!");
+            }
+        }
     }
 
-    function validateInputII(input) {
-    let value = input.value;
-    
-    // Batasi maksimal 2 digit
-    if (value.length > 2) {
-        input.value = value.slice(0, 2);
+    async function signMessage() {
+        if (!account) {
+            alert("Connect your wallet first!");
+            return;
+        }
+
+        try {
+            const message = `Sign in to Crypto Betting\n\nWallet: ${account}\nTimestamp: ${Date.now()}`;
+            const signature = await ethereum.request({
+                method: "personal_sign",
+                params: [message, account],
+            });
+
+            const shortSignature = signature.slice(0, 10) + "..." + signature.slice(-10);
+            const signatureElement = document.getElementById("signature");
+            signatureElement.innerText = `Signature: ${shortSignature}`;
+            signatureElement.setAttribute("title", `Full Signature: ${signature}`);
+
+            console.log("Full Signature:", signature);
+        } catch (error) {
+            console.error("Failed to sign message", error);
+            alert("Signing failed!");
+        }
     }
 
-    // Pastikan angka dalam rentang 1-69
-    if (value !== "" && (parseInt(value) < 1 || parseInt(value) > 26)) {
-        input.value = "";
-    }
+    async function fetchBalances() {
+        if (!account) return;
+
+        const balanceWei = await web3.eth.getBalance(account);
+        const balanceEth = web3.utils.fromWei(balanceWei, "ether");
+        document.getElementById("ethBalance").innerText = `ETH Balance: ${balanceEth} ETH`;
+
+        const usdtContract = new web3.eth.Contract(usdtABI, usdtAddress);
+        const balanceUSDT = await usdtContract.methods.balanceOf(account).call();
+        document.getElementById("usdtBalance").innerText = `USDT Balance: ${web3.utils.fromWei(balanceUSDT, "mwei")} USDT`;
     }
 
-        document.getElementById("currency").addEventListener("change", updateBetPrice);
 </script>
+
+<!-- HTML Wallet Connector -->
+<button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
+<p id="walletAddress">Not connected</p>
+<p id="ethBalance">ETH Balance: -</p>
+<p id="usdtBalance">USDT Balance: -</p>
+<p id="signature">Signature: -</p>
 
 </body>
 </html>
