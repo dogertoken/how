@@ -360,7 +360,7 @@ body {
     const usdtAddress = "USDT_CONTRACT_ADDRESS"; // USDT contract address for ERC20
     const betPriceETH = 0.00015; // 0.00015 ETH per bet
     const betPriceUSDT = 0.5; // 0.5 USDT per bet
-    
+
     let provider, signer, contract;
     let currentAccount = null;
 
@@ -372,139 +372,131 @@ body {
     ];
 
     document.addEventListener("DOMContentLoaded", async function () {
-            const connectWalletBtn = document.getElementById("connectWalletBtn");
-            const disconnectWalletBtn = document.getElementById("disconnectWalletBtn");
-            const walletAddressSpan = document.getElementById("walletAddress");
-            const ethBalanceSpan = document.getElementById("ethBalance");
-            const usdtBalanceSpan = document.getElementById("usdtBalance");
+        const connectWalletBtn = document.getElementById("connectWalletBtn");
+        const disconnectWalletBtn = document.getElementById("disconnectWalletBtn");
+        const walletAddressSpan = document.getElementById("walletAddress");
+        const ethBalanceSpan = document.getElementById("ethBalance");
+        const usdtBalanceSpan = document.getElementById("usdtBalance");
 
-            let provider;
-            let signer;
-            let userAddress;
+        async function connectWallet() {
+            if (window.ethereum) {
+                try {
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    await provider.send("eth_requestAccounts", []);
+                    signer = provider.getSigner();
+                    currentAccount = await signer.getAddress();
 
-            async function connectWallet() {
-                if (window.ethereum) {
-                    try {
-                        provider = new ethers.providers.Web3Provider(window.ethereum);
-                        await provider.send("eth_requestAccounts", []);
-                        signer = provider.getSigner();
-                        userAddress = await signer.getAddress();
+                    // Inisialisasi kontrak
+                    contract = new ethers.Contract(contractAddress, abi, signer);
 
-                        // Tampilkan alamat wallet
-                        walletAddressSpan.innerText = userAddress;
+                    // Tampilkan alamat wallet
+                    walletAddressSpan.innerText = currentAccount;
 
-                        // Dapatkan saldo ETH
-                        const balance = await provider.getBalance(userAddress);
-                        ethBalanceSpan.innerText = ethers.utils.formatEther(balance) + " ETH";
+                    // Dapatkan saldo ETH
+                    const balance = await provider.getBalance(currentAccount);
+                    ethBalanceSpan.innerText = ethers.utils.formatEther(balance) + " ETH";
 
-                        // Dapatkan saldo USDT
-                        await getUSDTBalance();
+                    // Dapatkan saldo USDT
+                    await getUSDTBalance();
 
-                        // Tampilkan tombol Disconnect
-                        connectWalletBtn.style.display = "none";
-                        disconnectWalletBtn.style.display = "inline-block";
-                    } catch (error) {
-                        alert("Failed to connect wallet. Please try again.");
-                        console.error("Wallet connection error:", error);
-                    }
-                } else {
-                    alert("MetaMask or a compatible wallet is required.");
+                    // Tampilkan tombol Disconnect
+                    connectWalletBtn.style.display = "none";
+                    disconnectWalletBtn.style.display = "inline-block";
+                } catch (error) {
+                    alert("Failed to connect wallet. Please try again.");
+                    console.error("Wallet connection error:", error);
                 }
+            } else {
+                alert("MetaMask or a compatible wallet is required.");
             }
+        }
 
-            function disconnectWallet() {
-                walletAddressSpan.innerText = "-";
-                ethBalanceSpan.innerText = "-";
-                usdtBalanceSpan.innerText = "-";
-                connectWalletBtn.style.display = "inline-block";
-                disconnectWalletBtn.style.display = "none";
-            }
+        function disconnectWallet() {
+            walletAddressSpan.innerText = "-";
+            ethBalanceSpan.innerText = "-";
+            usdtBalanceSpan.innerText = "-";
+            connectWalletBtn.style.display = "inline-block";
+            disconnectWalletBtn.style.display = "none";
+        }
 
-            async function getUSDTBalance() {
-                const usdtContract = new ethers.Contract(
-                    "0xdAC17F958D2ee523a2206206994597C13D831ec7", // USDT di Ethereum
-                    ["function balanceOf(address owner) view returns (uint256)"],
-                    provider
-                );
-                const balance = await usdtContract.balanceOf(userAddress);
-                usdtBalanceSpan.innerText = ethers.utils.formatUnits(balance, 6) + " USDT";
-            }
+        async function getUSDTBalance() {
+            if (!currentAccount) return;
+            const usdtContract = new ethers.Contract(
+                usdtAddress,
+                ["function balanceOf(address owner) view returns (uint256)"],
+                provider
+            );
+            const balance = await usdtContract.balanceOf(currentAccount);
+            usdtBalanceSpan.innerText = ethers.utils.formatUnits(balance, 6) + " USDT";
+        }
 
-            connectWalletBtn.addEventListener("click", connectWallet);
-            disconnectWalletBtn.addEventListener("click", disconnectWallet);
-        });
+        connectWalletBtn.addEventListener("click", connectWallet);
+        disconnectWalletBtn.addEventListener("click", disconnectWallet);
+    });
 
-// Fungsi untuk menandatangani pesan dengan wallet
-async function signMessage() {
-    if (!signer) {
-        alert("Please connect your wallet first.");
-        return;
-    }
-    try {
-        const message = "Sign this message to verify your wallet.";
-        const signature = await signer.signMessage(message);
-        alert("Signature: " + signature);
-    } catch (error) {
-        console.error("Failed to sign message:", error);
-    }
-}
-
-// Fungsi untuk memaksa jaringan ke Base Testnet
-async function switchToBaseTestnet() {
-    try {
-        await window.ethereum.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: "0x14A33" }], // 0x14A33 adalah Chain ID untuk Base Testnet
-        });
-    } catch (error) {
-        // Jika jaringan tidak tersedia di Metamask, tambahkan Base Testnet secara manual
-        if (error.code === 4902) {
-            await addBaseTestnet();
-        } else {
-            console.error("Failed to switch network:", error);
+    // Fungsi untuk menandatangani pesan dengan wallet
+    async function signMessage() {
+        if (!signer) {
+            alert("Please connect your wallet first.");
+            return;
+        }
+        try {
+            const message = "Sign this message to verify your wallet.";
+            const signature = await signer.signMessage(message);
+            alert("Signature: " + signature);
+        } catch (error) {
+            console.error("Failed to sign message:", error);
         }
     }
-}
 
-// Fungsi untuk menambahkan Base Testnet ke Metamask
-async function addBaseTestnet() {
-    try {
-        await window.ethereum.request({
-            method: "wallet_addEthereumChain",
-            params: [{
-                chainId: "0x14A33",
-                chainName: "Base Testnet",
-                rpcUrls: ["https://goerli.base.org"],
-                nativeCurrency: {
-                    name: "ETH",
-                    symbol: "ETH",
-                    decimals: 18
-                },
-                blockExplorerUrls: ["https://goerli.basescan.org"]
-            }],
-        });
-    } catch (error) {
-        console.error("Failed to add Base Testnet:", error);
+    // Fungsi untuk menambahkan atau mengalihkan ke Base Testnet
+    async function switchToBaseTestnet() {
+        try {
+            await window.ethereum.request({
+                method: "wallet_switchEthereumChain",
+                params: [{ chainId: "0x14A33" }], // 0x14A33 adalah Chain ID untuk Base Testnet
+            });
+        } catch (error) {
+            if (error.code === 4902) {
+                await addBaseTestnet();
+            } else {
+                console.error("Failed to switch network:", error);
+            }
+        }
     }
-}
+
+    async function addBaseTestnet() {
+        try {
+            await window.ethereum.request({
+                method: "wallet_addEthereumChain",
+                params: [{
+                    chainId: "0x14A33",
+                    chainName: "Base Testnet",
+                    rpcUrls: ["https://testnet.base.org"],
+                    nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+                    blockExplorerUrls: ["https://testnet.basescan.org"]
+                }],
+            });
+        } catch (error) {
+            console.error("Failed to add Base Testnet:", error);
+        }
+    }
 
     // Show Bet Modal
     document.getElementById("placeBetBtn").addEventListener("click", () => {
-        const betModal = document.getElementById("betModal");
-        betModal.style.display = "block";
+        document.getElementById("betModal").style.display = "block";
     });
 
     // Close Modal
     document.querySelector(".close").addEventListener("click", () => {
-        const betModal = document.getElementById("betModal");
-        betModal.style.display = "none";
+        document.getElementById("betModal").style.display = "none";
     });
 
     // Calculate Bet Price
     document.getElementById("calculatePriceBtn").addEventListener("click", () => {
         const betNumber = document.getElementById("betNumber").value;
         const betCount = document.getElementById("betCount").value;
-        
+
         if (!betNumber || !betCount || betCount < 1 || betCount > 99 || !/^\d{2,4}$/.test(betNumber)) {
             alert("Enter a valid bet number (2D, 3D, 4D) and bet count (1-99).");
             return;
@@ -512,15 +504,9 @@ async function addBaseTestnet() {
 
         let totalPrice;
         const isUSDT = document.getElementById("paymentMethod").value === "USDT";
-        
-        if (isUSDT) {
-            totalPrice = betPriceUSDT * betCount;
-            document.getElementById("currencyType").textContent = "USDT";
-        } else {
-            totalPrice = betPriceETH * betCount;
-            document.getElementById("currencyType").textContent = "ETH";
-        }
 
+        totalPrice = isUSDT ? betPriceUSDT * betCount : betPriceETH * betCount;
+        document.getElementById("currencyType").textContent = isUSDT ? "USDT" : "ETH";
         document.getElementById("totalPrice").textContent = totalPrice;
         document.getElementById("priceDetails").style.display = "block";
         document.getElementById("confirmBetBtn").style.display = "block";
@@ -528,34 +514,31 @@ async function addBaseTestnet() {
 
     // Confirm Bet and Place Transaction
     document.getElementById("confirmBetBtn").addEventListener("click", async () => {
+        if (!contract) {
+            alert("Please connect your wallet first.");
+            return;
+        }
+
         const betNumber = document.getElementById("betNumber").value;
         const betCount = document.getElementById("betCount").value;
-        const isUSDT = document.getElementById("paymentMethod").value === "usdt";
+        const isUSDT = document.getElementById("paymentMethod").value === "USDT";
         const totalPrice = document.getElementById("totalPrice").textContent;
-        
-        let transaction;
+
         try {
-            if (isUSDT) {
-                transaction = await contract.placeBet(betNumber, betCount, 0, true, { value: 0 });
-            } else {
-                transaction = await contract.placeBet(betNumber, betCount, 0, false, { value: ethers.utils.parseEther(totalPrice) });
-            }
+            const transaction = await contract.placeBet(betNumber, betCount, 0, isUSDT, {
+                value: isUSDT ? 0 : ethers.utils.parseEther(totalPrice)
+            });
 
             await transaction.wait();
             alert("Bet placed successfully!");
             document.getElementById("betModal").style.display = "none";
-            updateBalances();
+            await getUSDTBalance();
         } catch (error) {
             console.error("Error placing bet: ", error);
             alert("Bet placement failed!");
         }
     });
-
-    // Event listeners for wallet connection
-    document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
-    document.getElementById("disconnectWalletBtn").addEventListener("click", disconnectWallet);
-
-</script>
+            </script>
 
 </body>
 </html>
