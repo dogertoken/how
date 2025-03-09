@@ -138,8 +138,9 @@
 <body>
     <h2>Lottoballs Lottery</h2><div class="buttons">
     <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
-</div>
 <p id="walletAddress">Not connected</p>
+<p id="ethBalance">ETH Balance: -</p>
+<p id="usdtBalance">USDT Balance: -</p>
 
 <div class="section-box">
     <h3>Choose Numbers</h3><br>
@@ -200,34 +201,61 @@
             document.getElementById("betPrice").innerText = `Bet Price: ${price} ${currency}`;
         }
 
-        async function toggleWallet() {
-            if (account) {
-                account = null;
-                document.getElementById("walletAddress").innerText = "Not connected";
-                document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
-            } else {
-                if (window.ethereum) {
-                    web3 = new Web3(window.ethereum);
-                    try {
-                        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-                        account = accounts[0];
-                        document.getElementById("walletAddress").innerText = `Connected: ${account}`;
-                        document.getElementById("walletButton").innerText = "❌ Disconnect";
-                        fetchBetHistory();
-                    } catch (error) {
-                        console.error("Wallet connection failed", error);
-                    }
-                } else {
-                    alert("Please install Metamask!");
-                }
-            }
-        }
+    let web3;
+let account = null;
+const usdtContractAddress = "USDT_CONTRACT_ADDRESS"; // Ganti dengan alamat kontrak USDT
 
-        async function placeBet() {
-            if (!account) {
-                alert("Connect your wallet first!");
-                return;
+async function toggleWallet() {
+    if (account) {
+        account = null;
+        document.getElementById("walletAddress").innerText = "Not connected";
+        document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
+        document.getElementById("ethBalance").innerText = "ETH Balance: -";
+        document.getElementById("usdtBalance").innerText = "USDT Balance: -";
+    } else {
+        if (window.ethereum) {
+            web3 = new Web3(window.ethereum);
+            try {
+                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+                account = accounts[0];
+                document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+                document.getElementById("walletButton").innerText = "❌ Disconnect";
+                
+                await fetchBalances();
+                fetchBetHistory();
+            } catch (error) {
+                console.error("Wallet connection failed", error);
             }
+        } else {
+            alert("Please install Metamask!");
+        }
+    }
+}
+
+async function fetchBalances() {
+    if (!account) return;
+
+    // Ambil saldo ETH
+    const balanceWei = await web3.eth.getBalance(account);
+    const balanceEth = web3.utils.fromWei(balanceWei, "ether");
+    document.getElementById("ethBalance").innerText = `ETH Balance: ${balanceEth} ETH`;
+
+    // Ambil saldo USDT
+    const usdtAbi = [
+        { "constant": true, "inputs": [{ "name": "owner", "type": "address" }], "name": "balanceOf", "outputs": [{ "name": "", "type": "uint256" }], "type": "function" }
+    ];
+    
+    const usdtContract = new web3.eth.Contract(usdtAbi, usdtContractAddress);
+    const balanceUSDT = await usdtContract.methods.balanceOf(account).call();
+    document.getElementById("usdtBalance").innerText = `USDT Balance: ${web3.utils.fromWei(balanceUSDT, "mwei")} USDT`;
+}
+
+async function placeBet() {
+    if (!account) {
+        alert("Connect your wallet first!");
+        return;
+    }
+}
 
             const numbers = [
                 parseInt(document.getElementById("num1").value),
