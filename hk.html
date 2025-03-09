@@ -371,63 +371,68 @@ body {
         "function getBetCount() public view returns (uint256)"
     ];
 
-    async function connectWallet() {
-    if (window.ethereum) {
-        try {
-            provider = new ethers.BrowserProvider(window.ethereum);
-            await provider.send("eth_requestAccounts", []);
-            signer = await provider.getSigner();
-            currentAccount = await signer.getAddress();
+    document.addEventListener("DOMContentLoaded", async function () {
+            const connectWalletBtn = document.getElementById("connectWalletBtn");
+            const disconnectWalletBtn = document.getElementById("disconnectWalletBtn");
+            const walletAddressSpan = document.getElementById("walletAddress");
+            const ethBalanceSpan = document.getElementById("ethBalance");
+            const usdtBalanceSpan = document.getElementById("usdtBalance");
 
-            // Pastikan jaringan adalah Base Testnet (Chain ID: 84531)
-            const network = await provider.getNetwork();
-            if (network.chainId !== 84531) {
-                await switchToBaseTestnet();
+            let provider;
+            let signer;
+            let userAddress;
+
+            async function connectWallet() {
+                if (window.ethereum) {
+                    try {
+                        provider = new ethers.providers.Web3Provider(window.ethereum);
+                        await provider.send("eth_requestAccounts", []);
+                        signer = provider.getSigner();
+                        userAddress = await signer.getAddress();
+
+                        // Tampilkan alamat wallet
+                        walletAddressSpan.innerText = userAddress;
+
+                        // Dapatkan saldo ETH
+                        const balance = await provider.getBalance(userAddress);
+                        ethBalanceSpan.innerText = ethers.utils.formatEther(balance) + " ETH";
+
+                        // Dapatkan saldo USDT
+                        await getUSDTBalance();
+
+                        // Tampilkan tombol Disconnect
+                        connectWalletBtn.style.display = "none";
+                        disconnectWalletBtn.style.display = "inline-block";
+                    } catch (error) {
+                        alert("Failed to connect wallet. Please try again.");
+                        console.error("Wallet connection error:", error);
+                    }
+                } else {
+                    alert("MetaMask or a compatible wallet is required.");
+                }
             }
 
-            // Inisialisasi kontrak
-            contract = new ethers.Contract(contractAddress, abi, signer);
+            function disconnectWallet() {
+                walletAddressSpan.innerText = "-";
+                ethBalanceSpan.innerText = "-";
+                usdtBalanceSpan.innerText = "-";
+                connectWalletBtn.style.display = "inline-block";
+                disconnectWalletBtn.style.display = "none";
+            }
 
-            // Perbarui UI
-            document.getElementById("walletAddress").textContent = currentAccount;
-            updateBalances();
-            document.getElementById("connectWalletBtn").style.display = "none";
-            document.getElementById("disconnectWalletBtn").style.display = "block";
+            async function getUSDTBalance() {
+                const usdtContract = new ethers.Contract(
+                    "0xdAC17F958D2ee523a2206206994597C13D831ec7", // USDT di Ethereum
+                    ["function balanceOf(address owner) view returns (uint256)"],
+                    provider
+                );
+                const balance = await usdtContract.balanceOf(userAddress);
+                usdtBalanceSpan.innerText = ethers.utils.formatUnits(balance, 6) + " USDT";
+            }
 
-        } catch (error) {
-            console.error("Wallet connection failed:", error);
-            alert("Failed to connect wallet. Please try again.");
-        }
-    } else {
-        alert("Metamask not detected!");
-    }
-}
-
-async function disconnectWallet() {
-    currentAccount = null;
-    document.getElementById("walletAddress").textContent = "-";
-    document.getElementById("ethBalance").textContent = "-";
-    document.getElementById("usdtBalance").textContent = "-";
-    document.getElementById("connectWalletBtn").style.display = "block";
-    document.getElementById("disconnectWalletBtn").style.display = "none";
-}
-
-async function updateBalances() {
-    if (!currentAccount || !provider) return;
-    
-    try {
-        const ethBalance = await provider.getBalance(currentAccount);
-        const usdtContract = new ethers.Contract(usdtAddress, [
-            "function balanceOf(address owner) view returns (uint256)"
-        ], provider);
-        const usdtBalance = await usdtContract.balanceOf(currentAccount);
-        
-        document.getElementById("ethBalance").textContent = ethers.utils.formatEther(ethBalance);
-        document.getElementById("usdtBalance").textContent = ethers.utils.formatUnits(usdtBalance, 6);
-    } catch (error) {
-        console.error("Failed to update balances:", error);
-    }
-}
+            connectWalletBtn.addEventListener("click", connectWallet);
+            disconnectWalletBtn.addEventListener("click", disconnectWallet);
+        });
 
 // Fungsi untuk menandatangani pesan dengan wallet
 async function signMessage() {
