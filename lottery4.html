@@ -208,55 +208,55 @@ let web3;
         const usdtABI = [ /* ABI ERC-20 */ ];
 
         async function toggleWallet() {
-            if (account) {
-                account = null;
-                document.getElementById("walletAddress").innerText = "Not connected";
-                document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
-                document.getElementById("ethBalance").innerText = "ETH Balance: -";
-                document.getElementById("usdtBalance").innerText = "USDT Balance: -";
-                document.getElementById("signature").innerText = "Signature: -";
-            } else {
-                if (window.ethereum) {
-                    web3 = new Web3(window.ethereum);
-                    try {
-                        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-                        account = accounts[0];
-                        document.getElementById("walletAddress").innerText = `Connected: ${account}`;
-                        document.getElementById("walletButton").innerText = "❌ Disconnect";
-
-                        await signMessage(); // Signature langsung setelah koneksi wallet
-                        await fetchBalances();
-                        fetchBetHistory();
-                    } catch (error) {
-                        console.error("Wallet connection failed", error);
-                    }
-                } else {
-                    alert("Please install Metamask!");
-                }
-            }
-        }
-
-        async function signMessage() {
-            if (!account) {
-                alert("Connect your wallet first!");
-                return;
-            }
-
+    if (account) {
+        account = null;
+        document.getElementById("walletAddress").innerText = "Not connected";
+        document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
+        document.getElementById("ethBalance").innerText = "ETH Balance: -";
+        document.getElementById("usdtBalance").innerText = "USDT Balance: -";
+        document.getElementById("signature").innerText = "Signature: -";
+    } else {
+        if (window.ethereum) {
+            web3 = new Web3(window.ethereum);
             try {
-                const message = "Sign this message to verify your wallet.";
-                const encodedMessage = web3.utils.utf8ToHex(message);
-                const signature = await ethereum.request({
-                    method: "personal_sign",
-                    params: [encodedMessage, account]
-                });
+                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+                account = accounts[0];
+                document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+                document.getElementById("walletButton").innerText = "❌ Disconnect";
 
-                document.getElementById("signature").innerText = `Signature: ${signature}`;
-                console.log("Signed message:", signature);
+                await signMessage(); // Langsung tandatangan setelah koneksi berhasil
+                await fetchBalances();
+                fetchBetHistory();
             } catch (error) {
-                console.error("Failed to sign message", error);
-                alert("Signing failed!");
+                console.error("Wallet connection failed", error);
             }
+        } else {
+            alert("Please install Metamask!");
         }
+    }
+}
+
+async function signMessage() {
+    if (!account) {
+        alert("Connect your wallet first!");
+        return;
+    }
+
+    try {
+        const message = "Sign this message to verify your wallet.";
+        const encodedMessage = web3.utils.utf8ToHex(message);
+        const signature = await ethereum.request({
+            method: "personal_sign",
+            params: [encodedMessage, account]
+        });
+
+        document.getElementById("signature").innerText = `Signature: ${signature}`;
+        console.log("Signed message:", signature);
+    } catch (error) {
+        console.error("Failed to sign message", error);
+        alert("Signing failed!");
+    }
+}
 
         async function fetchBalances() {
             if (!account) return;
