@@ -138,11 +138,10 @@
 <body>
     <h2>Lottoballs Lottery</h2><div class="buttons">
     <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
-<p id="walletAddress">Not connected</p>
-<p id="ethBalance">ETH Balance: -</p>
-<p id="usdtBalance">USDT Balance: -</p>
-<button id="signMessageButton" onclick="signMessage()" style="display:none;">✍️ Sign Message</button>
-<p id="signature">Signature: -</p>
+    <p id="walletAddress">Not connected</p>
+    <p id="ethBalance">ETH Balance: -</p>
+    <p id="usdtBalance">USDT Balance: -</p>
+    <p id="signature">Signature: -</p>
 
 <div class="section-box">
     <h3>Choose Numbers</h3><br>
@@ -203,81 +202,77 @@
             document.getElementById("betPrice").innerText = `Bet Price: ${price} ${currency}`;
         }
 
-const usdtContractAddress = "USDT_CONTRACT_ADDRESS"; // Ganti dengan alamat kontrak USDT
+    async function toggleWallet() {
+            if (account) {
+                account = null;
+                document.getElementById("walletAddress").innerText = "Not connected";
+                document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
+                document.getElementById("ethBalance").innerText = "ETH Balance: -";
+                document.getElementById("usdtBalance").innerText = "USDT Balance: -";
+                document.getElementById("signature").innerText = "Signature: -";
+            } else {
+                if (window.ethereum) {
+                    web3 = new Web3(window.ethereum);
+                    try {
+                        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+                        account = accounts[0];
+                        document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+                        document.getElementById("walletButton").innerText = "❌ Disconnect";
 
-async function toggleWallet() {
-    if (account) {
-        account = null;
-        document.getElementById("walletAddress").innerText = "Not connected";
-        document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
-        document.getElementById("ethBalance").innerText = "ETH Balance: -";
-        document.getElementById("usdtBalance").innerText = "USDT Balance: -";
-        document.getElementById("signature").innerText = "Signature: -";
-        document.getElementById("signMessageButton").style.display = "none";
-    } else {
-        if (window.ethereum) {
-            web3 = new Web3(window.ethereum);
-            try {
-                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-                account = accounts[0];
-                document.getElementById("walletAddress").innerText = `Connected: ${account}`;
-                document.getElementById("walletButton").innerText = "❌ Disconnect";
-                document.getElementById("signMessageButton").style.display = "inline-block";
-                
-                await fetchBalances();
-                fetchBetHistory();
-            } catch (error) {
-                console.error("Wallet connection failed", error);
+                        await signMessage(); // Signature langsung setelah koneksi wallet
+                        await fetchBalances();
+                        fetchBetHistory();
+                    } catch (error) {
+                        console.error("Wallet connection failed", error);
+                    }
+                } else {
+                    alert("Please install Metamask!");
+                }
             }
-        } else {
-            alert("Please install Metamask!");
         }
-    }
-}
 
-async function fetchBalances() {
-    if (!account) return;
+        async function signMessage() {
+            if (!account) {
+                alert("Connect your wallet first!");
+                return;
+            }
 
-    // Ambil saldo ETH
-    const balanceWei = await web3.eth.getBalance(account);
-    const balanceEth = web3.utils.fromWei(balanceWei, "ether");
-    document.getElementById("ethBalance").innerText = `ETH Balance: ${balanceEth} ETH`;
+            try {
+                const message = "Sign this message to verify your wallet.";
+                const encodedMessage = web3.utils.utf8ToHex(message);
+                const signature = await ethereum.request({
+                    method: "personal_sign",
+                    params: [encodedMessage, account]
+                });
 
-    // Ambil saldo USDT
-    const usdtAbi = [
-        { "constant": true, "inputs": [{ "name": "owner", "type": "address" }], "name": "balanceOf", "outputs": [{ "name": "", "type": "uint256" }], "type": "function" }
-    ];
-    
-    const usdtContract = new web3.eth.Contract(usdtAbi, usdtContractAddress);
-    const balanceUSDT = await usdtContract.methods.balanceOf(account).call();
-    document.getElementById("usdtBalance").innerText = `USDT Balance: ${web3.utils.fromWei(balanceUSDT, "mwei")} USDT`;
-}
+                document.getElementById("signature").innerText = `Signature: ${signature}`;
+                console.log("Signed message:", signature);
+            } catch (error) {
+                console.error("Failed to sign message", error);
+                alert("Signing failed!");
+            }
+        }
 
-// Fungsi untuk menandatangani pesan
-async function signMessage() {
-    if (!account) {
-        alert("Connect your wallet first!");
-        return;
-    }
-    
-    try {
-        const message = "Sign this message to verify your wallet.";
-        const signature = await web3.eth.personal.sign(message, account);
-        
-        document.getElementById("signature").innerText = `Signature: ${signature}`;
-        console.log("Signed message:", signature);
-    } catch (error) {
-        console.error("Failed to sign message", error);
-    }
-}
+        async function fetchBalances() {
+            if (!account) return;
 
-async function placeBet() {
-    if (!account) {
-        alert("Connect your wallet first!");
-        return;
-    }
-}
-    
+            // Ambil saldo ETH
+            const balanceWei = await web3.eth.getBalance(account);
+            const balanceEth = web3.utils.fromWei(balanceWei, "ether");
+            document.getElementById("ethBalance").innerText = `ETH Balance: ${balanceEth} ETH`;
+
+            // Ambil saldo USDT
+            const usdtContract = new web3.eth.Contract(usdtABI, usdtAddress);
+            const balanceUSDT = await usdtContract.methods.balanceOf(account).call();
+            document.getElementById("usdtBalance").innerText = `USDT Balance: ${web3.utils.fromWei(balanceUSDT, "mwei")} USDT`;
+        }
+
+        async function placeBet() {
+            if (!account) {
+                alert("Connect your wallet first!");
+                return;
+            }
+
             const numbers = [
                 parseInt(document.getElementById("num1").value),
                 parseInt(document.getElementById("num2").value),
@@ -375,6 +370,71 @@ async function placeBet() {
 
         document.getElementById("currency").addEventListener("change", updateBetPrice);
 </script>
+
+        <script>
+    const BASE_SEPOLIA_CHAIN_ID = "0x14A34"; // Base Sepolia Chain ID dalam format hex
+    const BASE_SEPOLIA_RPC_URL = "https://sepolia.base.org"; // RPC URL
+    const BASE_SEPOLIA_EXPLORER = "https://sepolia.basescan.org"; // Block Explorer URL
+
+    async function forceSwitchToBaseSepolia() {
+        if (!window.ethereum) {
+            alert("Metamask is required! Please install Metamask.");
+            return false;
+        }
+
+        try {
+            const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
+
+            if (currentChainId === BASE_SEPOLIA_CHAIN_ID) {
+                console.log("Already on Base Sepolia!");
+                return true;
+            }
+
+            await window.ethereum.request({
+                method: "wallet_switchEthereumChain",
+                params: [{ chainId: BASE_SEPOLIA_CHAIN_ID }],
+            });
+
+            console.log("Successfully switched to Base Sepolia!");
+            return true;
+        } catch (error) {
+            if (error.code === 4902) {
+                try {
+                    await window.ethereum.request({
+                        method: "wallet_addEthereumChain",
+                        params: [{
+                            chainId: BASE_SEPOLIA_CHAIN_ID,
+                            chainName: "Base Sepolia",
+                            rpcUrls: [BASE_SEPOLIA_RPC_URL],
+                            nativeCurrency: {
+                                name: "Ethereum",
+                                symbol: "ETH",
+                                decimals: 18
+                            },
+                            blockExplorerUrls: [BASE_SEPOLIA_EXPLORER]
+                        }]
+                    });
+
+                    console.log("Base Sepolia added and switched!");
+                    return true;
+                } catch (addError) {
+                    console.error("Failed to add Base Sepolia network", addError);
+                    alert("Failed to add Base Sepolia. Please add it manually in MetaMask.");
+                    return false;
+                }
+            } else {
+                console.error("Failed to switch network", error);
+                alert("Please switch to Base Sepolia Testnet manually.");
+                return false;
+            }
+        }
+    }
+
+    // Jalankan fungsi saat halaman dimuat untuk memaksa perpindahan jaringan
+    window.onload = async function () {
+        await forceSwitchToBaseSepolia();
+    };
+        </script>
 
 </body>
 </html>
