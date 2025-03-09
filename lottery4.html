@@ -212,17 +212,25 @@ let web3;
 async function switchToBaseSepolia() {
     if (!window.ethereum) {
         alert("Metamask is required!");
-        return;
+        return false;
     }
 
     try {
-        // Coba beralih ke jaringan Base Sepolia
+        // Cek apakah pengguna sudah di jaringan Base Sepolia
+        const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
+        if (currentChainId === BASE_SEPOLIA_CHAIN_ID) {
+            console.log("Already on Base Sepolia!");
+            return true;
+        }
+
+        // Jika belum, paksa pindah jaringan
         await window.ethereum.request({
             method: "wallet_switchEthereumChain",
             params: [{ chainId: BASE_SEPOLIA_CHAIN_ID }],
         });
 
         console.log("Switched to Base Sepolia!");
+        return true;
     } catch (error) {
         // Jika jaringan tidak ada di Metamask, tambahkan secara otomatis
         if (error.code === 4902) {
@@ -243,18 +251,21 @@ async function switchToBaseSepolia() {
                 });
 
                 console.log("Base Sepolia added and switched!");
+                return true;
             } catch (addError) {
                 console.error("Failed to add Base Sepolia network", addError);
                 alert("Failed to add Base Sepolia. Please add it manually in Metamask.");
+                return false;
             }
         } else {
             console.error("Failed to switch network", error);
             alert("Please switch to Base Sepolia Testnet manually.");
+            return false;
         }
     }
 }
 
-// Panggil fungsi ini saat koneksi wallet
+// Fungsi koneksi wallet dengan pengecekan jaringan lebih awal
 async function toggleWallet() {
     if (account) {
         account = null;
@@ -267,7 +278,9 @@ async function toggleWallet() {
         if (window.ethereum) {
             web3 = new Web3(window.ethereum);
             try {
-                await switchToBaseSepolia(); // Paksa pengguna ke jaringan Base Sepolia
+                // Paksa pengguna ke jaringan Base Sepolia sebelum koneksi
+                const switched = await switchToBaseSepolia();
+                if (!switched) return; // Jangan lanjutkan jika gagal pindah jaringan
 
                 const accounts = await ethereum.request({ method: "eth_requestAccounts" });
                 account = accounts[0];
@@ -286,35 +299,7 @@ async function toggleWallet() {
     }
 }
 
-        async function toggleWallet() {
-    if (account) {
-        account = null;
-        document.getElementById("walletAddress").innerText = "Not connected";
-        document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
-        document.getElementById("ethBalance").innerText = "ETH Balance: -";
-        document.getElementById("usdtBalance").innerText = "USDT Balance: -";
-        document.getElementById("signature").innerText = "Signature: -";
-    } else {
-        if (window.ethereum) {
-            web3 = new Web3(window.ethereum);
-            try {
-                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-                account = accounts[0];
-                document.getElementById("walletAddress").innerText = `Connected: ${account}`;
-                document.getElementById("walletButton").innerText = "❌ Disconnect";
-
-                await signMessage(); // Langsung tandatangan setelah koneksi berhasil
-                await fetchBalances();
-                fetchBetHistory();
-            } catch (error) {
-                console.error("Wallet connection failed", error);
-            }
-        } else {
-            alert("Please install Metamask!");
-        }
-    }
-}
-
+// Fungsi untuk menandatangani pesan
 async function signMessage() {
     if (!account) {
         alert("Connect your wallet first!");
