@@ -232,25 +232,28 @@
         }
 
         async function signMessage() {
-            if (!account) {
-                alert("Connect your wallet first!");
-                return;
-            }
+        if (!account) {
+            alert("Connect your wallet first!");
+            return;
+        }
 
-            try {
-                const message = "Sign this message to verify your wallet.";
-                const encodedMessage = web3.utils.utf8ToHex(message);
-                const signature = await ethereum.request({
-                    method: "personal_sign",
-                    params: [encodedMessage, account]
-                });
+        try {
+            const message = `Sign in to Crypto Betting\n\nWallet: ${account}\nTimestamp: ${Date.now()}`;
+            const signature = await ethereum.request({
+                method: "personal_sign",
+                params: [message, account],
+            });
 
-                document.getElementById("signature").innerText = `Signature: ${signature}`;
-                console.log("Signed message:", signature);
-            } catch (error) {
-                console.error("Failed to sign message", error);
-                alert("Signing failed!");
-            }
+            const shortSignature = signature.slice(0, 10) + "..." + signature.slice(-10);
+            const signatureElement = document.getElementById("signature");
+            signatureElement.innerText = `Signature: ${shortSignature}`;
+            signatureElement.setAttribute("title", `Full Signature: ${signature}`);
+
+            console.log("Full Signature:", signature);
+        } catch (error) {
+            console.error("Failed to sign message", error);
+            alert("Signing failed!");
+        }
         }
 
         async function fetchBalances() {
