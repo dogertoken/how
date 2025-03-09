@@ -329,6 +329,41 @@ function validateInputII(input) {
     }
 }
 
+//Price
+function updateBetPrice() {
+    const currency = document.getElementById("currency").value;
+    const powerplay = document.getElementById("powerplay").checked;
+    const betPriceDisplay = document.getElementById("betPrice");
+
+    let basePriceUSDT = 2; // Harga dasar USDT
+    let basePriceETH = 0.00072; // Harga dasar ETH
+    let powerplayUSDT = 1; // Tambahan USDT jika LottoPlay aktif
+    let powerplayETH = 0.00036; // Tambahan ETH jika LottoPlay aktif
+
+    let finalPrice = currency === "USDT" ? basePriceUSDT : basePriceETH;
+
+    if (powerplay) {
+        finalPrice += currency === "USDT" ? powerplayUSDT : powerplayETH;
+    }
+
+    betPriceDisplay.textContent = `Bet Price: ${finalPrice} ${currency}`;
+}
+
+function placeBet() {
+    const currency = document.getElementById("currency").value;
+    const powerplay = document.getElementById("powerplay").checked;
+    let betAmount = currency === "USDT" ? 2 : 0.00072;
+
+    if (powerplay) {
+        betAmount += currency === "USDT" ? 1 : 0.00036;
+    }
+
+    alert(`Bet placed with amount: ${betAmount} ${currency}`);
+}
+
+// Pastikan saat pertama kali halaman dimuat, harga bet sudah tampil sesuai pilihan
+document.getElementById("currency").addEventListener("change", updateBetPrice);
+window.onload = updateBetPrice;
 
 </script>
                                 
