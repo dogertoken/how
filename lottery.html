@@ -137,11 +137,11 @@
 </head>
 <body>
     <h2>Lottoballs Lottery</h2><div class="buttons">
-    <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
-    <p id="walletAddress">Not connected</p>
-    <p id="ethBalance">ETH Balance: -</p>
-    <p id="usdtBalance">USDT Balance: -</p>
-    <p id="signature">Signature: -</p>
+    <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button><br>
+    <p id="walletAddress">Not connected</p><br>
+    <p id="ethBalance">ETH Balance: -</p><br>
+    <p id="usdtBalance">USDT Balance: -</p><br>
+    <p id="signature">Signature: -</p><br>
 
 <div class="section-box">
     <h3>Choose Numbers</h3><br>
@@ -193,6 +193,7 @@
         const contractABI = [ /* Copy ABI Smart Contract di sini */ ];
         const usdtAddress = "0xYourUSDTContract"; // Ganti dengan alamat token USDT
         const usdtABI = [ /* ABI ERC-20 */ ];
+        const BASE_SEPOLIA_CHAIN_ID = "0x14A34";
 
         function updateBetPrice() {
             const currency = document.getElementById("currency").value;
