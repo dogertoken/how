@@ -454,7 +454,7 @@ body {
         try {
             await window.ethereum.request({
                 method: "wallet_switchEthereumChain",
-                params: [{ chainId: "0x14A33" }], // 0x14A33 adalah Chain ID untuk Base Testnet
+                params: [{ chainId: "84532" }], // 0x14A33 adalah Chain ID untuk Base Testnet
             });
         } catch (error) {
             if (error.code === 4902) {
@@ -470,7 +470,7 @@ body {
             await window.ethereum.request({
                 method: "wallet_addEthereumChain",
                 params: [{
-                    chainId: "0x14A33",
+                    chainId: "84532",
                     chainName: "Base Testnet",
                     rpcUrls: ["https://sepolia.base.org"],
                     nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
