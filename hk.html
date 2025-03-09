@@ -303,58 +303,46 @@
         }
 
     // Input Required
-    function validateInput(input) {
-    let value = parseInt(input.value, 10);
+    const ethBetPrice = 0.0001;  // 0.0001 ETH per bet
+    const usdtBetPrice = 0.5;    // 0.5 USDT per bet
 
-    if (isNaN(value) || value < 1 || value > 69) {
-        input.value = "";
-    }
-}
-
-function validateInputII(input) {
-    let value = parseInt(input.value, 10);
-
-    if (isNaN(value) || value < 1 || value > 26) {
-        input.value = "";
-    }
-}
-
-//Price
-function updateBetPrice() {
-    const currency = document.getElementById("currency").value;
-    const powerplay = document.getElementById("powerplay").checked;
-    const betPriceDisplay = document.getElementById("betPrice");
-
-    let basePriceUSDT = 2; // Harga dasar USDT
-    let basePriceETH = 0.00072; // Harga dasar ETH
-    let powerplayUSDT = 1; // Tambahan USDT jika LottoPlay aktif
-    let powerplayETH = 0.00036; // Tambahan ETH jika LottoPlay aktif
-
-    let finalPrice = currency === "USDT" ? basePriceUSDT : basePriceETH;
-
-    if (powerplay) {
-        finalPrice += currency === "USDT" ? powerplayUSDT : powerplayETH;
+    function validateLottoNumber(input) {
+        let value = input.value.replace(/\D/g, ""); // Hanya angka
+        if (value.length > 4) value = value.slice(0, 4); // Maksimal 4 digit
+        while (value.length < 2) value = "0" + value; // Minimal 2 digit
+        input.value = value;
     }
 
-    betPriceDisplay.textContent = `Bet Price: ${finalPrice} ${currency}`;
-}
-
-function placeBet() {
-    const currency = document.getElementById("currency").value;
-    const powerplay = document.getElementById("powerplay").checked;
-    let betAmount = currency === "USDT" ? 2 : 0.00072;
-
-    if (powerplay) {
-        betAmount += currency === "USDT" ? 1 : 0.00036;
+    function updateBetPrice() {
+        let betCount = parseInt(document.getElementById("betCount").value);
+        let currency = document.getElementById("currency").value;
+        let price = betCount * (currency === "ETH" ? ethBetPrice : usdtBetPrice);
+        document.getElementById("betPrice").innerHTML = `Bet Price: ${price} ${currency}`;
     }
 
-    alert(`Bet placed with amount: ${betAmount} ${currency}`);
-}
+    async function placeBet() {
+        let lottoNumber = document.getElementById("lottoNumber").value;
+        let betCount = document.getElementById("betCount").value;
+        let currency = document.getElementById("currency").value;
 
-// Pastikan saat pertama kali halaman dimuat, harga bet sudah tampil sesuai pilihan
-document.getElementById("currency").addEventListener("change", updateBetPrice);
-window.onload = updateBetPrice;
+        if (lottoNumber.length < 2 || betCount < 1 || betCount > 99) {
+            alert("Please enter a valid number (00-9999) and bet count (1-99).");
+            return;
+        }
 
+        let betAmount = betCount * (currency === "ETH" ? ethBetPrice : usdtBetPrice);
+
+        if (currency === "ETH") {
+            await contract.methods.placeBet(lottoNumber, betCount, true)
+                .send({ from: userAddress, value: web3.utils.toWei(betAmount.toString(), "ether") });
+        } else {
+            let usdtAmount = (betAmount * 10 ** 6).toString();  // Convert USDT ke 6 desimal
+            await usdtContract.methods.approve(contractAddress, usdtAmount).send({ from: userAddress });
+            await contract.methods.placeBet(lottoNumber, betCount, false).send({ from: userAddress });
+        }
+
+        alert("Bet placed successfully!");
+    }
 </script>
                                 
 </body>
