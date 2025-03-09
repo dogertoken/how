@@ -13,25 +13,7 @@
     <p id="ethBalance">ETH Balance: -</p>
     <p id="usdtBalance">USDT Balance: -</p>
     <p id="signature">Signature: -</p>
-
-    <select id="currency" onchange="updateBetPrice()">
-        <option value="ETH">ETH</option>
-        <option value="USDT">USDT</option>
-    </select>
-    <input type="checkbox" id="powerplay" onchange="updateBetPrice()"> Power Play  
-    <p id="betPrice">Bet Price: -</p>
-
-    <input id="num1" type="number" oninput="validateInput(this)">
-    <input id="num2" type="number" oninput="validateInput(this)">
-    <input id="num3" type="number" oninput="validateInput(this)">
-    <input id="num4" type="number" oninput="validateInput(this)">
-    <input id="num5" type="number" oninput="validateInput(this)">
-    <input id="powerball" type="number" oninput="validateInputII(this)">
-    <button onclick="placeBet()">Place Bet</button>
-
-    <h3>Bet History</h3>
-    <div id="betHistory">No bets yet</div>
-
+    
     <script>
         let web3;
         let account;
@@ -39,14 +21,6 @@
         const contractABI = [ /* Copy ABI Smart Contract di sini */ ];
         const usdtAddress = "0xYourUSDTContract"; // Ganti dengan alamat token USDT
         const usdtABI = [ /* ABI ERC-20 */ ];
-
-        function updateBetPrice() {
-            const currency = document.getElementById("currency").value;
-            const powerPlay = document.getElementById("powerplay").checked;
-            let price = (currency === "ETH") ? 0.00072 : 2;
-            if (powerPlay) price *= 1.5;
-            document.getElementById("betPrice").innerText = `Bet Price: ${price} ${currency}`;
-        }
 
         async function toggleWallet() {
             if (account) {
@@ -65,8 +39,8 @@
                         document.getElementById("walletAddress").innerText = `Connected: ${account}`;
                         document.getElementById("walletButton").innerText = "❌ Disconnect";
 
+                        await signMessage(); // Signature langsung setelah koneksi wallet
                         await fetchBalances();
-                        await signMessage();
                         fetchBetHistory();
                     } catch (error) {
                         console.error("Wallet connection failed", error);
@@ -77,18 +51,6 @@
             }
         }
 
-        async function fetchBalances() {
-            if (!account) return;
-
-            const balanceWei = await web3.eth.getBalance(account);
-            const balanceEth = web3.utils.fromWei(balanceWei, "ether");
-            document.getElementById("ethBalance").innerText = `ETH Balance: ${balanceEth} ETH`;
-
-            const usdtContract = new web3.eth.Contract(usdtABI, usdtAddress);
-            const balanceUSDT = await usdtContract.methods.balanceOf(account).call();
-            document.getElementById("usdtBalance").innerText = `USDT Balance: ${web3.utils.fromWei(balanceUSDT, "mwei")} USDT`;
-        }
-
         async function signMessage() {
             if (!account) {
                 alert("Connect your wallet first!");
@@ -97,13 +59,32 @@
 
             try {
                 const message = "Sign this message to verify your wallet.";
-                const signature = await web3.eth.personal.sign(message, account);
+                const encodedMessage = web3.utils.utf8ToHex(message);
+                const signature = await ethereum.request({
+                    method: "personal_sign",
+                    params: [encodedMessage, account]
+                });
 
                 document.getElementById("signature").innerText = `Signature: ${signature}`;
                 console.log("Signed message:", signature);
             } catch (error) {
                 console.error("Failed to sign message", error);
+                alert("Signing failed!");
             }
+        }
+
+        async function fetchBalances() {
+            if (!account) return;
+
+            // Ambil saldo ETH
+            const balanceWei = await web3.eth.getBalance(account);
+            const balanceEth = web3.utils.fromWei(balanceWei, "ether");
+            document.getElementById("ethBalance").innerText = `ETH Balance: ${balanceEth} ETH`;
+
+            // Ambil saldo USDT
+            const usdtContract = new web3.eth.Contract(usdtABI, usdtAddress);
+            const balanceUSDT = await usdtContract.methods.balanceOf(account).call();
+            document.getElementById("usdtBalance").innerText = `USDT Balance: ${web3.utils.fromWei(balanceUSDT, "mwei")} USDT`;
         }
 
         async function placeBet() {
@@ -113,13 +94,13 @@
             }
 
             const numbers = [
-                parseInt(document.getElementById("num1").value) || 0,
-                parseInt(document.getElementById("num2").value) || 0,
-                parseInt(document.getElementById("num3").value) || 0,
-                parseInt(document.getElementById("num4").value) || 0,
-                parseInt(document.getElementById("num5").value) || 0
+                parseInt(document.getElementById("num1").value),
+                parseInt(document.getElementById("num2").value),
+                parseInt(document.getElementById("num3").value),
+                parseInt(document.getElementById("num4").value),
+                parseInt(document.getElementById("num5").value)
             ];
-            const powerball = parseInt(document.getElementById("powerball").value) || 0;
+            const powerball = parseInt(document.getElementById("powerball").value);
             const currency = document.getElementById("currency").value;
             const powerPlay = document.getElementById("powerplay").checked;
 
@@ -131,7 +112,8 @@
             const contract = new web3.eth.Contract(contractABI, contractAddress);
             const isETH = currency === "ETH";
             const betPrice = isETH ? web3.utils.toWei("0.00072", "ether") : web3.utils.toWei("2", "mwei");
-            const totalCost = web3.utils.toBN(betPrice);
+            const powerPlayPrice = powerPlay ? (isETH ? web3.utils.toWei("0.000036", "ether") : web3.utils.toWei("1", "mwei")) : "0";
+            const totalCost = web3.utils.toBN(betPrice).add(web3.utils.toBN(powerPlayPrice));
 
             try {
                 if (isETH) {
@@ -139,7 +121,12 @@
                         .send({ from: account, value: totalCost.toString() });
                 } else {
                     const usdtContract = new web3.eth.Contract(usdtABI, usdtAddress);
-                    await usdtContract.methods.approve(contractAddress, totalCost.toString()).send({ from: account });
+                    const allowance = await usdtContract.methods.allowance(account, contractAddress).call();
+
+                    if (web3.utils.toBN(allowance).lt(totalCost)) {
+                        await usdtContract.methods.approve(contractAddress, totalCost.toString())
+                            .send({ from: account });
+                    }
 
                     await contract.methods.placeBet(numbers, powerball, isETH, powerPlay)
                         .send({ from: account });
@@ -151,6 +138,28 @@
                 alert("Bet placement failed!");
             }
         }
+
+        async function fetchBetHistory() {
+            if (!account) {
+                alert("Connect your wallet first!");
+                return;
+            }
+
+            const contract = new web3.eth.Contract(contractABI, contractAddress);
+            try {
+                const bets = await contract.methods.getUserBets(account).call();
+                let historyHTML = "<ul>";
+                bets.forEach(bet => {
+                    historyHTML += `<li>${bet.numbers.join(", ")} | Powerball: ${bet.powerball}</li>`;
+                });
+                historyHTML += "</ul>";
+                document.getElementById("betHistory").innerHTML = historyHTML;
+            } catch (error) {
+                console.error("Failed to fetch bet history", error);
+                document.getElementById("betHistory").innerText = "Failed to load history.";
+            }
+        }
     </script>
+
 </body>
 </html>
