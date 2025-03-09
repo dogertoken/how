@@ -134,6 +134,91 @@
             transform: scale(2);
             margin-left: 10px;
         }
+
+    /* Reset dasar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: white;
+    width: 100vw;
+    overflow-x: hidden;
+}
+
+/* === NAVIGASI MENU === */
+.navbar {
+    position: fixed;
+    bottom: 0; /* Bisa diubah ke top: 0 jika ingin di atas */
+    width: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+    backdrop-filter: blur(10px);
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background 0.3s ease-in-out;
+}
+
+.navbar a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* === TOMBOL MENU === */
+.menu-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 80px;
+}
+
+.menu-buttons button {
+    padding: 15px 35px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(135deg, #00b7ff, #007bff);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 183, 255, 0.8);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.menu-buttons button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
+}
+
+/* === MEDIA QUERY UNTUK HP === */
+@media (max-width: 600px) {
+    .navbar a {
+        font-size: 14px;
+    }
+
+    .menu-buttons button {
+        font-size: 1rem;
+        padding: 12px 25px;
+    }
+    }
 </style>
 
 </head>
@@ -183,12 +268,20 @@
     <button onclick="fetchBetHistory()">🔍 Refresh History</button></center><br>
 </div>
 
-<!-- Menu Bar -->
-    <div class="menu-bar">
-        <button onclick="location.href='#'">🏠 Home</button>
-        <button onclick="location.href='#'">📜 History</button>
-        <button onclick="location.href='#'">🎲 Play</button>
-        <button onclick="location.href='#'">⚙️ Settings</button>
+    <!-- Menu Navigasi Seperti Aplikasi -->
+    <div class="navbar">
+        <a href="#">🏠 Home</a>
+        <a href="#">📂 Files</a>
+        <a href="#">⚙️ Settings</a>
+        <a href="#">ℹ️ About</a>
+    </div>
+
+    <!-- Tombol Menu -->
+    <div class="menu-buttons">
+        <button>Menu 1</button>
+        <button>Menu 2</button>
+        <button>Menu 3</button>
+        <button>Menu 4</button>
     </div>
 
     <!-- Hak Cipta -->
