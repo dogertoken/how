@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betting DApp</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.0/dist/ethers.min.js"></script>
+    <style>
+    /* Global Styles */
+body {
+    background-color: #111;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Main Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 900px;
+    padding: 20px;
+}
+
+/* Wallet Section */
+.wallet-section, .betting-section {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Section Titles */
+.wallet-section h2, .betting-section h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #006fe6;
+}
+
+/* Wallet Info Box */
+#walletInfo, #placeBetBox {
+    background-color: #1f1f1f;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+    border: 2px solid #333;
+    transition: all 0.3s ease-in-out;
+    text-align: center;
+}
+
+/* Wallet Info Hover */
+#walletInfo:hover, #placeBetBox:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+}
+
+/* Wallet Details */
+.wallet-details p {
+    font-size: 18px;
+    margin: 10px 0;
+    font-weight: bold;
+    color: #b0b0b0;
+}
+
+.wallet-details span {
+    color: #006fe6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .btn {
+        font-size: 16px;
+        padding: 14px 20px;
+    }
+}
+
+/* Modal Background */
+/* Modal Background */
+#betModal {
+    display: none;
+    position: fixed; /* Menempel di layar */
+    z-index: 1000;
+    top: 50%;
+    left: 50%;
+    width: 90%;
+    max-width: 500px; /* Maksimum lebar modal */
+    height: auto;
+    max-height: 90vh; /* Batas tinggi agar tidak melebihi layar */
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(20px);
+    transform: translate(-50%, -50%);
+    animation: fadeIn 0.5s ease;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
+}
+
+/* Modal Content - Center Align */
+.modal-content {
+    background-color: #1f1f1f;
+    margin: 10% auto;
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.8);
+    transform: scale(0.8);
+    animation: scaleUp 0.4s ease forwards;
+    border: 2px solid #333;
+    
+    /* Flexbox untuk center alignment */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Input Fields with 3D Effect - Center */
+.modal-content input {
+    width: 80%; /* Lebih kecil supaya pas dengan tombol */
+    padding: 14px 18px;
+    margin: 9px 0;
+    border: 2px solid #444;
+    border-radius: 11px;
+    background-color: #2a2a2a;
+    color: #fff;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.2);
+    text-align: center; /* Teks placeholder dan input di tengah */
+}
+
+/* Modal Header */
+.modal-header {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #006fe6;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.3);
+}
+
+/* Placeholder Effect */
+.modal-content input::placeholder {
+    color: #b0b0b0;
+    font-style: italic;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* Input Focus Effect */
+.modal-content input:focus {
+    border-color: #006fe6;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.6), inset 0 0 12px rgba(156, 39, 176, 0.4);
+}
+
+/* 3D Buttons */
+.btn {
+    cursor: pointer;
+    padding: 16px 20px;
+    background-color: #006fe6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    width: auto;
+    min-width: 120px; /* Batas minimal */
+    max-width: 250px; /* Batas maksimal */
+    letter-spacing: 1px;
+}
+
+.btn:hover {
+    background-color: #004a99;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    transform: translateY(-5px);
+}
+
+.btn:active {
+    transform: translateY(2px);
+}
+
+/* Animations for Modal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleUp {
+    from {
+        transform: scale(0.8);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 85%;
+        padding: 20px;
+    }
+
+    .btn {
+        padding: 15px;
+        font-size: 16px;
+    }
+
+    .modal-header {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .btn {
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    .modal-header {
+        font-size: 20px;
+    }
+}
+
+.wallet-logo {
+    display: block;
+    margin: 0 auto;
+    max-width: 150px; /* Sesuaikan ukuran logo */
+}
+        /* Label */
+.label-style {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Dropdown (Select Box) */
+.select-style {
+    font-size: 16px;
+    padding: 10px 40px 10px 15px;
+    border-radius: 8px;
+    border: 2px solid #00b7ff;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 10px rgba(0, 183, 255, 0.3);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    appearance: none;
+    width: 200px; /* Sesuai agar tidak kepanjangan */
+    position: relative;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%2300b7ff"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+}
+
+/* Efek saat klik atau fokus */
+.select-style:focus {
+    box-shadow: 0 6px 15px rgba(0, 183, 255, 0.5);
+    border-color: #0077cc;
+}
+    </style>
+</head>
+<body>
+
+<!-- Main Container -->
+<div class="container">
+
+    <!-- Wallet Section -->
+    <div class="wallet-section">
+        <img src="logo.png" alt="Logo" class="wallet-logo">
+        <h2><b>Hong Kong Pools</b> (HK)</h2>
+        <div id="walletInfo">
+            <button class="btn" id="connectWalletBtn">Connect Wallet</button>
+            <button class="btn" id="disconnectWalletBtn" style="display:none;">Disconnect Wallet</button>
+            <div class="wallet-details">
+                <p>Wallet Address: <span id="walletAddress">-</span></p>
+                <p>ETH Balance: <span id="ethBalance">-</span></p>
+                <p>USDT Balance: <span id="usdtBalance">-</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Betting Section -->
+    <div class="betting-section">
+        <h2>Place Your Bet</h2>
+        <div id="placeBetBox">
+            <button class="btn" id="placeBetBtn">Place Bet</button>
+        </div>
+    </div>
+
+</div>
+    
+<!-- Bet Modal -->
+<div id="betModal">
+    <div class="modal-content">
+        <span class="close" style="
+    float: right; 
+    cursor: pointer; 
+    font-size: 1em; 
+    color: #ff5555;
+    padding: 10px 10px; 
+    border-radius: 10px; 
+    background: rgba(255, 255, 255, 0.1); 
+    backdrop-filter: blur(10px); 
+    box-shadow: 0 4px 10px rgba(255, 85, 85, 0.3);
+">&times;</span>
+        <h3>Place Bet</h3>
+
+        <label for="betNumber">Enter Bet Numbers (2D, 3D, or 4D)</label>
+        <input type="text" id="betNumber" placeholder="Enter Numbers" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+
+        <label for="betCount">Bet Count (1x / 99x)</label>
+        <input type="number" id="betCount" placeholder="1 / 99" min="1" max="99" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)" />
+
+        <label for="paymentMethod" class="label-style">Payment Method:</label>
+        <select id="paymentMethod" class="select-style">
+            <option value="USDT">USDT</option>
+            <option value="ETH">ETH</option>
+        </select>
+
+        <button class="btn" id="calculatePriceBtn">Calculate Price</button>
+
+        <div id="priceDetails" style="display:none;">
+            <center><p style="font-size: 16px; font-weight: bold; color: #33ff33; font-family: 'Courier New', monospace; background: #101010; padding: 5px 10px; border-radius: 5px; display: inline-block;">Total Price: <span id="totalPrice"></span> <span id="currencyType"></span></p></center>
+           <center><button class="btn" id="confirmBetBtn" style="display:none;">Confirm Bet</button></center>
+        </div>
+    </div>
+</div>
+
+<script>
+    const contractAddress = "YOUR_CONTRACT_ADDRESS";
+    const usdtAddress = "USDT_CONTRACT_ADDRESS"; // USDT contract address for ERC20
+    const betPriceETH = 0.00015; // 0.00015 ETH per bet
+    const betPriceUSDT = 0.5; // 0.5 USDT per bet
+    
+    let provider, signer, contract;
+    let currentAccount = null;
+
+    // ABI from your smart contract (add the real ABI here)
+    const abi = [
+        "function placeBet(uint256 number, uint256 betCount, uint256 betType, bool isUSDT) public payable",
+        "function getBet(uint256 betId) public view returns (address, uint256, uint256, uint256, uint256, uint256, bool, uint256)",
+        "function getBetCount() public view returns (uint256)"
+    ];
+
+async function connectWallet() {
+    console.log("Connecting wallet...");
+
+    if (window.ethereum) {
+        try {
+            provider = new ethers.BrowserProvider(window.ethereum);
+            await provider.send("eth_requestAccounts", []);
+            signer = await provider.getSigner();
+            currentAccount = await signer.getAddress();
+
+            console.log("Connected Account:", currentAccount);
+
+            // Periksa jaringan yang digunakan
+            const network = await provider.getNetwork();
+            console.log("Connected Network:", network.chainId);
+
+            if (network.chainId !== 84531) {
+                console.log("Switching to Base Testnet...");
+                await switchToBaseTestnet();
+            }
+
+            // Inisialisasi kontrak
+            contract = new ethers.Contract(contractAddress, abi, signer);
+            console.log("Contract Initialized:", contract);
+
+            // Perbarui UI
+            document.getElementById("walletAddress").textContent = currentAccount;
+            updateBalances();
+            document.getElementById("connectWalletBtn").style.display = "none";
+            document.getElementById("disconnectWalletBtn").style.display = "block";
+
+        } catch (error) {
+            console.error("Wallet connection failed:", error);
+            alert("Failed to connect wallet. Check the console for details.");
+        }
+    } else {
+        alert("Metamask not detected!");
+        console.error("MetaMask is not installed.");
+    }
+}
+    
+async function disconnectWallet() {
+    currentAccount = null;
+    document.getElementById("walletAddress").textContent = "-";
+    document.getElementById("ethBalance").textContent = "-";
+    document.getElementById("usdtBalance").textContent = "-";
+    document.getElementById("connectWalletBtn").style.display = "block";
+    document.getElementById("disconnectWalletBtn").style.display = "none";
+}
+
+async function updateBalances() {
+    if (!currentAccount || !provider) return;
+    
+    try {
+        const ethBalance = await provider.getBalance(currentAccount);
+        const usdtContract = new ethers.Contract(usdtAddress, [
+            "function balanceOf(address owner) view returns (uint256)"
+        ], provider);
+        const usdtBalance = await usdtContract.balanceOf(currentAccount);
+        
+        document.getElementById("ethBalance").textContent = ethers.utils.formatEther(ethBalance);
+        document.getElementById("usdtBalance").textContent = ethers.utils.formatUnits(usdtBalance, 6);
+    } catch (error) {
+        console.error("Failed to update balances:", error);
+    }
+}
+
+// Fungsi untuk menandatangani pesan dengan wallet
+async function signMessage() {
+    if (!signer) {
+        alert("Please connect your wallet first.");
+        return;
+    }
+    try {
+        const message = "Sign this message to verify your wallet.";
+        const signature = await signer.signMessage(message);
+        alert("Signature: " + signature);
+    } catch (error) {
+        console.error("Failed to sign message:", error);
+    }
+}
+
+// Fungsi untuk memaksa jaringan ke Base Testnet
+async function switchToBaseTestnet() {
+    try {
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: "0x14A33" }], // 0x14A33 adalah Chain ID untuk Base Testnet
+        });
+    } catch (error) {
+        // Jika jaringan tidak tersedia di Metamask, tambahkan Base Testnet secara manual
+        if (error.code === 4902) {
+            await addBaseTestnet();
+        } else {
+            console.error("Failed to switch network:", error);
+        }
+    }
+}
+
+// Fungsi untuk menambahkan Base Testnet ke Metamask
+async function addBaseTestnet() {
+    try {
+        await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [{
+                chainId: "0x14A33",
+                chainName: "Base Testnet",
+                rpcUrls: ["https://goerli.base.org"],
+                nativeCurrency: {
+                    name: "ETH",
+                    symbol: "ETH",
+                    decimals: 18
+                },
+                blockExplorerUrls: ["https://goerli.basescan.org"]
+            }],
+        });
+    } catch (error) {
+        console.error("Failed to add Base Testnet:", error);
+    }
+}
+
+    // Show Bet Modal
+    document.getElementById("placeBetBtn").addEventListener("click", () => {
+        const betModal = document.getElementById("betModal");
+        betModal.style.display = "block";
+    });
+
+    // Close Modal
+    document.querySelector(".close").addEventListener("click", () => {
+        const betModal = document.getElementById("betModal");
+        betModal.style.display = "none";
+    });
+
+    // Calculate Bet Price
+    document.getElementById("calculatePriceBtn").addEventListener("click", () => {
+        const betNumber = document.getElementById("betNumber").value;
+        const betCount = document.getElementById("betCount").value;
+        
+        if (!betNumber || !betCount || betCount < 1 || betCount > 99 || !/^\d{2,4}$/.test(betNumber)) {
+            alert("Enter a valid bet number (2D, 3D, 4D) and bet count (1-99).");
+            return;
+        }
+
+        let totalPrice;
+        const isUSDT = document.getElementById("paymentMethod").value === "USDT";
+        
+        if (isUSDT) {
+            totalPrice = betPriceUSDT * betCount;
+            document.getElementById("currencyType").textContent = "USDT";
+        } else {
+            totalPrice = betPriceETH * betCount;
+            document.getElementById("currencyType").textContent = "ETH";
+        }
+
+        document.getElementById("totalPrice").textContent = totalPrice;
+        document.getElementById("priceDetails").style.display = "block";
+        document.getElementById("confirmBetBtn").style.display = "block";
+    });
+
+    // Confirm Bet and Place Transaction
+    document.getElementById("confirmBetBtn").addEventListener("click", async () => {
+        const betNumber = document.getElementById("betNumber").value;
+        const betCount = document.getElementById("betCount").value;
+        const isUSDT = document.getElementById("paymentMethod").value === "usdt";
+        const totalPrice = document.getElementById("totalPrice").textContent;
+        
+        let transaction;
+        try {
+            if (isUSDT) {
+                transaction = await contract.placeBet(betNumber, betCount, 0, true, { value: 0 });
+            } else {
+                transaction = await contract.placeBet(betNumber, betCount, 0, false, { value: ethers.utils.parseEther(totalPrice) });
+            }
+
+            await transaction.wait();
+            alert("Bet placed successfully!");
+            document.getElementById("betModal").style.display = "none";
+            updateBalances();
+        } catch (error) {
+            console.error("Error placing bet: ", error);
+            alert("Bet placement failed!");
+        }
+    });
+
+    // Event listeners for wallet connection
+    document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
+    document.getElementById("disconnectWalletBtn").addEventListener("click", disconnectWallet);
+
+</script>
+
+</body>
+</html>
