@@ -142,20 +142,6 @@
     box-sizing: border-box;
 }
 
-html, body {
-    font-family: 'Poppins', sans-serif;
-    text-align: center;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
-    color: white;
-    width: 100vw;
-    overflow-x: hidden;
-}
-
 /* === NAVIGASI MENU === */
 .navbar {
     position: fixed;
@@ -182,41 +168,10 @@ html, body {
     background: rgba(255, 255, 255, 0.2);
 }
 
-/* === TOMBOL MENU === */
-.menu-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 80px;
-}
-
-.menu-buttons button {
-    padding: 15px 35px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    color: white;
-    background: linear-gradient(135deg, #00b7ff, #007bff);
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 183, 255, 0.8);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.menu-buttons button:hover {
-    transform: scale(1.1);
-    box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
-}
-
 /* === MEDIA QUERY UNTUK HP === */
 @media (max-width: 600px) {
     .navbar a {
         font-size: 14px;
-    }
-
-    .menu-buttons button {
-        font-size: 1rem;
-        padding: 12px 25px;
     }
     }
 </style>
@@ -276,10 +231,6 @@ html, body {
         <a href="#">ℹ️ About</a>
     </div>
 
-    <!-- Hak Cipta -->
-    <footer>
-        <p>&copy; 2025 LottoBalls Lottery. All rights reserved.</p>
-    </footer>
     
 <script>
         let web3;
