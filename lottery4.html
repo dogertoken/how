@@ -358,5 +358,70 @@
 
     </script>
 
+    <script>
+    const BASE_SEPOLIA_CHAIN_ID = "0x14A34"; // Base Sepolia Chain ID dalam format hex
+    const BASE_SEPOLIA_RPC_URL = "https://sepolia.base.org"; // RPC URL
+    const BASE_SEPOLIA_EXPLORER = "https://sepolia.basescan.org"; // Block Explorer URL
+
+    async function forceSwitchToBaseSepolia() {
+        if (!window.ethereum) {
+            alert("Metamask is required! Please install Metamask.");
+            return false;
+        }
+
+        try {
+            const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
+
+            if (currentChainId === BASE_SEPOLIA_CHAIN_ID) {
+                console.log("Already on Base Sepolia!");
+                return true;
+            }
+
+            await window.ethereum.request({
+                method: "wallet_switchEthereumChain",
+                params: [{ chainId: BASE_SEPOLIA_CHAIN_ID }],
+            });
+
+            console.log("Successfully switched to Base Sepolia!");
+            return true;
+        } catch (error) {
+            if (error.code === 4902) {
+                try {
+                    await window.ethereum.request({
+                        method: "wallet_addEthereumChain",
+                        params: [{
+                            chainId: BASE_SEPOLIA_CHAIN_ID,
+                            chainName: "Base Sepolia",
+                            rpcUrls: [BASE_SEPOLIA_RPC_URL],
+                            nativeCurrency: {
+                                name: "Ethereum",
+                                symbol: "ETH",
+                                decimals: 18
+                            },
+                            blockExplorerUrls: [BASE_SEPOLIA_EXPLORER]
+                        }]
+                    });
+
+                    console.log("Base Sepolia added and switched!");
+                    return true;
+                } catch (addError) {
+                    console.error("Failed to add Base Sepolia network", addError);
+                    alert("Failed to add Base Sepolia. Please add it manually in MetaMask.");
+                    return false;
+                }
+            } else {
+                console.error("Failed to switch network", error);
+                alert("Please switch to Base Sepolia Testnet manually.");
+                return false;
+            }
+        }
+    }
+
+    // Jalankan fungsi saat halaman dimuat untuk memaksa perpindahan jaringan
+    window.onload = async function () {
+        await forceSwitchToBaseSepolia();
+    };
+    </script>
+
 </body>
 </html>
