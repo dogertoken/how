@@ -207,6 +207,85 @@ let web3;
         const usdtAddress = "0xYourUSDTContract"; // Ganti dengan alamat token USDT
         const usdtABI = [ /* ABI ERC-20 */ ];
 
+       const BASE_SEPOLIA_CHAIN_ID = "0x14A34"; // Chain ID Base Sepolia dalam format hex
+
+async function switchToBaseSepolia() {
+    if (!window.ethereum) {
+        alert("Metamask is required!");
+        return;
+    }
+
+    try {
+        // Coba beralih ke jaringan Base Sepolia
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: BASE_SEPOLIA_CHAIN_ID }],
+        });
+
+        console.log("Switched to Base Sepolia!");
+    } catch (error) {
+        // Jika jaringan tidak ada di Metamask, tambahkan secara otomatis
+        if (error.code === 4902) {
+            try {
+                await window.ethereum.request({
+                    method: "wallet_addEthereumChain",
+                    params: [{
+                        chainId: BASE_SEPOLIA_CHAIN_ID,
+                        chainName: "Base Sepolia",
+                        rpcUrls: ["https://sepolia.base.org"],
+                        nativeCurrency: {
+                            name: "ETH",
+                            symbol: "ETH",
+                            decimals: 18
+                        },
+                        blockExplorerUrls: ["https://sepolia.basescan.org"]
+                    }]
+                });
+
+                console.log("Base Sepolia added and switched!");
+            } catch (addError) {
+                console.error("Failed to add Base Sepolia network", addError);
+                alert("Failed to add Base Sepolia. Please add it manually in Metamask.");
+            }
+        } else {
+            console.error("Failed to switch network", error);
+            alert("Please switch to Base Sepolia Testnet manually.");
+        }
+    }
+}
+
+// Panggil fungsi ini saat koneksi wallet
+async function toggleWallet() {
+    if (account) {
+        account = null;
+        document.getElementById("walletAddress").innerText = "Not connected";
+        document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
+        document.getElementById("ethBalance").innerText = "ETH Balance: -";
+        document.getElementById("usdtBalance").innerText = "USDT Balance: -";
+        document.getElementById("signature").innerText = "Signature: -";
+    } else {
+        if (window.ethereum) {
+            web3 = new Web3(window.ethereum);
+            try {
+                await switchToBaseSepolia(); // Paksa pengguna ke jaringan Base Sepolia
+
+                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+                account = accounts[0];
+                document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+                document.getElementById("walletButton").innerText = "❌ Disconnect";
+
+                await signMessage(); // Signature langsung setelah koneksi wallet
+                await fetchBalances();
+                fetchBetHistory();
+            } catch (error) {
+                console.error("Wallet connection failed", error);
+            }
+        } else {
+            alert("Please install Metamask!");
+        }
+    }
+}
+
         async function toggleWallet() {
     if (account) {
         account = null;
