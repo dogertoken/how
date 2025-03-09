@@ -208,113 +208,121 @@
         }
 
        async function switchToBaseSepolia() {
-        if (!window.ethereum) {
-            alert("Metamask is required!");
-            return false;
+    if (!window.ethereum) {
+        alert("Metamask is required!");
+        return false;
+    }
+
+    try {
+        const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
+        if (currentChainId === BASE_SEPOLIA_CHAIN_ID) {
+            console.log("Already on Base Sepolia!");
+            return true;
         }
 
-        try {
-            const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
-            if (currentChainId === BASE_SEPOLIA_CHAIN_ID) {
-                console.log("Already on Base Sepolia!");
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: BASE_SEPOLIA_CHAIN_ID }],
+        });
+
+        console.log("Switched to Base Sepolia!");
+        return true;
+    } catch (error) {
+        if (error.code === 4902) {
+            try {
+                await window.ethereum.request({
+                    method: "wallet_addEthereumChain",
+                    params: [{
+                        chainId: BASE_SEPOLIA_CHAIN_ID,
+                        chainName: "Base Sepolia",
+                        rpcUrls: ["https://sepolia.base.org"],
+                        nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+                        blockExplorerUrls: ["https://sepolia.basescan.org"]
+                    }]
+                });
+
+                console.log("Base Sepolia added and switched!");
                 return true;
-            }
-
-            await window.ethereum.request({
-                method: "wallet_switchEthereumChain",
-                params: [{ chainId: BASE_SEPOLIA_CHAIN_ID }],
-            });
-
-            console.log("Switched to Base Sepolia!");
-            return true;
-        } catch (error) {
-            if (error.code === 4902) {
-                try {
-                    await window.ethereum.request({
-                        method: "wallet_addEthereumChain",
-                        params: [{
-                            chainId: BASE_SEPOLIA_CHAIN_ID,
-                            chainName: "Base Sepolia",
-                            rpcUrls: ["https://sepolia.base.org"],
-                            nativeCurrency: {
-                                name: "ETH",
-                                symbol: "ETH",
-                                decimals: 18
-                            },
-                            blockExplorerUrls: ["https://sepolia.basescan.org"]
-                        }]
-                    });
-
-                    console.log("Base Sepolia added and switched!");
-                    return true;
-                } catch (addError) {
-                    console.error("Failed to add Base Sepolia network", addError);
-                    alert("Failed to add Base Sepolia. Please add it manually in Metamask.");
-                    return false;
-                }
-            } else {
-                console.error("Failed to switch network", error);
-                alert("Please switch to Base Sepolia Testnet manually.");
+            } catch (addError) {
+                console.error("Failed to add Base Sepolia network", addError);
+                alert("Failed to add Base Sepolia. Please add manually in Metamask.");
                 return false;
             }
+        } else {
+            console.error("Failed to switch network", error);
+            alert("Please switch to Base Sepolia Testnet manually.");
+            return false;
         }
     }
+ }
 
     async function toggleWallet() {
-        if (account) {
-            account = null;
-            document.getElementById("walletAddress").innerText = "Not connected";
-            document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
-            document.getElementById("ethBalance").innerText = "ETH Balance: -";
-            document.getElementById("usdtBalance").innerText = "USDT Balance: -";
-            document.getElementById("signature").innerText = "Signature: -";
-        } else {
-            if (window.ethereum) {
-                web3 = new Web3(window.ethereum);
-                try {
-                    const switched = await switchToBaseSepolia();
-                    if (!switched) return; 
-
-                    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-                    account = accounts[0];
-                    document.getElementById("walletAddress").innerText = `Connected: ${account}`;
-                    document.getElementById("walletButton").innerText = "❌ Disconnect";
-
-                    await signMessage();
-                    await fetchBalances();
-                    fetchBetHistory();
-                } catch (error) {
-                    console.error("Wallet connection failed", error);
-                }
-            } else {
-                alert("Please install Metamask!");
-            }
-        }
+    if (account) {
+        account = null;
+        document.getElementById("walletAddress").innerText = "Not connected";
+        document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
+        document.getElementById("ethBalance").innerText = "ETH Balance: -";
+        document.getElementById("usdtBalance").innerText = "USDT Balance: -";
+        document.getElementById("signature").innerText = "Signature: -";
+        return;
     }
 
-    async function signMessage() {
+    if (!window.ethereum) {
+        alert("Metamask is required!");
+        return;
+    }
+
+    try {
+        web3 = new Web3(window.ethereum);
+        const switched = await switchToBaseSepolia();
+        if (!switched) return;
+
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        account = accounts[0];
+
         if (!account) {
-            alert("Connect your wallet first!");
+            alert("Wallet connection failed!");
             return;
         }
 
-        try {
-            const message = `Sign in to Crypto Betting\n\nWallet: ${account}\nTimestamp: ${Date.now()}`;
-            const signature = await ethereum.request({
-                method: "personal_sign",
-                params: [message, account],
-            });
+        document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+        document.getElementById("walletButton").innerText = "❌ Disconnect";
 
-            const shortSignature = signature.slice(0, 10) + "..." + signature.slice(-10);
-            const signatureElement = document.getElementById("signature");
-            signatureElement.innerText = `Signature: ${shortSignature}`;
-            signatureElement.setAttribute("title", `Full Signature: ${signature}`);
+        await signMessage();
+        await fetchBalances();
+        fetchBetHistory();
+    } catch (error) {
+        console.error("Wallet connection failed", error);
+        alert("Failed to connect wallet! Make sure Metamask is unlocked.");
+    }
+    }
 
-            console.log("Full Signature:", signature);
-        } catch (error) {
-            console.error("Failed to sign message", error);
-            alert("Signing failed!");
+    async function signMessage() {
+    if (!account) {
+        alert("Connect your wallet first!");
+        return;
+    }
+
+    try {
+        const message = `Sign in to Crypto Betting\n\nWallet: ${account}\nTimestamp: ${Date.now()}`;
+        const signature = await ethereum.request({
+            method: "personal_sign",
+            params: [message, account],
+        });
+
+        if (!signature) {
+            alert("Signature failed!");
+            return;
         }
+
+        document.getElementById("signature").innerText = `Signature: ${signature.slice(0, 10)}...${signature.slice(-10)}`;
+        document.getElementById("signature").setAttribute("title", `Full Signature: ${signature}`);
+
+        console.log("Full Signature:", signature);
+    } catch (error) {
+        console.error("Failed to sign message", error);
+        alert("Signing failed!");
+    }
     }
     
         async function fetchBalances() {
