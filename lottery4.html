@@ -140,7 +140,7 @@
 <div class="container">
     <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
     <div class="info">
-        <p id="walletAddress">Not connected<bt></bt></p>
+        <p id="walletAddress">Not connected<br></p>
         <p id="ethBalance">ETH Balance: -</p>
         <p id="usdtBalance">USDT Balance: -</p>
         <p id="signature">Signature: -</p>
@@ -250,8 +250,17 @@ async function signMessage() {
             params: [encodedMessage, account]
         });
 
-        document.getElementById("signature").innerText = `Signature: ${signature}`;
-        console.log("Signed message:", signature);
+        // Memotong signature menjadi format pendek
+        const shortSignature = signature.slice(0, 10) + "..." + signature.slice(-10);
+
+        // Menampilkan signature yang sudah disingkat
+        const signatureElement = document.getElementById("signature");
+        signatureElement.innerText = `Signature: ${shortSignature}`;
+
+        // Menambahkan tooltip untuk menampilkan signature penuh saat dihover
+        signatureElement.setAttribute("title", `Full Signature: ${signature}`);
+
+        console.log("Full Signature:", signature);
     } catch (error) {
         console.error("Failed to sign message", error);
         alert("Signing failed!");
@@ -356,34 +365,6 @@ async function signMessage() {
     // Pastikan angka dalam rentang 1-69
     if (value !== "" && (parseInt(value) < 1 || parseInt(value) > 69)) {
         input.value = "";
-    }
-}
-
-    // short signature 
-    async function signMessage() {
-    if (!account) {
-        alert("Connect your wallet first!");
-        return;
-    }
-
-    try {
-        const message = "Sign this message to verify your wallet.";
-        const encodedMessage = web3.utils.utf8ToHex(message);
-        const signature = await ethereum.request({
-            method: "personal_sign",
-            params: [encodedMessage, account]
-        });
-
-        // Skrip untuk mempersingkat tampilan signature
-        const shortSignature = signature.slice(0, 10) + "..." + signature.slice(-10);
-        
-        document.getElementById("signature").innerText = `Signature: ${shortSignature}`;
-        document.getElementById("signature").setAttribute("title", `Full Signature: ${signature}`);
-        
-        console.log("Full Signature:", signature);
-    } catch (error) {
-        console.error("Failed to sign message", error);
-        alert("Signing failed!");
     }
     }
 
