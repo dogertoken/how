@@ -3,21 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Betting</title>
-    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <title>LottoBalls Lottery</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            overflow-y: auto;
+            margin: 0;
+            padding: 20px;
+            width: 100vw;
+        }
+            
+        .buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    button {
+        padding: 15px 35px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: white;
+        background: linear-gradient(135deg, #00b7ff, #007bff);
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 183, 255, 0.8);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 30px rgba(0, 183, 255, 1);
+    }
+
+    .section-box {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    margin: 20px; /* Pastikan margin auto agar tetap di tengah */
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 183, 255, 0.2);
+    max-width: 900px;
+    width: 95%; /* Pastikan memenuhi parent */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    }
+
+.input-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 3px 2px 15px 2px;
+}
+
+.input-container input {
+    width: 55px;
+    aspect-ratio: 1/1;
+    text-align: center;
+    font-size: 18px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    background: #f9f9f9;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.5);
+    transition: all 0.2s ease-in-out;
+}
+
+.input-container input:focus {
+    outline: none;
+    border-color: #00b7ff;
+    background: #ffffff;
+    box-shadow: 3px 3px 8px rgba(0, 183, 255, 0.4), inset -2px -2px 5px rgba(255, 255, 255, 0.8);
+}
+        
+    #betHistory {
+        text-align: left;
+        display: block;
+        width: 95%;
+        max-width: 900px;
+        margin: center;
+    }
+
+    .form-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .form-group-column {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        label {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        select {
+            font-size: 16px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        p {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 5px;
+    display: block; /* Pastikan elemen tetap blok */
+    width: 100%; /* Sesuai lebar kontainer */
+        }
+
+        input[type="checkbox"] {
+            transform: scale(2);
+            margin-left: 10px;
+        }
+</style>
+
 </head>
 <body>
+    <div class=section-box>
+    <h2>Lottoballs Lottery</h2><div class="buttons">
+    <center><button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button><br>
+    <p id="walletAddress">Not connected</p>
+    <p id="ethBalance">ETH Balance: -</p>
+    <p id="usdtBalance">USDT Balance: -</p>
+    <p id="signature">Signature: -</p></center>
+    </div>
 
-    <h2>Crypto Betting Platform</h2>
-
+<div class="section-box">
+    <h3>Choose Numbers</h3><br>
+    <div class="input-container">
+        <input type="number" id="num1" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
+        <input type="number" id="num2" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
+        <input type="number" id="num3" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
+        <input type="number" id="num4" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
+        <input type="number" id="num5" min="1" max="69" placeholder="1/69" oninput="validateInput(this)">
+    </div><br>
     
-<!-- HTML Wallet Connector -->
-<button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
-<p id="walletAddress">Not connected</p>
-<p id="ethBalance">ETH Balance: -</p>
-<p id="usdtBalance">USDT Balance: -</p>
-<p id="signature">Signature: -</p>
+    <h3>Choose Lottoballs Numbers</h3>
+<div class="input-container">
+    <input type="number" id="powerball" min="1" max="26" placeholder="1/26" oninput="validateInputII(this)">
+</div>
+<br>
 
+    <div class="form-group">
+            <label>Bet Currency:</label>
+            <select id="currency">
+                <option value="USDT">USDT</option>
+                <option value="ETH">ETH</option>
+            </select>
+        </div>
+    <div>
+        <p id="betPrice" style="font-size: 16px; font-weight: bold; color: #33ff33; font-family: 'Courier New', monospace; background: #101010; padding: 5px 10px; border-radius: 5px; display: inline-block;">
+    Bet Price: 2 USDT
+        </p>
+    </div>
+
+        <div class="form-group">
+            <label>LottoPlay ×2:</label>
+            <input type="checkbox" id="powerplay" onchange="updateBetPrice()">
+        </div>
+        <br><br>
+
+    <button onclick="placeBet()">Place Bet</button><br>
+</div>
+
+<div class="section-box" id="betHistory">
+    <center><h3>My Bet History</h3>
+    <button onclick="fetchBetHistory()">🔍 Refresh History</button></center><br>
+</div>
     <script>
     let web3;
     let account;
@@ -137,6 +309,14 @@
         }
     }
 
+    function updateBetPrice() {
+            const currency = document.getElementById("currency").value;
+            const powerPlay = document.getElementById("powerplay").checked;
+            let price = (currency === "ETH") ? 0.00072 : 2;
+            if (powerPlay) price *= 1.5;
+            document.getElementById("betPrice").innerText = `Bet Price: ${price} ${currency}`;
+    }
+
     async function fetchBalances() {
         if (!account) return;
 
@@ -148,6 +328,33 @@
         const balanceUSDT = await usdtContract.methods.balanceOf(account).call();
         document.getElementById("usdtBalance").innerText = `USDT Balance: ${web3.utils.fromWei(balanceUSDT, "mwei")} USDT`;
     }
+
+        function validateInput(input) {
+    let value = input.value;
+    
+    // Batasi maksimal 2 digit
+    if (value.length > 2) {
+        input.value = value.slice(0, 2);
+    }
+
+    // Pastikan angka dalam rentang 1-69
+    if (value !== "" && (parseInt(value) < 1 || parseInt(value) > 69)) {
+        input.value = "";
+    }
+}
+
+    // Batasi maksimal 2 digit
+    if (value.length > 2) {
+        input.value = value.slice(0, 2);
+    }
+
+    // Pastikan angka dalam rentang 1-69
+    if (value !== "" && (parseInt(value) < 1 || parseInt(value) > 26)) {
+        input.value = "";
+    }
+    }
+
+        document.getElementById("currency").addEventListener("change", updateBetPrice);
 
     </script>
 
