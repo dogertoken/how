@@ -140,7 +140,7 @@
 <div class="container">
     <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
     <div class="info">
-        <p id="walletAddress">Not connected</p>
+        <p id="walletAddress">Not connected<bt></bt></p>
         <p id="ethBalance">ETH Balance: -</p>
         <p id="usdtBalance">USDT Balance: -</p>
         <p id="signature">Signature: -</p>
@@ -358,6 +358,34 @@ async function signMessage() {
         input.value = "";
     }
 }
+
+    // short signature 
+    async function signMessage() {
+    if (!account) {
+        alert("Connect your wallet first!");
+        return;
+    }
+
+    try {
+        const message = "Sign this message to verify your wallet.";
+        const encodedMessage = web3.utils.utf8ToHex(message);
+        const signature = await ethereum.request({
+            method: "personal_sign",
+            params: [encodedMessage, account]
+        });
+
+        // Skrip untuk mempersingkat tampilan signature
+        const shortSignature = signature.slice(0, 10) + "..." + signature.slice(-10);
+        
+        document.getElementById("signature").innerText = `Signature: ${shortSignature}`;
+        document.getElementById("signature").setAttribute("title", `Full Signature: ${signature}`);
+        
+        console.log("Full Signature:", signature);
+    } catch (error) {
+        console.error("Failed to sign message", error);
+        alert("Signing failed!");
+    }
+    }
 
     function validateInputII(input) {
     let value = input.value;
