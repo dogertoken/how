@@ -221,6 +221,19 @@
             font-size: 20px;
             cursor: pointer;
         }
+
+        /* Animasi Muncul */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
 </style>
 
 </head>
@@ -275,7 +288,7 @@
         <a href="#" id="menuBtn">🗂️ Menu</a>
         <a href="#">🔢 Looking 4D Numbers</a>
         <a href="#">🎰 Looking Lottery Numbers</a>
-        <a href="#">ℹ️ About</a>
+        <a href="#" id="openAbout">ℹ️ About</a>
     </div>
 
     <!-- Modal -->
@@ -291,6 +304,26 @@
             <a href="Lottery">🎰 LottoBalls (Lottery)</a>
         </div>
     </div>
+
+    
+    <!-- MODAL ABOUT -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Tentang Proyek</h3>
+            <p>Ini adalah proyek navigasi dengan modal interaktif. Dibangun menggunakan HTML, CSS, dan JavaScript.</p>
+        </div>
+    </div>
+
+    <!-- MODAL ABOUT -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Tentang Proyek</h3>
+            <p>Ini adalah proyek navigasi dengan modal interaktif. Dibangun menggunakan HTML, CSS, dan JavaScript.</p>
+        </div>
+    </div>
+    
     
 <script>
         let web3;
@@ -490,6 +523,28 @@
                 modal.style.display = "none";
             }
         }
+
+    // Fungsi untuk membuka about modal
+        function openModal() {
+            document.getElementById("aboutModal").style.display = "block";
+        }
+
+        // Fungsi untuk menutup modal
+        function closeModal() {
+            document.getElementById("aboutModal").style.display = "none";
+        }
+
+        // Event listener untuk tombol about
+        document.getElementById("openAbout").addEventListener("click", function () {
+            openModal();
+        });
+
+        // Tutup modal jika klik di luar kontennya
+        window.onclick = function (event) {
+            if (event.target.classList.contains("modal")) {
+                closeModal();
+            }
+        };
 </script>
                                 
 </body>
