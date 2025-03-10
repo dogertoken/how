@@ -134,6 +134,116 @@
             transform: scale(2);
             margin-left: 10px;
         }
+
+        /* Reset dasar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* === NAVIGASI MENU === */
+.navbar {
+    position: fixed;
+    bottom: 0; /* Bisa diubah ke top: 0 jika ingin di atas */
+    width: 100%;
+    background: rgba(22, 33, 62, 0.6);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+    backdrop-filter: blur(10px);
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background 0.3s ease-in-out;
+}
+
+.navbar a:hover {
+    background: rgba(22, 33, 62, 0.4);
+}
+
+/* === MEDIA QUERY UNTUK HP === */
+@media (max-width: 600px) {
+    .navbar a {
+        font-size: 14px;
+    }
+}
+
+/* === MEDIA QUERY UNTUK PC (LAYAR LEBIH BESAR) === */
+@media (min-width: 1024px) {
+    .navbar {
+        padding: 20px 0; /* Tambah tinggi navbar */
+    }
+    .navbar a {
+        font-size: 22px; /* Perbesar teks menu */
+        padding: 15px; /* Perbesar area klik */
+    }
+}
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            background-color: rgba(22, 33, 62, 0.8);
+            color: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 300px;
+            border-radius: 5px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-content a {
+            display: block;
+            padding: 10px;
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .modal-content a {
+            border-bottom: 1px solid #454d65;
+        }
+
+        .modal-content a:hover {
+            background-color: rgba(22, 33, 62, 0.4);
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Animasi Muncul */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
 </style>
 
 </head>
@@ -189,6 +299,47 @@
     <center><h3>My Bet History</h3>
     <button onclick="fetchBetHistory()">🔍 Refresh History</button></center><br>
 </div>
+
+        <!-- Menu Navigasi Seperti Aplikasi -->
+    <div class="navbar">
+        <a href="#" id="menuBtn">🗂️ Menu</a>
+        <a href="#">🔢 Numbers</a>
+        <a href="#">🎰 Numbers</a>
+        <a href="#" id="openAbout">ℹ️ About</a>
+    </div>
+
+    <!-- Modal -->
+    <div id="menuModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <a href="hk">🇭🇰 Hong Kong (HK)</a>
+            <a href="sgp">🇸🇬 Singapore (SGP)</a>
+            <a href="syd">🇦🇺 Sydney (SYD)</a>
+            <a href="chi">🇨🇳 China (CHI)</a>
+            <a href="mc">🇰🇭 Cambodia (MC)</a>
+            <a href="be">🎯 Bull Eye (BE)</a>
+            <a href="Lottery">🎰 LottoBalls (Lottery)</a>
+        </div>
+    </div>
+
+    
+    <!-- MODAL ABOUT -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Tentang Proyek</h3>
+            <p>Ini adalah proyek navigasi dengan modal interaktif. Dibangun menggunakan HTML, CSS, dan JavaScript.</p>
+        </div>
+    </div>
+
+    <!-- MODAL ABOUT -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Tentang Proyek</h3>
+            <p>Ini adalah proyek navigasi dengan modal interaktif. Dibangun menggunakan HTML, CSS, dan JavaScript.</p>
+        </div>
+    </div>
     
 <script>
         let web3;
@@ -365,6 +516,49 @@ function placeBet() {
 document.getElementById("currency").addEventListener("change", updateBetPrice);
 window.onload = updateBetPrice;
 
+// Open Modal
+    var modal = document.getElementById("menuModal");
+        var btn = document.getElementById("menuBtn");
+        var closeBtn = document.querySelector(".close");
+
+        // Buka modal saat menu diklik
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // Tutup modal saat tombol "X" diklik
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Tutup modal jika klik di luar modal
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+    // Fungsi untuk membuka about modal
+        function openModal() {
+            document.getElementById("aboutModal").style.display = "block";
+        }
+
+        // Fungsi untuk menutup modal
+        function closeModal() {
+            document.getElementById("aboutModal").style.display = "none";
+        }
+
+        // Event listener untuk tombol about
+        document.getElementById("openAbout").addEventListener("click", function () {
+            openModal();
+        });
+
+        // Tutup modal jika klik di luar kontennya
+        window.onclick = function (event) {
+            if (event.target.classList.contains("modal")) {
+                closeModal();
+            }
+        };
 </script>
                                 
 </body>
