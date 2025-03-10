@@ -436,7 +436,7 @@
             }
 
             try {
-                const message = `Sign in to Crypto Betting\n\nWallet: ${account}\nTimestamp: ${Date.now()}`;
+                const message = `Sign in to LottoBalls\n\nWallet: ${account}\nTimestamp: ${Date.now()}`;
                 const signature = await ethereum.request({
                     method: "personal_sign",
                     params: [message, account],
