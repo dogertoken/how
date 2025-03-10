@@ -323,6 +323,11 @@ th {
     <button onclick="fetchBetHistory()">🔍 Refresh History</button></center><br>
 </div>
 
+        <div class="section-box">
+        <center><h3>Pool Now</h3>
+        <div id="poolDisplay">Loading...</div></center><br>
+        </div>
+
         <!-- Prize Table -->
         <div id="prizes" class="section-box">
         <center><h2>Lottery USDT Prize Payouts</h2></center>
@@ -679,6 +684,22 @@ window.onload = updateBetPrice;
                 closeModal();
             }
         };
+
+    // Pool Update
+    async function updatePool() {
+        try {
+            const poolUSDT = await contract.methods.getPoolUSDT().call();
+            const poolETH = await contract.methods.getPoolETH().call();
+
+            document.getElementById("poolDisplay").innerHTML = 
+                `💰 <b>${poolUSDT} USDT</b> & <b>${poolETH} ETH</b>`;
+        } catch (error) {
+            console.error("Gagal mengambil data pool:", error);
+        }
+    }
+
+    updatePool(); // Ambil data saat pertama kali
+    setInterval(updatePool, 5000); // Perbarui otomatis setiap 5 detik
 </script>
                                 
 </body>
