@@ -225,12 +225,22 @@
 
     <!-- Menu Navigasi Seperti Aplikasi -->
     <div class="navbar">
-        <a href="#">🏠 Home</a>
+        <a href="#" id="menuBtn">🏠 Menu</a>
         <a href="#">📂 Files</a>
         <a href="#">⚙️ Settings</a>
         <a href="#">ℹ️ About</a>
     </div>
 
+    <!-- Modal -->
+    <div id="menuModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <a href="#">🔍 Search</a>
+            <a href="#">📝 Notes</a>
+            <a href="#">📊 Reports</a>
+            <a href="#">📧 Messages</a>
+        </div>
+    </div>
     
 <script>
         let web3;
@@ -408,6 +418,28 @@
 
         alert("Bet placed successfully!");
     }
+
+    // Open Modal
+    var modal = document.getElementById("menuModal");
+        var btn = document.getElementById("menuBtn");
+        var closeBtn = document.querySelector(".close");
+
+        // Buka modal saat menu diklik
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // Tutup modal saat tombol "X" diklik
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Tutup modal jika klik di luar modal
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
 </script>
                                 
 </body>
