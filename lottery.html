@@ -244,6 +244,22 @@
                 transform: scale(1);
             }
         }
+
+   /* Prizes */
+    table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+}
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+th {
+    background-color: #00b7ff;
+}
 </style>
 
 </head>
@@ -299,6 +315,120 @@
     <center><h3>Bet History</h3>
     <button onclick="fetchBetHistory()">🔍 Refresh History</button></center><br>
 </div>
+
+        <!-- Prize Table -->
+        <div id="prizes" class="section-box">
+        <center><h2>Lottery USDT Prize Payouts</h2></center>
+            <table>
+                <tr>
+                    <th>Bet Type</th>
+                    <th>Compatibility</th>
+                    <th>Prize (USDT)</th>
+                </tr>
+                <tr>
+                    <td>Jackpot</td>
+                    <td>5 Numbers + LottoBalls</td>
+                    <td>All Pools USDT + ETH</td>
+                </tr>
+                <tr>
+                    <td>2nd</td>
+                    <td>5 Numbers</td>
+                    <td>50% Pools USDT + ETH</td>
+                </tr>
+                <tr>
+                    <td>3rd</td>
+                    <td>4 Numbers + LottoBalls</td>
+                    <td>25% Pools USDT + ETH</td>
+                </tr>
+                <tr>
+                    <td>4th</td>
+                    <td>4 Numbers</td>
+                    <td>100 USDT</td>
+                </tr>
+                <tr>
+                    <td>5th</td>
+                    <td>3 Numbers + LottoBalls</td>
+                    <td>100 USDT</td>
+                </tr>
+                <tr>
+                    <td>6th</td>
+                    <td>3 Numbers</td>
+                    <td>7 USDT</td>
+                </tr>
+                <tr>
+                    <td>7th</td>
+                    <td>2 Numbers + LottoBalls</td>
+                    <td>7 USDT</td>
+                </tr>
+                <tr>
+                    <td>8th</td>
+                    <td>1 Numbers + LottoBalls</td>
+                    <td>4 USDT</td>
+                </tr>
+                <tr>
+                    <td>9th</td>
+                    <td>LottoBalls Only</td>
+                    <td>4 USDT</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Prize Table -->
+        <div id="prizes" class="section-box">
+        <center><h2>Lottery ETH Prize Payouts</h2></center>
+            <table>
+                <tr>
+                    <th>Bet Type</th>
+                    <th>Compatibility</th>
+                    <th>Prize (ETH)</th>
+                </tr>
+                <tr>
+                    <td>Jackpot</td>
+                    <td>5 Numbers + LottoBalls</td>
+                    <td>All Pools ETH + USDT</td>
+                </tr>
+                <tr>
+                    <td>2nd</td>
+                    <td>5 Numbers</td>
+                    <td>50% Pools ETH + USDT</td>
+                </tr>
+                <tr>
+                    <td>3rd</td>
+                    <td>4 Numbers + LottoBalls</td>
+                    <td>25% Pools ETH + USDT</td>
+                </tr>
+                <tr>
+                    <td>4th</td>
+                    <td>4 Numbers</td>
+                    <td>0.036 ETH</td>
+                </tr>
+                <tr>
+                    <td>5th</td>
+                    <td>3 Numbers + LottoBalls</td>
+                    <td>0.036 ETH</td>
+                </tr>
+                <tr>
+                    <td>6th</td>
+                    <td>3 Numbers</td>
+                    <td>0.00252 ETH</td>
+                </tr>
+                <tr>
+                    <td>7th</td>
+                    <td>2 Numbers + LottoBalls</td>
+                    <td>0.00252 ETH</td>
+                </tr>
+                <tr>
+                    <td>8th</td>
+                    <td>1 Numbers + LottoBalls</td>
+                    <td>0.00144 ETH</td>
+                </tr>
+                <tr>
+                    <td>9th</td>
+                    <td>LottoBalls Only</td>
+                    <td>0.00144 ETH</td>
+                </tr>
+            </table>
+        </div>
 
         <!-- Menu Navigasi Seperti Aplikasi -->
     <div class="navbar">
