@@ -245,20 +245,24 @@
             }
         }
 
-   /* Prizes */
-    table {
-    width: 70%;
+    /* Prizes */
+table {
+    width: 70%; /* Bisa diperkecil lagi, misalnya 50% jika terlalu lebar */
+    max-width: 500px; /* Agar tabel tidak terlalu besar di layar lebar */
     border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 18px;
+    margin: 20px auto; /* 'auto' agar tabel tetap di tengah */
+    font-size: 16px; /* Kecilkan agar tabel lebih compact */
     text-align: left;
 }
+
 th, td {
-    padding: 10px;
+    padding: 8px; /* Kurangi padding agar tabel lebih kecil */
     border: 1px solid #ddd;
 }
+
 th {
     background-color: #00b7ff;
+    color: white; /* Agar teks lebih kontras */
 }
 </style>
 
