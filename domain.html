@@ -74,7 +74,7 @@ input {
         <h1>LotDomain DApp</h1>
         <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button><br>
         <p id="walletAddress">Not connected</p>
-        <p id="ethBalance">BN Balance: -</p>
+        <p id="ethBalance">BNB Balance: -</p>
         <p id="signature">Signature: -</p>
 
     </header>
@@ -153,46 +153,46 @@ async function switchToOpbnbTestnet() {
     }
 
     try {
-        const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
-        if (currentChainId === OPBNB_TESTNET_CHAIN_ID) {
-            console.log("Already on opBNB Testnet!");
-            return true;
-        }
-
-        await window.ethereum.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: OPBNB_TESTNET_CHAIN_ID }],
-        });
-
-        console.log("Switched to opBNB Testnet!");
+    const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
+    if (currentChainId === "0x15eb") {  // Harus dalam string HEX
+        console.log("Already on opBNB Testnet!");
         return true;
-    } catch (error) {
-        if (error.code === 4902) {
-            try {
-                await window.ethereum.request({
-                    method: "wallet_addEthereumChain",
-                    params: [{
-                        chainId: OPBNB_TESTNET_CHAIN_ID,
-                        chainName: "opBNB Testnet",
-                        rpcUrls: ["https://opbnb-testnet-rpc.bnbchain.org"],
-                        nativeCurrency: { name: "tBNB", symbol: "tBNB", decimals: 18 },
-                        blockExplorerUrls: ["https://opbnb-testnet.bscscan.com/"]
-                    }]
-                });
+    }
 
-                console.log("opBNB Testnet added and switched!");
-                return true;
-            } catch (addError) {
-                console.error("Failed to add opBNB Testnet network", addError);
-                alert("Failed to add opBNB Testnet. Please add it manually in Metamask.");
-                return false;
-            }
-        } else {
-            console.error("Failed to switch network", error);
-            alert("Please switch to opBNB Testnet manually.");
+    await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x15eb" }],  // Harus dalam string HEX
+    });
+
+    console.log("Switched to opBNB Testnet!");
+    return true;
+} catch (error) {
+    if (error.code === 4902) {
+        try {
+            await window.ethereum.request({
+                method: "wallet_addEthereumChain",
+                params: [{
+                    chainId: "0x15eb", // Harus string HEX
+                    chainName: "opBNB Testnet",
+                    rpcUrls: ["https://opbnb-testnet-rpc.bnbchain.org"],
+                    nativeCurrency: { name: "tBNB", symbol: "tBNB", decimals: 18 },
+                    blockExplorerUrls: ["https://opbnb-testnet.bscscan.com/"]
+                }]
+            });
+
+            console.log("Added and switched to opBNB Testnet!");
+            return true;
+        } catch (addError) {
+            console.error("Failed to add opBNB Testnet network", addError);
+            alert("Failed to add opBNB Testnet. Please add it manually in Metamask.");
             return false;
         }
+    } else {
+        console.error("Failed to switch network", error);
+        alert("Please switch to opBNB Testnet manually.");
+        return false;
     }
+  }
 }
 
 async function toggleWallet() {
