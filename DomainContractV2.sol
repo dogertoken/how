@@ -70,7 +70,7 @@ contract LotDomain {
     }
 
     function isDomainRegistered(string memory name) public view returns (bool) {
-        return nameToId[name] != 0;
+        return nameToId[keccak256(abi.encodePacked(name))] != 0;
     }
 
     function getRegistrationFee(string memory name) public pure returns (uint256) {
@@ -115,7 +115,7 @@ contract LotDomain {
     }
 
     function startAuction(string memory name, uint256 minBid) public onlyOwner(name) {
-        uint256 tokenId = nameToId[name];
+        uint256 tokenId = nameToId[keccak256(abi.encodePacked(name))];
         domains[tokenId].forAuction = true;
         domains[tokenId].minBid = minBid;
 
@@ -173,7 +173,8 @@ contract LotDomain {
     }
 
     function isExpired(string memory name) public view returns (bool) {
-        return block.timestamp > domains[nameToId[name]].expiry;
+        bytes32 nameHash = keccak256(abi.encodePacked(name));
+        return block.timestamp > domains[nameToId[nameHash]].expiry;
     }
 
     function releaseExpiredDomain(string memory name) public {
@@ -265,8 +266,14 @@ contract LotDomain {
     function resolve(string memory name, string memory extension) public view returns (address) {
         string memory fullDomain = string(abi.encodePacked(name, ".lol", extension));
         bytes32 nameHash = keccak256(abi.encodePacked(fullDomain));
+        require(nameToAddress[nameHash] != address(0), "Domain not found");
         return nameToAddress[nameHash];
     }
+
+function reverseResolve(address userAddress) public view returns (string memory) {
+    require(addressToName[userAddress] != 0, "Address not found");
+    return string(abi.encodePacked(addressToName[userAddress]));
+}
 
     function reverseResolve(address userAddress) public view returns (string memory) {
         return string(abi.encodePacked(addressToName[userAddress]));
@@ -275,7 +282,10 @@ contract LotDomain {
     function withdraw() public onlyAdmin {
         uint256 balance = address(this).balance;
         require(balance > 0, "No funds to withdraw");
-        payable(admin).transfer(balance);
+
+        (bool success, ) = admin.call{value: balance}("");
+        require(success, "Withdraw failed");
+
         emit FundsWithdrawn(admin, balance);
     }
 
