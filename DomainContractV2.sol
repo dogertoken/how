@@ -35,6 +35,7 @@ contract LotDomain {
     mapping(bytes32 => address) public pendingRecovery;
     mapping(bytes32 => address) public nameToAddress;
     mapping(address => bytes32) public addressToName;
+    mapping(string => address) public domainOwners;
 
     event DomainRegistered(string name, address owner, uint256 expiry);
     event DomainRenewed(string name, uint256 newExpiry);
@@ -270,13 +271,17 @@ contract LotDomain {
         return nameToAddress[nameHash];
     }
 
-function reverseResolve(address userAddress) public view returns (string memory) {
-    require(addressToName[userAddress] != 0, "Address not found");
-    return string(abi.encodePacked(addressToName[userAddress]));
-}
+    function reverseResolve(address userAddress) public view returns (string memory) {
+        require(addressToName[userAddress] != 0, "Address not found");
+        return string(abi.encodePacked(addressToName[userAddress]));
+    }
 
     function reverseResolve(address userAddress) public view returns (string memory) {
         return string(abi.encodePacked(addressToName[userAddress]));
+    }
+
+    function isDomainRegistered(string memory name) public view returns (bool) {
+        return domainOwners[name] != address(0);
     }
 
     function withdraw() public onlyAdmin {
