@@ -136,20 +136,154 @@ input {
 
     <script src="app.js"></script>
     <script>
-      let web3;
+let web3;
+let connectedAccount = null;
 let contract;
+        
 const contractAddress = "0x1234567890abcdef"; // Ganti dengan alamat kontrak
+const BSC_CHAIN_ID = "0x38"; // Chain ID BSC Mainnet
+const BSC_RPC = "https://bsc-dataseed.binance.org/";
+const BSC_EXPLORER = "https://bscscan.com/";
+
+async function toggleWalletConnection() {
+    if (connectedAccount) {
+        disconnectWallet();
+    } else {
+        connectWallet();
+    }
+}
 
 async function connectWallet() {
     if (window.ethereum) {
         web3 = new Web3(window.ethereum);
+        await switchToBSC();
+
         await window.ethereum.request({ method: "eth_requestAccounts" });
-        contract = new web3.eth.Contract(abi, contractAddress);
-        alert("Wallet terhubung!");
+
+        const accounts = await web3.eth.getAccounts();
+        connectedAccount = accounts[0];
+
+        // Buat pesan signature unik
+        const signatureMessage = generateSignatureMessage(connectedAccount);
+        const signature = await signMessage(connectedAccount, signatureMessage);
+        if (!signature) {
+            alert("Gagal melakukan login dengan tanda tangan.");
+            return;
+        }
+
+        // Simpan ke localStorage agar tetap terhubung setelah refresh
+        localStorage.setItem("connectedAccount", connectedAccount);
+        localStorage.setItem("signature", signature);
+
+        updateWalletUI();
     } else {
         alert("Metamask tidak ditemukan!");
     }
 }
+
+async function switchToBSC() {
+    try {
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: BSC_CHAIN_ID }],
+        });
+    } catch (error) {
+        // Jika jaringan belum ada di Metamask, tambahkan otomatis
+        if (error.code === 4902) {
+            try {
+                await window.ethereum.request({
+                    method: "wallet_addEthereumChain",
+                    params: [{
+                        chainId: BSC_CHAIN_ID,
+                        chainName: "Binance Smart Chain",
+                        rpcUrls: [BSC_RPC],
+                        nativeCurrency: {
+                            name: "BNB",
+                            symbol: "BNB",
+                            decimals: 18
+                        },
+                        blockExplorerUrls: [BSC_EXPLORER]
+                    }]
+                });
+            } catch (addError) {
+                console.error("Gagal menambahkan jaringan BSC:", addError);
+            }
+        } else {
+            console.error("Gagal beralih ke jaringan BSC:", error);
+        }
+    }
+}
+
+function generateSignatureMessage(account) {
+    const timestamp = new Date().toISOString();
+    const uniqueId = Math.random().toString(36).substring(2, 10); // ID unik acak
+    return `Login ke Cid\nAlamat: ${account}\nWaktu: ${timestamp}\nID: ${uniqueId}`;
+}
+
+async function signMessage(account, message) {
+    try {
+        return await web3.eth.personal.sign(message, account, "");
+    } catch (error) {
+        console.error("Gagal menandatangani pesan:", error);
+        return null;
+    }
+}
+
+async function updateWalletUI() {
+    if (!connectedAccount) return;
+
+    // Tampilkan alamat wallet
+    document.getElementById("walletAddress").innerText = `Alamat: ${connectedAccount}`;
+
+    // Ambil saldo BNB di jaringan BSC
+    const balanceWei = await web3.eth.getBalance(connectedAccount);
+    const balanceBnb = web3.utils.fromWei(balanceWei, "ether");
+    document.getElementById("walletBalance").innerText = `Saldo: ${parseFloat(balanceBnb).toFixed(4)} BNB`;
+
+    // Cek apakah pengguna memiliki domain .lol
+    try {
+        const domain = await contract.methods.getDomain(connectedAccount).call();
+        if (domain) {
+            document.getElementById("walletAddress").innerText = `Alamat: ${domain}.lol`;
+        }
+    } catch (error) {
+        console.warn("Gagal mengambil domain .lol:", error);
+    }
+
+    // Ubah tombol menjadi "Putuskan Koneksi"
+    document.getElementById("connectButton").innerText = "Putuskan Koneksi";
+}
+
+function disconnectWallet() {
+    connectedAccount = null;
+    
+    // Hapus dari localStorage
+    localStorage.removeItem("connectedAccount");
+    localStorage.removeItem("signature");
+
+    // Reset tampilan
+    document.getElementById("walletAddress").innerText = "Belum terhubung";
+    document.getElementById("walletBalance").innerText = "Saldo: 0 BNB";
+    document.getElementById("connectButton").innerText = "Hubungkan Wallet";
+
+    alert("Wallet telah terputus!");
+}
+
+// Mengecek apakah wallet sudah terhubung saat halaman dimuat
+window.addEventListener("load", async () => {
+    if (window.ethereum) {
+        web3 = new Web3(window.ethereum);
+        
+        const savedAccount = localStorage.getItem("connectedAccount");
+        const savedSignature = localStorage.getItem("signature");
+
+        if (savedAccount && savedSignature) {
+            connectedAccount = savedAccount;
+            await switchToBSC(); // Paksa pengguna ke jaringan BSC sebelum update UI
+            updateWalletUI();
+        }
+    }
+});
 
 async function registerDomain() {
     const name = document.getElementById("domainName").value;
