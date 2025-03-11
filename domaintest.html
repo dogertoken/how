@@ -126,7 +126,8 @@ input:focus {
 <body>
     <header>
         <h1>LotDomain DApp</h1>
-        <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button><br><br>
+        <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
+        <button id="copyButton" onclick="copyWalletAddress()" style="display:none;">📋 Copy</button><br><br>
         <p id="walletAddress">Not connected</p>
         <p id="ethBalance">BNB Balance: -</p>
         <p id="signature">Signature: -</p>
@@ -259,34 +260,30 @@ async function switchToOpBNBTestnet() {
     }
 }
 
+function formatAddress(address) {
+    return `${address.slice(0, 10)}...${address.slice(-10)}`;
+}
+
 async function toggleWallet() {
     if (account) {
-        // Logout (hanya jika tombol disconnect ditekan)
-        localStorage.removeItem("walletAddress");
-        localStorage.removeItem("ethBalance");
-        localStorage.removeItem("signature");
         account = null;
-
-        // Reset tampilan UI
+        localStorage.removeItem("walletAddress");
         document.getElementById("walletAddress").innerText = "Not connected";
         document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
-        document.getElementById("ethBalance").innerText = "tBNB Balance: -";
+        document.getElementById("ethBalance").innerText = "BNB Balance: -";
         document.getElementById("signature").innerText = "Signature: -";
+        document.getElementById("copyButton").style.display = "none";
     } else {
         if (window.ethereum) {
             web3 = new Web3(window.ethereum);
             try {
-                const switched = await switchToOpBNBTestnet();
-                if (!switched) return;
-
                 const accounts = await ethereum.request({ method: "eth_requestAccounts" });
                 account = accounts[0];
-
-                // Simpan akun ke localStorage agar tetap login
                 localStorage.setItem("walletAddress", account);
 
-                document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+                document.getElementById("walletAddress").innerHTML = `Connected: ${formatAddress(account)}`;
                 document.getElementById("walletButton").innerText = "❌ Disconnect";
+                document.getElementById("copyButton").style.display = "inline-block";
 
                 await fetchBalances();
                 await signMessage();
@@ -298,6 +295,25 @@ async function toggleWallet() {
         }
     }
 }
+
+function copyWalletAddress() {
+    if (account) {
+        navigator.clipboard.writeText(account).then(() => {
+            alert("Wallet address copied!");
+        }).catch(err => console.error("Failed to copy: ", err));
+    }
+}
+
+// Saat halaman dimuat, periksa apakah wallet tersimpan di localStorage
+window.onload = function () {
+    const savedAccount = localStorage.getItem("walletAddress");
+    if (savedAccount) {
+        account = savedAccount;
+        document.getElementById("walletAddress").innerHTML = `Connected: ${formatAddress(savedAccount)}`;
+        document.getElementById("walletButton").innerText = "❌ Disconnect";
+        document.getElementById("copyButton").style.display = "inline-block";
+    }
+};
 
 async function signMessage() {
     if (!account) {
