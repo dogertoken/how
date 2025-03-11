@@ -52,8 +52,9 @@ contract LotDomain {
     event RecoveryCompleted(bytes32 indexed domain, address indexed newOwner);
 
     modifier onlyOwner(string memory name) {
-        require(nameToId[name] != 0, "Domain not registered");
-        require(domains[nameToId[name]].owner == msg.sender, "Not domain owner");
+        bytes32 nameHash = keccak256(abi.encodePacked(name));
+        require(nameToId[nameHash] != 0, "Domain not registered");
+        require(domains[nameToId[nameHash]].owner == msg.sender, "Not domain owner");
         _;
     }
 
@@ -171,14 +172,17 @@ contract LotDomain {
     }
 
     function releaseExpiredDomain(string memory name) public {
-        uint256 tokenId = nameToId[name];
+        bytes32 nameHash = keccak256(abi.encodePacked(name));
+        uint256 tokenId = nameToId[nameHash];
         require(isExpired(name), "Domain not expired yet");
 
-        delete nameToAddress[name];
-        delete nameToId[name];
+        address previousOwner = domains[tokenId].owner;
+
+        delete nameToAddress[nameHash];
+        delete nameToId[nameHash];
         delete domains[tokenId];
 
-        emit DomainTransferred(name, domains[tokenId].owner, address(0));
+        emit DomainTransferred(name, previousOwner, address(0));
     }
 
     function autoExpireRental(string memory name) public {
@@ -227,6 +231,22 @@ contract LotDomain {
             }
         }
         return false;
+    }
+
+    function endAuction(string memory name) public onlyOwner(name) {
+        bytes32 nameHash = keccak256(abi.encodePacked(name));
+        uint256 tokenId = nameToId[nameHash];
+        require(domains[tokenId].forAuction, "Domain not in auction");
+        require(auctionHighestBidder[tokenId] != address(0), "No valid bids");
+
+        domains[tokenId].forAuction = false;
+        domains[tokenId].owner = auctionHighestBidder[tokenId];
+        nameToAddress[nameHash] = auctionHighestBidder[tokenId];
+
+        emit DomainAuctionEnded(name, auctionHighestBidder[tokenId], auctionHighestBid[tokenId]);
+
+        // Kirim hasil lelang ke admin
+        payable(admin).transfer(auctionHighestBid[tokenId]);
     }
 
     function withdraw() public onlyAdmin {
