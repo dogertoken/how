@@ -82,22 +82,6 @@ contract LotDomain {
     }
 
     function registerDomain(string memory name, uint256 rentTarget) public payable {
-        require(nameToId[name] == 0, "Domain already taken");
-        uint256 requiredFee = getRegistrationFee(name);
-        require(msg.value >= requiredFee, "Insufficient registration fee");
-
-        uint256 tokenId = nextId++;
-        domains[tokenId] = Domain(name, msg.sender, block.timestamp + DURATION, false, 0, false, address(0), 0, rentTarget, 0, "");
-        nameToId[name] = tokenId;
-        nameToAddress[name] = msg.sender;
-
-        emit DomainRegistered(name, msg.sender, block.timestamp + DURATION);
-
-        // Kirim pembayaran ke admin
-        payable(admin).transfer(msg.value);
-    }
-
-    function registerDomain(string memory name, uint256 rentTarget) public payable {
         bytes32 nameHash = keccak256(abi.encodePacked(name));  // Hash nama domain
 
         require(nameToId[nameHash] == 0, "Domain already taken"); // Cek apakah sudah terdaftar
