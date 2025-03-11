@@ -72,8 +72,9 @@ input {
 <body>
     <header>
         <h1>LotDomain DApp</h1>
-        <button onclick="connectWallet()">Hubungkan Wallet</button>
+        <button id="connectButton" onclick="toggleWalletConnection()">Hubungkan Wallet</button>
         <p id="walletAddress">Belum terhubung</p>
+        <p id="walletBalance">Saldo: 0 BNB</p>
 
     </header>
 
