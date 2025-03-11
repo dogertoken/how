@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.25;
 
 contract LotDomain {
     struct Domain {
@@ -33,7 +33,6 @@ contract LotDomain {
     mapping(bytes32 => address[]) public domainGuardians;
     mapping(bytes32 => mapping(address => bool)) public guardianApproval;
     mapping(bytes32 => address) public pendingRecovery;
-    mapping(bytes32 => address) public nameToAddress;
     mapping(address => bytes32) public addressToName;
     mapping(string => address) public domainOwners;
 
@@ -70,10 +69,6 @@ contract LotDomain {
         admin = payable(msg.sender);
     }
 
-    function isDomainRegistered(string memory name) public view returns (bool) {
-        return nameToId[keccak256(abi.encodePacked(name))] != 0;
-    }
-
     function getRegistrationFee(string memory name) public pure returns (uint256) {
         uint256 length = bytes(name).length;
         require(length >= 1, "Domain name too short");
@@ -108,9 +103,9 @@ contract LotDomain {
     }
 
     function transferDomain(string memory name, address to) public onlyOwner(name) {
-        uint256 tokenId = nameToId[name];
+        uint256 tokenId = nameToId[keccak256(abi.encodePacked(name))];
         domains[tokenId].owner = to;
-        nameToAddress[name] = to;
+        nameToAddress[keccak256(abi.encodePacked(name))] = to;
 
         emit DomainTransferred(name, msg.sender, to);
     }
@@ -124,7 +119,7 @@ contract LotDomain {
     }
 
     function placeBid(string memory name) public payable {
-        uint256 tokenId = nameToId[name];
+       uint256 tokenId = nameToId[keccak256(abi.encodePacked(name))];
         require(domains[tokenId].forAuction, "Domain not for auction");
         require(msg.value > auctionHighestBid[tokenId], "Bid too low");
 
@@ -137,22 +132,8 @@ contract LotDomain {
         emit DomainBidPlaced(name, msg.sender, msg.value);
     }
 
-    function endAuction(string memory name) public onlyOwner(name) {
-        uint256 tokenId = nameToId[name];
-        require(domains[tokenId].forAuction, "Domain not in auction");
-
-        domains[tokenId].forAuction = false;
-        domains[tokenId].owner = auctionHighestBidder[tokenId];
-        nameToAddress[name] = auctionHighestBidder[tokenId];
-
-        emit DomainAuctionEnded(name, auctionHighestBidder[tokenId], auctionHighestBid[tokenId]);
-
-        // Kirim hasil lelang ke admin
-        payable(admin).transfer(auctionHighestBid[tokenId]);
-    }
-
     function rentDomain(string memory name) public payable {
-        uint256 tokenId = nameToId[name];
+        uint256 tokenId = nameToId[keccak256(abi.encodePacked(name))];
         require(domains[tokenId].owner != address(0), "Domain not found");
         require(!domains[tokenId].isRented, "Already rented");
         require(msg.value > 0, "Need rent payment");
@@ -273,10 +254,6 @@ contract LotDomain {
 
     function reverseResolve(address userAddress) public view returns (string memory) {
         require(addressToName[userAddress] != 0, "Address not found");
-        return string(abi.encodePacked(addressToName[userAddress]));
-    }
-
-    function reverseResolve(address userAddress) public view returns (string memory) {
         return string(abi.encodePacked(addressToName[userAddress]));
     }
 
