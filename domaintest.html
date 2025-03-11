@@ -308,18 +308,7 @@ function copyWalletAddress() {
 window.onload = function () {
     const savedAccount = localStorage.getItem("walletAddress");
     if (savedAccount) {
-        account = savedAccount;
-        document.getElementById("walletAddress").innerHTML = `Connected: ${formatAddress(savedAccount)}`;
-        document.getElementById("walletButton").innerText = "❌ Disconnect";
-        document.getElementById("copyButton").style.display = "inline-block";
-    }
-};
-        
-// Storage Account
-window.onload = function () {
-    const savedAccount = localStorage.getItem("walletAddress");
-    if (savedAccount) {
-        web3 = new Web3(window.ethereum);
+        web3 = new Web3(window.ethereum); // Pastikan Web3 tetap aktif
         account = savedAccount;
         updateUI(savedAccount);
     }
