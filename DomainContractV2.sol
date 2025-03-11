@@ -33,6 +33,8 @@ contract LotDomain {
     mapping(bytes32 => address[]) public domainGuardians;
     mapping(bytes32 => mapping(address => bool)) public guardianApproval;
     mapping(bytes32 => address) public pendingRecovery;
+    mapping(bytes32 => address) public nameToAddress;
+    mapping(address => bytes32) public addressToName;
 
     event DomainRegistered(string name, address owner, uint256 expiry);
     event DomainRenewed(string name, uint256 newExpiry);
@@ -249,6 +251,23 @@ contract LotDomain {
 
         // Kirim hasil lelang ke admin
         payable(admin).transfer(auctionHighestBid[tokenId]);
+    }
+
+    function setName(string memory name, address userAddress) public {
+        bytes32 nameHash = keccak256(abi.encodePacked(name));
+        require(nameToAddress[nameHash] == address(0), "Name already taken");
+        
+        nameToAddress[nameHash] = userAddress;
+        addressToName[userAddress] = nameHash;
+    }
+
+    function resolve(string memory name) public view returns (address) {
+        bytes32 nameHash = keccak256(abi.encodePacked(name));
+        return nameToAddress[nameHash];
+    }
+
+    function reverseResolve(address userAddress) public view returns (string memory) {
+        return string(abi.encodePacked(addressToName[userAddress]));
     }
 
     function withdraw() public onlyAdmin {
