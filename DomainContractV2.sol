@@ -86,8 +86,8 @@ contract LotDomain {
         return 0.0005 ether;
     }
 
-    function registerDomain(string memory name, uint256 rentTarget) public payable {
-        string memory fullDomain = string(abi.encodePacked(name, ".lol"));
+    function registerDomain(string memory name, string memory extension, uint256 rentTarget) public payable {
+        string memory fullDomain = string(abi.encodePacked(name, ".lol", extension));
         bytes32 nameHash = keccak256(abi.encodePacked(fullDomain));
 
         require(nameToId[nameHash] == 0, "Domain already taken"); // Cek apakah sudah terdaftar
@@ -95,12 +95,12 @@ contract LotDomain {
         require(msg.value >= requiredFee, "Insufficient registration fee");
 
         uint256 tokenId = nextId++;
-        domains[tokenId] = Domain(name, msg.sender, block.timestamp + DURATION, false, 0, false, address(0), 0, rentTarget, 0, "");
-    
+        domains[tokenId] = Domain(fullDomain, msg.sender, block.timestamp + DURATION, false, 0, false, address(0), 0, rentTarget, 0, "");
+
         nameToId[nameHash] = tokenId; // Simpan domain dengan hash
         nameToAddress[nameHash] = msg.sender;
 
-        emit DomainRegistered(name, msg.sender, block.timestamp + DURATION);
+        emit DomainRegistered(fullDomain, msg.sender, block.timestamp + DURATION);
 
         // Kirim pembayaran ke admin
         payable(admin).transfer(msg.value);
@@ -262,8 +262,8 @@ contract LotDomain {
         addressToName[userAddress] = nameHash;
     }
 
-    function resolve(string memory name) public view returns (address) {
-        string memory fullDomain = string(abi.encodePacked(name, ".lol"));
+    function resolve(string memory name, string memory extension) public view returns (address) {
+        string memory fullDomain = string(abi.encodePacked(name, ".lol", extension));
         bytes32 nameHash = keccak256(abi.encodePacked(fullDomain));
         return nameToAddress[nameHash];
     }
