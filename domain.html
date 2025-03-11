@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LotDomain DApp</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.3/dist/web3.min.js"></script>
+    <style>
+      body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+}
+
+header {
+    background: #333;
+    color: white;
+    padding: 10px;
+}
+
+button {
+    padding: 10px;
+    margin-top: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+input {
+    padding: 8px;
+    margin: 5px;
+    width: 200px;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>LotDomain DApp</h1>
+        <button onclick="connectWallet()">Hubungkan Wallet</button>
+        <p id="walletAddress">Belum terhubung</p>
+
+    </header>
+
+    <main>
+        <section id="register">
+            <h2>Daftarkan Domain</h2>
+            <input type="text" id="domainName" placeholder="Masukkan nama domain">
+            <button onclick="registerDomain()">Daftar</button>
+        </section>
+
+        <section id="transfer">
+            <h2>Transfer Domain</h2>
+            <input type="text" id="transferDomain" placeholder="Nama domain">
+            <input type="text" id="transferTo" placeholder="Alamat penerima">
+            <button onclick="transferDomain()">Transfer</button>
+        </section>
+
+        <section id="auction">
+            <h2>Pelelangan Domain</h2>
+            <input type="text" id="auctionDomain" placeholder="Nama domain">
+            <input type="number" id="minBid" placeholder="Minimal Bid (ETH)">
+            <button onclick="startAuction()">Mulai Lelang</button>
+        </section>
+
+        <section id="rent">
+            <h2>Sewa Domain</h2>
+            <input type="text" id="rentDomain" placeholder="Nama domain">
+            <input type="number" id="rentAmount" placeholder="Jumlah sewa (ETH)">
+            <button onclick="rentDomain()">Sewa</button>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+      let web3;
+let contract;
+const contractAddress = "0x1234567890abcdef"; // Ganti dengan alamat kontrak
+
+async function connectWallet() {
+    if (window.ethereum) {
+        web3 = new Web3(window.ethereum);
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        contract = new web3.eth.Contract(abi, contractAddress);
+        alert("Wallet terhubung!");
+    } else {
+        alert("Metamask tidak ditemukan!");
+    }
+}
+
+async function registerDomain() {
+    const name = document.getElementById("domainName").value;
+    const accounts = await web3.eth.getAccounts();
+    const fee = await contract.methods.getRegistrationFee(name).call();
+    
+    await contract.methods.registerDomain(name, ".lot", 0).send({
+        from: accounts[0],
+        value: fee
+    });
+
+    alert(`Domain ${name} berhasil didaftarkan!`);
+}
+
+async function transferDomain() {
+    const name = document.getElementById("transferDomain").value;
+    const to = document.getElementById("transferTo").value;
+    const accounts = await web3.eth.getAccounts();
+
+    await contract.methods.transferDomain(name, to).send({ from: accounts[0] });
+    alert(`Domain ${name} berhasil ditransfer ke ${to}`);
+}
+
+async function startAuction() {
+    const name = document.getElementById("auctionDomain").value;
+    const minBid = document.getElementById("minBid").value;
+    const accounts = await web3.eth.getAccounts();
+
+    await contract.methods.startAuction(name, web3.utils.toWei(minBid, "ether")).send({ from: accounts[0] });
+    alert(`Pelelangan domain ${name} dimulai!`);
+}
+
+async function rentDomain() {
+    const name = document.getElementById("rentDomain").value;
+    const amount = document.getElementById("rentAmount").value;
+    const accounts = await web3.eth.getAccounts();
+
+    await contract.methods.rentDomain(name).send({
+        from: accounts[0],
+        value: web3.utils.toWei(amount, "ether")
+    });
+
+    alert(`Domain ${name} berhasil disewa!`);
+}
+
+document.getElementById("connectWallet").addEventListener("click", connectWallet);
+
+const abi = [/* Masukkan ABI kontrak di sini */];
+    </script>
+</body>
+</html>
