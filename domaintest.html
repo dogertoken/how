@@ -265,11 +265,13 @@ async function toggleWallet() {
     if (account) {
         account = null;
         localStorage.removeItem("walletAddress");
+        localStorage.removeItem("signature");
+        localStorage.removeItem("ethBalance");
+
         document.getElementById("walletAddress").innerText = "Not connected";
         document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
         document.getElementById("ethBalance").innerText = "BNB Balance: -";
         document.getElementById("signature").innerText = "Signature: -";
-        document.getElementById("copyButton").style.display = "none";
     } else {
         if (window.ethereum) {
             web3 = new Web3(window.ethereum);
@@ -280,7 +282,6 @@ async function toggleWallet() {
 
                 document.getElementById("walletAddress").innerHTML = `Connected: ${formatAddress(account)}`;
                 document.getElementById("walletButton").innerText = "❌ Disconnect";
-                document.getElementById("copyButton").style.display = "inline-block";
 
                 await fetchBalances();
                 await signMessage();
@@ -292,17 +293,7 @@ async function toggleWallet() {
         }
     }
 }
-        
-// Saat halaman dimuat, periksa apakah wallet tersimpan di localStorage
-window.onload = function () {
-    const savedAccount = localStorage.getItem("walletAddress");
-    if (savedAccount) {
-        web3 = new Web3(window.ethereum); // Pastikan Web3 tetap aktif
-        account = savedAccount;
-        updateUI(savedAccount);
-    }
-};
-        
+
 async function signMessage() {
     if (!account) {
         alert("Connect your wallet first!");
@@ -311,14 +302,15 @@ async function signMessage() {
 
     try {
         const message = `Sign in to LottoBalls\n\nWallet: ${account}\nTimestamp: ${Date.now()}`;
+        console.log("Signing message:", message);
+        
         const signature = await ethereum.request({
             method: "personal_sign",
             params: [message, account],
         });
 
-        // Simpan signature di localStorage
         localStorage.setItem("signature", signature);
-        
+
         document.getElementById("signature").innerText = `Signature: ${signature.slice(0, 10)}...`;
         console.log("Full Signature:", signature);
     } catch (error) {
@@ -330,25 +322,25 @@ async function signMessage() {
 async function fetchBalances() {
     if (!account) return;
 
-    const balanceWei = await web3.eth.getBalance(account);
-    const balanceTbnb = web3.utils.fromWei(balanceWei, "ether");
+    try {
+        const balanceWei = await web3.eth.getBalance(account);
+        const balanceTbnb = web3.utils.fromWei(balanceWei, "ether");
 
-    // Simpan balance di localStorage
-    localStorage.setItem("ethBalance", balanceTbnb);
-
-    document.getElementById("ethBalance").innerText = `tBNB Balance: ${balanceTbnb} tBNB`;
+        localStorage.setItem("ethBalance", balanceTbnb);
+        document.getElementById("ethBalance").innerText = `tBNB Balance: ${balanceTbnb} tBNB`;
+    } catch (error) {
+        console.error("Failed to fetch balance", error);
+    }
 }
 
-// ✅ Periksa apakah sebelumnya sudah login (agar tetap login dengan balance & signature)
 async function checkExistingLogin() {
     const savedAccount = localStorage.getItem("walletAddress");
-    if (savedAccount) {
+    if (savedAccount && window.ethereum) {
         web3 = new Web3(window.ethereum);
         account = savedAccount;
-        document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+        document.getElementById("walletAddress").innerText = `Connected: ${formatAddress(account)}`;
         document.getElementById("walletButton").innerText = "❌ Disconnect";
 
-        // Ambil balance & signature dari localStorage
         const savedBalance = localStorage.getItem("ethBalance");
         const savedSignature = localStorage.getItem("signature");
 
@@ -364,7 +356,6 @@ async function checkExistingLogin() {
     }
 }
 
-// 🔥 Jalankan saat halaman dimuat untuk mengecek status login sebelumnya
 window.addEventListener("load", checkExistingLogin);
 
 async function registerDomainDirect(domain, fee) {
