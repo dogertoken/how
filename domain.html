@@ -140,10 +140,11 @@ input {
     <script src="app.js"></script>
     <script>
 let web3;
-let connectedAccount = null;
+let account;
 let contract;
         
 const contractAddress = "0x1234567890abcdef"; // Ganti dengan alamat kontrak
+const abi = [/* Masukkan ABI kontrak di sini */];
 const BASE_SEPOLIA_CHAIN_ID = "0x14A34";
 
         async function switchToBaseSepolia() {
@@ -251,59 +252,13 @@ const BASE_SEPOLIA_CHAIN_ID = "0x14A34";
             }
         }
 
-    // Tampilkan alamat wallet
-    document.getElementById("walletAddress").innerText = `Alamat: ${connectedAccount}`;
+        async function fetchBalances() {
+            if (!account) return;
 
-    // Ambil saldo BNB
-    const balanceWei = await web3.eth.getBalance(connectedAccount);
-    const balanceBnb = web3.utils.fromWei(balanceWei, "ether");
-    document.getElementById("walletBalance").innerText = `Saldo: ${parseFloat(balanceBnb).toFixed(4)} BNB`;
-
-    // Cek apakah pengguna memiliki domain .lol
-    if (typeof contract !== "undefined") {
-        try {
-            const domain = await contract.methods.getDomain(connectedAccount).call();
-            if (domain) {
-                document.getElementById("walletAddress").innerText = `Alamat: ${domain}.lol`;
-            }
-        } catch (error) {
-            console.warn("Gagal mendapatkan domain .lol:", error);
+            const balanceWei = await web3.eth.getBalance(account);
+            const balanceEth = web3.utils.fromWei(balanceWei, "ether");
+            document.getElementById("ethBalance").innerText = `ETH Balance: ${balanceEth} ETH`;
         }
-    }
-
-    // Ubah tombol menjadi "Putuskan Koneksi"
-    document.getElementById("connectWallet").innerText = "Putuskan Koneksi";
-}
-
-// Putuskan koneksi wallet
-function disconnectWallet() {
-    connectedAccount = null;
-    localStorage.removeItem("connectedAccount");
-    localStorage.removeItem("signature");
-
-    // Reset UI
-    document.getElementById("walletAddress").innerText = "Belum terhubung";
-    document.getElementById("walletBalance").innerText = "Saldo: 0 BNB";
-    document.getElementById("connectWallet").innerText = "Hubungkan Wallet";
-
-    alert("Wallet telah terputus!");
-}
-
-// Cek status wallet saat halaman dimuat
-window.addEventListener("load", async () => {
-    if (window.ethereum) {
-        web3 = new Web3(window.ethereum);
-        
-        const savedAccount = localStorage.getItem("connectedAccount");
-        const savedSignature = localStorage.getItem("signature");
-
-        if (savedAccount && savedSignature) {
-            connectedAccount = savedAccount;
-            await switchToBSC();
-            updateWalletUI();
-        }
-    }
-});
 
 async function registerDomainDirect(domain, fee) {
     const accounts = await web3.eth.getAccounts();
@@ -394,10 +349,6 @@ async function rentDomain() {
 
     alert(`Domain ${name} berhasil disewa!`);
 }
-
-document.getElementById("walletButton").addEventListener("click", connectWallet);
-
-const abi = [/* Masukkan ABI kontrak di sini */];
 
 // Used Domain
 async function setDomainAddress() {
