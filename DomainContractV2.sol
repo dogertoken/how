@@ -78,13 +78,13 @@ contract LotDomain {
         uint256 length = bytes(name).length;
         require(length >= 1, "Domain name too short");
 
-        if (length == 1) return 0.05 ether;
-        if (length == 2) return 0.02 ether;
-        if (length == 3) return 0.01 ether;
-        if (length >= 4 && length <= 5) return 0.0015 ether;
-        if (length >= 6 && length <= 7) return 0.001 ether;
-        if (length >= 8 && length <= 10) return 0.0008 ether;
-        return 0.0005 ether;
+        if (length == 1) return 1 ether;
+        if (length == 2) return 0.5 ether;
+        if (length == 3) return 0.1 ether;
+        if (length >= 4 && length <= 5) return 0.005 ether;
+        if (length >= 6 && length <= 7) return 0.003 ether;
+        if (length >= 8 && length <= 10) return 0.002 ether;
+        return 0.0015 ether;
     }
 
     function registerDomain(string memory name, string memory extension, uint256 rentTarget) public payable {
