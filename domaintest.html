@@ -372,13 +372,13 @@ async function registerDomainDirect(domain, fee) {
 function getLocalRegistrationFee(name) {
     const length = name.length;
 
-    if (length === 1) return web3.utils.toWei("0.05", "ether");
-    if (length === 2) return web3.utils.toWei("0.02", "ether");
-    if (length === 3) return web3.utils.toWei("0.01", "ether");
-    if (length >= 4 && length <= 5) return web3.utils.toWei("0.0015", "ether");
-    if (length >= 6 && length <= 7) return web3.utils.toWei("0.001", "ether");
-    if (length >= 8 && length <= 10) return web3.utils.toWei("0.0008", "ether");
-    return web3.utils.toWei("0.0005", "ether");
+    if (length === 1) return web3.utils.toWei("1", "ether");
+    if (length === 2) return web3.utils.toWei("0.5", "ether");
+    if (length === 3) return web3.utils.toWei("0.1", "ether");
+    if (length >= 4 && length <= 5) return web3.utils.toWei("0.005", "ether");
+    if (length >= 6 && length <= 7) return web3.utils.toWei("0.003", "ether");
+    if (length >= 8 && length <= 10) return web3.utils.toWei("0.002", "ether");
+    return web3.utils.toWei("0.0015", "ether");
 }
 
 async function resolveDomain() {
