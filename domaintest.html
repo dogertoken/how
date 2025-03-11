@@ -127,7 +127,7 @@ input:focus {
     <header>
         <h1>LotDomain DApp</h1>
         <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
-        <button id="copyButton" onclick="copyWalletAddress()" style="display:none;">📋 Copy</button><br><br>
+        <br><br>
         <p id="walletAddress">Not connected</p>
         <p id="ethBalance">BNB Balance: -</p>
         <p id="signature">Signature: -</p>
@@ -295,15 +295,7 @@ async function toggleWallet() {
         }
     }
 }
-
-function copyWalletAddress() {
-    if (account) {
-        navigator.clipboard.writeText(account).then(() => {
-            alert("Wallet address copied!");
-        }).catch(err => console.error("Failed to copy: ", err));
-    }
-}
-
+        
 // Saat halaman dimuat, periksa apakah wallet tersimpan di localStorage
 window.onload = function () {
     const savedAccount = localStorage.getItem("walletAddress");
