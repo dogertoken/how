@@ -139,38 +139,38 @@ input:focus {
 
     <main>
         <section id="resolve">
-            <h2>Gunakan Domain</h2>
-           <input type="text" id="resolveDomain" placeholder="Nama domain (contoh: nama.lot)">
-           <button onclick="resolveDomain()">Cari Alamat</button>
+            <h2>Search Domains</h2>
+           <input type="text" id="resolveDomain" placeholder="Domain name (example: nama.bns)">
+           <button onclick="resolveDomain()">Search</button>
            <div id="resolveResult"></div> <!-- Hasil pencarian akan muncul di sini -->
         </section>
         
         <section id="transfer">
-            <h2>Transfer Domain</h2>
-            <input type="text" id="transferDomain" placeholder="Nama domain">
-            <input type="text" id="transferTo" placeholder="Alamat penerima"><br>
+            <h2>Domain Transfer</h2>
+            <input type="text" id="transferDomain" placeholder="Domain name">
+            <input type="text" id="transferTo" placeholder="Recipient address"><br>
             <button onclick="transferDomain()">Transfer</button>
         </section>
 
         <section id="auction">
-            <h2>Pelelangan Domain</h2>
-            <input type="text" id="auctionDomain" placeholder="Nama domain">
-            <input type="number" id="minBid" placeholder="Minimal Bid (ETH)"><br>
-            <button onclick="startAuction()">Mulai Lelang</button>
+            <h2>Domain Auction</h2>
+            <input type="text" id="auctionDomain" placeholder="Domain name">
+            <input type="number" id="minBid" placeholder="Minimal Bid (BNB)"><br>
+            <button onclick="startAuction()">Start Auction</button>
         </section>
 
         <section id="rent">
-            <h2>Sewa Domain</h2>
-            <input type="text" id="rentDomain" placeholder="Nama domain">
-            <input type="number" id="rentAmount" placeholder="Jumlah sewa (ETH)"><br>
-            <button onclick="rentDomain()">Sewa</button>
+            <h2>Domain Rental</h2>
+            <input type="text" id="rentDomain" placeholder="Domain name">
+            <input type="number" id="rentAmount" placeholder="Rent amount (BNB)"><br>
+            <button onclick="rentDomain()">Rent</button>
         </section>
 
         <section id="setAddress">
-            <h2>Tautkan Domain ke Alamat</h2>
-            <input type="text" id="setDomain" placeholder="Nama domain">
-            <input type="text" id="setAddress" placeholder="Alamat wallet"><br>
-            <button onclick="setDomainAddress()">Simpan</button>
+            <h2>Link Domain to Address</h2>
+            <input type="text" id="setDomain" placeholder="Domain name">
+            <input type="text" id="setAddress" placeholder="Wallet address"><br>
+            <button onclick="setDomainAddress()">Save</button>
         </section>
 
         <!-- Bottom Navigation -->
