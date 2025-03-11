@@ -74,7 +74,7 @@ input {
         <h1>LotDomain DApp</h1>
         <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button><br>
         <p id="walletAddress">Not connected</p>
-        <p id="ethBalance">BNB Balance: -</p>
+        <p id="ethBalance">BN Balance: -</p>
         <p id="signature">Signature: -</p>
 
     </header>
@@ -141,58 +141,61 @@ input {
 
 let web3;
 let account;
+const contractAddress = "0xYourContractAddress"; // Ganti dengan alamat kontrak
+const contractABI = [ /* Masukkan ABI Smart Contract */ ];
+const BSC_CHAIN_ID = "0x38"; // Binance Smart Chain Mainnet
 
-const contractAddress = "0x1234567890abcdef"; // Ganti dengan alamat kontrak
-const abi = [/* Masukkan ABI kontrak di sini */];
-const OPBNB_TESTNET_CHAIN_ID = "0x15eb";
-
-async function switchToOpbnbTestnet() {
+async function switchToBSC() {
     if (!window.ethereum) {
         alert("Metamask is required!");
         return false;
     }
 
     try {
-    const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
-    if (currentChainId === "0x15eb") {  // Harus dalam string HEX
-        console.log("Already on opBNB Testnet!");
-        return true;
-    }
-
-    await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: "0x15eb" }],  // Harus dalam string HEX
-    });
-
-    console.log("Switched to opBNB Testnet!");
-    return true;
-} catch (error) {
-    if (error.code === 4902) {
-        try {
-            await window.ethereum.request({
-                method: "wallet_addEthereumChain",
-                params: [{
-                    chainId: "0x15eb", // Harus string HEX
-                    chainName: "opBNB Testnet",
-                    rpcUrls: ["https://opbnb-testnet-rpc.bnbchain.org"],
-                    nativeCurrency: { name: "tBNB", symbol: "tBNB", decimals: 18 },
-                    blockExplorerUrls: ["https://opbnb-testnet.bscscan.com/"]
-                }]
-            });
-
-            console.log("Added and switched to opBNB Testnet!");
+        const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
+        if (currentChainId === BSC_CHAIN_ID) {
+            console.log("Already on Binance Smart Chain!");
             return true;
-        } catch (addError) {
-            console.error("Failed to add opBNB Testnet network", addError);
-            alert("Failed to add opBNB Testnet. Please add it manually in Metamask.");
+        }
+
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: BSC_CHAIN_ID }],
+        });
+
+        console.log("Switched to Binance Smart Chain!");
+        return true;
+    } catch (error) {
+        if (error.code === 4902) {
+            try {
+                await window.ethereum.request({
+                    method: "wallet_addEthereumChain",
+                    params: [{
+                        chainId: BSC_CHAIN_ID,
+                        chainName: "Binance Smart Chain",
+                        rpcUrls: ["https://bsc-dataseed.binance.org"],
+                        nativeCurrency: {
+                            name: "BNB",
+                            symbol: "BNB",
+                            decimals: 18
+                        },
+                        blockExplorerUrls: ["https://bscscan.com"]
+                    }]
+                });
+
+                console.log("Binance Smart Chain added and switched!");
+                return true;
+            } catch (addError) {
+                console.error("Failed to add Binance Smart Chain network", addError);
+                alert("Failed to add Binance Smart Chain. Please add it manually in Metamask.");
+                return false;
+            }
+        } else {
+            console.error("Failed to switch network", error);
+            alert("Please switch to Binance Smart Chain manually.");
             return false;
         }
-    } else {
-        console.error("Failed to switch network", error);
-        alert("Please switch to opBNB Testnet manually.");
-        return false;
     }
-  }
 }
 
 async function toggleWallet() {
@@ -201,33 +204,27 @@ async function toggleWallet() {
         document.getElementById("walletAddress").innerText = "Not connected";
         document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
         document.getElementById("ethBalance").innerText = "BNB Balance: -";
+        document.getElementById("usdtBalance").innerText = "USDT Balance: -";
         document.getElementById("signature").innerText = "Signature: -";
     } else {
-        if (typeof window.ethereum !== 'undefined') {
+        if (window.ethereum) {
             web3 = new Web3(window.ethereum);
-        } else {
-            alert("Metamask not detected! Please install Metamask.");
-            return;
-        }
+            try {
+                const switched = await switchToBSC();
+                if (!switched) return;
 
-        try {
-            const switched = await switchToOpbnbTestnet();
-            if (!switched) return;
+                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+                account = accounts[0];
+                document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+                document.getElementById("walletButton").innerText = "❌ Disconnect";
 
-            const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-            if (!accounts || accounts.length === 0) {
-                alert("Wallet connection denied!");
-                return;
+                await signMessage();
+                await fetchBalances();
+            } catch (error) {
+                console.error("Wallet connection failed", error);
             }
-
-            account = accounts[0];
-            document.getElementById("walletAddress").innerText = `Connected: ${account}`;
-            document.getElementById("walletButton").innerText = "❌ Disconnect";
-
-            await signMessage();
-            await fetchBalances();
-        } catch (error) {
-            console.error("Wallet connection failed", error);
+        } else {
+            alert("Please install Metamask!");
         }
     }
 }
@@ -239,10 +236,10 @@ async function signMessage() {
     }
 
     try {
-        const message = `Sign in to Binance Name Service\n\nWallet: ${account}\nTimestamp: ${Date.now()}`;
+        const message = `Sign in to LottoBalls\n\nWallet: ${account}\nTimestamp: ${Date.now()}`;
         const signature = await ethereum.request({
             method: "personal_sign",
-            params: [web3.utils.utf8ToHex(message), account.toLowerCase()],
+            params: [message, account],
         });
 
         document.getElementById("signature").innerText = `Signature: ${signature.slice(0, 10)}...`;
@@ -256,13 +253,10 @@ async function signMessage() {
 async function fetchBalances() {
     if (!account) return;
 
-    try {
-        const balanceWei = await web3.eth.getBalance(account);
-        const balanceEth = web3.utils.fromWei(balanceWei, "ether");
-        document.getElementById("ethBalance").innerText = `BNB Balance: ${balanceEth} BNB`;
-    } catch (error) {
-        console.error("Failed to fetch balance", error);
-            }
+    const balanceWei = await web3.eth.getBalance(account);
+    const balanceBnb = web3.utils.fromWei(balanceWei, "ether");
+    document.getElementById("ethBalance").innerText = `BNB Balance: ${balanceBnb} BNB`;
+}
 
 async function registerDomainDirect(domain, fee) {
     const accounts = await web3.eth.getAccounts();
