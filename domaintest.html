@@ -132,7 +132,7 @@ input:focus {
         <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button>
         <br><br>
         <p id="walletAddress">Not connected</p>
-        <p id="ethBalance">BNB Balance: -</p>
+        <p id="ethBalance">Balance: -</p>
         <p id="signature">Signature: -</p>
 
     </header>
@@ -270,7 +270,7 @@ async function toggleWallet() {
 
         document.getElementById("walletAddress").innerText = "Not connected";
         document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
-        document.getElementById("ethBalance").innerText = "BNB Balance: -";
+        document.getElementById("ethBalance").innerText = "Balance: -";
         document.getElementById("signature").innerText = "Signature: -";
     } else {
         if (window.ethereum) {
@@ -327,7 +327,7 @@ async function fetchBalances() {
         const balanceTbnb = web3.utils.fromWei(balanceWei, "ether");
 
         localStorage.setItem("ethBalance", balanceTbnb);
-        document.getElementById("ethBalance").innerText = `tBNB Balance: ${balanceTbnb} tBNB`;
+        document.getElementById("ethBalance").innerText = `Balance: ${balanceTbnb} tBNB`;
     } catch (error) {
         console.error("Failed to fetch balance", error);
     }
@@ -345,7 +345,7 @@ async function checkExistingLogin() {
         const savedSignature = localStorage.getItem("signature");
 
         if (savedBalance) {
-            document.getElementById("ethBalance").innerText = `tBNB Balance: ${savedBalance} tBNB`;
+            document.getElementById("ethBalance").innerText = `Balance: ${savedBalance} tBNB`;
         }
 
         if (savedSignature) {
