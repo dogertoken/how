@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LotDomain DApp</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.3/dist/web3.min.js"></script>
+    <style>
+      body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+}
+
+header {
+    background: #333;
+    color: white;
+    padding: 10px;
+}
+
+button {
+    padding: 10px;
+    margin-top: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+input {
+    padding: 8px;
+    margin: 5px;
+    width: 200px;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #222;
+    display: flex;
+    justify-content: space-around;
+    padding: 5px 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.bottom-nav button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 10px;
+    text-align: center;
+    cursor: pointer;
+    padding: 5px;
+    flex: 1;
+}
+
+.bottom-nav button span {
+    font-size: 15px; /* Icon lebih besar */
+    display: block;
+}
+
+.bottom-nav button.active {
+    color: #007bff; /* Warna biru untuk tombol aktif */
+    font-weight: bold;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>LotDomain DApp</h1>
+        <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button><br>
+        <p id="walletAddress">Not connected</p>
+        <p id="ethBalance">BN Balance: -</p>
+        <p id="signature">Signature: -</p>
+
+    </header>
+
+    <main>
+        <section id="resolve">
+            <h2>Gunakan Domain</h2>
+           <input type="text" id="resolveDomain" placeholder="Nama domain (contoh: nama.lot)">
+           <button onclick="resolveDomain()">Cari Alamat</button>
+           <div id="resolveResult"></div> <!-- Hasil pencarian akan muncul di sini -->
+        </section>
+        
+        <section id="transfer">
+            <h2>Transfer Domain</h2>
+            <input type="text" id="transferDomain" placeholder="Nama domain">
+            <input type="text" id="transferTo" placeholder="Alamat penerima">
+            <button onclick="transferDomain()">Transfer</button>
+        </section>
+
+        <section id="auction">
+            <h2>Pelelangan Domain</h2>
+            <input type="text" id="auctionDomain" placeholder="Nama domain">
+            <input type="number" id="minBid" placeholder="Minimal Bid (ETH)">
+            <button onclick="startAuction()">Mulai Lelang</button>
+        </section>
+
+        <section id="rent">
+            <h2>Sewa Domain</h2>
+            <input type="text" id="rentDomain" placeholder="Nama domain">
+            <input type="number" id="rentAmount" placeholder="Jumlah sewa (ETH)">
+            <button onclick="rentDomain()">Sewa</button>
+        </section>
+
+        <section id="resolve">
+            <h2>Gunakan Domain</h2>
+            <input type="text" id="resolveDomain" placeholder="Nama domain (contoh: nama.lot)">
+            <button onclick="resolveDomain()">Cari Alamat</button>
+        </section>
+
+        <section id="setAddress">
+            <h2>Tautkan Domain ke Alamat</h2>
+            <input type="text" id="setDomain" placeholder="Nama domain">
+            <input type="text" id="setAddress" placeholder="Alamat wallet">
+            <button onclick="setDomainAddress()">Simpan</button>
+        </section>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <button class="nav-btn active" onclick="showSection('register', this)">
+                <span>🚀</span><br>Transfer
+            </button>
+            <button class="nav-btn" onclick="showSection('transfer', this)">
+                <span>🛒</span><br>Auction
+            </button>
+            <button class="nav-btn" onclick="showSection('auction', this)">
+                <span>⚙️</span><br>Setting
+            </button>
+        </div>
+        
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+
+let web3;
+let account;
+const contractAddress = "0xYourContractAddress"; // Ganti dengan alamat kontrak
+const contractABI = [ /* Masukkan ABI Smart Contract */ ];
+const OPNBN_TESTNET_CHAIN_ID = "0x15eb"; // opBNB Testnet Chain ID
+
+async function switchToOpBNBTestnet() {
+    if (!window.ethereum) {
+        alert("Metamask is required!");
+        return false;
+    }
+
+    try {
+        const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
+        if (currentChainId === OPNBN_TESTNET_CHAIN_ID) {
+            console.log("Already on opBNB Testnet!");
+            return true;
+        }
+
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: OPNBN_TESTNET_CHAIN_ID }],
+        });
+
+        console.log("Switched to opBNB Testnet!");
+        return true;
+    } catch (error) {
+        if (error.code === 4902) {
+            try {
+                await window.ethereum.request({
+                    method: "wallet_addEthereumChain",
+                    params: [{
+                        chainId: OPNBN_TESTNET_CHAIN_ID,
+                        chainName: "opBNB Testnet",
+                        rpcUrls: ["https://opbnb-testnet-rpc.bnbchain.org"],
+                        nativeCurrency: {
+                            name: "tBNB",
+                            symbol: "tBNB",
+                            decimals: 18
+                        },
+                        blockExplorerUrls: ["https://opbnb-testnet.bscscan.com"]
+                    }]
+                });
+
+                console.log("opBNB Testnet added and switched!");
+                return true;
+            } catch (addError) {
+                console.error("Failed to add opBNB Testnet network", addError);
+                alert("Failed to add opBNB Testnet. Please add it manually in Metamask.");
+                return false;
+            }
+        } else {
+            console.error("Failed to switch network", error);
+            alert("Please switch to opBNB Testnet manually.");
+            return false;
+        }
+    }
+}
+
+async function toggleWallet() {
+    if (account) {
+        account = null;
+        document.getElementById("walletAddress").innerText = "Not connected";
+        document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
+        document.getElementById("ethBalance").innerText = "tBNB Balance: -";
+        document.getElementById("usdtBalance").innerText = "USDT Balance: -";
+        document.getElementById("signature").innerText = "Signature: -";
+    } else {
+        if (window.ethereum) {
+            web3 = new Web3(window.ethereum);
+            try {
+                const switched = await switchToOpBNBTestnet();
+                if (!switched) return;
+
+                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+                account = accounts[0];
+                document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+                document.getElementById("walletButton").innerText = "❌ Disconnect";
+
+                await signMessage();
+                await fetchBalances();
+            } catch (error) {
+                console.error("Wallet connection failed", error);
+            }
+        } else {
+            alert("Please install Metamask!");
+        }
+    }
+}
+
+async function signMessage() {
+    if (!account) {
+        alert("Connect your wallet first!");
+        return;
+    }
+
+    try {
+        const message = `Sign in to LottoBalls\n\nWallet: ${account}\nTimestamp: ${Date.now()}`;
+        const signature = await ethereum.request({
+            method: "personal_sign",
+            params: [message, account],
+        });
+
+        document.getElementById("signature").innerText = `Signature: ${signature.slice(0, 10)}...`;
+        console.log("Full Signature:", signature);
+    } catch (error) {
+        console.error("Failed to sign message", error);
+        alert("Signing failed!");
+    }
+}
+
+async function fetchBalances() {
+    if (!account) return;
+
+    const balanceWei = await web3.eth.getBalance(account);
+    const balanceTbnb = web3.utils.fromWei(balanceWei, "ether");
+    document.getElementById("ethBalance").innerText = `tBNB Balance: ${balanceTbnb} tBNB`;
+              }
+
+async function registerDomainDirect(domain, fee) {
+    const accounts = await web3.eth.getAccounts();
+
+    await contract.methods.registerDomain(domain, ".lol", 0).send({
+        from: accounts[0],
+        value: fee
+    });
+
+    alert(`Domain ${domain} berhasil didaftarkan!`);
+}
+
+function getLocalRegistrationFee(name) {
+    const length = name.length;
+
+    if (length === 1) return web3.utils.toWei("0.05", "ether");
+    if (length === 2) return web3.utils.toWei("0.02", "ether");
+    if (length === 3) return web3.utils.toWei("0.01", "ether");
+    if (length >= 4 && length <= 5) return web3.utils.toWei("0.0015", "ether");
+    if (length >= 6 && length <= 7) return web3.utils.toWei("0.001", "ether");
+    if (length >= 8 && length <= 10) return web3.utils.toWei("0.0008", "ether");
+    return web3.utils.toWei("0.0005", "ether");
+}
+
+async function resolveDomain() {
+    const domain = document.getElementById("resolveDomain").value;
+    const address = await contract.methods.resolveDomain(domain).call();
+    const fee = await contract.methods.getRegistrationFee(domain).call(); // Ambil harga dari kontrak
+
+    const resultDiv = document.getElementById("resolveResult");
+    resultDiv.innerHTML = ""; // Bersihkan hasil sebelumnya
+
+    if (address === "0x0000000000000000000000000000000000000000") {
+        // Jika domain belum terdaftar, tampilkan harga dan tombol daftar
+        resultDiv.innerHTML = `
+            <p style="color: green;">Domain tersedia! Harga: ${web3.utils.fromWei(fee, "ether")} ETH</p>
+            <button onclick="registerDomainDirect('${domain}', ${fee})">Daftarkan Sekarang</button>
+        `;
+    } else {
+        // Jika domain sudah digunakan, tampilkan alamatnya
+        resultDiv.innerHTML = `<p style="color: red;">Domain sudah terdaftar! Alamat: ${address}</p>`;
+    }
+}
+
+async function registerDomain(domain, fee) {
+    const accounts = await web3.eth.getAccounts();
+
+    await contract.methods.registerDomain(domain, ".lol", 0).send({
+        from: accounts[0],
+        value: fee
+    });
+
+    alert(`Domain ${domain} berhasil didaftarkan!`);
+        }
+
+async function transferDomain() {
+    try {
+        const name = document.getElementById("transferDomain").value;
+        const to = document.getElementById("transferTo").value;
+        const accounts = await web3.eth.getAccounts();
+
+        await contract.methods.transferDomain(name, to).send({ from: accounts[0] });
+        alert(`Domain ${name} berhasil ditransfer ke ${to}`);
+    } catch (error) {
+        console.error("Gagal mentransfer domain:", error);
+        alert("Gagal mentransfer domain. Cek log untuk detail.");
+    }
+}
+
+async function startAuction() {
+    const name = document.getElementById("auctionDomain").value;
+    const minBid = document.getElementById("minBid").value;
+    const accounts = await web3.eth.getAccounts();
+
+    await contract.methods.startAuction(name, web3.utils.toWei(minBid, "ether")).send({ from: accounts[0] });
+    alert(`Pelelangan domain ${name} dimulai!`);
+}
+
+async function rentDomain() {
+    const name = document.getElementById("rentDomain").value;
+    const amount = document.getElementById("rentAmount").value;
+    const accounts = await web3.eth.getAccounts();
+
+    await contract.methods.rentDomain(name).send({
+        from: accounts[0],
+        value: web3.utils.toWei(amount, "ether")
+    });
+
+    alert(`Domain ${name} berhasil disewa!`);
+}
+
+// Used Domain
+async function setDomainAddress() {
+    const domain = document.getElementById("setDomain").value;
+    const newAddress = document.getElementById("setAddress").value;
+    const accounts = await web3.eth.getAccounts();
+
+    await contract.methods.setAddress(domain, newAddress).send({ from: accounts[0] });
+    alert(`Alamat ${newAddress} telah ditautkan ke ${domain}`);
+}
+
+// Menu
+function showSection(sectionId, btn) {
+    // Sembunyikan semua halaman
+    document.querySelectorAll(".page").forEach(section => {
+        section.style.display = "none";
+    });
+    document.getElementById(sectionId).style.display = "block";
+
+    // Hapus status 'active' dari semua tombol
+    document.querySelectorAll(".nav-btn").forEach(button => {
+        button.classList.remove("active");
+    });
+
+    // Tambahkan status 'active' pada tombol yang diklik
+    btn.classList.add("active");
+}
+    </script>
+</body>
+  </html>
