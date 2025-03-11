@@ -43,7 +43,7 @@ input {
     background: #222;
     display: flex;
     justify-content: space-around;
-    padding: 5px 0;
+    padding: 10px 0;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
 }
 
@@ -51,7 +51,7 @@ input {
     background: none;
     border: none;
     color: white;
-    font-size: 10px;
+    font-size: 14px;
     text-align: center;
     cursor: pointer;
     padding: 5px;
@@ -78,12 +78,13 @@ input {
     </header>
 
     <main>
-        <section id="register">
-            <h2>Daftarkan Domain</h2>
-            <input type="text" id="domainName" placeholder="Masukkan nama domain">
-            <button onclick="registerDomain()">Daftar</button>
+        <section id="resolve">
+            <h2>Gunakan Domain</h2>
+           <input type="text" id="resolveDomain" placeholder="Nama domain (contoh: nama.lot)">
+           <button onclick="resolveDomain()">Cari Alamat</button>
+           <div id="resolveResult"></div> <!-- Hasil pencarian akan muncul di sini -->
         </section>
-
+        
         <section id="transfer">
             <h2>Transfer Domain</h2>
             <input type="text" id="transferDomain" placeholder="Nama domain">
@@ -155,7 +156,7 @@ async function registerDomain() {
     const accounts = await web3.eth.getAccounts();
     const fee = await contract.methods.getRegistrationFee(name).call();
     
-    await contract.methods.registerDomain(name, ".lot", 0).send({
+    await contract.methods.registerDomain(name, ".lol", 0).send({
         from: accounts[0],
         value: fee
     });
@@ -163,32 +164,48 @@ async function registerDomain() {
     alert(`Domain ${name} berhasil didaftarkan!`);
 }
 
-async function registerDomain() {
-    const name = document.getElementById("domainName").value;
-    if (!name) {
-        alert("Masukkan nama domain terlebih dahulu!");
-        return;
-    }
+function getLocalRegistrationFee(name) {
+    const length = name.length;
 
+    if (length === 1) return web3.utils.toWei("0.05", "ether");
+    if (length === 2) return web3.utils.toWei("0.02", "ether");
+    if (length === 3) return web3.utils.toWei("0.01", "ether");
+    if (length >= 4 && length <= 5) return web3.utils.toWei("0.0015", "ether");
+    if (length >= 6 && length <= 7) return web3.utils.toWei("0.001", "ether");
+    if (length >= 8 && length <= 10) return web3.utils.toWei("0.0008", "ether");
+    return web3.utils.toWei("0.0005", "ether");
+}
+
+async function resolveDomain() {
+    const domain = document.getElementById("resolveDomain").value;
+    const address = await contract.methods.resolveDomain(domain).call();
+    const fee = getLocalRegistrationFee(domain); // Ambil harga dari fungsi lokal
+
+    const resultDiv = document.getElementById("resolveResult");
+    resultDiv.innerHTML = ""; // Bersihkan hasil sebelumnya
+
+    if (address === "0x0000000000000000000000000000000000000000") {
+        // Jika domain belum terdaftar, tampilkan harga dan tombol daftar
+        resultDiv.innerHTML = `
+            <p style="color: green;">Domain tersedia! Harga: ${web3.utils.fromWei(fee, "ether")} ETH</p>
+            <button onclick="registerDomain('${domain}', '${fee}')">Daftarkan Sekarang</button>
+        `;
+    } else {
+        // Jika domain sudah digunakan, tampilkan alamatnya
+        resultDiv.innerHTML = `<p style="color: red;">Domain sudah terdaftar! Alamat: ${address}</p>`;
+    }
+}
+
+async function registerDomain(domain, fee) {
     const accounts = await web3.eth.getAccounts();
 
-    // Cek apakah domain sudah terdaftar
-    const isRegistered = await contract.methods.isDomainRegistered(name).call();
-    if (isRegistered) {
-        alert(`Domain ${name} sudah terdaftar! Coba nama lain.`);
-        return;
-    }
-
-    // Lanjutkan jika domain tersedia
-    const fee = await contract.methods.getRegistrationFee(name).call();
-    
-    await contract.methods.registerDomain(name, ".lot", 0).send({
+    await contract.methods.registerDomain(domain, ".lol", 0).send({
         from: accounts[0],
         value: fee
     });
 
-    alert(`Domain ${name} berhasil didaftarkan!`);
-}
+    alert(`Domain ${domain} berhasil didaftarkan!`);
+        }
 
 async function transferDomain() {
     const name = document.getElementById("transferDomain").value;
@@ -226,16 +243,6 @@ document.getElementById("connectWallet").addEventListener("click", connectWallet
 const abi = [/* Masukkan ABI kontrak di sini */];
 
 // Used Domain
-async function resolveDomain() {
-    const domain = document.getElementById("resolveDomain").value;
-    try {
-        const address = await contract.methods.resolve(domain).call();
-        alert(`Alamat yang terkait dengan ${domain}: ${address}`);
-    } catch (error) {
-        alert("Domain tidak ditemukan atau belum dikaitkan dengan alamat!");
-    }
-}
-
 async function setDomainAddress() {
     const domain = document.getElementById("setDomain").value;
     const newAddress = document.getElementById("setAddress").value;
