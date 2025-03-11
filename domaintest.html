@@ -200,11 +200,12 @@ async function switchToOpBNBTestnet() {
 
 async function toggleWallet() {
     if (account) {
+        // Logout (hanya jika tombol disconnect ditekan)
+        localStorage.removeItem("walletAddress");
         account = null;
         document.getElementById("walletAddress").innerText = "Not connected";
         document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
         document.getElementById("ethBalance").innerText = "tBNB Balance: -";
-        document.getElementById("usdtBalance").innerText = "USDT Balance: -";
         document.getElementById("signature").innerText = "Signature: -";
     } else {
         if (window.ethereum) {
@@ -215,6 +216,10 @@ async function toggleWallet() {
 
                 const accounts = await ethereum.request({ method: "eth_requestAccounts" });
                 account = accounts[0];
+
+                // Simpan akun ke localStorage agar tetap login
+                localStorage.setItem("walletAddress", account);
+
                 document.getElementById("walletAddress").innerText = `Connected: ${account}`;
                 document.getElementById("walletButton").innerText = "❌ Disconnect";
 
@@ -256,7 +261,22 @@ async function fetchBalances() {
     const balanceWei = await web3.eth.getBalance(account);
     const balanceTbnb = web3.utils.fromWei(balanceWei, "ether");
     document.getElementById("ethBalance").innerText = `tBNB Balance: ${balanceTbnb} tBNB`;
-              }
+}
+
+// ✅ Periksa apakah sebelumnya sudah login (agar tetap login)
+async function checkExistingLogin() {
+    const savedAccount = localStorage.getItem("walletAddress");
+    if (savedAccount) {
+        web3 = new Web3(window.ethereum);
+        account = savedAccount;
+        document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+        document.getElementById("walletButton").innerText = "❌ Disconnect";
+        await fetchBalances();
+    }
+}
+
+// 🔥 Jalankan saat halaman dimuat untuk mengecek status login sebelumnya
+window.addEventListener("load", checkExistingLogin);
 
 async function registerDomainDirect(domain, fee) {
     const accounts = await web3.eth.getAccounts();
