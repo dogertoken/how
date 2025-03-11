@@ -87,7 +87,8 @@ contract LotDomain {
     }
 
     function registerDomain(string memory name, uint256 rentTarget) public payable {
-        bytes32 nameHash = keccak256(abi.encodePacked(name));  // Hash nama domain
+        string memory fullDomain = string(abi.encodePacked(name, ".lol"));
+        bytes32 nameHash = keccak256(abi.encodePacked(fullDomain));
 
         require(nameToId[nameHash] == 0, "Domain already taken"); // Cek apakah sudah terdaftar
         uint256 requiredFee = getRegistrationFee(name);
@@ -262,7 +263,8 @@ contract LotDomain {
     }
 
     function resolve(string memory name) public view returns (address) {
-        bytes32 nameHash = keccak256(abi.encodePacked(name));
+        string memory fullDomain = string(abi.encodePacked(name, ".lol"));
+        bytes32 nameHash = keccak256(abi.encodePacked(fullDomain));
         return nameToAddress[nameHash];
     }
 
