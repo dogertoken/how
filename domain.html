@@ -70,6 +70,19 @@ input {
             <input type="number" id="rentAmount" placeholder="Jumlah sewa (ETH)">
             <button onclick="rentDomain()">Sewa</button>
         </section>
+
+        <section id="resolve">
+            <h2>Gunakan Domain</h2>
+            <input type="text" id="resolveDomain" placeholder="Nama domain (contoh: nama.lot)">
+            <button onclick="resolveDomain()">Cari Alamat</button>
+        </section>
+
+        <section id="setAddress">
+            <h2>Tautkan Domain ke Alamat</h2>
+            <input type="text" id="setDomain" placeholder="Nama domain">
+            <input type="text" id="setAddress" placeholder="Alamat wallet">
+            <button onclick="setDomainAddress()">Simpan</button>
+        </section>
     </main>
 
     <script src="app.js"></script>
@@ -136,6 +149,26 @@ async function rentDomain() {
 document.getElementById("connectWallet").addEventListener("click", connectWallet);
 
 const abi = [/* Masukkan ABI kontrak di sini */];
+
+// Used Domain
+async function resolveDomain() {
+    const domain = document.getElementById("resolveDomain").value;
+    try {
+        const address = await contract.methods.resolve(domain).call();
+        alert(`Alamat yang terkait dengan ${domain}: ${address}`);
+    } catch (error) {
+        alert("Domain tidak ditemukan atau belum dikaitkan dengan alamat!");
+    }
+}
+
+async function setDomainAddress() {
+    const domain = document.getElementById("setDomain").value;
+    const newAddress = document.getElementById("setAddress").value;
+    const accounts = await web3.eth.getAccounts();
+
+    await contract.methods.setAddress(domain, newAddress).send({ from: accounts[0] });
+    alert(`Alamat ${newAddress} telah ditautkan ke ${domain}`);
+}
     </script>
 </body>
 </html>
