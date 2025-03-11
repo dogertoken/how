@@ -69,13 +69,16 @@ input:focus {
 
 /* Wallet Info */
 #walletAddress, #ethBalance, #signature {
-    font-size: 18px;
+    font-size: 12px;
     margin: 10px 0;
     padding: 10px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     display: inline-block;
-    min-width: 280px;
+    max-width: 200px; /* Batasi lebar maksimal */
+    white-space: nowrap; /* Hindari teks turun ke bawah */
+    overflow: hidden; /* Sembunyikan bagian yang kelebihan */
+    text-overflow: ellipsis; /* Tambahkan titik-titik jika teks terlalu panjang */
     box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
 }
 
@@ -120,10 +123,6 @@ input:focus {
 .bottom-nav button.active {
     color: #3b82f6;
     font-weight: bold;
-}
-
-#walletAddress {
-    font-size: 10px; /* Lebih kecil */
 }
     </style>
 </head>
