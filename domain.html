@@ -115,6 +115,33 @@ async function registerDomain() {
     alert(`Domain ${name} berhasil didaftarkan!`);
 }
 
+async function registerDomain() {
+    const name = document.getElementById("domainName").value;
+    if (!name) {
+        alert("Masukkan nama domain terlebih dahulu!");
+        return;
+    }
+
+    const accounts = await web3.eth.getAccounts();
+
+    // Cek apakah domain sudah terdaftar
+    const isRegistered = await contract.methods.isDomainRegistered(name).call();
+    if (isRegistered) {
+        alert(`Domain ${name} sudah terdaftar! Coba nama lain.`);
+        return;
+    }
+
+    // Lanjutkan jika domain tersedia
+    const fee = await contract.methods.getRegistrationFee(name).call();
+    
+    await contract.methods.registerDomain(name, ".lot", 0).send({
+        from: accounts[0],
+        value: fee
+    });
+
+    alert(`Domain ${name} berhasil didaftarkan!`);
+}
+
 async function transferDomain() {
     const name = document.getElementById("transferDomain").value;
     const to = document.getElementById("transferTo").value;
