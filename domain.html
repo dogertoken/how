@@ -33,6 +33,40 @@ input {
     margin: 5px;
     width: 200px;
 }
+
+/* Bottom Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #222;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.bottom-nav button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    padding: 10px;
+    flex: 1;
+}
+
+.bottom-nav button span {
+    font-size: 20px; /* Icon lebih besar */
+    display: block;
+}
+
+.bottom-nav button.active {
+    color: #007bff; /* Warna biru untuk tombol aktif */
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -83,6 +117,20 @@ input {
             <input type="text" id="setAddress" placeholder="Alamat wallet">
             <button onclick="setDomainAddress()">Simpan</button>
         </section>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <button class="nav-btn active" onclick="showSection('register', this)">
+                <span>🚀</span><br>Transfer
+            </button>
+            <button class="nav-btn" onclick="showSection('transfer', this)">
+                <span>🛒</span><br>Auction
+            </button>
+            <button class="nav-btn" onclick="showSection('auction', this)">
+                <span>⚙️</span><br>Setting
+            </button>
+        </div>
+        
     </main>
 
     <script src="app.js"></script>
@@ -195,6 +243,23 @@ async function setDomainAddress() {
 
     await contract.methods.setAddress(domain, newAddress).send({ from: accounts[0] });
     alert(`Alamat ${newAddress} telah ditautkan ke ${domain}`);
+}
+
+// Menu
+function showSection(sectionId, btn) {
+    // Sembunyikan semua halaman
+    document.querySelectorAll(".page").forEach(section => {
+        section.style.display = "none";
+    });
+    document.getElementById(sectionId).style.display = "block";
+
+    // Hapus status 'active' dari semua tombol
+    document.querySelectorAll(".nav-btn").forEach(button => {
+        button.classList.remove("active");
+    });
+
+    // Tambahkan status 'active' pada tombol yang diklik
+    btn.classList.add("active");
 }
     </script>
 </body>
