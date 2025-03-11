@@ -21,14 +21,18 @@ contract LotDomain {
     address payable public admin;
 
     mapping(uint256 => Domain) public domains;
-    mapping(string => uint256) private nameToId;
-    mapping(string => address) public nameToAddress;
+    mapping(bytes32 => uint256) private nameToId;
+    mapping(bytes32 => address) public nameToAddress;
     mapping(string => mapping(string => address)) public subdomains;
     mapping(uint256 => uint256) public domainStake;
     mapping(uint256 => address) public auctionHighestBidder;
     mapping(uint256 => uint256) public auctionHighestBid;
     mapping(address => address[]) public guardians;
     mapping(string => address[]) public domainTrustees;
+    mapping(address => uint256) public pendingReturns;
+    mapping(bytes32 => address[]) public domainGuardians;
+    mapping(bytes32 => mapping(address => bool)) public guardianApproval;
+    mapping(bytes32 => address) public pendingRecovery;
 
     event DomainRegistered(string name, address owner, uint256 expiry);
     event DomainRenewed(string name, uint256 newExpiry);
@@ -43,6 +47,9 @@ contract LotDomain {
     event SubdomainCreated(string mainDomain, string subDomain, address owner);
     event WebsiteUpdated(string name, string ipfsHash);
     event FundsWithdrawn(address admin, uint256 amount);
+    event RecoveryInitiated(bytes32 indexed domain, address indexed newOwner);
+    event RecoveryApproved(bytes32 indexed domain, address indexed approver);
+    event RecoveryCompleted(bytes32 indexed domain, address indexed newOwner);
 
     modifier onlyOwner(string memory name) {
         require(nameToId[name] != 0, "Domain not registered");
@@ -90,14 +97,20 @@ contract LotDomain {
         payable(admin).transfer(msg.value);
     }
 
-    function renewDomain(string memory name) public payable onlyOwner(name) {
-        uint256 renewalFee = (getRegistrationFee(name) * 75) / 100; // Diskon 25%
-        require(msg.value >= renewalFee, "Insufficient renewal fee");
+    function registerDomain(string memory name, uint256 rentTarget) public payable {
+        bytes32 nameHash = keccak256(abi.encodePacked(name));  // Hash nama domain
 
-        uint256 tokenId = nameToId[name];
-        domains[tokenId].expiry += DURATION;
+        require(nameToId[nameHash] == 0, "Domain already taken"); // Cek apakah sudah terdaftar
+        uint256 requiredFee = getRegistrationFee(name);
+        require(msg.value >= requiredFee, "Insufficient registration fee");
 
-        emit DomainRenewed(name, domains[tokenId].expiry);
+        uint256 tokenId = nextId++;
+        domains[tokenId] = Domain(name, msg.sender, block.timestamp + DURATION, false, 0, false, address(0), 0, rentTarget, 0, "");
+    
+        nameToId[nameHash] = tokenId; // Simpan domain dengan hash
+        nameToAddress[nameHash] = msg.sender;
+
+        emit DomainRegistered(name, msg.sender, block.timestamp + DURATION);
 
         // Kirim pembayaran ke admin
         payable(admin).transfer(msg.value);
@@ -125,10 +138,8 @@ contract LotDomain {
         require(msg.value > auctionHighestBid[tokenId], "Bid too low");
 
         if (auctionHighestBid[tokenId] > 0) {
-            // Refund bid sebelumnya
-            payable(auctionHighestBidder[tokenId]).transfer(auctionHighestBid[tokenId]);
-        }
-
+        pendingReturns[auctionHighestBidder[tokenId]] += auctionHighestBid[tokenId];
+    }
         auctionHighestBidder[tokenId] = msg.sender;
         auctionHighestBid[tokenId] = msg.value;
 
@@ -184,6 +195,54 @@ contract LotDomain {
         delete domains[tokenId];
 
         emit DomainTransferred(name, domains[tokenId].owner, address(0));
+    }
+
+    function autoExpireRental(string memory name) public {
+        uint256 tokenId = nameToId[keccak256(abi.encodePacked(name))];
+        require(domains[tokenId].isRented, "Domain not rented");
+        require(block.timestamp > domains[tokenId].expiry, "Rental period not over");
+
+        domains[tokenId].isRented = false;
+        domains[tokenId].renter = address(0);
+    }
+
+    function initiateRecovery(string memory name, address newOwner) public {
+        bytes32 nameHash = keccak256(abi.encodePacked(name));
+        require(domains[nameToId[nameHash]].owner == msg.sender, "Not domain owner");
+
+        pendingRecovery[nameHash] = newOwner;
+        emit RecoveryInitiated(nameHash, newOwner);
+    }
+
+    function approveRecovery(string memory name) public {
+        bytes32 nameHash = keccak256(abi.encodePacked(name));
+        require(isGuardian(msg.sender, nameHash), "Not a guardian");
+        require(pendingRecovery[nameHash] != address(0), "No recovery request");
+
+        guardianApproval[nameHash][msg.sender] = true;
+        emit RecoveryApproved(nameHash, msg.sender);
+
+        uint256 approvals = 0;
+        for (uint256 i = 0; i < domainGuardians[nameHash].length; i++) {
+            if (guardianApproval[nameHash][domainGuardians[nameHash][i]]) {
+                approvals++;
+            }
+        }
+
+        if (approvals >= 3) {
+            domains[nameToId[nameHash]].owner = pendingRecovery[nameHash];
+            emit RecoveryCompleted(nameHash, pendingRecovery[nameHash]);
+            delete pendingRecovery[nameHash];
+        }
+    }
+
+    function isGuardian(address user, bytes32 nameHash) internal view returns (bool) {
+        for (uint256 i = 0; i < domainGuardians[nameHash].length; i++) {
+            if (domainGuardians[nameHash][i] == user) {
+                return true;
+            }
+        }
+        return false;
     }
 
     function withdraw() public onlyAdmin {
