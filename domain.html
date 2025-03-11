@@ -72,7 +72,7 @@ input {
 <body>
     <header>
         <h1>LotDomain DApp</h1>
-        <button id="connectButton" onclick="toggleWalletConnection()">Hubungkan Wallet</button>
+        <button id="connectWallet" onclick="toggleWalletConnection()">Hubungkan Wallet</button>
         <p id="walletAddress">Belum terhubung</p>
         <p id="walletBalance">Saldo: 0 BNB</p>
 
@@ -156,7 +156,7 @@ async function toggleWalletConnection() {
 }
 
 // Koneksi ke MetaMask & BSC
-async function connectButton() {
+async function connectWallet() {
     if (typeof window.ethereum === "undefined") {
         alert("MetaMask tidak ditemukan! Silakan install.");
         return;
@@ -276,7 +276,7 @@ async function updateWalletUI() {
     }
 
     // Ubah tombol menjadi "Putuskan Koneksi"
-    document.getElementById("connectButton").innerText = "Putuskan Koneksi";
+    document.getElementById("connectWallet").innerText = "Putuskan Koneksi";
 }
 
 // Putuskan koneksi wallet
@@ -288,7 +288,7 @@ function disconnectWallet() {
     // Reset UI
     document.getElementById("walletAddress").innerText = "Belum terhubung";
     document.getElementById("walletBalance").innerText = "Saldo: 0 BNB";
-    document.getElementById("connectButton").innerText = "Hubungkan Wallet";
+    document.getElementById("connectWallet").innerText = "Hubungkan Wallet";
 
     alert("Wallet telah terputus!");
 }
@@ -399,7 +399,7 @@ async function rentDomain() {
     alert(`Domain ${name} berhasil disewa!`);
 }
 
-document.getElementById("connectButton").addEventListener("click", connectWallet);
+document.getElementById("connectWallet").addEventListener("click", connectWallet);
 
 const abi = [/* Masukkan ABI kontrak di sini */];
 
