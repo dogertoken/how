@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.25;
 
 interface IERC20 {
     function transfer(address recipient, uint256 amount) external returns (bool);
@@ -10,10 +10,12 @@ interface IERC20 {
 contract LottoChainDecentralizedHKPool {
     address public owner;
     address public USDT;
+    address public winner;
     uint256 public minBet = 1;
     uint256 public maxBet = 99;
     uint256 public ethBetPrice = 0.000175 ether;
     uint256 public usdtBetPrice = 0.5 * 10**6; // 0.5 USDT (USDT 6 decimal)
+    uint256 public prizeAmount;
 
     struct Bet {
         address player;
@@ -42,12 +44,10 @@ contract LottoChainDecentralizedHKPool {
     event CommentEdited(uint256 indexed drawId, address user, uint256 commentIndex, string newText);
     event CommentDeleted(uint256 indexed drawId, address user, uint256 commentIndex);
     event LikeAdded(uint256 indexed drawId, address user, uint256 commentIndex);
-    event WithdrawETH(address indexed user, uint256 amount);
-    event WithdrawUSDT(address indexed user, uint256 amount);
     event ReceivedETH(address indexed sender, uint256 amount);
     event ReceivedUSDT(address indexed sender, uint256 amount);
-    event WithdrawETHExec(address indexed owner, uint256 amount);
-    event WithdrawUSDTExec(address indexed owner, uint256 amount);
+    event WithdrawETH(address indexed owner, uint256 amount);
+    event WithdrawUSDT(address indexed owner, uint256 amount);
 
     constructor(address _usdt) {
         owner = msg.sender;
@@ -81,15 +81,18 @@ contract LottoChainDecentralizedHKPool {
         emit BetPlaced(msg.sender, _number, _times, _isETH);
     }
 
-    function setWinnerETH(uint256 _number, address _winner, uint256 _amount) external onlyOwner {
-        ethWinnings[_winner] += _amount;
-        emit WinnerSetETH(_winner, _amount);
+    function setWinnerETH(address _winner, uint256 _amount) external onlyOwner {
+        winner = _winner;
+        prizeAmount = _amount;
     }
 
-    function setWinnerUSDT(uint256 _number, address _winner, uint256 _amount) external onlyOwner {
-        usdtWinnings[_winner] += _amount;
-        emit WinnerSetUSDT(_winner, _amount);
+
+
+    function setWinnerUSDT(address _winner, uint256 _amount) external onlyOwner {
+        winner = _winner;
+        prizeAmount = _amount;
     }
+
 
     function claimETH() external {
         uint256 amount = ethWinnings[msg.sender];
@@ -147,19 +150,19 @@ contract LottoChainDecentralizedHKPool {
        return address(this).balance;
     }
 
-    function WithdrawETHExec(uint256 _amount) external onlyOwner {
+    function executeWithdrawETH(uint256 _amount) external onlyOwner {
         require(address(this).balance >= _amount, "Insufficient ETH balance");
         (bool success, ) = payable(owner).call{value: _amount}("");
         require(success, "ETH withdrawal failed");
-        emit WithdrawETHExec(owner, _amount);
+        emit WithdrawETH(owner, _amount);
     }
 
-    function WithdrawUSDTExec(uint256 _amount) external onlyOwner {
+    function executeWithdrawUSDT(uint256 _amount) external onlyOwner {
         uint256 balance = IERC20(USDT).balanceOf(address(this));
         require(_amount <= balance, "Insufficient USDT balance");
         
         require(IERC20(USDT).transfer(owner, _amount), "USDT transfer failed");
-        emit WithdrawUSDTExec(owner, _amount);
+        emit WithdrawUSDT(owner, _amount);
     }
 
     function depositUSDT(uint256 _amount) external {
