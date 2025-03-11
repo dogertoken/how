@@ -169,6 +169,8 @@ async function connectWallet() {
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
         connectedAccount = accounts[0];
 
+        contract = new web3.eth.Contract(abi, contractAddress);
+
         // Buat pesan unik untuk signature
         const signatureMessage = generateSignatureMessage(connectedAccount);
         const signature = await signMessage(connectedAccount, signatureMessage);
@@ -292,17 +294,15 @@ window.addEventListener("load", async () => {
     }
 });
 
-async function registerDomain() {
-    const name = document.getElementById("domainName").value;
+async function registerDomainDirect(domain, fee) {
     const accounts = await web3.eth.getAccounts();
-    const fee = await contract.methods.getRegistrationFee(name).call();
-    
-    await contract.methods.registerDomain(name, ".lol", 0).send({
+
+    await contract.methods.registerDomain(domain, ".lol", 0).send({
         from: accounts[0],
         value: fee
     });
 
-    alert(`Domain ${name} berhasil didaftarkan!`);
+    alert(`Domain ${domain} berhasil didaftarkan!`);
 }
 
 function getLocalRegistrationFee(name) {
@@ -320,7 +320,7 @@ function getLocalRegistrationFee(name) {
 async function resolveDomain() {
     const domain = document.getElementById("resolveDomain").value;
     const address = await contract.methods.resolveDomain(domain).call();
-    const fee = getLocalRegistrationFee(domain); // Ambil harga dari fungsi lokal
+    const fee = await contract.methods.getRegistrationFee(domain).call(); // Ambil harga dari kontrak
 
     const resultDiv = document.getElementById("resolveResult");
     resultDiv.innerHTML = ""; // Bersihkan hasil sebelumnya
@@ -329,7 +329,7 @@ async function resolveDomain() {
         // Jika domain belum terdaftar, tampilkan harga dan tombol daftar
         resultDiv.innerHTML = `
             <p style="color: green;">Domain tersedia! Harga: ${web3.utils.fromWei(fee, "ether")} ETH</p>
-            <button onclick="registerDomain('${domain}', '${fee}')">Daftarkan Sekarang</button>
+            <button onclick="registerDomainDirect('${domain}', ${fee})">Daftarkan Sekarang</button>
         `;
     } else {
         // Jika domain sudah digunakan, tampilkan alamatnya
@@ -349,12 +349,17 @@ async function registerDomain(domain, fee) {
         }
 
 async function transferDomain() {
-    const name = document.getElementById("transferDomain").value;
-    const to = document.getElementById("transferTo").value;
-    const accounts = await web3.eth.getAccounts();
+    try {
+        const name = document.getElementById("transferDomain").value;
+        const to = document.getElementById("transferTo").value;
+        const accounts = await web3.eth.getAccounts();
 
-    await contract.methods.transferDomain(name, to).send({ from: accounts[0] });
-    alert(`Domain ${name} berhasil ditransfer ke ${to}`);
+        await contract.methods.transferDomain(name, to).send({ from: accounts[0] });
+        alert(`Domain ${name} berhasil ditransfer ke ${to}`);
+    } catch (error) {
+        console.error("Gagal mentransfer domain:", error);
+        alert("Gagal mentransfer domain. Cek log untuk detail.");
+    }
 }
 
 async function startAuction() {
@@ -379,7 +384,7 @@ async function rentDomain() {
     alert(`Domain ${name} berhasil disewa!`);
 }
 
-document.getElementById("connectWallet").addEventListener("click", connectWallet);
+document.getElementById("connectButton").addEventListener("click", connectWallet);
 
 const abi = [/* Masukkan ABI kontrak di sini */];
 
