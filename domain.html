@@ -157,7 +157,7 @@ async function toggleWalletConnection() {
 
 // Koneksi ke MetaMask & BSC
 async function connectWallet() {
-    if (!window.ethereum) {
+    if (typeof window.ethereum === "undefined") {
         alert("MetaMask tidak ditemukan! Silakan install.");
         return;
     }
@@ -165,11 +165,23 @@ async function connectWallet() {
     web3 = new Web3(window.ethereum);
 
     try {
-        await switchToBSC();
+        await switchToBSC(); // Pastikan pengguna berada di jaringan BSC
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
         connectedAccount = accounts[0];
 
+        // Pastikan ABI kontrak terdefinisi
+        if (typeof abi === "undefined") {
+            console.error("ABI kontrak tidak ditemukan.");
+            return;
+        }
+
         contract = new web3.eth.Contract(abi, contractAddress);
+        console.log("Wallet terhubung:", connectedAccount);
+
+        // Ambil saldo
+        const balanceWei = await web3.eth.getBalance(connectedAccount);
+        const balanceBnb = web3.utils.fromWei(balanceWei, "ether");
+        document.getElementById("walletBalance").innerText = `Saldo: ${parseFloat(balanceBnb).toFixed(4)} BNB`;
 
         // Buat pesan unik untuk signature
         const signatureMessage = generateSignatureMessage(connectedAccount);
@@ -186,6 +198,7 @@ async function connectWallet() {
         updateWalletUI();
     } catch (error) {
         console.error("Gagal menghubungkan wallet:", error);
+        alert("Gagal menghubungkan wallet. Periksa MetaMask dan jaringan yang digunakan.");
     }
 }
 
@@ -198,9 +211,11 @@ async function switchToBSC() {
         });
     } catch (error) {
         if (error.code === 4902) {
+            console.log("Jaringan BSC tidak ditemukan, menambahkan secara otomatis...");
             await addBSCNetwork();
         } else {
-            console.error("Gagal mengganti jaringan BSC:", error);
+            console.error("Gagal mengganti jaringan ke BSC:", error);
+            alert("Gagal mengganti jaringan ke BSC. Pastikan jaringan BSC ada di MetaMask.");
         }
     }
 }
