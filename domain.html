@@ -72,9 +72,11 @@ input {
 <body>
     <header>
         <h1>LotDomain DApp</h1>
-        <button id="connectWallet" onclick="toggleWalletConnection()">Hubungkan Wallet</button>
-        <p id="walletAddress">Belum terhubung</p>
-        <p id="walletBalance">Saldo: 0 BNB</p>
+        <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button><br>
+        <p id="walletAddress">Not connected</p>
+        <p id="ethBalance">ETH Balance: -</p>
+        <p id="usdtBalance">USDT Balance: -</p>
+        <p id="signature">Signature: -</p>
 
     </header>
 
@@ -142,118 +144,112 @@ let connectedAccount = null;
 let contract;
         
 const contractAddress = "0x1234567890abcdef"; // Ganti dengan alamat kontrak
-const BSC_CHAIN_ID = "0x38"; // BSC Mainnet
-const BSC_RPC = "https://bsc-dataseed.binance.org/";
-const BSC_EXPLORER = "https://bscscan.com/";
+const BASE_SEPOLIA_CHAIN_ID = "0x14A34";
 
-// Toggle koneksi wallet
-async function toggleWalletConnection() {
-    if (connectedAccount) {
-        disconnectWallet();
-    } else {
-        connectWallet();
-    }
-}
+        async function switchToBaseSepolia() {
+            if (!window.ethereum) {
+                alert("Metamask is required!");
+                return false;
+            }
 
-// Koneksi ke MetaMask & BSC
-async function connectWallet() {
-    if (typeof window.ethereum === "undefined") {
-        alert("MetaMask tidak ditemukan! Silakan install.");
-        return;
-    }
+            try {
+                const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
+                if (currentChainId === BASE_SEPOLIA_CHAIN_ID) {
+                    console.log("Already on Base Sepolia!");
+                    return true;
+                }
 
-    web3 = new Web3(window.ethereum);
+                await window.ethereum.request({
+                    method: "wallet_switchEthereumChain",
+                    params: [{ chainId: BASE_SEPOLIA_CHAIN_ID }],
+                });
 
-    try {
-        await switchToBSC(); // Pastikan pengguna berada di jaringan BSC
-        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-        connectedAccount = accounts[0];
+                console.log("Switched to Base Sepolia!");
+                return true;
+            } catch (error) {
+                if (error.code === 4902) {
+                    try {
+                        await window.ethereum.request({
+                            method: "wallet_addEthereumChain",
+                            params: [{
+                                chainId: BASE_SEPOLIA_CHAIN_ID,
+                                chainName: "Base Sepolia",
+                                rpcUrls: ["https://sepolia.base.org"],
+                                nativeCurrency: {
+                                    name: "ETH",
+                                    symbol: "ETH",
+                                    decimals: 18
+                                },
+                                blockExplorerUrls: ["https://sepolia.basescan.org"]
+                            }]
+                        });
 
-        // Pastikan ABI kontrak terdefinisi
-        if (typeof abi === "undefined") {
-            console.error("ABI kontrak tidak ditemukan.");
-            return;
+                        console.log("Base Sepolia added and switched!");
+                        return true;
+                    } catch (addError) {
+                        console.error("Failed to add Base Sepolia network", addError);
+                        alert("Failed to add Base Sepolia. Please add it manually in Metamask.");
+                        return false;
+                    }
+                } else {
+                    console.error("Failed to switch network", error);
+                    alert("Please switch to Base Sepolia Testnet manually.");
+                    return false;
+                }
+            }
         }
 
-        contract = new web3.eth.Contract(abi, contractAddress);
-        console.log("Wallet terhubung:", connectedAccount);
+        async function toggleWallet() {
+            if (account) {
+                account = null;
+                document.getElementById("walletAddress").innerText = "Not connected";
+                document.getElementById("walletButton").innerText = "🔗 Connect Wallet";
+                document.getElementById("ethBalance").innerText = "ETH Balance: -";
+                document.getElementById("usdtBalance").innerText = "USDT Balance: -";
+                document.getElementById("signature").innerText = "Signature: -";
+            } else {
+                if (window.ethereum) {
+                    web3 = new Web3(window.ethereum);
+                    try {
+                        const switched = await switchToBaseSepolia();
+                        if (!switched) return;
 
-        // Ambil saldo
-        const balanceWei = await web3.eth.getBalance(connectedAccount);
-        const balanceBnb = web3.utils.fromWei(balanceWei, "ether");
-        document.getElementById("walletBalance").innerText = `Saldo: ${parseFloat(balanceBnb).toFixed(4)} BNB`;
+                        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+                        account = accounts[0];
+                        document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+                        document.getElementById("walletButton").innerText = "❌ Disconnect";
 
-        // Buat pesan unik untuk signature
-        const signatureMessage = generateSignatureMessage(connectedAccount);
-        const signature = await signMessage(connectedAccount, signatureMessage);
-        if (!signature) {
-            alert("Login gagal, tanda tangan tidak diberikan.");
-            return;
+                        await signMessage();
+                        await fetchBalances();
+                    } catch (error) {
+                        console.error("Wallet connection failed", error);
+                    }
+                } else {
+                    alert("Please install Metamask!");
+                }
+            }
         }
 
-        // Simpan di localStorage agar tetap terhubung
-        localStorage.setItem("connectedAccount", connectedAccount);
-        localStorage.setItem("signature", signature);
+        async function signMessage() {
+            if (!account) {
+                alert("Connect your wallet first!");
+                return;
+            }
 
-        updateWalletUI();
-    } catch (error) {
-        console.error("Gagal menghubungkan wallet:", error);
-        alert("Gagal menghubungkan wallet. Periksa MetaMask dan jaringan yang digunakan.");
-    }
-}
+            try {
+                const message = `Sign in to LottoBalls\n\nWallet: ${account}\nTimestamp: ${Date.now()}`;
+                const signature = await ethereum.request({
+                    method: "personal_sign",
+                    params: [message, account],
+                });
 
-// Paksa pengguna ke jaringan BSC
-async function switchToBSC() {
-    try {
-        await window.ethereum.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: BSC_CHAIN_ID }],
-        });
-    } catch (error) {
-        if (error.code === 4902) {
-            console.log("Jaringan BSC tidak ditemukan, menambahkan secara otomatis...");
-            await addBSCNetwork();
-        } else {
-            console.error("Gagal mengganti jaringan ke BSC:", error);
-            alert("Gagal mengganti jaringan ke BSC. Pastikan jaringan BSC ada di MetaMask.");
+                document.getElementById("signature").innerText = `Signature: ${signature.slice(0, 10)}...`;
+                console.log("Full Signature:", signature);
+            } catch (error) {
+                console.error("Failed to sign message", error);
+                alert("Signing failed!");
+            }
         }
-    }
-}
-
-// Tambahkan jaringan BSC jika belum ada
-async function addBSCNetwork() {
-    await window.ethereum.request({
-        method: "wallet_addEthereumChain",
-        params: [{
-            chainId: BSC_CHAIN_ID,
-            chainName: "Binance Smart Chain",
-            rpcUrls: [BSC_RPC],
-            nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
-            blockExplorerUrls: [BSC_EXPLORER]
-        }]
-    });
-}
-
-// Buat pesan signature unik
-function generateSignatureMessage(account) {
-    const timestamp = new Date().toISOString();
-    const uniqueId = Math.random().toString(36).substring(2, 10);
-    return `Login ke Cid\nAlamat: ${account}\nWaktu: ${timestamp}\nID: ${uniqueId}`;
-}
-
-// Minta tanda tangan dari pengguna
-async function signMessage(account, message) {
-    try {
-        return await web3.eth.personal.sign(message, account, "");
-    } catch (error) {
-        console.error("Tanda tangan gagal:", error);
-        return null;
-    }
-}
-
-// Perbarui UI setelah terhubung
-async function updateWalletUI() {
-    if (!connectedAccount) return;
 
     // Tampilkan alamat wallet
     document.getElementById("walletAddress").innerText = `Alamat: ${connectedAccount}`;
@@ -399,7 +395,7 @@ async function rentDomain() {
     alert(`Domain ${name} berhasil disewa!`);
 }
 
-document.getElementById("connectWallet").addEventListener("click", connectWallet);
+document.getElementById("walletButton").addEventListener("click", connectWallet);
 
 const abi = [/* Masukkan ABI kontrak di sini */];
 
