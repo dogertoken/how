@@ -64,20 +64,17 @@ input {
         <h2>Lottery Results</h2>
         <p id="lotteryResult">Draw Result: -</p>
 
-        <h2>Riwayat Taruhan</h2>
+          <h2>Riwayat Taruhan</h2>
     <table border="1">
         <thead>
             <tr>
-                <th>#</th>
                 <th>Player</th>
                 <th>Number</th>
-                <th>Amount</th>
-                <th>Currency</th>
+                <th>Bet Amount</th>
+                <th>Is ETH</th>
             </tr>
         </thead>
-        <tbody id="betHistory">
-            <tr><td colspan="5">Memuat data...</td></tr>
-        </tbody>
+        <tbody id="betHistory"></tbody>
     </table>
 
         <h2>Comments</h2>
@@ -245,54 +242,33 @@ async function likeComment(drawId, commentIndex) {
     }
     </script>
     <script>
-        const contractAddress = "0x49aAB5493F8a59091f50D23Ef24B6B55f067f9eC"; // Ganti dengan alamat kontrak yang benar
-const contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"uint256","name":"number","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"betAmount","type":"uint256"},{"indexed":false,"internalType":"bool","name":"isETH","type":"bool"}],"name":"BetPlaced","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"text","type":"string"}],"name":"CommentAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"CommentDeleted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"},{"indexed":false,"internalType":"string","name":"newText","type":"string"}],"name":"CommentEdited","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ETHWithdrawn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"LikeAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"number","type":"uint256"}],"name":"LotteryResult","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ReceivedETH","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"WinnerSetETH","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"WithdrawETH","type":"event"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"string","name":"_text","type":"string"}],"name":"addComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"bets","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"uint256","name":"number","type":"uint256"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"claimETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"comments","outputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"likes","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"contractETHBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_commentIndex","type":"uint256"}],"name":"deleteComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_commentIndex","type":"uint256"},{"internalType":"string","name":"_newText","type":"string"}],"name":"editComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"ethBetPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"ethWinnings","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"executeWithdrawETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_commentIndex","type":"uint256"}],"name":"likeComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"maxBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"minBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_number","type":"uint256"},{"internalType":"uint256","name":"_times","type":"uint256"},{"internalType":"bool","name":"_isETH","type":"bool"}],"name":"placeBet","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"results","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_number","type":"uint256"}],"name":"setLotteryResult","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_winner","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"setWinnerETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
+        const web3 = new Web3("https://sepolia.base.org"); 
+        const contractAddress = "0x49aAB5493F8a59091f50D23Ef24B6B55f067f9eC"; // Ganti dengan alamat kontrakmu
+        const contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"uint256","name":"number","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"betAmount","type":"uint256"},{"indexed":false,"internalType":"bool","name":"isETH","type":"bool"}],"name":"BetPlaced","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"text","type":"string"}],"name":"CommentAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"CommentDeleted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"},{"indexed":false,"internalType":"string","name":"newText","type":"string"}],"name":"CommentEdited","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ETHWithdrawn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"LikeAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"number","type":"uint256"}],"name":"LotteryResult","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ReceivedETH","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"WinnerSetETH","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"WithdrawETH","type":"event"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"string","name":"_text","type":"string"}],"name":"addComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"bets","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"uint256","name":"number","type":"uint256"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"claimETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"comments","outputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"likes","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"contractETHBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_commentIndex","type":"uint256"}],"name":"deleteComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_commentIndex","type":"uint256"},{"internalType":"string","name":"_newText","type":"string"}],"name":"editComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"ethBetPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"ethWinnings","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"executeWithdrawETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_commentIndex","type":"uint256"}],"name":"likeComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"maxBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"minBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_number","type":"uint256"},{"internalType":"uint256","name":"_times","type":"uint256"},{"internalType":"bool","name":"_isETH","type":"bool"}],"name":"placeBet","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"results","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_number","type":"uint256"}],"name":"setLotteryResult","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_winner","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"setWinnerETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}]; // Masukkan ABI kontrakmu di sini
 
-async function loadBetHistory() {
-    if (typeof window.ethereum !== 'undefined') {
-        const web3 = new Web3(window.ethereum);
         const contract = new web3.eth.Contract(contractABI, contractAddress);
 
-        try {
-            let history = [];
-            let testNumber = 1234; // Coba ambil taruhan untuk nomor 1234
-
-            let betList = await contract.methods.bets(testNumber).call();
-            
-            betList.forEach((bet, index) => {
-                history.push({
-                    player: bet.player,
-                    number: bet.number,
-                    betAmount: bet.betAmount,
-                    isETH: bet.isETH ? "ETH" : "Other"
-                });
+        async function loadBetHistory() {
+            const events = await contract.getPastEvents("BetPlaced", {
+                fromBlock: 0,
+                toBlock: "latest"
             });
 
-            let historyHTML = history.length > 0 
-                ? history.map((bet, index) => `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${bet.player}</td>
-                        <td>${bet.number}</td>
-                        <td>${bet.betAmount}</td>
-                        <td>${bet.isETH}</td>
-                    </tr>
-                `).join('')
-                : `<tr><td colspan="5">Tidak ada taruhan.</td></tr>`;
+            const betTable = document.getElementById("betHistory");
+            betTable.innerHTML = ""; // Kosongkan tabel sebelum menambahkan data baru
 
-            document.getElementById("betHistory").innerHTML = historyHTML;
-
-        } catch (error) {
-            console.error("Gagal mengambil data taruhan:", error);
-            document.getElementById("betHistory").innerHTML = `<tr><td colspan="5">Gagal mengambil data.</td></tr>`;
+            events.forEach(event => {
+                const row = `<tr>
+                    <td>${event.returnValues.player}</td>
+                    <td>${event.returnValues.number}</td>
+                    <td>${event.returnValues.betAmount}</td>
+                    <td>${event.returnValues.isETH ? "Yes" : "No"}</td>
+                </tr>`;
+                betTable.innerHTML += row;
+            });
         }
-    } else {
-        console.log("MetaMask atau provider Web3 tidak ditemukan.");
-    }
-}
 
-// Panggil fungsi otomatis saat halaman dimuat
-window.addEventListener("load", loadBetHistory);
+        loadBetHistory();
     </script>
 </body>
 </html>
