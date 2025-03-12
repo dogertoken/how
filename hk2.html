@@ -39,9 +39,8 @@
         <button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect Wallet</button>
         
         <h2>Place a Bet</h2>
-        <input type="number" id="betNumber" placeholder="Enter a number (00-9999)" 
-        min="0" max="9999" oninput="limitDigits(this, 2, 4)">
-        <input type="number" id="betTimes" placeholder="Enter bet times (1-99)" 
+        <input type="text" id="betNumber" placeholder="Enter 4D 3D 2D" oninput="limitBetNumber(this)">
+        <input type="number" id="betTimes" placeholder="x1 / x99" 
         min="1" max="99" oninput="limitDigits(this, 1, 2)">
         <button onclick="placeBet()">Place Bet</button>
 
@@ -97,26 +96,24 @@
             loadUserBets();
         }
 
-        function limitDigits(input, minLength, maxLength) {
-            let value = input.value;
-    
-            // Hapus angka nol di depan kecuali '00'
-            if (value.length > 1 && value[0] === '0' && value[1] !== '0') {
-                value = value.replace(/^0+/, '');
-            }
+        function limitBetNumber(input) {
+    let value = input.value;
 
-            // Pastikan panjangnya sesuai batas
-            if (value.length < minLength) {
-                input.setCustomValidity(`Minimal ${minLength} digit`);
-            } else {
-                input.setCustomValidity("");
-            }
+    // Pastikan hanya angka yang diinput
+    value = value.replace(/\D/g, '');
 
-            // Batasi panjang maksimal
-            if (value.length > maxLength) {
-                input.value = value.slice(0, maxLength);
-            }
-          }
+    // Pastikan panjang minimal 2 digit
+    if (value.length < 2) {
+        value = value.padStart(2, '0'); // Tambahkan nol di depan jika kurang dari 2 digit
+    }
+
+    // Batasi panjang maksimal 4 digit
+    if (value.length > 4) {
+        value = value.slice(0, 4);
+    }
+
+    input.value = value;
+        }
 
         async function loadBetHistory() {
     const bets = await contract.methods.getAllBets().call();
