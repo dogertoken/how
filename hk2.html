@@ -239,7 +239,16 @@ async function likeComment(drawId, commentIndex) {
 
         const contract = new web3.eth.Contract(contractABI, contractAddress);
 
-// Mendengarkan event BetPlaced
+console.log("Mendengarkan event BetPlaced...");
+
+// Gunakan `getPastEvents` untuk menampilkan riwayat taruhan saat pertama kali membuka web
+contract.getPastEvents("BetPlaced", { fromBlock: "earliest" })
+.then(events => {
+    events.forEach(event => updateBetHistory(event.returnValues));
+})
+.catch(console.error);
+
+// Mendengarkan event terbaru
 contract.events.BetPlaced()
 .on("data", (event) => {
     console.log("Taruhan baru masuk:", event.returnValues);
