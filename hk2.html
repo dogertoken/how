@@ -40,7 +40,11 @@
         
         <h2>Place a Bet</h2>
         <input type="text" id="betNumber" placeholder="Enter 4D 3D 2D" oninput="limitBetNumber(this)">
-        <input type="number" id="betTimes" placeholder="x1 / x99" min="1" max="99" oninput="limitDigits(this, 1, 99)">
+        <p id="betNumberWarning" style="color: red;"></p>
+
+         <input type="number" id="betTimes" placeholder="x1 / x99" min="1" max="99" oninput="limitDigits(this, 1, 99)">
+         <p id="betTimesWarning" style="color: red;"></p>
+
         <button onclick="placeBet()">Place Bet</button>
 
         <h2>Public Bet History</h2>
@@ -80,52 +84,86 @@
             alert("Wallet disconnected");
         }
 
-        async function placeBet() {
-            if (!userAccount) {
-                alert("Please connect your wallet first.");
-                return;
-            }
-            const number = document.getElementById("betNumber").value;
-            const times = document.getElementById("betTimes").value;
-            const value = web3.utils.toWei((0.000175 * times).toString(), "ether");
-
-            await contract.methods.placeBet(number, times, true).send({ from: userAccount, value: value });
-            alert("Bet placed successfully!");
-            loadBetHistory();
-            loadUserBets();
-        }
-
-        function limitBetNumber(input) {
-    let value = input.value;
-
-    // Hapus karakter non-angka
-    value = value.replace(/\D/g, '');
-
-    // Jika input lebih dari 4 digit, potong ke 4 digit pertama
-    if (value.length > 4) {
-        value = value.slice(0, 4);
+    async function placeBet() {
+    if (!userAccount) {
+        alert("Please connect your wallet first.");
+        return;
     }
 
-    // Jika input kurang dari 2 digit, biarkan kosong
-    if (value.length > 0 && value.length < 2) {
+    if (!validateForm()) return; // Pastikan input valid sebelum lanjut
+
+    const number = document.getElementById("betNumber").value;
+    const times = parseInt(document.getElementById("betTimes").value, 10);
+    
+    if (isNaN(times) || times < 1) {
+        alert("Invalid bet times value.");
         return;
+    }
+
+    const value = web3.utils.toWei((0.000175 * times).toString(), "ether");
+
+    try {
+        alert("Sending your bet..."); // Konfirmasi awal
+        await contract.methods.placeBet(number, times, true).send({ from: userAccount, value: value });
+        alert("Bet placed successfully!"); // Konfirmasi setelah berhasil
+
+        loadBetHistory();
+        loadUserBets();
+    } catch (error) {
+        alert("Bet failed: " + (error.message || "Unknown error")); // Tangani error dengan lebih baik
+    }
+}
+
+function limitBetNumber(input) {
+    let value = input.value.replace(/\D/g, ''); // Hapus karakter non-angka
+    value = value.slice(0, 4); // Batasi hingga 4 digit
+
+    if (value.length > 0 && value.length < 2) {
+        document.getElementById("betNumberWarning").innerText = "Minimum 2 digits (00 - 9999)";
+    } else {
+        document.getElementById("betNumberWarning").innerText = "";
     }
 
     input.value = value;
 }
 
 function limitDigits(input, min, max) {
-    let value = input.value.replace(/\D/g, ''); // Hapus karakter non-angka
+    let value = input.value.replace(/\D/g, '').trim(); // Hapus karakter non-angka & trim whitespace
+    let numValue = parseInt(value, 10);
 
-    if (value !== '') {
-        let numValue = parseInt(value);
-        if (numValue < min) value = min;
-        if (numValue > max) value = max;
+    if (!value) {
+        document.getElementById("betTimesWarning").innerText = "Cannot be empty";
+    } else if (isNaN(numValue) || numValue < min || numValue > max) {
+        document.getElementById("betTimesWarning").innerText = `Enter numbers ${min} - ${max}`;
+    } else {
+        document.getElementById("betTimesWarning").innerText = "";
     }
 
     input.value = value;
 }
 
+function validateForm() {
+    let betNumber = document.getElementById("betNumber").value;
+    let betTimes = parseInt(document.getElementById("betTimes").value, 10);
+    let isValid = true;
+
+    if (betNumber.length < 2 || betNumber.length > 4) {
+        document.getElementById("betNumberWarning").innerText = "Minimum 2 digits, maximum 4 digits (00 - 9999)";
+        isValid = false;
+    } else {
+        document.getElementById("betNumberWarning").innerText = "";
+    }
+
+    if (isNaN(betTimes) || betTimes < 1 || betTimes > 99) {
+        document.getElementById("betTimesWarning").innerText = "Enter number 1 - 99";
+        isValid = false;
+    } else {
+        document.getElementById("betTimesWarning").innerText = "";
+    }
+
+    return isValid;
+}
+        
         async function loadBetHistory() {
     const bets = await contract.methods.getAllBets().call();
     let betList = "";
