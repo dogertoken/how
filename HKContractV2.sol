@@ -1,96 +1,77 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-interface IERC20 {
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
-    function balanceOf(address account) external view returns (uint256);
-}
-
 contract LottoChainDecentralizedHKPool {
-    address public owner;
-    IERC20 public USDT;
-    uint256 public minBet = 1;
-    uint256 public maxBet = 99;
-    uint256 public ethBetPrice = 0.000175 ether;
-    uint256 public usdtBetPrice = 0.5 * 10**6; // 0.5 USDT (6 desimal)
-
     struct Bet {
         address player;
         uint256 number;
         uint256 betAmount;
-        bool isETH;
     }
 
-    mapping(uint256 => Bet[]) public bets;
-    mapping(address => uint256) public ethWinnings;
-    mapping(address => uint256) public usdtWinnings;
-    mapping(uint256 => uint256) public results;
+    address public owner;
+    uint256 public minBet = 1;
+    uint256 public maxBet = 99;
+    uint256 public ethBetPrice = 0.000175 ether;
+    bool public bettingOpen = true;
     
-    event BetPlaced(address indexed player, uint256 number, uint256 betAmount, bool isETH);
-    event WinnerSet(address indexed winner, uint256 amount, bool isETH);
-    event LotteryResult(uint256 indexed drawId, uint256 number);
-    event Withdraw(address indexed user, uint256 amount, bool isETH);
-    event DepositUSDT(address indexed sender, uint256 amount);
-    event ReceivedETH(address indexed sender, uint256 amount);
+    mapping(uint256 => Bet[]) public bets;
+    mapping(address => uint256) public winnings;
+    mapping(uint256 => uint256) public results;
 
-    constructor(address _usdt) {
-        owner = msg.sender;
-        USDT = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7);
-    }
+    event BetPlaced(address indexed player, uint256 number, uint256 betAmount);
+    event WinnerSet(address indexed winner, uint256 amount);
+    event LotteryResult(uint256 indexed drawId, uint256 number);
+    event Withdraw(address indexed user, uint256 amount);
+    event ReceivedETH(address indexed sender, uint256 amount);
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can call this function");
         _;
     }
+    
+    modifier whenBettingOpen() {
+        require(bettingOpen, "Betting is closed");
+        _;
+    }
 
-    function placeBet(uint256 _number, uint256 _times, bool _isETH) external payable {
+    constructor() {
+        owner = msg.sender;
+    }
+
+    function placeBet(uint256 _number, uint256 _times) external payable whenBettingOpen {
         require(_number <= 9999, "Invalid number (0 - 9999)");
         require(_times >= minBet && _times <= maxBet, "Bet count out of range");
 
-        uint256 totalCost = _times * (_isETH ? ethBetPrice : usdtBetPrice);
-        
-        if (_isETH) {
-            require(msg.value == totalCost, "Incorrect ETH amount");
-        } else {
-            require(USDT.transferFrom(msg.sender, address(this), totalCost), "USDT transfer failed");
-        }
+        uint256 totalCost = _times * ethBetPrice;
+        require(msg.value == totalCost, "Incorrect ETH amount");
 
-        bets[_number].push(Bet(msg.sender, _number, _times, _isETH));
-        emit BetPlaced(msg.sender, _number, _times, _isETH);
+        bets[_number].push(Bet(msg.sender, _number, _times));
+        emit BetPlaced(msg.sender, _number, _times);
     }
 
-    function setWinner(uint256 _number, address _winner, uint256 _amount, bool _isETH) external onlyOwner {
-        if (_isETH) {
-            ethWinnings[_winner] += _amount;
-        } else {
-            usdtWinnings[_winner] += _amount;
-        }
-        emit WinnerSet(_winner, _amount, _isETH);
+    function closeBetting() external onlyOwner {
+        bettingOpen = false;
     }
 
-    function claimWinnings(bool _isETH) external {
-        uint256 amount = _isETH ? ethWinnings[msg.sender] : usdtWinnings[msg.sender];
+    function setWinner(uint256 _number, address _winner, uint256 _amount) external onlyOwner {
+        winnings[_winner] += _amount;
+        emit WinnerSet(_winner, _amount);
+    }
+
+    function claimWinnings() external {
+        uint256 amount = winnings[msg.sender];
         require(amount > 0, "No winnings available");
         
-        if (_isETH) {
-            ethWinnings[msg.sender] = 0;
-            (bool success, ) = payable(msg.sender).call{value: amount}("");
-            require(success, "ETH transfer failed");
-        } else {
-            usdtWinnings[msg.sender] = 0;
-            require(USDT.transfer(msg.sender, amount), "USDT transfer failed");
-        }
-        emit Withdraw(msg.sender, amount, _isETH);
+        winnings[msg.sender] = 0;
+        (bool success, ) = payable(msg.sender).call{value: amount}("");
+        require(success, "ETH transfer failed");
+
+        emit Withdraw(msg.sender, amount);
     }
 
     function setLotteryResult(uint256 _drawId, uint256 _number) external onlyOwner {
         results[_drawId] = _number;
         emit LotteryResult(_drawId, _number);
-    }
-
-    function contractUSDTBalance() external view returns (uint256) {
-        return USDT.balanceOf(address(this));
     }
 
     function contractETHBalance() external view returns (uint256) {
@@ -101,16 +82,6 @@ contract LottoChainDecentralizedHKPool {
         require(address(this).balance >= _amount, "Insufficient ETH balance");
         (bool success, ) = payable(owner).call{value: _amount}("");
         require(success, "ETH withdrawal failed");
-    }
-
-    function withdrawUSDT(uint256 _amount) external onlyOwner {
-        require(USDT.balanceOf(address(this)) >= _amount, "Insufficient USDT balance");
-        require(USDT.transfer(owner, _amount), "USDT transfer failed");
-    }
-
-    function depositUSDT(uint256 _amount) external {
-        require(USDT.transferFrom(msg.sender, address(this), _amount), "USDT deposit failed");
-        emit DepositUSDT(msg.sender, _amount);
     }
 
     receive() external payable {
