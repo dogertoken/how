@@ -96,24 +96,44 @@
         }
 
         async function loadBetHistory() {
-            const bets = await contract.methods.getAllBets().call();
-            let betList = "";
-            for (let bet of bets) {
-                const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
-                betList += `<p>${bet.player} - ${bet.number} - ${bet.betAmount} - Block: ${bet.blockNumber} - TX: ${bet.txHash} - Time: ${timestamp}</p>`;
-            }
-            document.getElementById("betHistory").innerHTML = betList;
+    const bets = await contract.methods.getAllBets().call();
+    let betList = "";
+    for (let i = bets.length - 1; i >= 0; i--) { // Membalik urutan iterasi
+        const bet = bets[i];
+        const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
+        const txLink = `https://sepolia.basescan.org/tx/${bet.txHash}`; // Ganti sesuai blockchain yang digunakan
+        const status = bet.blockNumber ? "Confirmed" : "Pending"; // Jika belum ada blockNumber, berarti masih pending
+
+        betList += `<p>
+            ${bet.player} - ${bet.number} - ${bet.betAmount} 
+            - Block: ${bet.blockNumber || "Pending"} 
+            - TX: <a href="${txLink}" target="_blank">${bet.txHash}</a> 
+            - Status: ${status} 
+            - Time: ${timestamp}
+        </p>`;
+    }
+    document.getElementById("betHistory").innerHTML = betList;
         }
 
         async function loadUserBets() {
-            const accounts = await web3.eth.getAccounts();
-            const bets = await contract.methods.getUserBets(accounts[0]).call();
-            let betList = "";
-            for (let bet of bets) {
-                const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
-                betList += `<p>${bet.number} - ${bet.betAmount} - Block: ${bet.blockNumber} - TX: ${bet.txHash} - Time: ${timestamp}</p>`;
-            }
-            document.getElementById("userBets").innerHTML = betList;
+    const accounts = await web3.eth.getAccounts();
+    const bets = await contract.methods.getUserBets(accounts[0]).call();
+    let betList = "";
+    for (let i = bets.length - 1; i >= 0; i--) { // Membalik urutan iterasi
+        const bet = bets[i];
+        const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
+        const txLink = `https://sepolia.basescan.org/tx/${bet.txHash}`; // Ganti sesuai blockchain yang digunakan
+        const status = bet.blockNumber ? "Confirmed" : "Pending"; // Jika belum ada blockNumber, berarti masih pending
+
+        betList += `<p>
+            ${bet.number} - ${bet.betAmount} 
+            - Block: ${bet.blockNumber || "Pending"} 
+            - TX: <a href="${txLink}" target="_blank">${bet.txHash}</a> 
+            - Status: ${status} 
+            - Time: ${timestamp}
+        </p>`;
+    }
+    document.getElementById("userBets").innerHTML = betList;
         }
 
         window.onload = init;
