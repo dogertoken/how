@@ -1,98 +1,232 @@
-<body>
-    <div class="section-box">
-        <h2>Lottoballs Lottery</h2>
-        <div class="buttons">
-            <center>
-                <button id="walletButton" onclick="toggleWallet()">🔗 Connect Wallet</button><br>
-                <p id="walletAddress">Not connected</p>
-                <p id="ethBalance">ETH Balance: -</p>
-                <p id="usdtBalance">USDT Balance: -</p>
-                <p id="signature">Signature: -</p>
-            </center>
-        </div>
-    </div>
-
-    <div class="section-box">
-        <h3>Choose Your Number:</h3>
-        <div class="input-container">
-            <input type="text" id="lottoNumber" maxlength="4" placeholder="4D, 3D, or 2D" 
-                   autocomplete="off" oninput="validateLottoNumber(this)">
-        </div><br>
-
-        <h3>Choose Bet Count:</h3>
-        <div class="input-container">
-            <input type="number" id="betCount" min="1" max="99" placeholder="x1/x99" 
-                   autocomplete="off" oninput="updateBetPrice()">
-        </div><br>
-    </div>
-
-    <div class="form-group">
-        <label>Bet Currency:</label>
-        <select id="currency" onchange="updateBetPrice()">
-            <option value="USDT">USDT</option>
-            <option value="ETH">ETH</option>
-        </select>
-    </div>
-
-    <div>
-        <p id="betPrice" style="font-size: 16px; font-weight: bold; color: #33ff33; font-family: 'Courier New', monospace; background: #101010; padding: 5px 10px; border-radius: 5px; display: inline-block;">
-            Bet Price: 0.5 USDT
-        </p>
-    </div>
-
-    <button onclick="placeBet()">Place Bet</button><br>
-
-    <div class="section-box" id="betHistory">
-        <center><h3>My Bet History</h3>
-        <button onclick="fetchBetHistory()">🔍 Refresh History</button></center><br>
-    </div>
-
-    <!-- Menu Bar -->
-    <div class="menu-bar">
-        <button onclick="location.href='#'">🏠 Home</button>
-        <button onclick="location.href='#'">📜 History</button>
-        <button onclick="location.href='#'">🎲 Play</button>
-        <button onclick="location.href='#'">⚙️ Settings</button>
-    </div>
-
-    <!-- Hak Cipta -->
-    <footer>
-        <p>&copy; 2025 LottoBalls Lottery. All rights reserved.</p>
-    </footer>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LottoChain Decentralized HK Pool</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
     <style>
-        .menu-bar {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
-        }
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
 
-        .menu-bar button {
-            flex: 1;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 18px;
-            padding: 10px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+    margin: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-        .menu-bar button:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
+button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    margin: 10px 0;
+    border-radius: 5px;
+}
 
-        footer {
-            text-align: center;
-            padding: 10px;
-            font-size: 14px;
-            background: #101010;
-            color: white;
-        }
+button:hover {
+    background: #0056b3;
+}
+
+input {
+    padding: 10px;
+    width: 80%;
+    margin: 10px 0;
+}
     </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LottoChain Decentralized HK Pool</h1>
+        
+        <button id="connectWallet">🔗 Connect Wallet</button>
+        <p id="walletAddress">Not connected</p>
+
+        <h2>Place a Bet</h2>
+        <input type="number" id="betNumber" placeholder="Number (0-9999)">
+        <input type="number" id="betAmount" placeholder="Times (1-99)">
+        <button id="placeBet">Place Bet</button>
+
+        <h2>Claim Winnings</h2>
+        <button id="claimETH">Claim ETH</button>
+        <p id="ethBalance">ETH Balance: -</p>
+
+        <h2>Lottery Results</h2>
+        <p id="lotteryResult">Draw Result: -</p>
+
+        <h2>Comments</h2>
+        <input type="text" id="commentText" placeholder="Write a comment">
+        <button id="addComment">Add Comment</button>
+        <ul id="commentList"></ul>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let web3;
+let contract;
+let account;
+
+const contractAddress = "0xYourContractAddress"; // Ganti dengan alamat kontrak di Base Sepolia
+const contractABI = [ /* Masukkan ABI Smart Contract di sini */ ];
+const BASE_SEPOLIA_CHAIN_ID = "0x14a34"; // Base Sepolia Testnet Chain ID
+
+document.getElementById("connectWallet").addEventListener("click", connectWallet);
+document.getElementById("placeBet").addEventListener("click", placeBet);
+document.getElementById("claimETH").addEventListener("click", claimETH);
+document.getElementById("addComment").addEventListener("click", addComment);
+
+async function connectWallet() {
+    if (!window.ethereum) {
+        alert("Please install Metamask!");
+        return;
+    }
+
+    web3 = new Web3(window.ethereum);
+
+    try {
+        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+        account = accounts[0];
+        document.getElementById("walletAddress").innerText = `Connected: ${account}`;
+
+        await switchToBaseSepolia();
+
+        contract = new web3.eth.Contract(contractABI, contractAddress);
+        fetchLotteryResult();
+    } catch (error) {
+        console.error("Wallet connection failed", error);
+    }
+}
+
+async function switchToBaseSepolia() {
+    try {
+        await ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: BASE_SEPOLIA_CHAIN_ID }],
+        });
+    } catch (error) {
+        console.error("Failed to switch to Base Sepolia Testnet", error);
+    }
+}
+
+async function placeBet() {
+    if (!account) {
+        alert("Connect your wallet first!");
+        return;
+    }
+
+    const number = document.getElementById("betNumber").value;
+    const times = document.getElementById("betAmount").value;
+    const betPrice = web3.utils.toWei("0.000175", "ether");
+    const totalCost = web3.utils.toWei((times * 0.000175).toString(), "ether");
+
+    try {
+        await contract.methods.placeBet(number, times, true).send({
+            from: account,
+            value: totalCost
+        });
+
+        alert("Bet placed successfully!");
+    } catch (error) {
+        console.error("Bet placement failed", error);
+        alert("Failed to place bet.");
+    }
+}
+
+async function claimETH() {
+    if (!account) {
+        alert("Connect your wallet first!");
+        return;
+    }
+
+    try {
+        await contract.methods.claimETH().send({ from: account });
+        alert("ETH claimed successfully!");
+    } catch (error) {
+        console.error("ETH claim failed", error);
+        alert("Failed to claim ETH.");
+    }
+}
+
+async function fetchLotteryResult() {
+    try {
+        const latestDrawId = 1;  // Ganti dengan ID hasil undian terbaru
+        const result = await contract.methods.results(latestDrawId).call();
+        document.getElementById("lotteryResult").innerText = `Draw Result: ${result}`;
+    } catch (error) {
+        console.error("Failed to fetch lottery result", error);
+    }
+}
+
+async function addComment() {
+    if (!account) {
+        alert("Connect your wallet first!");
+        return;
+    }
+
+    const text = document.getElementById("commentText").value;
+    if (!text) {
+        alert("Please enter a comment.");
+        return;
+    }
+
+    try {
+        const drawId = 1; // Sesuaikan dengan ID pengundian
+        await contract.methods.addComment(drawId, text).send({ from: account });
+
+        alert("Comment added successfully!");
+        fetchComments(drawId);
+    } catch (error) {
+        console.error("Failed to add comment", error);
+        alert("Failed to add comment.");
+    }
+}
+
+async function fetchComments(drawId) {
+    try {
+        const comments = await contract.methods.comments(drawId).call();
+        const commentList = document.getElementById("commentList");
+        commentList.innerHTML = "";
+
+        comments.forEach((comment, index) => {
+            const li = document.createElement("li");
+            li.innerText = `${comment.user}: ${comment.text} (Likes: ${comment.likes})`;
+
+            const likeButton = document.createElement("button");
+            likeButton.innerText = "👍 Like";
+            likeButton.onclick = () => likeComment(drawId, index);
+
+            li.appendChild(likeButton);
+            commentList.appendChild(li);
+        });
+    } catch (error) {
+        console.error("Failed to fetch comments", error);
+    }
+}
+
+async function likeComment(drawId, commentIndex) {
+    if (!account) {
+        alert("Connect your wallet first!");
+        return;
+    }
+
+    try {
+        await contract.methods.likeComment(drawId, commentIndex).send({ from: account });
+        fetchComments(drawId);
+    } catch (error) {
+        console.error("Failed to like comment", error);
+        alert("Failed to like comment.");
+    }
+    }
+    </script>
 </body>
+</html>
