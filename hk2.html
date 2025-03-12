@@ -118,7 +118,7 @@ function limitBetNumber(input) {
     let value = input.value.replace(/\D/g, ''); // Hapus karakter non-angka
     value = value.slice(0, 4); // Batasi hingga 4 digit
 
-    if (value.length > 0 && value.length < 2) {
+    if (value.length === 1) {
         document.getElementById("betNumberWarning").innerText = "Minimum 2 digits (00 - 9999)";
     } else {
         document.getElementById("betNumberWarning").innerText = "";
@@ -128,23 +128,27 @@ function limitBetNumber(input) {
 }
 
 function limitDigits(input, min, max) {
-    let value = input.value.replace(/\D/g, '').trim(); // Hapus karakter non-angka & trim whitespace
-    let numValue = parseInt(value, 10);
+    let value = input.value.replace(/\D/g, '').trim();
+    let numValue = parseInt(value, 10) || 0;
 
     if (!value) {
         document.getElementById("betTimesWarning").innerText = "Cannot be empty";
-    } else if (isNaN(numValue) || numValue < min || numValue > max) {
+        input.value = ""; // Kosongkan input jika tidak valid
+    } else if (numValue < min) {
+        input.value = min; // Paksa minimal
+        document.getElementById("betTimesWarning").innerText = `Enter numbers ${min} - ${max}`;
+    } else if (numValue > max) {
+        input.value = max; // Paksa maksimal
         document.getElementById("betTimesWarning").innerText = `Enter numbers ${min} - ${max}`;
     } else {
         document.getElementById("betTimesWarning").innerText = "";
+        input.value = numValue;
     }
-
-    input.value = value;
 }
 
 function validateForm() {
     let betNumber = document.getElementById("betNumber").value;
-    let betTimes = parseInt(document.getElementById("betTimes").value, 10);
+    let betTimes = parseInt(document.getElementById("betTimes").value, 10) || 0;
     let isValid = true;
 
     if (betNumber.length < 2 || betNumber.length > 4) {
@@ -154,7 +158,7 @@ function validateForm() {
         document.getElementById("betNumberWarning").innerText = "";
     }
 
-    if (isNaN(betTimes) || betTimes < 1 || betTimes > 99) {
+    if (betTimes < 1 || betTimes > 99) {
         document.getElementById("betTimesWarning").innerText = "Enter number 1 - 99";
         isValid = false;
     } else {
@@ -162,7 +166,7 @@ function validateForm() {
     }
 
     return isValid;
-}
+    }
         
         async function loadBetHistory() {
     const bets = await contract.methods.getAllBets().call();
