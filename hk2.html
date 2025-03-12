@@ -101,13 +101,13 @@
     for (let i = bets.length - 1; i >= 0; i--) { // Membalik urutan iterasi
         const bet = bets[i];
         const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
-        const txLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`; // Ganti sesuai blockchain yang digunakan
+        const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`; // Ganti sesuai blockchain yang digunakan
         const status = bet.txHash ? "Confirmed" : "Pending"; // Jika belum ada blockNumber, berarti masih pending
 
         betList += `<p>
             ${bet.player} - ${bet.number} - ${bet.betAmount} 
             - TX: ${bet.txHash || "Pending"} 
-            - Block: <a href="${txLink}" target="_blank">${bet.blockNumber}</a> 
+            - Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a> 
             - Status: ${status} 
             - Time: ${timestamp}
         </p>`;
@@ -122,13 +122,13 @@
     for (let i = bets.length - 1; i >= 0; i--) { // Membalik urutan iterasi
         const bet = bets[i];
         const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
-        const txLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`; // Ganti sesuai blockchain yang digunakan
+        const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`; // Ganti sesuai blockchain yang digunakan
         const status = bet.txHash ? "Confirmed" : "Pending"; // Jika belum ada blockNumber, berarti masih pending
 
         betList += `<p>
             ${bet.number} - ${bet.betAmount} 
             - TX: ${bet.txHash || "Pending"} 
-            - Block: <a href="${txLink}" target="_blank">${bet.blockNumber}</a> 
+            - Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a> 
             - Status: ${status} 
             - Time: ${timestamp}
         </p>`;
