@@ -40,8 +40,7 @@
         
         <h2>Place a Bet</h2>
         <input type="text" id="betNumber" placeholder="Enter 4D 3D 2D" oninput="limitBetNumber(this)">
-        <input type="number" id="betTimes" placeholder="x1 / x99" 
-        min="1" max="99" oninput="limitDigits(this, 1, 2)">
+        <input type="number" id="betTimes" placeholder="x1 / x99" min="1" max="99" oninput="limitDigits(this, 1, 99)">
         <button onclick="placeBet()">Place Bet</button>
 
         <h2>Public Bet History</h2>
@@ -99,12 +98,12 @@
         function limitBetNumber(input) {
     let value = input.value;
 
-    // Pastikan hanya angka yang diinput
+    // Hapus karakter non-angka
     value = value.replace(/\D/g, '');
 
-    // Pastikan panjang minimal 2 digit
+    // Jika panjang kurang dari 2 digit, tambahkan nol di depan
     if (value.length < 2) {
-        value = value.padStart(2, '0'); // Tambahkan nol di depan jika kurang dari 2 digit
+        value = value.padStart(2, '0');
     }
 
     // Batasi panjang maksimal 4 digit
@@ -113,7 +112,19 @@
     }
 
     input.value = value;
-        }
+}
+
+function limitDigits(input, min, max) {
+    let value = input.value.replace(/\D/g, ''); // Hapus karakter non-angka
+
+    if (value === '' || parseInt(value) < min) {
+        value = min;
+    } else if (parseInt(value) > max) {
+        value = max;
+    }
+
+    input.value = value;
+}
 
         async function loadBetHistory() {
     const bets = await contract.methods.getAllBets().call();
