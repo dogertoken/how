@@ -64,42 +64,61 @@ contract BetHistory {
         owner = msg.sender;
     }
 
-    function placeBet(uint256 _number, uint256 _times, bool _isETH) external payable {
-        require(_number >= 0 && _number <= 9999, "Invalid number (0 - 9999)");
-        require(_times >= minBet && _times <= maxBet, "Bet count out of range");
+    function placeBet(string memory _number, uint256 _times, bool _isETH) external payable {
+    require(bytes(_number).length >= 1 && bytes(_number).length <= 4, "Invalid number length");
+    require(bytes(_number)[0] != "0" || bytes(_number).length == 1, "Leading zeros not allowed");
+    
+    require(_times >= minBet && _times <= maxBet, "Bet count out of range"); // Validasi lebih awal
 
-        uint256 totalCost = _times * betPrice;
-        require(msg.value == totalCost, "Incorrect ETH amount");
+    uint256 numValue = stringToUint(_number);
+    require(numValue <= 9999, "Invalid number (0 - 9999)");
 
-        bytes32 betId = keccak256(abi.encodePacked(msg.sender, block.timestamp, block.number));
-        uint256 blockNumber = block.number;
-        bytes32 txHash = blockhash(block.number - 1);
+    uint256 totalCost = _times * betPrice;
+    require(msg.value == totalCost, "Incorrect ETH amount");
 
-        Bet memory newBet = Bet({
-            player: msg.sender,
-            number: _number,
-            betAmount: _times,
-            timestamp: block.timestamp,
-            blockNumber: blockNumber,
-            txHash: txHash,
-            isETH: _isETH
-        });
+    require(block.number > 1, "Block number too low for hash");
+    bytes32 txHash = blockhash(block.number - 1);
+    require(txHash != bytes32(0), "Invalid block hash"); // Cegah txHash bernilai 0x0
 
-        betHistory.push(newBet);
-        userBets[msg.sender].push(newBet);
+    bytes32 betId = keccak256(abi.encode(msg.sender, block.number)); // Lebih aman tanpa timestamp
 
-        emit BetPlaced(msg.sender, betId, _number, _times, block.timestamp, blockNumber, txHash);
+    Bet memory newBet = Bet({
+        player: msg.sender,
+        number: _number,
+        betAmount: _times,
+        timestamp: block.timestamp,
+        blockNumber: block.number,
+        txHash: txHash,
+        isETH: _isETH
+    });
+
+    betHistory.push(newBet);
+    userBets[msg.sender].push(newBet);
+
+    emit BetPlaced(msg.sender, betId, _number, _times, block.timestamp, block.number, txHash);
+}
+
+// Fungsi konversi string ke uint256
+function stringToUint(string memory s) internal pure returns (uint256) {
+    bytes memory b = bytes(s);
+    uint256 result = 0;
+    for (uint256 i = 0; i < b.length; i++) {
+        require(b[i] >= 0x30 && b[i] <= 0x39, "Invalid character"); // Hanya angka 0-9
+        result = result * 10 + (uint256(uint8(b[i])) - 48);
     }
+    return result;
+}
 
-    function setBetResult(uint256 _drawId, uint256 _winningNumber) external onlyOwner {
-        betResults[_drawId] = BetResult({
-            drawId: _drawId,
-            winningNumber: _winningNumber,
-            isProcessed: true
-        });
+// Fungsi untuk menetapkan hasil taruhan
+function setBetResult(uint256 _drawId, uint256 _winningNumber) external onlyOwner {
+    betResults[_drawId] = BetResult({
+        drawId: _drawId,
+        winningNumber: _winningNumber,
+        isProcessed: true
+    });
 
-        emit BetResultSet(_drawId, _winningNumber);
-    }
+    emit BetResultSet(_drawId, _winningNumber);
+}
 
     function setWinner(address _winner, uint256 _amount) external onlyOwner {
         require(_amount > 0, "Invalid amount");
