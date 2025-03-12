@@ -104,7 +104,7 @@
 
     try {
         alert("Sending your bet..."); // Konfirmasi awal
-        await contract.methods.placeBet(number, times, true).send({ from: userAccount, value: value });
+        await contract.methods.placeBet(number.toString(), times, true).send({ from: userAccount, value: value });
         alert("Bet placed successfully!"); // Konfirmasi setelah berhasil
 
         loadBetHistory();
