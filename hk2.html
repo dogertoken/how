@@ -115,7 +115,7 @@
             TX: ${shortTx}<br> 
             Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br> 
             Status: ${status}<br> 
-            Time: ${timestamp}<br>
+            Time: <span style="color: #8e44ad;">${timestamp}</span><br>
         </p><hr>`;
     }
     document.getElementById("betHistory").innerHTML = betList;
@@ -140,7 +140,7 @@
             TX: ${shortTx}<br> 
             Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
             Status: ${status}<br>
-            Time: ${timestamp}<br>
+            Time: <span style="color: #8e44ad;">${timestamp}</span><br>
         </p><hr>`;
     }
     document.getElementById("userBets").innerHTML = betList;
