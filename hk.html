@@ -392,6 +392,9 @@ th {
     </div>
        
 <script>
+        const ethBetPrice = 0.000175;  
+        const usdtBetPrice = 0.5;  
+        let userAddress;
         let web3;
         let account;
         const contractAddress = "0x49aAB5493F8a59091f50D23Ef24B6B55f067f9eC"; // Ganti dengan alamat kontrak
@@ -538,7 +541,7 @@ th {
     }
 
     function updateBetPrice() {
-        let betCount = parseInt(document.getElementById("betCount").value);
+        let betCount = parseInt(document.getElementById("betCount").value) || 1;
         let currency = document.getElementById("currency").value;
         let price = betCount * (currency === "ETH" ? ethBetPrice : usdtBetPrice);
         document.getElementById("betPrice").innerHTML = `Bet Price: ${price} ${currency}`;
@@ -546,8 +549,12 @@ th {
 
     async function placeBet() {
     let lottoNumber = parseInt(document.getElementById("lottoNumber").value);
-    let betCount = parseInt(document.getElementById("betCount").value);
+    let betCount = parseInt(document.getElementById("betCount").value) || 1;
     let currency = document.getElementById("currency").value;
+
+    if (!userAddress) {
+        await getUserAddress();
+    }
 
     if (isNaN(lottoNumber) || lottoNumber < 0 || lottoNumber > 9999 || betCount < 1 || betCount > 99) {
         alert("Please enter a valid number (0-9999) and bet count (1-99).");
@@ -560,14 +567,13 @@ th {
         await contract.methods.placeBet(lottoNumber, betCount, true)
             .send({ from: userAddress, value: web3.utils.toWei(betAmount.toString(), "ether") });
     } else {
-        let usdtAmount = (betAmount * 10 ** 6).toString(); // Convert USDT ke 6 desimal
+        let usdtAmount = (betAmount * 10 ** 6).toString();
         await usdtContract.methods.approve(contractAddress, usdtAmount).send({ from: userAddress });
         await contract.methods.placeBet(lottoNumber, betCount, false).send({ from: userAddress });
     }
 
     alert("Bet placed successfully!");
 }
-
     // Open Modal
     var modal = document.getElementById("menuModal");
         var btn = document.getElementById("menuBtn");
