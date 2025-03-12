@@ -456,6 +456,24 @@ th {
             }
         }
 
+    // Inisialisasi Web3
+if (typeof window.ethereum !== "undefined") {
+    var web3 = new Web3(window.ethereum);
+} else {
+    alert("MetaMask not detected!");
+}
+
+// Fungsi untuk mendapatkan alamat wallet
+async function getUserAddress() {
+    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+    userAddress = accounts[0];
+}
+
+// Memastikan pengguna sudah login ke MetaMask
+window.addEventListener("load", async () => {
+    await getUserAddress();
+});
+
         async function toggleWallet() {
             if (account) {
                 account = null;
