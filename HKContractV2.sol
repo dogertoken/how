@@ -12,6 +12,7 @@ contract LottoChainDecentralizedHKPool {
         uint256 number;
         uint256 betAmount;
         bool isETH;
+        uint256 timestamp; // ⏳ Waktu taruhan
     }
 
     struct Comment {
@@ -23,9 +24,10 @@ contract LottoChainDecentralizedHKPool {
     mapping(uint256 => Bet[]) public bets;
     mapping(address => uint256) public ethWinnings;
     mapping(uint256 => uint256) public results;
+    mapping(uint256 => uint256) public resultTimestamps; // ⏳ Waktu hasil undian
     mapping(uint256 => Comment[]) public comments;
     mapping(address => Bet[]) public personalBets;
-    mapping(uint256 => mapping(address => bool)) public likedComments; // ✅ Mapping like
+    mapping(uint256 => mapping(address => bool)) public likedComments;
 
     constructor() {
         owner = msg.sender;
@@ -43,8 +45,8 @@ contract LottoChainDecentralizedHKPool {
         uint256 totalCost = _times * ethBetPrice;
         require(msg.value == totalCost, "Incorrect ETH amount");
 
-        Bet memory newBet = Bet(msg.sender, _number, _times, _isETH);
-        bets[_number].push(newBet); 
+        Bet memory newBet = Bet(msg.sender, _number, _times, _isETH, block.timestamp); // ⏳ Simpan waktu
+        bets[_number].push(newBet);
         personalBets[msg.sender].push(newBet);
     }
 
@@ -63,6 +65,7 @@ contract LottoChainDecentralizedHKPool {
 
     function setLotteryResult(uint256 _drawId, uint256 _number) external onlyOwner {
         results[_drawId] = _number;
+        resultTimestamps[_drawId] = block.timestamp; // ⏳ Simpan waktu undian
     }
 
     function addComment(uint256 _drawId, string memory _text) external {
@@ -80,10 +83,10 @@ contract LottoChainDecentralizedHKPool {
     }
 
     function likeComment(uint256 _drawId, uint256 _commentIndex) external {
-        require(!likedComments[_drawId][msg.sender], "You already liked this comment"); // ✅ Cek sudah like atau belum
+        require(!likedComments[_drawId][msg.sender], "You already liked this comment");
 
         comments[_drawId][_commentIndex].likes++;
-        likedComments[_drawId][msg.sender] = true; // ✅ Tandai user sudah like
+        likedComments[_drawId][msg.sender] = true;
     }
 
     function contractETHBalance() external view returns (uint256) {
@@ -99,6 +102,14 @@ contract LottoChainDecentralizedHKPool {
 
     function getUserBets(address _user) external view returns (Bet[] memory) {
         return personalBets[_user];
+    }
+
+    function getBetHistory(uint256 _drawId) external view returns (Bet[] memory) {
+        return bets[_drawId];
+    }
+
+    function getDrawTimestamp(uint256 _drawId) external view returns (uint256) {
+        return resultTimestamps[_drawId];
     }
 
     receive() external payable {}
