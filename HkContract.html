@@ -56,7 +56,7 @@ contract LottoChainDecentralizedHKPool {
         emit BetPlaced(msg.sender, _number, _times, _isETH);
     }
 
-    function setWinnerETH(uint256 _number, address _winner, uint256 _amount) external onlyOwner {
+    function setWinnerETH(address _winner, uint256 _amount) external onlyOwner {
         ethWinnings[_winner] += _amount;
         emit WinnerSetETH(_winner, _amount);
     }
