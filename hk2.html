@@ -39,8 +39,10 @@
         <button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect Wallet</button>
         
         <h2>Place a Bet</h2>
-        <input type="number" id="betNumber" placeholder="Enter a number (0-9999)" min="0" max="9999">
-        <input type="number" id="betTimes" placeholder="Enter bet times" min="1" max="99">
+        <input type="number" id="betNumber" placeholder="Enter a number (00-9999)" 
+        min="0" max="9999" oninput="limitDigits(this, 2, 4)">
+        <input type="number" id="betTimes" placeholder="Enter bet times (1-99)" 
+        min="1" max="99" oninput="limitDigits(this, 1, 2)">
         <button onclick="placeBet()">Place Bet</button>
 
         <h2>Public Bet History</h2>
@@ -94,6 +96,27 @@
             loadBetHistory();
             loadUserBets();
         }
+
+        function limitDigits(input, minLength, maxLength) {
+            let value = input.value;
+    
+            // Hapus angka nol di depan kecuali '00'
+            if (value.length > 1 && value[0] === '0' && value[1] !== '0') {
+                value = value.replace(/^0+/, '');
+            }
+
+            // Pastikan panjangnya sesuai batas
+            if (value.length < minLength) {
+                input.setCustomValidity(`Minimal ${minLength} digit`);
+            } else {
+                input.setCustomValidity("");
+            }
+
+            // Batasi panjang maksimal
+            if (value.length > maxLength) {
+                input.value = value.slice(0, maxLength);
+            }
+          }
 
         async function loadBetHistory() {
     const bets = await contract.methods.getAllBets().call();
