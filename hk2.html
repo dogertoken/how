@@ -110,8 +110,8 @@
 
         betList += `<p>
             Player: ${shortPlayer}<br> 
-            BetNumber: ${bet.number}<br> 
-            BetAmount: ${bet.betAmount}<br> 
+            <span style="color: orange;">Bet Number:</span> ${bet.number}<br> 
+            <span style="color: orange;">Bet Amount:</span> ${bet.betAmount}<br> 
             TX: ${shortTx}<br> 
             Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br> 
             Status: ${status}<br> 
@@ -135,8 +135,8 @@
         const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
 
         betList += `<p>
-            BetNumber: ${bet.number}<br>
-            BetAmount: ${bet.betAmount}<br>
+            <span style="color: orange;">Bet Number:</span> ${bet.number}<br> 
+            <span style="color: orange;">Bet Amount:</span> ${bet.betAmount}<br>
             TX: ${shortTx}<br> 
             Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
             Status: ${status}<br>
