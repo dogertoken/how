@@ -115,16 +115,21 @@
 }
 
 function limitBetNumber(input) {
-    let value = input.value.replace(/\D/g, ''); // Hapus karakter non-angka
-    value = value.slice(0, 4); // Batasi hingga 4 digit
+    let value = input.value.replace(/\D/g, ''); // Hanya angka, hapus karakter non-angka
 
-    if (value.length === 1) {
+    // Pastikan tetap ada leading zero jika diketik manual
+    if (value.length > 4) {
+        value = value.slice(0, 4); // Batasi maksimal 4 digit
+    }
+
+    // Validasi panjang angka minimal 2 digit
+    if (value.length > 0 && value.length < 2) {
         document.getElementById("betNumberWarning").innerText = "Minimum 2 digits (00 - 9999)";
     } else {
         document.getElementById("betNumberWarning").innerText = "";
     }
 
-    input.value = value;
+    input.value = value; // Set kembali ke input tanpa menghapus nol di depan
 }
 
 function limitDigits(input, min, max) {
