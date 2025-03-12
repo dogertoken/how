@@ -98,21 +98,25 @@
         async function loadBetHistory() {
             const bets = await contract.methods.getAllBets().call();
             let betList = "";
-            bets.forEach(bet => {
-                betList += `<p>${bet.player} - ${bet.number} - ${bet.betAmount}</p>`;
-            });
+            for (let bet of bets) {
+                const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
+                betList += `<p>${bet.player} - ${bet.number} - ${bet.betAmount} - Block: ${bet.blockNumber} - TX: ${bet.txHash} - Time: ${timestamp}</p>`;
+            }
             document.getElementById("betHistory").innerHTML = betList;
         }
 
         async function loadUserBets() {
-            if (!userAccount) return;
-            const bets = await contract.methods.getUserBets(userAccount).call();
+            const accounts = await web3.eth.getAccounts();
+            const bets = await contract.methods.getUserBets(accounts[0]).call();
             let betList = "";
-            bets.forEach(bet => {
-                betList += `<p>${bet.number} - ${bet.betAmount}</p>`;
-            });
+            for (let bet of bets) {
+                const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
+                betList += `<p>${bet.number} - ${bet.betAmount} - Block: ${bet.blockNumber} - TX: ${bet.txHash} - Time: ${timestamp}</p>`;
+            }
             document.getElementById("userBets").innerHTML = betList;
         }
+
+        window.onload = init;
     </script>
 </body>
 </html>
