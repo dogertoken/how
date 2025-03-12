@@ -545,28 +545,28 @@ th {
     }
 
     async function placeBet() {
-        let lottoNumber = document.getElementById("lottoNumber").value;
-        let betCount = document.getElementById("betCount").value;
-        let currency = document.getElementById("currency").value;
+    let lottoNumber = parseInt(document.getElementById("lottoNumber").value);
+    let betCount = parseInt(document.getElementById("betCount").value);
+    let currency = document.getElementById("currency").value;
 
-        if (lottoNumber.length < 2 || betCount < 1 || betCount > 99) {
-            alert("Please enter a valid number (00-9999) and bet count (1-99).");
-            return;
-        }
-
-        let betAmount = betCount * (currency === "ETH" ? ethBetPrice : usdtBetPrice);
-
-        if (currency === "ETH") {
-            await contract.methods.placeBet(lottoNumber, betCount, true)
-                .send({ from: userAddress, value: web3.utils.toWei(betAmount.toString(), "ether") });
-        } else {
-            let usdtAmount = (betAmount * 10 ** 6).toString();  // Convert USDT ke 6 desimal
-            await usdtContract.methods.approve(contractAddress, usdtAmount).send({ from: userAddress });
-            await contract.methods.placeBet(lottoNumber, betCount, false).send({ from: userAddress });
-        }
-
-        alert("Bet placed successfully!");
+    if (isNaN(lottoNumber) || lottoNumber < 0 || lottoNumber > 9999 || betCount < 1 || betCount > 99) {
+        alert("Please enter a valid number (0-9999) and bet count (1-99).");
+        return;
     }
+
+    let betAmount = betCount * (currency === "ETH" ? ethBetPrice : usdtBetPrice);
+
+    if (currency === "ETH") {
+        await contract.methods.placeBet(lottoNumber, betCount, true)
+            .send({ from: userAddress, value: web3.utils.toWei(betAmount.toString(), "ether") });
+    } else {
+        let usdtAmount = (betAmount * 10 ** 6).toString(); // Convert USDT ke 6 desimal
+        await usdtContract.methods.approve(contractAddress, usdtAmount).send({ from: userAddress });
+        await contract.methods.placeBet(lottoNumber, betCount, false).send({ from: userAddress });
+    }
+
+    alert("Bet placed successfully!");
+}
 
     // Open Modal
     var modal = document.getElementById("menuModal");
