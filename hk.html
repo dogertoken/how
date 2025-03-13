@@ -195,12 +195,12 @@ async function loadUserBets() {
         let shortTxHash = reversedBets[i].txHash.slice(0, 10) + "..." + reversedBets[i].txHash.slice(-10);
 
         html += `<p>
-            Address: ${shortAddress}<br>
-            BetNumber: ${reversedBets[i].number}<br>
-            BetAmount: ${reversedBets[i].betAmount}<br>
+            Address: <span style="color: purple;">${shortAddress}</span><br>
+            BetNumber: <span style="color: green;">${reversedBets[i].number}</span><br>
+            BetAmount: <span style="color: green;">${reversedBets[i].betAmount}</span><br>
             Tx: ${shortTxHash}<br>
             Block: <a href="https://basescan.io/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
-            Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
+            Time: <span style="color: orange;">${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC</span><br>
         </p><hr>`;
     }
     document.getElementById("userBets").innerHTML = html;
@@ -233,12 +233,12 @@ async function loadBetHistory() {
         let shortTxHash = reversedBets[i].txHash.slice(0, 10) + "..." + reversedBets[i].txHash.slice(-10);
 
         html += `<p>
-            Player: ${shortPlayer}<br>
-            BetNumber: ${reversedBets[i].number}<br>
-            BetAmount: ${reversedBets[i].betAmount}<br>
+            Player: <span style="color: purple;">${shortPlayer}</span><br>
+            BetNumber: <span style="color: green;">${reversedBets[i].number}</span><br>
+            BetAmount: <span style="color: green;">${reversedBets[i].betAmount}</span><br>
             Tx: ${shortTxHash}<br>
             Block: <a href="https://basescan.io/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
-            Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
+            Time: <span style="color: orange;">${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC</span><br>
         </p><hr>`;
     }
     document.getElementById("betHistory").innerHTML = html;
