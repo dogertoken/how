@@ -48,8 +48,9 @@
         
        <button onclick="placeBet()">Place Bet</button>
 
-        <h2>ublic Bet History</h2>
+        <h2>Public Bet History</h2>
         <div id="betHistory"></div>
+<button id="loadMoreBtn">Muat Lebih Banyak</button>
 
         <h2>Your Bet History</h2>
         <div id="userBets"></div>
@@ -237,10 +238,9 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
-        let allBets = []; // Menyimpan semua taruhan
-let currentIndex = 0; // Indeks data yang sedang ditampilkan
-const itemsPerPage = 4; // Jumlah item per load
-let loading = false; // Mencegah loading ganda
+        let allBets = [];
+let currentIndex = 0;
+const itemsPerPage = 4; // Jumlah item per klik tombol
 
 // Fungsi memuat data dari smart contract
 async function loadBetHistory() {
@@ -253,21 +253,16 @@ async function loadBetHistory() {
             return;
         }
 
-        allBets = bets.reverse(); // Membalik urutan agar yang terbaru muncul dulu
+        allBets = bets.reverse(); // Urutkan terbaru dulu
         renderBetHistory(); // Tampilkan data awal
     } catch (error) {
         console.error("Gagal mengambil riwayat taruhan:", error);
     }
 }
 
-// Fungsi untuk menampilkan data secara bertahap saat scroll
+// Fungsi untuk menampilkan data secara bertahap
 function renderBetHistory() {
     const betHistoryDiv = document.getElementById("betHistory");
-
-    if (!betHistoryDiv) {
-        console.error("Elemen betHistory tidak ditemukan!");
-        return;
-    }
 
     let endIndex = currentIndex + itemsPerPage;
     for (let i = currentIndex; i < endIndex && i < allBets.length; i++) {
@@ -296,20 +291,19 @@ function renderBetHistory() {
     }
 
     currentIndex += itemsPerPage;
-    loading = false; // Bisa load lagi
+    
+    // Sembunyikan tombol jika semua data sudah ditampilkan
+    if (currentIndex >= allBets.length) {
+        document.getElementById("loadMoreBtn").style.display = "none";
+    }
 }
 
-// Event listener untuk mendeteksi scroll dan load data tambahan
-window.addEventListener("scroll", function () {
-    if (loading) return; // Jangan load kalau masih loading
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
-        console.log("Memuat lebih banyak data...");
-        loading = true;
-        renderBetHistory();
-    }
+// Event listener untuk tombol "Muat Lebih Banyak"
+document.getElementById("loadMoreBtn").addEventListener("click", function () {
+    renderBetHistory();
 });
 
-// Panggil fungsi untuk pertama kali saat halaman dimuat
+// Panggil fungsi utama saat halaman pertama kali dimuat
 loadBetHistory();
         
         async function loadUserBets() {
