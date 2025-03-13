@@ -42,12 +42,10 @@
 
         <input type="text" id="betNumber" placeholder="Enter 4D 3D 2D" oninput="limitBetNumber(this)">
         <p id="betNumberWarning" style="color: red;"></p>
-
-        <input type="number" id="betTimes" placeholder="x1 / x99" min="1" max="99" oninput="updateTotalETH()">
+        <input type="number" id="betTimes" placeholder="x1 / x99" min="1" max="99">
         <p id="betTimesWarning" style="color: red;"></p>
-
-        <!-- Menampilkan rincian total ETH yang harus dibayar -->
         <p>Total ETH: <span id="totalETH">0.000000</span> ETH</p>
+
 
        <button onclick="placeBet()">Place Bet</button>
 
@@ -178,11 +176,32 @@ function validateForm() {
     return isValid;
     }
 
-    function updateTotalETH() {
-    let betTimes = parseInt(document.getElementById("betTimes").value) || 0;
-    let totalETH = (betTimes * betPrice).toFixed(6); // Pastikan akurasi hingga 6 desimal
+    function validateBetTimes() {
+    let betTimesInput = document.getElementById("betTimes");
+    let betTimes = parseInt(betTimesInput.value) || 1; // Default ke 1 jika kosong
+    let warning = document.getElementById("betTimesWarning");
+
+    if (betTimes < 1) {
+        betTimes = 1;
+        warning.textContent = "Minimal 1x bet!";
+    } else if (betTimes > 99) {
+        betTimes = 99;
+        warning.textContent = "Maksimal 99x bet!";
+    } else {
+        warning.textContent = "";
+    }
+
+    betTimesInput.value = betTimes;
+    updateTotalETH(betTimes);
+}
+
+function updateTotalETH(betTimes) {
+    let totalETH = (betTimes * betPrice).toFixed(6);
     document.getElementById("totalETH").textContent = totalETH;
 }
+
+// Pastikan update saat input berubah
+document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
