@@ -51,6 +51,15 @@
         <h2>Public Bet History</h2>
         <div id="betHistory"></div>
 
+        <!-- Pagination Controls -->
+        <div>
+            <button id="firstPage" onclick="goToPage(1)">First</button>
+            <button id="prevPage" onclick="changePage(-1)">Prev</button>
+            <span id="pageInfo">Page 1 of 1</span>
+            <button id="nextPage" onclick="changePage(1)">Next</button>
+            <button id="lastPage" onclick="goToPage('last')">Last</button>
+        </div>
+
         <h2>Your Bet History</h2>
         <div id="userBets"></div>
     </div>
@@ -237,18 +246,32 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
         
-        async function loadBetHistory() {
+        let currentPage = 1;
+const itemsPerPage = 5; // Jumlah item per halaman
+let historyData = [];
+
+async function loadBetHistory() {
     const bets = await contract.methods.getAllBets().call();
+    historyData = bets.reverse(); // Membalik urutan agar terbaru di atas
+    displayPage(currentPage);
+}
+
+function displayPage(page) {
+    let totalPages = Math.ceil(historyData.length / itemsPerPage);
+    let start = (page - 1) * itemsPerPage;
+    let end = start + itemsPerPage;
+    let paginatedItems = historyData.slice(start, end);
+
     let betList = "";
-    for (let i = bets.length - 1; i >= 0; i--) { // Membalik urutan iterasi
-        const bet = bets[i];
-        const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
-        const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`; // Ganti sesuai blockchain yang digunakan
-        const status = bet.txHash 
-        ? '<span style="color: green;">Confirmed</span>' 
-        : '<span style="color: red;">Pending</span>'; // Jika belum ada blockNumber, berarti masih pending
-        const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
-        const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
+    paginatedItems.forEach((bet) => {
+        let timestamp = new Date(bet.timestamp * 1000);
+        let formattedDate = timestamp.toLocaleDateString("id-ID") + " " + timestamp.toLocaleTimeString("id-ID");
+        let blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
+        let status = bet.txHash 
+            ? '<span style="color: green;">Confirmed</span>' 
+            : '<span style="color: red;">Pending</span>';
+        let shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
+        let shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
 
         betList += `<p>
             Player: ${shortPlayer}<br> 
@@ -257,10 +280,32 @@ document.getElementById("betTimes").addEventListener("input", updateTotalETH);
             TX: ${shortTx}<br> 
             Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br> 
             Status: ${status}<br> 
-            Time: <span style="color: #8e44ad;">${timestamp}</span><br>
+            Time: <span style="color: #8e44ad;">${formattedDate}</span><br>
         </p><hr>`;
-    }
+    });
+
     document.getElementById("betHistory").innerHTML = betList;
+    document.getElementById("pageInfo").innerText = `Page ${page} of ${totalPages}`;
+    document.getElementById("firstPage").disabled = page === 1;
+    document.getElementById("prevPage").disabled = page === 1;
+    document.getElementById("nextPage").disabled = page === totalPages;
+    document.getElementById("lastPage").disabled = page === totalPages;
+}
+
+function changePage(direction) {
+    let newPage = currentPage + direction;
+    let totalPages = Math.ceil(historyData.length / itemsPerPage);
+
+    if (newPage >= 1 && newPage <= totalPages) {
+        currentPage = newPage;
+        displayPage(currentPage);
+    }
+}
+
+function goToPage(page) {
+    let totalPages = Math.ceil(historyData.length / itemsPerPage);
+    currentPage = page === "last" ? totalPages : 1;
+    displayPage(currentPage);
         }
 
         async function loadUserBets() {
