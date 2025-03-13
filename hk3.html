@@ -247,7 +247,7 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
-       let betData = [];
+let betData = [];
 let betsPerPage = 10;
 let currentPage = 1;
 let totalPages = 1;
@@ -369,7 +369,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     displayBets();
     updatePagination();
 });
-
+        
         async function loadUserBets() {
     const accounts = await web3.eth.getAccounts();
     const bets = await contract.methods.getUserBets(accounts[0]).call();
