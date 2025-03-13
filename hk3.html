@@ -252,9 +252,19 @@ let currentPage = 1;
 let totalPages = 1;
 
 async function loadBetHistory() {
+    let betHistoryDiv = document.getElementById("betHistory");
+    betHistoryDiv.innerHTML = "<p>Memuat history...</p>"; // Tampilkan pesan loading
+
+    console.log("Mengambil data riwayat...");
     betData = await contract.methods.getAllBets().call();
+    console.log("Data riwayat berhasil diambil:", betData);
+
     betData.reverse(); // Urutkan dari terbaru ke lama
     totalPages = Math.ceil(betData.length / betsPerPage);
+
+    // Set currentPage ke 1 dan langsung tampilkan
+    currentPage = 1;
+    console.log("Menampilkan 10 riwayat pertama...");
     displayBets();
     updatePagination();
 }
