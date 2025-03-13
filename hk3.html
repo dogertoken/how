@@ -227,9 +227,16 @@ async function placeBet() {
 // **Memuat Riwayat Taruhan**
 async function loadBetHistory() {
     try {
-        const bets = await contract.methods.getAllBets().call();
-        const reversedBets = bets.slice().reverse(); // Membalik urutan bets
+        if (!contract) {
+            console.error("Kontrak tidak ditemukan!");
+            alert("Gagal memuat kontrak. Pastikan Metamask terhubung dan jaringan benar.");
+            return;
+        }
 
+        const bets = await contract.methods.getAllBets().call();
+        console.log("Bets loaded:", bets);  // Debugging
+
+        const reversedBets = bets.slice().reverse(); // Membalik urutan bets
         const start = betHistoryPage * pageSize;
         const end = Math.min(start + pageSize, reversedBets.length);
 
@@ -247,18 +254,19 @@ async function loadBetHistory() {
                 Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
                 Status: ${bet.status ?? 'Pending'}<br>
                 Time: ${new Date(bet.timestamp * 1000).toISOString()} UTC<br>
-                <button onclick="toggleComments('${betId}', event)">💬 Lihat Komentar</button>
-                <button onclick="likeBet('${betId}', event)">👍 Like (${likes})</button>
+                <button onclick="toggleComments('${betId}')">💬 Lihat Komentar</button>
+                <button onclick="likeBet('${betId}')">❤️ Like (${likes})</button>
                 <div id="comments-${betId}" class="comment-section"></div>
             </p><hr>`;
         }
         document.getElementById("betHistory").innerHTML = html;
     } catch (error) {
         console.error("Gagal memuat bet history:", error);
+        alert("Terjadi kesalahan saat memuat taruhan.");
     }
 }
 
-// **Pindah ke Halaman Sebelumnya**
+// **Navigasi Halaman Taruhan**
 function prevBetHistory() {
     if (betHistoryPage > 0) {
         betHistoryPage--;
@@ -266,15 +274,13 @@ function prevBetHistory() {
     }
 }
 
-// **Pindah ke Halaman Berikutnya**
 function nextBetHistory() {
     betHistoryPage++;
     loadBetHistory();
 }
 
-// **Lazy Loading Komentar**
-async function toggleComments(betId, event) {
-    event.preventDefault();
+// **Menampilkan Komentar Secara Dinamis**
+async function toggleComments(betId) {
     const commentSection = document.getElementById(`comments-${betId}`);
 
     if (commentSection.innerHTML.trim() !== "") {
@@ -283,7 +289,13 @@ async function toggleComments(betId, event) {
     }
 
     try {
+        if (!contract) {
+            alert("Koneksi ke kontrak gagal.");
+            return;
+        }
+
         const comments = await contract.methods.getComments(betId).call();
+        console.log("Comments loaded:", comments);  // Debugging
         renderComments(betId, comments);
     } catch (error) {
         console.error("Gagal memuat komentar:", error);
@@ -298,26 +310,23 @@ function renderComments(betId, comments) {
         <div class="comment">
             <b>${c.commenter === userAddress ? "You" : "Anonymous"}:</b> ${c.text}
             ${c.commenter === userAddress ? `
-                <button onclick="editComment('${betId}', ${index})">✏️ Edit</button>
-                <button onclick="deleteComment('${betId}', ${index})">🗑️ Delete</button>
+                <button onclick="editComment('${betId}', ${index}')">✏️ Edit</button>
+                <button onclick="deleteComment('${betId}', ${index}')">🗑️ Delete</button>
             ` : ""}
         </div>
     `).join("");
 }
 
 // **Menyukai Taruhan**
-async function likeBet(betId, event) {
-    event.preventDefault();
-
-    if (!userAddress) {
-        alert("Anda harus terhubung dengan wallet terlebih dahulu!");
-        return;
-    }
-
-    console.log("Menyukai bet:", betId);
+async function likeBet(betId) {
     try {
-        const result = await contract.methods.likeBet(betId).send({ from: userAddress });
-        console.log("Like berhasil:", result);
+        if (!userAddress) {
+            alert("Anda harus terhubung dengan Metamask!");
+            return;
+        }
+
+        console.log("Menyukai bet:", betId);
+        await contract.methods.likeBet(betId).send({ from: userAddress });
         alert("Liked!");
         loadBetHistory(); // Reload setelah like
     } catch (error) {
@@ -344,10 +353,15 @@ async function submitComment() {
     if (!commentText.trim()) return alert("Komentar tidak boleh kosong");
 
     try {
+        if (!userAddress) {
+            alert("Anda harus terhubung dengan Metamask!");
+            return;
+        }
+
         await contract.methods.addComment(activeBetId, commentText).send({ from: userAddress });
         alert("Komentar ditambahkan!");
         closeModal();
-        toggleComments(activeBetId, event);
+        toggleComments(activeBetId);
     } catch (error) {
         console.error("Gagal menambah komentar:", error);
         alert("Gagal menambah komentar.");
@@ -360,9 +374,14 @@ async function editComment(betId, commentIndex) {
     if (!newComment) return;
 
     try {
+        if (!userAddress) {
+            alert("Anda harus terhubung dengan Metamask!");
+            return;
+        }
+
         await contract.methods.editComment(betId, commentIndex, newComment).send({ from: userAddress });
         alert("Komentar diperbarui!");
-        toggleComments(betId, event);
+        toggleComments(betId);
     } catch (error) {
         console.error("Gagal edit komentar:", error);
         alert("Gagal mengedit komentar.");
@@ -374,9 +393,14 @@ async function deleteComment(betId, commentIndex) {
     if (!confirm("Yakin ingin menghapus komentar ini?")) return;
 
     try {
+        if (!userAddress) {
+            alert("Anda harus terhubung dengan Metamask!");
+            return;
+        }
+
         await contract.methods.deleteComment(betId, commentIndex).send({ from: userAddress });
         alert("Komentar dihapus!");
-        toggleComments(betId, event);
+        toggleComments(betId);
     } catch (error) {
         console.error("Gagal menghapus komentar:", error);
         alert("Gagal menghapus komentar.");
