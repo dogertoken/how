@@ -62,7 +62,7 @@ input {
         <input type="number" id="betTimes" placeholder="Bet Amount" min="1">
         <button id="placeBet">Place Bet</button>
 
-        <h2>Bet History</h2>
+        <h2>et History</h2>
         <button id="getBets">Load Bets</button>
         <div id="betList"></div>
     </div>
@@ -77,6 +77,7 @@ let web3;
 let contract;
 let userAccount = null;
 
+// **Koneksi ke Wallet**
 async function connectWallet() {
     if (window.ethereum) {
         try {
@@ -95,6 +96,7 @@ async function connectWallet() {
     }
 }
 
+// **Disconnect Wallet**
 function disconnectWallet() {
     userAccount = null;
     document.getElementById("walletAddress").textContent = "Not connected";
@@ -102,14 +104,21 @@ function disconnectWallet() {
     document.getElementById("disconnectWallet").style.display = "none";
 }
 
+// **Tempat Taruhan**
 async function placeBet() {
     if (!userAccount) {
         alert("Connect your wallet first.");
         return;
     }
 
-    const betNumber = document.getElementById("betNumber").value;
+    const betNumber = document.getElementById("betNumber").value.trim();
     const betTimes = parseInt(document.getElementById("betTimes").value);
+    
+    if (!betNumber || isNaN(betTimes) || betTimes <= 0) {
+        alert("Please enter a valid bet number and amount.");
+        return;
+    }
+
     const betPrice = web3.utils.toWei("0.000175", "ether"); 
     const totalCost = web3.utils.toWei((0.000175 * betTimes).toString(), "ether");
 
@@ -125,6 +134,7 @@ async function placeBet() {
     }
 }
 
+// **Ambil Riwayat Taruhan**
 async function getBets() {
     if (!userAccount) {
         alert("Connect your wallet first.");
@@ -132,20 +142,31 @@ async function getBets() {
     }
 
     try {
+        console.log("Fetching bets for:", userAccount);
         const bets = await contract.methods.getUserBets(userAccount).call();
+        console.log("Bets received:", bets);  // Debugging output
+
         let betList = document.getElementById("betList");
         betList.innerHTML = "<h3>Your Bets</h3>";
-        
+
+        if (!bets || bets.length === 0) {
+            betList.innerHTML += "<p>No bets found.</p>";
+            return;
+        }
+
         bets.forEach((bet, index) => {
+            const betTime = new Date(bet.timestamp * 1000).toLocaleString();
             betList.innerHTML += `
-                <p><strong>Bet #${index + 1}</strong>: ${bet.number} | Amount: ${bet.betAmount} | Time: ${new Date(bet.timestamp * 1000)}</p>
+                <p><strong>Bet #${index + 1}</strong>: Number: ${bet.number} | Amount: ${bet.betAmount} | Time: ${betTime}</p>
             `;
         });
     } catch (error) {
         console.error("Failed to fetch bets:", error);
+        alert("Error fetching bets. Check console for details.");
     }
 }
 
+// **Event Listeners**
 document.getElementById("connectWallet").addEventListener("click", connectWallet);
 document.getElementById("disconnectWallet").addEventListener("click", disconnectWallet);
 document.getElementById("placeBet").addEventListener("click", placeBet);
