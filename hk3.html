@@ -262,32 +262,42 @@ function nextUserBets() {
 
 // **Load Bet History (with Pagination)**
 async function loadBetHistory() {
-    const bets = await contract.methods.getAllBets().call();
-    const reversedBets = bets.slice().reverse(); // Membalik urutan bets
+    try {
+        const bets = await contract.methods.getAllBets().call();
+        if (!bets || bets.length === 0) {
+            document.getElementById("betHistory").innerHTML = "<p>No bet history available.</p>";
+            return;
+        }
 
-    const start = betHistoryPage * pageSize;
-    const end = Math.min(start + pageSize, reversedBets.length);
+        const reversedBets = bets.slice().reverse(); // Membalik urutan bets
+        const start = betHistoryPage * pageSize;
+        const end = Math.min(start + pageSize, reversedBets.length);
 
-    let html = "";
-for (let i = start; i < end; i++) {
-    const betId = reversedBets[i].txHash; // Menggunakan txHash sebagai betId unik
-    const likes = reversedBets[i].likes || 0;
-    const comments = reversedBets[i].comments || [];
+        let html = "";
+        for (let i = start; i < end; i++) {
+            const bet = reversedBets[i]; // Pastikan menggunakan reversedBets[i]
+            const betId = bet.txHash; // Menggunakan txHash sebagai betId unik
+            const likes = bet.likes || 0;
+            const comments = bet.comments || [];
 
-    html += `<p>
-            Player: ${bet.player}<br>
-            BetNumber: ${bet.number}<br>
-            BetAmount: ${bet.betAmount}<br>
-            Tx: ${bet.txHash}<br>
-            Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
-            Status: Pending<br>
-            Time: ${new Date(bet.timestamp * 1000).toISOString()} UTC<br>
-            <button onclick="toggleComments('${bet.txHash}')">💬 Lihat Komentar</button>
-            <button onclick="likeBet('${bet.txHash}')">❤️ Like</button>
-            <div id="comments-${bet.txHash}" class="comment-section"></div>
-        </p><hr>`;
+            html += `<p>
+                Player: ${bet.player}<br>
+                BetNumber: ${bet.number}<br>
+                BetAmount: ${bet.betAmount}<br>
+                Tx: ${bet.txHash}<br>
+                Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
+                Status: Pending<br>
+                Time: ${new Date(bet.timestamp * 1000).toISOString()} UTC<br>
+                <button onclick="toggleComments('${bet.txHash}')">💬 Lihat Komentar</button>
+                <button onclick="likeBet('${bet.txHash}')">❤️ Like</button>
+                <div id="comments-${bet.txHash}" class="comment-section"></div>
+            </p><hr>`;
+        }
+        document.getElementById("betHistory").innerHTML = html;
+    } catch (error) {
+        console.error("Failed to load bet history:", error);
+        document.getElementById("betHistory").innerHTML = "<p>Error loading bet history.</p>";
     }
-    document.getElementById("betHistory").innerHTML = html;
 }
 
 // **Bet History Pagination**
@@ -303,7 +313,6 @@ function nextBetHistory() {
     loadBetHistory();
 }
 
-// Comment Modal
 // Lazy loading komentar
 async function toggleComments(betId) {
     const commentSection = document.getElementById(`comments-${betId}`);
