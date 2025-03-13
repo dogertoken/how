@@ -284,28 +284,6 @@ function nextBetHistory() {
     loadBetHistory();
 }
 
-function validateBetNumber() {
-    let betNumber = document.getElementById("betNumber").value;
-    let warning = document.getElementById("betWarning");
-
-    if (!/^\d{2,4}$/.test(betNumber)) {
-        warning.innerText = "Bet number must be 2 to 4 digits!";
-    } else {
-        warning.innerText = "";
-    }
-}
-
-function validateBetTimes() {
-    let betTimes = document.getElementById("betTimes").value;
-    let warning = document.getElementById("betWarning");
-
-    if (betTimes < 1 || betTimes > 99) {
-        warning.innerText = "Bet times must be between 1 and 99!";
-    } else {
-        warning.innerText = "";
-    }
-}
-
 // Initialize saat halaman terbuka
 window.onload = () => {
     if (window.ethereum) {
