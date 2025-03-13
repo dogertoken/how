@@ -95,7 +95,7 @@ button:hover {
         <h2>1. Place Bet</h2>
         <input type="text" id="betNumber" placeholder="4D 3D or 2D">
         <input type="number" id="betTimes" placeholder="x1 / x99" min="1" oninput="updateBetPrice()">
-        <p id="betPrice" style="color: blue; font-weight: bold;">Price: 0.000000 ETH</p>
+        <p id="betPrice" style="color: blue; font-weight: bold;">Cost: 0.000000 ETH</p>
         <button onclick="placeBet()">Place Bet</button>
         <p id="betStatus"></p>
 
@@ -125,7 +125,7 @@ let contract;
 let userAccount;
 let userBetsPage = 0;
 let betHistoryPage = 0;
-const pageSize = 3;
+const pageSize = 10;
 
 // **Connect Wallet**
 async function connectWallet() {
