@@ -178,20 +178,24 @@ function validateForm() {
 
     function validateBetTimes() {
     let betTimesInput = document.getElementById("betTimes");
-    let betTimes = betTimesInput.value.trim(); // Ambil nilai tanpa spasi
+    let betTimesStr = betTimesInput.value.trim(); // Ambil nilai tanpa spasi
     let warning = document.getElementById("betTimesWarning");
 
-    if (betTimes === "") {
-        warning.textContent = ""; // Jika kosong, tidak ada peringatan
+    // Jika input kosong, reset ETH ke 0 dan keluar dari fungsi
+    if (betTimesStr === "") {
+        warning.textContent = "";
         document.getElementById("totalETH").textContent = "0.000000";
         return;
     }
 
-    betTimes = parseInt(betTimes);
+    // Konversi ke angka
+    let betTimes = Number(betTimesStr);
 
     if (isNaN(betTimes) || betTimes < 1) {
         warning.textContent = "Minimal 1x bet!";
-        betTimesInput.value = ""; // Biarkan kosong jika salah input
+        betTimesInput.value = ""; // Kosongkan input jika salah
+        document.getElementById("totalETH").textContent = "0.000000";
+        return;
     } else if (betTimes > 99) {
         warning.textContent = "Maksimal 99x bet!";
         betTimesInput.value = 99;
@@ -201,6 +205,20 @@ function validateForm() {
 
     updateTotalETH(betTimes);
 }
+
+function updateTotalETH(betTimes) {
+    // Jika nilai kosong atau invalid, reset ke 0
+    if (!betTimes || isNaN(betTimes) || betTimes < 1 || betTimes > 99) {
+        document.getElementById("totalETH").textContent = "0.000000";
+        return;
+    }
+    
+    let totalETH = (betTimes * 0.000175).toFixed(6); // Harga per bet 0.000175 ETH
+    document.getElementById("totalETH").textContent = totalETH;
+}
+
+// Pastikan update saat input berubah
+document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 
 function updateTotalETH(betTimes) {
     if (isNaN(betTimes) || betTimes < 1 || betTimes > 99) {
