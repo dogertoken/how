@@ -93,8 +93,9 @@ button:hover {
         <p id="walletAddress"></p>
 
         <h2>1. Place Bet</h2>
-        <input type="text" id="betNumber" placeholder="4D 3D or 2D">
-        <input type="number" id="betTimes" placeholder="x1 / x99" min="1" oninput="updateBetPrice()">
+        <input type="text" id="betNumber" placeholder="4D 3D or 2D" oninput="validateBetNumber()">
+        <input type="number" id="betTimes" placeholder="x1 / x99" min="1" max="99" oninput="validateBetTimes(); updateBetPrice()">
+        <p id="betWarning" style="color: red;"></p>
         <p id="betPrice" style="color: blue; font-weight: bold;">Cost: 0.000000 ETH</p>
         <button onclick="placeBet()">Place Bet</button>
         <p id="betStatus"></p>
@@ -281,6 +282,28 @@ function prevBetHistory() {
 function nextBetHistory() {
     betHistoryPage++;
     loadBetHistory();
+}
+
+function validateBetNumber() {
+    let betNumber = document.getElementById("betNumber").value;
+    let warning = document.getElementById("betWarning");
+
+    if (!/^\d{2,4}$/.test(betNumber)) {
+        warning.innerText = "Bet number must be 2 to 4 digits!";
+    } else {
+        warning.innerText = "";
+    }
+}
+
+function validateBetTimes() {
+    let betTimes = document.getElementById("betTimes").value;
+    let warning = document.getElementById("betWarning");
+
+    if (betTimes < 1 || betTimes > 99) {
+        warning.innerText = "Bet times must be between 1 and 99!";
+    } else {
+        warning.innerText = "";
+    }
 }
 
 // Initialize saat halaman terbuka
