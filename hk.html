@@ -93,23 +93,24 @@ button:hover {
         <p id="walletAddress"></p>
 
         <h2>1. Place Bet</h2>
-        <input type="text" id="betNumber" placeholder="Enter number (1-4 digits)">
-        <input type="number" id="betTimes" placeholder="Times" min="1">
+        <input type="text" id="betNumber" placeholder="4D 3D or 2D">
+        <input type="number" id="betTimes" placeholder="x1 / x99" min="1" oninput="updateBetPrice()">
+        <p id="betPrice" style="color: blue; font-weight: bold;">Price: 0.000000 ETH</p>
         <button onclick="placeBet()">Place Bet</button>
         <p id="betStatus"></p>
 
         <h2>2. Your Bets</h2>
-<div id="userBets"></div>
-<div class="button-container">
-    <button class="nav-button" onclick="prevUserBets()">Prev</button>
-    <button class="nav-button" onclick="nextUserBets()">Next</button>
-</div>
+        <div id="userBets"></div>
+        <div class="button-container">
+        <button class="nav-button" onclick="prevUserBets()">Prev</button>
+        <button class="nav-button" onclick="nextUserBets()">Next</button>
+      </div>
 
-<h2>3. Bet History</h2>
-<div id="betHistory"></div>
-<div class="button-container">
-    <button class="nav-button" onclick="prevBetHistory()">Prev</button>
-    <button class="nav-button" onclick="nextBetHistory()">Next</button>
+       <h2>3. Bet History</h2>
+       <div id="betHistory"></div>
+       <div class="button-container">
+       <button class="nav-button" onclick="prevBetHistory()">Prev</button>
+       <button class="nav-button" onclick="nextBetHistory()">Next</button>
     
     </div>
 
@@ -157,6 +158,12 @@ function disconnectWallet() {
     document.getElementById("walletAddress").innerText = "Disconnected";
     document.getElementById("connectWallet").style.display = "block";
     document.getElementById("disconnectWallet").style.display = "none";
+}
+       
+function updateBetPrice() {
+    let betTimes = document.getElementById("betTimes").value;
+    let ethPrice = (betTimes * 0.000175).toFixed(6); // Hitung harga ETH
+    document.getElementById("betPrice").innerText = `Price: ${ethPrice} ETH`;
 }
 
 // **Place Bet**
