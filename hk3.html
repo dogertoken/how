@@ -3,300 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bet History</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.4/web3.min.js"></script>
+    <title>Bet History DApp</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.0/web3.min.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-        }
-        button {
-            padding: 10px;
-            background: blue;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin: 5px;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-        }
-        #betHistory, #userBets {
-            margin-top: 20px;
-        }
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+input, button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    width: 90%;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+#disconnectWallet {
+    background-color: #dc3545;
+}
+
+#disconnectWallet:hover {
+    background-color: #c82333;
+}
+        
+.nav-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 80px; /* Ukuran tombol lebih pendek */
+    padding: 8px;
+    display: inline-block;
+    margin: 5px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center; /* Pusatkan tombol di tengah */
+    gap: 10px; /* Jarak antar tombol */
+}
+
+#userBets {
+    text-align: justify; /* Meratakan teks seperti di buku */
+    hyphens: auto; /* Menambahkan pemenggalan kata jika perlu */
+    line-height: 1.6; /* Jarak antar baris agar lebih nyaman dibaca */
+    max-width: 600px; /* Batasi lebar agar tidak terlalu panjang */
+    margin: auto; /* Pusatkan jika diperlukan */
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.modal-content {
+    text-align: center;
+}
+
+.close {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.comment-section {
+    margin-top: 10px;
+    padding-left: 10px;
+    border-left: 2px solid #ddd;
+}
+
+.comment {
+    margin-bottom: 5px;
+}
     </style>
 </head>
 <body>
     <div class="container">
+        <h1>Bet History DApp</h1>
+        
+        <!-- Wallet Connection -->
         <button id="connectWallet" onclick="connectWallet()">Connect Wallet</button>
-        <button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect Wallet</button>
-        
-        <h2>Place a Bet</h2>
+        <button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect</button>
+        <p id="walletAddress"></p>
 
-        <input type="text" id="betNumber" placeholder="Enter 4D 3D 2D" oninput="limitBetNumber(this)">
-        <p id="betNumberWarning" style="color: red;"></p>
-        <input type="number" id="betTimes" placeholder="x1 / x99" min="1" max="99">
-        <p id="betTimesWarning" style="color: red;"></p>
-        <p>Total ETH: <span id="totalETH">0.000000</span> ETH</p>
-        
-       <button onclick="placeBet()">Place Bet</button>
+        <h2>1. Place Bet</h2>
+        <input type="text" id="betNumber" placeholder="Enter number (1-4 digits)">
+        <input type="number" id="betTimes" placeholder="Times" min="1">
+        <button onclick="placeBet()">Place Bet</button>
+        <p id="betStatus"></p>
 
-        <h2>Your Bet History</h2>
-        <div id="userBets"></div>
-        <button onclick="prevUserBets()">Prev</button>
-        <button onclick="nextUserBets()">Next</button>
-        
-        <h2>Public Bet History</h2>
-        <div id="betHistory"></div>
+        <h2>2. Your Bets</h2>
+<div id="userBets"></div>
+<div class="button-container">
+    <button class="nav-button" onclick="prevUserBets()">Prev</button>
+    <button class="nav-button" onclick="nextUserBets()">Next</button>
+</div>
 
+<h2>3. Bet History</h2>
+<div id="betHistory"></div>
+<div class="button-container">
+    <button class="nav-button" onclick="prevBetHistory()">Prev</button>
+    <button class="nav-button" onclick="nextBetHistory()">Next</button>
+    
     </div>
 
+    <div id="commentModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeCommentModal()">&times;</span>
+        <h2>Add Comment</h2>
+        <textarea id="commentText" placeholder="Write a comment..."></textarea>
+        <button id="submitComment">Submit</button>
+    </div>
+    </div>
+
+    <script src="script.js"></script>
     <script>
-        let userBetsPage = 0;
-        let betHistoryPage = 0;
-        const pageSize = 5;
         const contractAddress = "0x410F02E143Ba921FEdda48830d545154F5E809ab";
         const contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"BetLiked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":false,"internalType":"string","name":"number","type":"string"},{"indexed":false,"internalType":"uint256","name":"betAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"BetPlaced","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"winningNumber","type":"uint256"}],"name":"BetResultSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"comment","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"CommentAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"CommentDeleted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"},{"indexed":false,"internalType":"string","name":"newComment","type":"string"}],"name":"CommentUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ETHClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"WinnerSet","type":"event"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"string","name":"_comment","type":"string"}],"name":"addComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"betComments","outputs":[{"internalType":"address","name":"commenter","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isDeleted","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"betHistory","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"address","name":"","type":"address"}],"name":"betLikes","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"betPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"betResults","outputs":[{"internalType":"uint256","name":"drawId","type":"uint256"},{"internalType":"uint256","name":"winningNumber","type":"uint256"},{"internalType":"bool","name":"isProcessed","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"claimETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"contractBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"deleteComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"uint256","name":"commentIndex","type":"uint256"},{"internalType":"string","name":"newComment","type":"string"}],"name":"editComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAllBets","outputs":[{"components":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"internalType":"struct BetHistory.Bet[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"}],"name":"getComments","outputs":[{"components":[{"internalType":"address","name":"commenter","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isDeleted","type":"bool"}],"internalType":"struct BetHistory.Comment[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserBets","outputs":[{"components":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"internalType":"struct BetHistory.Bet[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"}],"name":"likeBet","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"maxBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"minBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_number","type":"string"},{"internalType":"uint256","name":"_times","type":"uint256"},{"internalType":"bool","name":"_isETH","type":"bool"}],"name":"placeBet","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_winningNumber","type":"uint256"}],"name":"setBetResult","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_winner","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"setWinner","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"userBets","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"winnings","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdrawETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
         const betPrice = 0.000175;
-        
+
         let web3;
-        let contract;
-        let userAccount;
+let contract;
+let userAccount;
+let userBetsPage = 0;
+let betHistoryPage = 0;
+const pageSize = 5;
 
-        async function connectWallet() {
-            if (window.ethereum) {
-                web3 = new Web3(window.ethereum);
-                const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-                userAccount = accounts[0];
-                contract = new web3.eth.Contract(contractABI, contractAddress);
-                document.getElementById("connectWallet").style.display = "none";
-                document.getElementById("disconnectWallet").style.display = "inline-block";
-                loadBetHistory();
-                loadUserBets();
-            } else {
-                alert("Please install MetaMask to use this feature.");
-            }
+// **Connect Wallet**
+async function connectWallet() {
+    if (window.ethereum) {
+        try {
+            web3 = new Web3(window.ethereum);
+            await window.ethereum.request({ method: "eth_requestAccounts" });
+            const accounts = await web3.eth.getAccounts();
+            userAccount = accounts[0];
+            contract = new web3.eth.Contract(contractABI, contractAddress);
+
+            document.getElementById("walletAddress").innerText = `Connected: ${userAccount}`;
+            document.getElementById("connectWallet").style.display = "none";
+            document.getElementById("disconnectWallet").style.display = "block";
+
+            loadUserBets();
+            loadBetHistory();
+        } catch (error) {
+            console.error(error);
+            alert("Connection failed!");
         }
+    } else {
+        alert("Please install MetaMask!");
+    }
+}
 
-        function disconnectWallet() {
-            userAccount = null;
-            document.getElementById("connectWallet").style.display = "inline-block";
-            document.getElementById("disconnectWallet").style.display = "none";
-            alert("Wallet disconnected");
-        }
+// **Disconnect Wallet**
+function disconnectWallet() {
+    userAccount = null;
+    document.getElementById("walletAddress").innerText = "Disconnected";
+    document.getElementById("connectWallet").style.display = "block";
+    document.getElementById("disconnectWallet").style.display = "none";
+}
 
-    async function placeBet() {
+// **Place Bet**
+async function placeBet() {
     if (!userAccount) {
-        alert("Please connect your wallet first.");
+        alert("Please connect your wallet first!");
         return;
     }
-
-    if (!validateForm()) return; // Pastikan input valid sebelum lanjut
 
     const number = document.getElementById("betNumber").value;
-    const times = parseInt(document.getElementById("betTimes").value, 10);
-    
-    if (isNaN(times) || times < 1) {
-        alert("Invalid bet times value.");
+    const times = parseInt(document.getElementById("betTimes").value);
+    const betPrice = web3.utils.toWei("0.000175", "ether");
+    const totalCost = betPrice * times;
+
+    if (!number || number.length < 1 || number.length > 4 || isNaN(times) || times < 1) {
+        alert("Invalid bet input!");
         return;
     }
-
-    const value = web3.utils.toWei((0.000175 * times).toString(), "ether");
 
     try {
-        alert("Sending your bet..."); // Konfirmasi awal
-        await contract.methods.placeBet(number.toString(), times, true).send({ from: userAccount, value: value });
-        alert("Bet placed successfully!"); // Konfirmasi setelah berhasil
-
-        loadBetHistory();
+        await contract.methods.placeBet(number, times, true).send({
+            from: userAccount,
+            value: totalCost
+        });
+        document.getElementById("betStatus").innerText = "Bet placed successfully!";
         loadUserBets();
     } catch (error) {
-        alert("Bet failed: " + (error.message || "Unknown error")); // Tangani error dengan lebih baik
+        console.error(error);
+        document.getElementById("betStatus").innerText = "Transaction failed!";
     }
 }
 
-function limitBetNumber(input) {
-    let value = input.value.replace(/\D/g, ''); // Hanya angka, hapus karakter non-angka
+// **Load User Bets (with Pagination)**
+async function loadUserBets() {
+    if (!userAccount) return;
+    const bets = await contract.methods.getUserBets(userAccount).call();
+    const reversedBets = bets.slice().reverse(); // Membalik urutan bets agar yang terbaru di atas
 
-    // Pastikan tetap ada leading zero jika diketik manual
-    if (value.length > 4) {
-        value = value.slice(0, 4); // Batasi maksimal 4 digit
-    }
+    const start = userBetsPage * pageSize;
+    const end = Math.min(start + pageSize, reversedBets.length);
 
-    // Validasi panjang angka minimal 2 digit
-    if (value.length > 0 && value.length < 2) {
-        document.getElementById("betNumberWarning").innerText = "Minimum 2 digits (00 - 9999)";
-    } else {
-        document.getElementById("betNumberWarning").innerText = "";
-    }
-
-    input.value = value; // Set kembali ke input tanpa menghapus nol di depan
-}
-
-function limitDigits(input, min, max) {
-    let value = input.value.replace(/\D/g, '').trim();
-    let numValue = parseInt(value, 10) || 0;
-
-    if (!value) {
-        document.getElementById("betTimesWarning").innerText = "Cannot be empty";
-        input.value = ""; // Kosongkan input jika tidak valid
-    } else if (numValue < min) {
-        input.value = min; // Paksa minimal
-        document.getElementById("betTimesWarning").innerText = `Enter numbers ${min} - ${max}`;
-    } else if (numValue > max) {
-        input.value = max; // Paksa maksimal
-        document.getElementById("betTimesWarning").innerText = `Enter numbers ${min} - ${max}`;
-    } else {
-        document.getElementById("betTimesWarning").innerText = "";
-        input.value = numValue;
-    }
-}
-
-function validateForm() {
-    let betNumber = document.getElementById("betNumber").value;
-    let betTimes = parseInt(document.getElementById("betTimes").value, 10) || 0;
-    let isValid = true;
-
-    if (betNumber.length < 2 || betNumber.length > 4) {
-        document.getElementById("betNumberWarning").innerText = "Minimum 2 digits, maximum 4 digits (00 - 9999)";
-        isValid = false;
-    } else {
-        document.getElementById("betNumberWarning").innerText = "";
-    }
-
-    if (betTimes < 1 || betTimes > 99) {
-        document.getElementById("betTimesWarning").innerText = "Enter number 1 - 99";
-        isValid = false;
-    } else {
-        document.getElementById("betTimesWarning").innerText = "";
-    }
-
-    return isValid;
-    }
-
-    function validateBetTimes() {
-    let betTimesInput = document.getElementById("betTimes");
-    let betTimesStr = betTimesInput.value.trim(); // Ambil nilai tanpa spasi
-    let warning = document.getElementById("betTimesWarning");
-
-    // Jika input kosong, reset ETH ke 0 dan keluar dari fungsi
-    if (betTimesStr === "") {
-        warning.textContent = "";
-        document.getElementById("totalETH").textContent = "0.000000";
-        return;
-    }
-
-    // Konversi ke angka
-    let betTimes = Number(betTimesStr);
-
-    if (isNaN(betTimes) || betTimes < 1) {
-        warning.textContent = "Minimal 1x bet!";
-        betTimesInput.value = ""; // Kosongkan input jika salah
-        document.getElementById("totalETH").textContent = "0.000000";
-        return;
-    } else if (betTimes > 99) {
-        warning.textContent = "Maksimal 99x bet!";
-        betTimesInput.value = 99;
-    } else {
-        warning.textContent = "";
-    }
-
-    updateTotalETH(betTimes);
-}
-
-function updateTotalETH() {
-    let betTimes = parseInt(document.getElementById("betTimes").value) || 0;
-    let totalETH = (betTimes * betPrice).toFixed(6); // Pastikan akurasi hingga 6 desimal
-    document.getElementById("totalETH").textContent = totalETH;
-}
-
-// Pastikan fungsi ini dipanggil saat input berubah
-document.getElementById("betTimes").addEventListener("input", updateTotalETH);
-
-function updateTotalETH(betTimes) {
-    if (isNaN(betTimes) || betTimes < 1 || betTimes > 99) {
-        document.getElementById("totalETH").textContent = "0.000000";
-        return;
-    }
-    let totalETH = (betTimes * 0.000175).toFixed(6); // Harga per bet 0.000175 ETH
-    document.getElementById("totalETH").textContent = totalETH;
-}
-
-// Pastikan update saat input berubah
-document.getElementById("betTimes").addEventListener("input", validateBetTimes);
-
-function updateTotalETH(betTimes) {
-    let totalETH = (betTimes * betPrice).toFixed(6);
-    document.getElementById("totalETH").textContent = totalETH;
-}
-
-// Pastikan update saat input berubah
-document.getElementById("betTimes").addEventListener("input", validateBetTimes);
-
-// Pastikan fungsi ini dipanggil saat input berubah
-document.getElementById("betTimes").addEventListener("input", updateTotalETH);
-
-        async function loadBetHistory() {
-    const bets = await contract.methods.getAllBets().call();
-    let betList = "";
-    for (let i = bets.length - 1; i >= 0; i--) { // Membalik urutan iterasi
-        const bet = bets[i];
-        const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
-        const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
-        const status = bet.txHash 
-        ? '<span style="color: green;">Confirmed</span>' 
-        : '<span style="color: red;">Pending</span>';
-        const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
-        const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
-
-        betList += `<p>
-            Player: ${shortPlayer}<br> 
-            BetNumber: <span style="color: orange;">${bet.number}</span><br> 
-            BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
-            TX: ${shortTx}<br> 
-            Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
-            Status: ${status}<br>
-            Time: <span style="color: #8e44ad;">${timestamp}</span><br>
-        </p><hr>`;
-        }
-         document.getElementById("betHistory").innerHTML = betList;
-            }
-
-        async function loadUserBets() {
-    const accounts = await web3.eth.getAccounts();
-    const bets = await contract.methods.getUserBets(accounts[0]).call();
-    let betList = "";
-    for (let i = bets.length - 1; i >= 0; i--) { // Membalik urutan iterasi
-        const bet = bets[i];
-        const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
-        const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`; // Ganti sesuai blockchain yang digunakan
-        const status = bet.txHash 
-        ? '<span style="color: green;">Confirmed</span>' 
-        : '<span style="color: red;">Pending</span>'; // Jika belum ada blockNumber, berarti masih pending
-        const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown"
-        const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
-
-        betList += `<p>
-            Player: ${shortPlayer}<br>
-            BetNumber: <span style="color: orange;">${bet.number}</span><br> 
-            BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
-            TX: ${shortTx}<br> 
-            Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
-            Status: ${status}<br>
-            Time: <span style="color: #8e44ad;">${timestamp}</span><br>
+    let html = "";
+    for (let i = start; i < end; i++) {
+        html += `<p>
+            Player: ${reversedBets[i].player}<br>
+            BetNumber: ${reversedBets[i].number}<br>
+            BetAmount: ${reversedBets[i].betAmount}<br>
+            Tx: ${reversedBets[i].txHash}<br>
+            Block: <a href="https://basescan.io/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
+            Status: ${reversedBets[i].status ?? 'Pending'}<br>
+            Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
         </p><hr>`;
     }
-    document.getElementById("userBets").innerHTML = betList;
-        }
+    document.getElementById("userBets").innerHTML = html;
+}
         
-    // **User Bets Pagination**
+// **User Bets Pagination**
 function prevUserBets() {
     if (userBetsPage > 0) {
         userBetsPage--;
@@ -309,7 +259,128 @@ function nextUserBets() {
     loadUserBets();
 }
 
-        window.onload = init;
+// **Load Bet History (with Pagination)**
+async function loadBetHistory() {
+    const bets = await contract.methods.getAllBets().call();
+    const reversedBets = bets.slice().reverse(); // Membalik urutan bets
+
+    const start = betHistoryPage * pageSize;
+    const end = Math.min(start + pageSize, reversedBets.length);
+
+    let html = "";
+for (let i = start; i < end; i++) {
+    const betId = reversedBets[i].txHash; // Menggunakan txHash sebagai betId unik
+    const likes = reversedBets[i].likes || 0;
+    const comments = reversedBets[i].comments || [];
+
+    html += `<p>
+        Player: ${reversedBets[i].player}<br>
+        BetNumber: ${reversedBets[i].number}<br>
+        BetAmount: ${reversedBets[i].betAmount}<br>
+        Tx: ${reversedBets[i].txHash}<br>
+        Block: <a href="https://basescan.io/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
+        Status: ${reversedBets[i].status ?? 'Pending'}<br>
+        Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
+        
+        <button onclick="likeBet('${betId}')">👍 Like (<span id="likes-${betId}">${likes}</span>)</button>
+        <button onclick="openCommentModal('${betId}')">💬 Comment</button>
+        
+        <div id="comments-${betId}" class="comment-section">
+            ${comments.map((c, index) => `
+                <div class="comment" id="comment-${betId}-${index}">
+                    <b>${c.player}:</b> ${c.text}
+                    ${c.player === currentUser ? `
+                        <button onclick="editComment('${betId}', ${index}, '${c.text}')">✏️ Edit</button>
+                        <button onclick="deleteComment('${betId}', ${index})">🗑️ Delete</button>
+                    ` : ''}
+                </div>
+            `).join("")}
+        </div>
+    </p><hr>`;
+}
+document.getElementById("betHistory").innerHTML = html;
+}
+
+// **Bet History Pagination**
+function prevBetHistory() {
+    if (betHistoryPage > 0) {
+        betHistoryPage--;
+        loadBetHistory();
+    }
+}
+
+function nextBetHistory() {
+    betHistoryPage++;
+    loadBetHistory();
+}
+
+// Comment Modal
+let currentBetId = null;
+
+function openCommentModal(betId) {
+    currentBetId = betId;
+    document.getElementById("commentModal").style.display = "block";
+}
+
+function closeCommentModal() {
+    document.getElementById("commentModal").style.display = "none";
+}
+
+document.getElementById("submitComment").addEventListener("click", () => {
+    const commentText = document.getElementById("commentText").value;
+    if (commentText.trim() !== "") {
+        addComment(currentBetId, commentText);
+        closeCommentModal();
+    }
+});
+
+function addComment(betId, text) {
+    // Simpan ke blockchain atau database
+    const newComment = { player: currentUser, text };
+    reversedBets.find(b => b.txHash === betId).comments.push(newComment);
+    renderBetHistory();
+}
+
+function editComment(betId, index, oldText) {
+    const newText = prompt("Edit your comment:", oldText);
+    if (newText) {
+        const bet = reversedBets.find(b => b.txHash === betId);
+        bet.comments[index].text = newText;
+        renderBetHistory();
+    }
+}
+
+function deleteComment(betId, index) {
+    if (confirm("Are you sure you want to delete this comment?")) {
+        const bet = reversedBets.find(b => b.txHash === betId);
+        bet.comments.splice(index, 1);
+        renderBetHistory();
+    }
+}
+
+function likeBet(betId) {
+    const bet = reversedBets.find(b => b.txHash === betId);
+    bet.likes = (bet.likes || 0) + 1;
+    document.getElementById(`likes-${betId}`).textContent = bet.likes;
+}
+
+// Initialize saat halaman terbuka
+window.onload = () => {
+    if (window.ethereum) {
+        window.ethereum.on("accountsChanged", (accounts) => {
+            if (accounts.length > 0) {
+                userAccount = accounts[0];
+                document.getElementById("walletAddress").innerText = `Connected: ${userAccount}`;
+                document.getElementById("connectWallet").style.display = "none";
+                document.getElementById("disconnectWallet").style.display = "block";
+                loadUserBets();
+                loadBetHistory();
+            } else {
+                disconnectWallet();
+            }
+        });
+    }
+};
     </script>
 </body>
 </html>
