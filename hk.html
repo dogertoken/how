@@ -71,8 +71,12 @@ button:hover {
 
         <h2>3. Bet History</h2>
         <div id="betHistory"></div>
-        <button onclick="prevBetHistory()">Prev</button>
-        <button onclick="nextBetHistory()">Next</button>
+        <button onclick="firstBetHistory()">First</button>
+<button onclick="prevBetHistory()">⏮️ Left</button>
+<button onclick="nextBetHistory()">Next ⏭️</button>
+<button onclick="goToBetHistory(1)">1</button>
+<button onclick="goToBetHistory(2)">2</button>
+<button onclick="goToBetHistory(3)">3</button>
     </div>
 
     <script src="script.js"></script>
@@ -181,18 +185,27 @@ function nextUserBets() {
 
 // **Load Bet History (with Pagination)**
 async function loadBetHistory() {
-    const bets = await contract.methods.getAllBets().call();
-    const reversedBets = bets.reverse(); // Membalikkan urutan agar yang terbaru di atas
-    const start = betHistoryPage * pageSize;
+    if (!userAccount) return;
+    const bets = await contract.methods.getUserBets(userAccount).call();
+    const reversedBets = [...bets].reverse(); // Membalikkan urutan agar yang terbaru di atas
+    const start = userBetsPage * pageSize;
     const end = Math.min(start + pageSize, reversedBets.length);
-
+    
     let html = "";
     for (let i = start; i < end; i++) {
         html += `<p>${reversedBets[i].number} | ${reversedBets[i].betAmount} | ${new Date(reversedBets[i].timestamp * 1000).toLocaleString()}</p>`;
     }
-    document.getElementById("betHistory").innerHTML = html;
+    document.getElementById("BetHistory").innerHTML = html;
 }
-// **Bet History Pagination**
+        
+// Bet History Pagination
+let betHistoryPage = 0;
+
+function firstBetHistory() {
+    betHistoryPage = 0;
+    loadBetHistory();
+}
+
 function prevBetHistory() {
     if (betHistoryPage > 0) {
         betHistoryPage--;
@@ -203,6 +216,16 @@ function prevBetHistory() {
 function nextBetHistory() {
     betHistoryPage++;
     loadBetHistory();
+}
+
+function goToBetHistory(page) {
+    betHistoryPage = page;
+    loadBetHistory();
+}
+
+function loadBetHistory() {
+    console.log("Loading Bet History Page:", betHistoryPage);
+    // Tambahkan fungsi untuk memuat data berdasarkan betHistoryPage
 }
 
 // Initialize saat halaman terbuka
