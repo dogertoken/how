@@ -191,20 +191,20 @@ async function loadBetHistory() {
     for (let i = start; i < end; i++) {
         html += `<p>${reversedBets[i].number} | ${reversedBets[i].betAmount} | ${new Date(reversedBets[i].timestamp * 1000).toLocaleString()}</p>`;
     }
-    document.getElementById("BetHistory").innerHTML = html;
+    document.getElementById("betHistory").innerHTML = html;
 }
-        
-// Bet History Pagination
-function prevBetHistory() {
-    if (betHistoryPage > 0) {
-        betHistoryPage--;
-        loadBetHistory();
+
+// **User Bets Pagination**
+function prevBetHitory() {
+    if (userBetsPage > 0) {
+        userBetsPage--;
+        loadUserBets();
     }
 }
 
 function nextBetHistory() {
-    betHistoryPage++;
-    loadBetHistory();
+    userBetsPage++;
+    loadUserBets();
 }
 
 // Initialize saat halaman terbuka
