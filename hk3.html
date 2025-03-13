@@ -261,11 +261,6 @@ function nextUserBets() {
 }
 
 // **Load Bet History (with Pagination)**
-let betHistoryPage = 0;
-const pageSize = 10; // Ubah sesuai kebutuhan
-let userAddress = "";
-
-// **Memuat Bet History**
 async function loadBetHistory() {
     try {
         const bets = await contract.methods.getAllBets().call();
