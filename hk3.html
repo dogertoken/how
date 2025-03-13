@@ -48,7 +48,7 @@
         
        <button onclick="placeBet()">Place Bet</button>
 
-        <h2>ublic Bet History</h2>
+        <h2>Public Bet History</h2>
         <div id="betHistory"></div>
 
         <h2>Your Bet History</h2>
@@ -238,14 +238,17 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
         let betHistory = [];
-let batchSize = 3; // Jumlah bet yang dimuat tiap batch
+let batchSize = 10; // Jumlah bet yang dimuat tiap batch
 let loadedBets = 0; // Track jumlah bet yang sudah dimuat
 
 async function loadBetHistory() {
     try {
         if (!contract) return;
         betHistory = await contract.methods.getAllBets().call(); // Ambil semua bet
-        betHistory.reverse(); // Urutkan terbaru ke atas
+
+        // Urutkan berdasarkan timestamp dari yang terbaru ke terlama
+        betHistory.sort((a, b) => b.timestamp - a.timestamp);
+
         loadedBets = 0; // Reset jumlah bet yang dimuat
         document.getElementById("betHistory").innerHTML = ""; // Kosongkan sebelum load baru
         loadMoreBets(); // Muat batch pertama
@@ -277,7 +280,7 @@ function loadMoreBets() {
         </p><hr>`;
     }
 
-    // Tambahkan ke atas, bukan ke bawah
+    // Tambahkan bet baru di paling atas
     document.getElementById("betHistory").insertAdjacentHTML("afterbegin", betList);
     loadedBets = end; // Update jumlah bet yang telah dimuat
 }
