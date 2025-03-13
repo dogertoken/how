@@ -72,39 +72,6 @@ button:hover {
     max-width: 600px; /* Batasi lebar agar tidak terlalu panjang */
     margin: auto; /* Pusatkan jika diperlukan */
 }
-
-.modal {
-    display: none;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border: 1px solid #ccc;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
-    z-index: 1000;
-}
-
-.modal-content {
-    text-align: center;
-}
-
-.close {
-    float: right;
-    font-size: 24px;
-    cursor: pointer;
-}
-
-.comment-section {
-    margin-top: 10px;
-    padding-left: 10px;
-    border-left: 2px solid #ddd;
-}
-
-.comment {
-    margin-bottom: 5px;
-}
     </style>
 </head>
 <body>
@@ -136,17 +103,6 @@ button:hover {
     <button class="nav-button" onclick="nextBetHistory()">Next</button>
     
     </div>
-
-    <!-- Modal untuk Komentar -->
-     <div id="commentModal">
-        <div class="modal-content">
-            <h3>Tulis Komentar</h3>
-            <textarea id="commentText" placeholder="Masukkan komentar..."></textarea>
-            <br>
-            <button id="submitCommentBtn" onclick="submitComment()">Kirim</button>
-            <button onclick="closeModal()">Tutup</button>
-        </div>
-     </div>
 
     <script src="script.js"></script>
     <script>
@@ -225,44 +181,66 @@ async function placeBet() {
 }
 
 // **Load User Bets (with Pagination)**
-async function loadBetHistory() {
-    try {
-        if (!contract) {
-            alert("Kontrak tidak ditemukan!");
-            return;
-        }
+async function loadUserBets() {
+    if (!userAccount) return;
+    const bets = await contract.methods.getUserBets(userAccount).call();
+    const reversedBets = bets.slice().reverse(); // Membalik urutan bets agar yang terbaru di atas
 
-        const bets = await contract.methods.getAllBets().call();
-        const reversedBets = bets.slice().reverse();
-        const start = betHistoryPage * pageSize;
-        const end = Math.min(start + pageSize, reversedBets.length);
+    const start = userBetsPage * pageSize;
+    const end = Math.min(start + pageSize, reversedBets.length);
 
-        let html = "";
-        for (let i = start; i < end; i++) {
-            const bet = reversedBets[i];
-            const betId = bet.txHash;
-            const likes = bet.likes || 0;
-
-            html += `<p>
-                Player: ${bet.player}<br>
-                BetNumber: ${bet.number}<br>
-                BetAmount: ${bet.betAmount}<br>
-                Tx: ${bet.txHash}<br>
-                Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
-                Status: ${bet.status ?? 'Pending'}<br>
-                Time: ${new Date(bet.timestamp * 1000).toISOString()} UTC<br>
-                <button onclick="toggleComments('${betId}')">💬 Lihat Komentar</button>
-                <button onclick="likeBet('${betId}')">❤️ Like (${likes})</button>
-                <div id="comments-${betId}" class="comment-section"></div>
-            </p><hr>`;
-        }
-        document.getElementById("betHistory").innerHTML = html;
-    } catch (error) {
-        console.error("Gagal memuat bet history:", error);
-        alert("Terjadi kesalahan saat memuat taruhan.");
+    let html = "";
+    for (let i = start; i < end; i++) {
+        html += `<p>
+            Player: ${reversedBets[i].player}<br>
+            BetNumber: ${reversedBets[i].number}<br>
+            BetAmount: ${reversedBets[i].betAmount}<br>
+            Tx: ${reversedBets[i].txHash}<br>
+            Block: <a href="https://basescan.io/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
+            Status: ${reversedBets[i].status ?? 'Pending'}<br>
+            Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
+        </p><hr>`;
+    }
+    document.getElementById("userBets").innerHTML = html;
+}
+        
+// **User Bets Pagination**
+function prevUserBets() {
+    if (userBetsPage > 0) {
+        userBetsPage--;
+        loadUserBets();
     }
 }
 
+function nextUserBets() {
+    userBetsPage++;
+    loadUserBets();
+}
+
+// **Load Bet History (with Pagination)**
+async function loadBetHistory() {
+    const bets = await contract.methods.getAllBets().call();
+    const reversedBets = bets.slice().reverse(); // Membalik urutan bets
+
+    const start = betHistoryPage * pageSize;
+    const end = Math.min(start + pageSize, reversedBets.length);
+
+    let html = "";
+    for (let i = start; i < end; i++) {
+        html += `<p>
+            Player: ${reversedBets[i].player}<br>
+            BetNumber: ${reversedBets[i].number}<br>
+            BetAmount: ${reversedBets[i].betAmount}<br>
+            Tx: ${reversedBets[i].txHash}<br>
+            Block: <a href="https://basescan.io/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
+            Status: ${reversedBets[i].status ?? 'Pending'}<br>
+            Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
+        </p><hr>`;
+    }
+    document.getElementById("betHistory").innerHTML = html;
+}
+
+// **Bet History Pagination**
 function prevBetHistory() {
     if (betHistoryPage > 0) {
         betHistoryPage--;
@@ -275,121 +253,6 @@ function nextBetHistory() {
     loadBetHistory();
 }
 
-async function toggleComments(betId) {
-    const commentSection = document.getElementById(`comments-${betId}`);
-
-    if (commentSection.innerHTML.trim() !== "") {
-        commentSection.innerHTML = "";
-        return;
-    }
-
-    try {
-        if (!contract) {
-            alert("Koneksi ke kontrak gagal.");
-            return;
-        }
-
-        const comments = await contract.methods.getComments(betId).call();
-        renderComments(betId, comments);
-    } catch (error) {
-        console.error("Gagal memuat komentar:", error);
-        alert("Gagal memuat komentar.");
-    }
-}
-
-function renderComments(betId, comments) {
-    const commentSection = document.getElementById(`comments-${betId}`);
-
-    if (comments.length === 0) {
-        commentSection.innerHTML = "<p>Belum ada komentar.</p>";
-        return;
-    }
-
-    commentSection.innerHTML = comments.map((c, index) => `
-        <div class="comment">
-            <b>${c.commenter === userAddress ? "You" : c.commenter}:</b> ${c.text}
-            <small>(${new Date(c.timestamp * 1000).toLocaleString()})</small>
-            ${c.commenter === userAddress ? `
-                <button onclick="editComment('${betId}', ${index}')">✏️ Edit</button>
-                <button onclick="deleteComment('${betId}', ${index}')">🗑️ Delete</button>
-            ` : ""}
-        </div>
-    `).join("");
-}
-
-async function likeBet(betId) {
-    try {
-        if (!userAddress) {
-            alert("Anda harus terhubung dengan Metamask!");
-            return;
-        }
-
-        console.log("Menyukai bet:", betId);
-        const tx = await contract.methods.likeBet(betId).send({ from: userAddress });
-
-        if (tx.status) {
-            alert("Liked!");
-            updateLikeCount(betId);
-        }
-    } catch (error) {
-        console.error("Gagal like:", error);
-        alert("Gagal menyukai taruhan.");
-    }
-}
-
-async function updateLikeCount(betId) {
-    try {
-        const bet = await contract.methods.getBetById(betId).call();
-        const likeButton = document.querySelector(`button[onclick="likeBet('${betId}')"]`);
-        if (likeButton) {
-            likeButton.innerHTML = `❤️ Like (${bet.likes})`;
-        }
-    } catch (error) {
-        console.error("Gagal memperbarui jumlah like:", error);
-    }
-}
-
-function openCommentModal(betId) {
-    activeBetId = betId;
-    document.getElementById("commentModal").style.display = "flex";
-}
-
-function closeModal() {
-    document.getElementById("commentModal").style.display = "none";
-}
-
-async function submitComment() {
-    const commentText = document.getElementById("commentText").value.trim();
-    if (!commentText) {
-        alert("Komentar tidak boleh kosong!");
-        return;
-    }
-
-    document.getElementById("submitCommentBtn").disabled = true;
-
-    try {
-        if (!userAddress) {
-            alert("Anda harus terhubung dengan Metamask!");
-            return;
-        }
-
-        const tx = await contract.methods.addComment(activeBetId, commentText).send({ from: userAddress });
-
-        if (tx.status) {
-            alert("Komentar ditambahkan!");
-            closeModal();
-            toggleComments(activeBetId);
-        }
-    } catch (error) {
-        console.error("Gagal menambah komentar:", error);
-        alert("Gagal menambah komentar.");
-    } finally {
-        document.getElementById("submitCommentBtn").disabled = false;
-    }
-}
-
-window.onload = initWeb3;
-        
 // Initialize saat halaman terbuka
 window.onload = () => {
     if (window.ethereum) {
