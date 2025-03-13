@@ -197,7 +197,7 @@ async function loadUserBets() {
             BetAmount: ${reversedBets[i].betAmount}<br>
             Tx: ${reversedBets[i].txHash}<br>
             Block: <a href="https://basescan.io/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
-            Status: ${reversedBets[i].status ? reversedBets[i].status : 'Pending'}<br>
+            Status: ${reversedBets[i].status ?? 'Pending'}<br>
             Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
         </p><hr>`;
     }
@@ -233,7 +233,7 @@ async function loadBetHistory() {
             BetAmount: ${reversedBets[i].betAmount}<br>
             Tx: ${reversedBets[i].txHash}<br>
             Block: <a href="https://basescan.io/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
-            Status: ${reversedBets[i].status ? reversedBets[i].status : 'Pending'}<br>
+            Status: ${reversedBets[i].status ?? 'Pending'}<br>
             Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
         </p><hr>`;
     }
