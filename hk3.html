@@ -51,15 +51,6 @@
         <h2>Public Bet History</h2>
         <div id="betHistory"></div>
 
-<!-- Tombol Pagination -->
-<div id="pagination">
-    <button id="first" onclick="goToPage(1)">First</button>
-    <button id="prev" onclick="prevPage()">Previous</button>
-    <span id="pageNumbers"></span>
-    <button id="next" onclick="nextPage()">Next</button>
-    <button id="last" onclick="goToPage(totalPages)">Last</button>
-</div>
-
         <h2>Your Bet History</h2>
         <div id="userBets"></div>
     </div>
@@ -246,45 +237,21 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
-        const itemsPerPage = 5; // Jumlah item per halaman
-let currentPage = 1;
-let totalPages = 1;
-let allBets = []; // Menyimpan semua data taruhan
+        let allBets = [];
+let currentIndex = 0;
+const itemsPerPage = 5; // Jumlah data per load
 
 async function loadBetHistory() {
-    try {
-        console.log("Fetching bets...");
-        const bets = await contract.methods.getAllBets().call();
-
-        if (!bets || bets.length === 0) {
-            console.error("No bets found!");
-            document.getElementById("betHistory").innerHTML = "<p>No bet history available.</p>";
-            return;
-        }
-
-        console.log("Bets fetched:", bets);
-        allBets = bets.reverse(); // Urutan dari terbaru ke lama
-        totalPages = Math.ceil(allBets.length / itemsPerPage);
-        
-        renderBetHistory();
-        updatePagination();
-    } catch (error) {
-        console.error("Error fetching bet history:", error);
-        document.getElementById("betHistory").innerHTML = "<p>Error loading bet history.</p>";
-    }
+    const bets = await contract.methods.getAllBets().call();
+    allBets = bets.reverse(); // Membalik urutan agar yang terbaru muncul dulu
+    renderBetHistory(); // Tampilkan data awal
 }
 
 function renderBetHistory() {
     const betHistoryDiv = document.getElementById("betHistory");
-    betHistoryDiv.innerHTML = ""; // Kosongkan sebelum diisi ulang
-
-    let start = (currentPage - 1) * itemsPerPage;
-    let end = start + itemsPerPage;
-
-    console.log(`Rendering page ${currentPage}, showing bets ${start} to ${end}`);
-
-    let betList = "";
-    for (let i = start; i < end && i < allBets.length; i++) {
+    let endIndex = currentIndex + itemsPerPage;
+    
+    for (let i = currentIndex; i < endIndex && i < allBets.length; i++) {
         const bet = allBets[i];
         const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
         const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
@@ -294,55 +261,32 @@ function renderBetHistory() {
         const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
         const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
 
-        betList += `<p>
-            Player: ${shortPlayer}<br> 
-            BetNumber: <span style="color: orange;">${bet.number}</span><br> 
-            BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
-            TX: ${shortTx}<br> 
-            Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
-            Status: ${status}<br>
-            Time: <span style="color: #8e44ad;">${timestamp}</span><br>
-        </p><hr>`;
+        let betElement = document.createElement("div");
+        betElement.innerHTML = `
+            <p>
+                Player: ${shortPlayer}<br> 
+                BetNumber: <span style="color: orange;">${bet.number}</span><br> 
+                BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
+                TX: ${shortTx}<br> 
+                Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
+                Status: ${status}<br>
+                Time: <span style="color: #8e44ad;">${timestamp}</span><br>
+            </p><hr>
+        `;
+        betHistoryDiv.appendChild(betElement);
     }
 
-    betHistoryDiv.innerHTML = betList;
-    updatePagination();
+    currentIndex += itemsPerPage; // Update indeks untuk halaman berikutnya
 }
 
-function updatePagination() {
-    const pageNumbersDiv = document.getElementById("pageNumbers");
-    pageNumbersDiv.innerHTML = "";
-
-    if (totalPages <= 1) return;
-
-    let startPage = Math.max(1, currentPage - 5);
-    let endPage = Math.min(totalPages, startPage + 9);
-
-    for (let i = startPage; i <= endPage; i++) {
-        let button = document.createElement("button");
-        button.innerText = i;
-        button.onclick = () => goToPage(i);
-        if (i === currentPage) button.classList.add("active");
-        pageNumbersDiv.appendChild(button);
+// Event listener untuk mendeteksi scroll ke bawah
+window.addEventListener("scroll", function () {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
+        renderBetHistory(); // Load data lebih banyak saat mendekati bawah
     }
+});
 
-    document.getElementById("first").disabled = currentPage === 1;
-    document.getElementById("prev").disabled = currentPage === 1;
-    document.getElementById("next").disabled = currentPage === totalPages;
-    document.getElementById("last").disabled = currentPage === totalPages;
-}
-
-function goToPage(page) {
-    if (page >= 1 && page <= totalPages) {
-        currentPage = page;
-        renderBetHistory();
-    }
-}
-
-function prevPage() { if (currentPage > 1) goToPage(currentPage - 1); }
-function nextPage() { if (currentPage < totalPages) goToPage(currentPage + 1); }
-
-// Panggil fungsi saat halaman dimuat
+// Panggil fungsi utama untuk memuat data
 loadBetHistory();
 
         async function loadUserBets() {
