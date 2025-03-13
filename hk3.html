@@ -50,7 +50,15 @@
 
         <h2>Public Bet History</h2>
         <div id="betHistory"></div>
-        <div id="pagination"></div>
+
+         <!-- Pagination Controls -->
+         <div id="pagination">
+            <button onclick="goToPage(1)" id="firstPage">First</button>
+            <button onclick="changePage(-1)" id="prevPage">Previous</button>
+            <span id="pageNumbers"></span>
+            <button onclick="changePage(1)" id="nextPage">Next</button>
+            <button onclick="goToLastPage()" id="lastPage">Last</button>
+        </div>
         
         <h2>Your Bet History</h2>
         <div id="userBets"></div>
@@ -238,22 +246,24 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
-       let betData = [];  // Simpan data bet global
+       let betData = [];
 let betsPerPage = 10;
-let currentPage = 1;  // Halaman awal
+let currentPage = 1;
+let totalPages = 1;
 
 async function loadBetHistory() {
-    betData = await contract.methods.getAllBets().call(); // Ambil semua bet dari smart contract
-    betData.reverse(); // Urutkan dari yang terbaru ke yang lama
+    betData = await contract.methods.getAllBets().call();
+    betData.reverse(); // Urutkan dari terbaru ke lama
+    totalPages = Math.ceil(betData.length / betsPerPage);
     displayBets();
-    createPagination();
+    updatePagination();
 }
 
-function displayBets(page = 1) {
+function displayBets() {
     let betHistoryDiv = document.getElementById("betHistory");
-    betHistoryDiv.innerHTML = ""; // Hapus konten lama sebelum menampilkan yang baru
+    betHistoryDiv.innerHTML = ""; // Hapus konten lama sebelum update
 
-    let start = (page - 1) * betsPerPage;
+    let start = (currentPage - 1) * betsPerPage;
     let end = start + betsPerPage;
     let betsToShow = betData.slice(start, end);
 
@@ -281,37 +291,10 @@ function displayBets(page = 1) {
     betHistoryDiv.innerHTML = betList;
 }
 
-// **Fungsi untuk membuat tombol pagination dengan First, Previous, Numbered, Next, Last**
-function createPagination() {
-    let totalPages = Math.ceil(betData.length / betsPerPage);
-    let paginationDiv = document.getElementById("pagination");
-    paginationDiv.innerHTML = ""; // Bersihkan pagination sebelumnya
+function updatePagination() {
+    let pageNumbersDiv = document.getElementById("pageNumbers");
+    pageNumbersDiv.innerHTML = ""; // Reset pagination numbers
 
-    // Tombol First
-    let firstBtn = document.createElement("button");
-    firstBtn.textContent = "First";
-    firstBtn.onclick = function () {
-        currentPage = 1;
-        displayBets(1);
-        createPagination();
-    };
-    firstBtn.disabled = currentPage === 1;
-    paginationDiv.appendChild(firstBtn);
-
-    // Tombol Previous
-    let prevBtn = document.createElement("button");
-    prevBtn.textContent = "Previous";
-    prevBtn.onclick = function () {
-        if (currentPage > 1) {
-            currentPage--;
-            displayBets(currentPage);
-            createPagination();
-        }
-    };
-    prevBtn.disabled = currentPage === 1;
-    paginationDiv.appendChild(prevBtn);
-
-    // Tombol angka halaman (maksimal tampilkan 5 angka terdekat)
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, startPage + 4);
 
@@ -319,9 +302,7 @@ function createPagination() {
         let btn = document.createElement("button");
         btn.textContent = i;
         btn.onclick = function () {
-            currentPage = i;
-            displayBets(i);
-            createPagination();
+            goToPage(i);
         };
 
         if (i === currentPage) {
@@ -329,35 +310,37 @@ function createPagination() {
             btn.style.backgroundColor = "#ccc";
         }
 
-        paginationDiv.appendChild(btn);
+        pageNumbersDiv.appendChild(btn);
     }
 
-    // Tombol Next
-    let nextBtn = document.createElement("button");
-    nextBtn.textContent = "Next";
-    nextBtn.onclick = function () {
-        if (currentPage < totalPages) {
-            currentPage++;
-            displayBets(currentPage);
-            createPagination();
-        }
-    };
-    nextBtn.disabled = currentPage === totalPages;
-    paginationDiv.appendChild(nextBtn);
-
-    // Tombol Last
-    let lastBtn = document.createElement("button");
-    lastBtn.textContent = "Last";
-    lastBtn.onclick = function () {
-        currentPage = totalPages;
-        displayBets(totalPages);
-        createPagination();
-    };
-    lastBtn.disabled = currentPage === totalPages;
-    paginationDiv.appendChild(lastBtn);
+    // Disable buttons if needed
+    document.getElementById("firstPage").disabled = currentPage === 1;
+    document.getElementById("prevPage").disabled = currentPage === 1;
+    document.getElementById("nextPage").disabled = currentPage === totalPages;
+    document.getElementById("lastPage").disabled = currentPage === totalPages;
 }
 
-// **Panggil pertama kali**
+function changePage(direction) {
+    if ((direction === -1 && currentPage > 1) || (direction === 1 && currentPage < totalPages)) {
+        currentPage += direction;
+        displayBets();
+        updatePagination();
+    }
+}
+
+function goToPage(page) {
+    currentPage = page;
+    displayBets();
+    updatePagination();
+}
+
+function goToLastPage() {
+    currentPage = totalPages;
+    displayBets();
+    updatePagination();
+}
+
+// Load pertama kali
 loadBetHistory();
         
         async function loadUserBets() {
