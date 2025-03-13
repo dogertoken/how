@@ -341,7 +341,9 @@ function goToLastPage() {
 }
 
 // Load pertama kali
-loadBetHistory();
+document.addEventListener("DOMContentLoaded", function () {
+    loadBetHistory();
+});
         
         async function loadUserBets() {
     const accounts = await web3.eth.getAccounts();
