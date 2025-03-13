@@ -48,7 +48,7 @@
         
        <button onclick="placeBet()">Place Bet</button>
 
-        <h2>Public Bet History</h2>
+        <h2>ublic Bet History</h2>
         <div id="betHistory"></div>
 
         <h2>Your Bet History</h2>
@@ -238,14 +238,13 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
         let betHistory = [];
-let batchSize = 4; // Jumlah bet yang dimuat tiap batch
+let batchSize = 5; // Jumlah bet yang dimuat tiap batch
 let loadedBets = 0; // Track jumlah bet yang sudah dimuat
 
 async function loadBetHistory() {
     try {
         if (!contract) return;
         betHistory = await contract.methods.getAllBets().call(); // Ambil semua bet
-        betHistory.reverse(); // Urutkan terbaru ke atas
         loadedBets = 0; // Reset jumlah bet yang dimuat
         document.getElementById("betHistory").innerHTML = ""; // Kosongkan sebelum load baru
         loadMoreBets(); // Muat batch pertama
@@ -256,26 +255,37 @@ async function loadBetHistory() {
 
 function loadMoreBets() {
     let betList = "";
+    let batchSize = 5; // Jumlah bet yang dimuat per batch
     let end = Math.min(loadedBets + batchSize, betHistory.length);
 
-    for (let i = loadedBets; i < end; i++) {
-        const bet = betHistory[i];
-        const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
-        const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
-        const status = bet.txHash ? '<span style="color: green;">Confirmed</span>' : '<span style="color: red;">Pending</span>';
-        const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
-        const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
-
-        betList += `<p>
-            Player: ${shortPlayer}<br> 
-            BetNumber: <span style="color: orange;">${bet.number}</span><br> 
-            BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
-            TX: ${shortTx}<br> 
-            Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
-            Status: ${status}<br>
-            Time: <span style="color: #8e44ad;">${timestamp}</span><br>
-        </p><hr>`;
+    for (let i = betHistory.length - 1 - loadedBets; i >= betHistory.length - end; i--) {
+        if (i < 0) break;
+        betList += generateBetHTML(betHistory[i]);
     }
+
+    document.getElementById("betHistory").insertAdjacentHTML("afterbegin", betList);
+    loadedBets += batchSize;
+}
+
+function generateBetHTML(bet) {
+    const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
+    const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
+    const status = bet.txHash 
+        ? '<span style="color: green;">Confirmed</span>' 
+        : '<span style="color: red;">Pending</span>';
+    const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
+    const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
+
+    return `<p>
+        Player: ${shortPlayer}<br> 
+        BetNumber: <span style="color: orange;">${bet.number}</span><br> 
+        BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
+        TX: ${shortTx}<br> 
+        Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
+        Status: ${status}<br>
+        Time: <span style="color: #8e44ad;">${timestamp}</span><br>
+    </p><hr>`;
+}
 
     document.getElementById("betHistory").insertAdjacentHTML("beforeend", betList);
     loadedBets = end; // Update jumlah bet yang telah dimuat
