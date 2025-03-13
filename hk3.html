@@ -50,7 +50,15 @@
 
         <h2>Public Bet History</h2>
         <div id="betHistory"></div>
-        <div id="pagination"></div>
+
+<!-- Tombol Pagination -->
+<div id="pagination">
+    <button id="first" onclick="goToPage(1)">First</button>
+    <button id="prev" onclick="prevPage()">Previous</button>
+    <span id="pageNumbers"></span>
+    <button id="next" onclick="nextPage()">Next</button>
+    <button id="last" onclick="goToPage(totalPages)">Last</button>
+</div>
 
         <h2>Your Bet History</h2>
         <div id="userBets"></div>
@@ -238,7 +246,7 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
-const itemsPerPage = 5; // Jumlah item per halaman
+const itemsPerPage = 5; // Jumlah data per halaman
 let currentPage = 1;
 let totalPages = 1;
 let allBets = []; // Menyimpan semua data taruhan
@@ -247,7 +255,7 @@ async function loadBetHistory() {
     const bets = await contract.methods.getAllBets().call();
     allBets = bets.reverse(); // Membalik urutan agar yang terbaru muncul dulu
     totalPages = Math.ceil(allBets.length / itemsPerPage);
-    renderBetHistory(); // Menampilkan halaman pertama
+    renderBetHistory();
     updatePagination();
 }
 
@@ -283,23 +291,26 @@ function renderBetHistory() {
 }
 
 function updatePagination() {
-    const paginationDiv = document.getElementById("pagination");
-    paginationDiv.innerHTML = "";
+    const pageNumbersDiv = document.getElementById("pageNumbers");
+    pageNumbersDiv.innerHTML = "";
 
-    if (totalPages <= 1) return; // Jika hanya ada 1 halaman, tidak perlu tombol
-
-    paginationDiv.innerHTML += `<button onclick="goToPage(1)" ${currentPage === 1 ? 'disabled' : ''}>First</button>`;
-    paginationDiv.innerHTML += `<button onclick="prevPage()" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>`;
+    if (totalPages <= 1) return;
 
     let startPage = Math.max(1, currentPage - 5);
     let endPage = Math.min(totalPages, startPage + 9);
 
     for (let i = startPage; i <= endPage; i++) {
-        paginationDiv.innerHTML += `<button onclick="goToPage(${i})" ${i === currentPage ? 'class="active"' : ''}>${i}</button>`;
+        let button = document.createElement("button");
+        button.innerText = i;
+        button.onclick = () => goToPage(i);
+        if (i === currentPage) button.classList.add("active");
+        pageNumbersDiv.appendChild(button);
     }
 
-    paginationDiv.innerHTML += `<button onclick="nextPage()" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>`;
-    paginationDiv.innerHTML += `<button onclick="goToPage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''}>Last</button>`;
+    document.getElementById("first").disabled = currentPage === 1;
+    document.getElementById("prev").disabled = currentPage === 1;
+    document.getElementById("next").disabled = currentPage === totalPages;
+    document.getElementById("last").disabled = currentPage === totalPages;
 }
 
 function goToPage(page) {
