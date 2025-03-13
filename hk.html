@@ -93,13 +93,11 @@ button:hover {
         <p id="walletAddress"></p>
 
         <h2>1. Place Bet</h2>
-        <input type="text" id="betNumber" placeholder="4D 3D or 2D" oninput="validateBetNumber()">
-        <input type="number" id="betTimes" placeholder="x1 / x99" min="1" max="99" oninput="validateBetTimes(); updateBetPrice()">
-        <p id="betWarning" style="color: red;"></p>
-        <p id="betPrice" style="color: blue; font-weight: bold;">Cost: 0.000000 ETH</p>
+        <input type="text" id="betNumber" placeholder="Enter number (1-4 digits)">
+        <input type="number" id="betTimes" placeholder="Times" min="1" oninput="updateBetPrice()">
+        <p id="betPrice" style="color: blue; font-weight: bold;">Price: 0.000000 ETH</p>
         <button onclick="placeBet()">Place Bet</button>
         <p id="betStatus"></p>
-
         <h2>2. Your Bets</h2>
         <div id="userBets"></div>
         <div class="button-container">
