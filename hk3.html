@@ -53,6 +53,12 @@
         
         <h2>Public Bet History</h2>
         <div id="betHistory"></div>
+        <button onclick="firstBetHistory()">First</button>
+<button onclick="prevBetHistory()">⏮️ Left</button>
+<button onclick="nextBetHistory()">Next ⏭️</button>
+<button onclick="goToBetHistory(1)">1</button>
+<button onclick="goToBetHistory(2)">2</button>
+<button onclick="goToBetHistory(3)">3</button>
 
     </div>
 
@@ -263,6 +269,36 @@ document.getElementById("betTimes").addEventListener("input", updateTotalETH);
         }
          document.getElementById("betHistory").innerHTML = betList;
             }
+
+        // Bet History Pagination
+let betHistoryPage = 0;
+
+function firstBetHistory() {
+    betHistoryPage = 0;
+    loadBetHistory();
+}
+
+function prevBetHistory() {
+    if (betHistoryPage > 0) {
+        betHistoryPage--;
+        loadBetHistory();
+    }
+}
+
+function nextBetHistory() {
+    betHistoryPage++;
+    loadBetHistory();
+}
+
+function goToBetHistory(page) {
+    betHistoryPage = page;
+    loadBetHistory();
+}
+
+function loadBetHistory() {
+    console.log("Loading Bet History Page:", betHistoryPage);
+    // Tambahkan fungsi untuk memuat data berdasarkan betHistoryPage
+}
 
         async function loadUserBets() {
     const accounts = await web3.eth.getAccounts();
