@@ -240,17 +240,31 @@ document.getElementById("betTimes").addEventListener("input", updateTotalETH);
         let allBets = [];
 let currentIndex = 0;
 const itemsPerPage = 5; // Jumlah data per load
+let loading = false; // Untuk mencegah pemuatan berulang
 
 async function loadBetHistory() {
-    const bets = await contract.methods.getAllBets().call();
-    allBets = bets.reverse(); // Membalik urutan agar yang terbaru muncul dulu
-    renderBetHistory(); // Tampilkan data awal
+    try {
+        const bets = await contract.methods.getAllBets().call();
+        if (!bets || bets.length === 0) {
+            console.log("Tidak ada riwayat taruhan.");
+            return;
+        }
+        
+        allBets = bets.reverse(); // Membalik urutan agar terbaru muncul dulu
+        renderBetHistory(); // Tampilkan data awal
+    } catch (error) {
+        console.error("Gagal mengambil riwayat taruhan:", error);
+    }
 }
 
 function renderBetHistory() {
     const betHistoryDiv = document.getElementById("betHistory");
-    let endIndex = currentIndex + itemsPerPage;
+    if (!betHistoryDiv) {
+        console.error("Elemen betHistory tidak ditemukan!");
+        return;
+    }
     
+    let endIndex = currentIndex + itemsPerPage;
     for (let i = currentIndex; i < endIndex && i < allBets.length; i++) {
         const bet = allBets[i];
         const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
@@ -277,18 +291,21 @@ function renderBetHistory() {
     }
 
     currentIndex += itemsPerPage; // Update indeks untuk halaman berikutnya
+    loading = false; // Set kembali ke false agar bisa load lagi
 }
 
 // Event listener untuk mendeteksi scroll ke bawah
 window.addEventListener("scroll", function () {
+    if (loading) return; // Mencegah load ganda
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
+        loading = true;
         renderBetHistory(); // Load data lebih banyak saat mendekati bawah
     }
 });
 
-// Panggil fungsi utama untuk memuat data
+// Panggil fungsi utama untuk memuat data pertama kali
 loadBetHistory();
-
+        
         async function loadUserBets() {
     const accounts = await web3.eth.getAccounts();
     const bets = await contract.methods.getUserBets(accounts[0]).call();
