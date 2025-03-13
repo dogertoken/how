@@ -238,30 +238,26 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
         async function loadBetHistory() {
-    const accounts = await web3.eth.getAccounts();
-    const bets = await contract.methods.getUserBets(accounts[0]).call();
+    const bets = await contract.methods.getAllBets().call();
     let betList = "";
     for (let i = bets.length - 1; i >= 0; i--) { // Membalik urutan iterasi
         const bet = bets[i];
         const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
-        const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`; // Ganti sesuai blockchain yang digunakan
-        const status = bet.txHash 
-        ? '<span style="color: green;">Confirmed</span>' 
-        : '<span style="color: red;">Pending</span>'; // Jika belum ada blockNumber, berarti masih pending
-        const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
+        const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
+        const status = bet.txHash ? "Confirmed" : "Pending";
+
+        // Pendekkan TX hash menjadi 10...10
         const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
 
         betList += `<p>
-            Player: ${shortPlayer}<br>
-            BetNumber: <span style="color: orange;">${bet.number}</span><br> 
-            BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
-            TX: ${shortTx}<br> 
-            Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
-            Status: ${status}<br>
-            Time: <span style="color: #8e44ad;">${timestamp}</span><br>
-        </p><hr>`;
+            ${bet.player} - ${bet.number} - ${bet.betAmount} 
+            - TX: ${shortTx} 
+            - Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a> 
+            - Status: ${status} 
+            - Time: ${timestamp}
+        </p>`;
     }
-    document.getElementById("userBets").innerHTML = betList;
+    document.getElementById("betHistory").innerHTML = betList;
         }
 
         async function loadUserBets() {
