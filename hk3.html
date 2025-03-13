@@ -50,26 +50,11 @@
 
         <h2>Public Bet History</h2>
         <div id="betHistory"></div>
-        <div id="pagination">
-        <button id="firstPage" onclick="goToPage(1)">⏮️</button>
-        <button id="prevPage" onclick="changePage(-1)">⬅️</button>
-        <span id="pageInfo"></span>
-        <button id="nextPage" onclick="changePage(1)">➡️</button>
-        <button id="lastPage" onclick="goToPage('last')">⏭️</button>
-     </div>
-
-    <hr>
 
         <h2>Your Bet History</h2>
-<div id="userBets"></div>
+        <div id="userBets"></div>
+    </div>
 
-<div id="pagination"></div>
-
-<div>
-    <button onclick="changePage(-1)">⬅️ Prev</button>
-    <span id="pageInfo"></span>
-    <button onclick="changePage(1)">Next ➡️</button>
-</div>
     <script>
         const contractAddress = "0x410F02E143Ba921FEdda48830d545154F5E809ab";
         const contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"BetLiked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":false,"internalType":"string","name":"number","type":"string"},{"indexed":false,"internalType":"uint256","name":"betAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"BetPlaced","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"winningNumber","type":"uint256"}],"name":"BetResultSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"comment","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"CommentAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"CommentDeleted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"},{"indexed":false,"internalType":"string","name":"newComment","type":"string"}],"name":"CommentUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ETHClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"WinnerSet","type":"event"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"string","name":"_comment","type":"string"}],"name":"addComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"betComments","outputs":[{"internalType":"address","name":"commenter","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isDeleted","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"betHistory","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"address","name":"","type":"address"}],"name":"betLikes","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"betPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"betResults","outputs":[{"internalType":"uint256","name":"drawId","type":"uint256"},{"internalType":"uint256","name":"winningNumber","type":"uint256"},{"internalType":"bool","name":"isProcessed","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"claimETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"contractBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"deleteComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"uint256","name":"commentIndex","type":"uint256"},{"internalType":"string","name":"newComment","type":"string"}],"name":"editComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAllBets","outputs":[{"components":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"internalType":"struct BetHistory.Bet[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"}],"name":"getComments","outputs":[{"components":[{"internalType":"address","name":"commenter","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isDeleted","type":"bool"}],"internalType":"struct BetHistory.Comment[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserBets","outputs":[{"components":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"internalType":"struct BetHistory.Bet[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"}],"name":"likeBet","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"maxBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"minBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_number","type":"string"},{"internalType":"uint256","name":"_times","type":"uint256"},{"internalType":"bool","name":"_isETH","type":"bool"}],"name":"placeBet","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_winningNumber","type":"uint256"}],"name":"setBetResult","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_winner","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"setWinner","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"userBets","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"winnings","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdrawETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
@@ -252,29 +237,16 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
-        let currentPage = 1;
-const itemsPerPage = 10;
-let historyData = [];
-
-async function loadBetHistory() {
+        async function loadBetHistory() {
     const bets = await contract.methods.getAllBets().call();
-    historyData = bets.reverse(); // Membalik agar data terbaru muncul duluan
-    displayPage(currentPage);
-}
-
-function displayPage(page) {
-    let totalPages = Math.ceil(historyData.length / itemsPerPage);
-    let start = (page - 1) * itemsPerPage;
-    let end = start + itemsPerPage;
-    let paginatedItems = historyData.slice(start, end);
-
     let betList = "";
-    paginatedItems.forEach(bet => {
+    for (let i = bets.length - 1; i >= 0; i--) { // Membalik urutan iterasi
+        const bet = bets[i];
         const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
         const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
         const status = bet.txHash 
-            ? '<span style="color: green;">Confirmed</span>' 
-            : '<span style="color: red;">Pending</span>';
+        ? '<span style="color: green;">Confirmed</span>' 
+        : '<span style="color: red;">Pending</span>';
         const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
         const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
 
@@ -287,72 +259,25 @@ function displayPage(page) {
             Status: ${status}<br>
             Time: <span style="color: #8e44ad;">${timestamp}</span><br>
         </p><hr>`;
-    });
+        }
+         document.getElementById("betHistory").innerHTML = betList;
+            }
 
-    document.getElementById("betHistory").innerHTML = betList;
-    document.getElementById("pageInfo").innerText = `Page ${page} of ${totalPages}`;
-    document.getElementById("firstPage").disabled = page === 1;
-    document.getElementById("prevPage").disabled = page === 1;
-    document.getElementById("nextPage").disabled = page === totalPages;
-    document.getElementById("lastPage").disabled = page === totalPages;
-}
-
-function changePage(direction) {
-    let newPage = currentPage + direction;
-    let totalPages = Math.ceil(historyData.length / itemsPerPage);
-
-    if (newPage >= 1 && newPage <= totalPages) {
-        currentPage = newPage;
-        displayPage(currentPage);
-    }
-}
-
-function goToPage(page) {
-    let totalPages = Math.ceil(historyData.length / itemsPerPage);
-
-    if (page === "last") {
-        currentPage = totalPages;
-    } else {
-        currentPage = 1;
-    }
-    displayPage(currentPage);
-}
-
-// Panggil `loadBetHistory()` setelah halaman dimuat
-window.onload = loadBetHistory;
-
-        let currentPage = 1;
-const itemsPerPage = 10;
-let userBetsData = [];
-let totalPages = 0;
-let pageGroupStart = 1; // Untuk tracking kelompok halaman saat lazy loading
-
-async function loadUserBets() {
+        async function loadUserBets() {
     const accounts = await web3.eth.getAccounts();
     const bets = await contract.methods.getUserBets(accounts[0]).call();
-    
-    userBetsData = bets.reverse(); // Urutkan dari terbaru
-    totalPages = Math.ceil(userBetsData.length / itemsPerPage);
-    
-    displayPage(currentPage);
-    updatePagination();
-}
-
-function displayPage(page) {
-    let start = (page - 1) * itemsPerPage;
-    let end = start + itemsPerPage;
-    let paginatedItems = userBetsData.slice(start, end);
-
-    let betList = paginatedItems.map(bet => {
+    let betList = "";
+    for (let i = bets.length - 1; i >= 0; i--) { // Membalik urutan iterasi
+        const bet = bets[i];
         const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
-        const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
+        const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`; // Ganti sesuai blockchain yang digunakan
         const status = bet.txHash 
-            ? '<span style="color: green;">Confirmed</span>' 
-            : '<span style="color: red;">Pending</span>';
-        const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
+        ? '<span style="color: green;">Confirmed</span>' 
+        : '<span style="color: red;">Pending</span>'; // Jika belum ada blockNumber, berarti masih pending
+        const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown"
         const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
 
-        return `<p>
+        betList += `<p>
             Player: ${shortPlayer}<br>
             BetNumber: <span style="color: orange;">${bet.number}</span><br> 
             BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
@@ -361,63 +286,9 @@ function displayPage(page) {
             Status: ${status}<br>
             Time: <span style="color: #8e44ad;">${timestamp}</span><br>
         </p><hr>`;
-    }).join("");
-
-    document.getElementById("userBets").innerHTML = betList || "<p>No bet history available.</p>";
-    document.getElementById("pageInfo").innerText = `Page ${page} of ${totalPages}`;
-    updatePagination();
-}
-
-function changePage(direction) {
-    let newPage = currentPage + direction;
-    if (newPage >= 1 && newPage <= totalPages) {
-        currentPage = newPage;
-        displayPage(currentPage);
     }
-}
-
-function goToPage(page) {
-    if (page >= 1 && page <= totalPages) {
-        currentPage = page;
-        displayPage(currentPage);
-    }
-}
-
-function updatePagination() {
-    let paginationContainer = document.getElementById("pagination");
-    paginationContainer.innerHTML = "";
-
-    let endPage = Math.min(pageGroupStart + 4, totalPages);
-    
-    // Tombol Previous 10 Pages
-    if (pageGroupStart > 1) {
-        let prevBtn = `<button onclick="loadMorePages(-10)">◀️ Prev 10</button>`;
-        paginationContainer.innerHTML += prevBtn;
-    }
-
-    // Tombol angka halaman (max 5 halaman ditampilkan)
-    for (let i = pageGroupStart; i <= endPage; i++) {
-        let isActive = i === currentPage ? 'style="font-weight: bold;"' : "";
-        paginationContainer.innerHTML += `<button ${isActive} onclick="goToPage(${i})">${i}</button>`;
-    }
-
-    // Tombol Next 10 Pages
-    if (endPage < totalPages) {
-        let nextBtn = `<button onclick="loadMorePages(10)">Next 10 ▶️</button>`;
-        paginationContainer.innerHTML += nextBtn;
-    }
-}
-
-function loadMorePages(step) {
-    let newStart = pageGroupStart + step;
-    if (newStart >= 1 && newStart <= totalPages) {
-        pageGroupStart = newStart;
-        updatePagination();
-    }
-}
-
-// Panggil loadUserBets() setelah halaman siap
-window.onload = loadUserBets;
+    document.getElementById("userBets").innerHTML = betList;
+        }
 
         window.onload = init;
     </script>
