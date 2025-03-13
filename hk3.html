@@ -224,43 +224,7 @@ async function placeBet() {
 }
 
 // **Load User Bets (with Pagination)**
-async function loadUserBets() {
-    if (!userAccount) return;
-    const bets = await contract.methods.getUserBets(userAccount).call();
-    const reversedBets = bets.slice().reverse(); // Membalik urutan bets agar yang terbaru di atas
-
-    const start = userBetsPage * pageSize;
-    const end = Math.min(start + pageSize, reversedBets.length);
-
-    let html = "";
-    for (let i = start; i < end; i++) {
-        html += `<p>
-            Player: ${reversedBets[i].player}<br>
-            BetNumber: ${reversedBets[i].number}<br>
-            BetAmount: ${reversedBets[i].betAmount}<br>
-            Tx: ${reversedBets[i].txHash}<br>
-            Block: <a href="https://basescan.io/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
-            Status: ${reversedBets[i].status ?? 'Pending'}<br>
-            Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
-        </p><hr>`;
-    }
-    document.getElementById("userBets").innerHTML = html;
-}
-        
-// **User Bets Pagination**
-function prevUserBets() {
-    if (userBetsPage > 0) {
-        userBetsPage--;
-        loadUserBets();
-    }
-}
-
-function nextUserBets() {
-    userBetsPage++;
-    loadUserBets();
-}
-
-// **Load Bet History (with Pagination)**
+// **Memuat Riwayat Taruhan**
 async function loadBetHistory() {
     try {
         const bets = await contract.methods.getAllBets().call();
@@ -274,7 +238,7 @@ async function loadBetHistory() {
             const bet = reversedBets[i];
             const betId = bet.txHash;
             const likes = bet.likes || 0;
-            
+
             html += `<p>
                 Player: ${bet.player}<br>
                 BetNumber: ${bet.number}<br>
@@ -283,8 +247,8 @@ async function loadBetHistory() {
                 Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
                 Status: ${bet.status ?? 'Pending'}<br>
                 Time: ${new Date(bet.timestamp * 1000).toISOString()} UTC<br>
-                <button onclick="toggleComments('${betId}')">💬 Lihat Komentar</button>
-                <button onclick="likeBet('${betId}')">❤️ Like (${likes})</button>
+                <button onclick="toggleComments('${betId}', event)">💬 Lihat Komentar</button>
+                <button onclick="likeBet('${betId}', event)">👍 Like (${likes})</button>
                 <div id="comments-${betId}" class="comment-section"></div>
             </p><hr>`;
         }
@@ -294,7 +258,7 @@ async function loadBetHistory() {
     }
 }
 
-// **Pagination Bet History**
+// **Pindah ke Halaman Sebelumnya**
 function prevBetHistory() {
     if (betHistoryPage > 0) {
         betHistoryPage--;
@@ -302,15 +266,17 @@ function prevBetHistory() {
     }
 }
 
+// **Pindah ke Halaman Berikutnya**
 function nextBetHistory() {
     betHistoryPage++;
     loadBetHistory();
 }
 
 // **Lazy Loading Komentar**
-async function toggleComments(betId) {
+async function toggleComments(betId, event) {
+    event.preventDefault();
     const commentSection = document.getElementById(`comments-${betId}`);
-    
+
     if (commentSection.innerHTML.trim() !== "") {
         commentSection.innerHTML = "";
         return;
@@ -321,6 +287,7 @@ async function toggleComments(betId) {
         renderComments(betId, comments);
     } catch (error) {
         console.error("Gagal memuat komentar:", error);
+        alert("Gagal memuat komentar.");
     }
 }
 
@@ -339,7 +306,15 @@ function renderComments(betId, comments) {
 }
 
 // **Menyukai Taruhan**
-async function likeBet(betId) {
+async function likeBet(betId, event) {
+    event.preventDefault();
+
+    if (!userAddress) {
+        alert("Anda harus terhubung dengan wallet terlebih dahulu!");
+        return;
+    }
+
+    console.log("Menyukai bet:", betId);
     try {
         const result = await contract.methods.likeBet(betId).send({ from: userAddress });
         console.log("Like berhasil:", result);
@@ -372,7 +347,7 @@ async function submitComment() {
         await contract.methods.addComment(activeBetId, commentText).send({ from: userAddress });
         alert("Komentar ditambahkan!");
         closeModal();
-        toggleComments(activeBetId);
+        toggleComments(activeBetId, event);
     } catch (error) {
         console.error("Gagal menambah komentar:", error);
         alert("Gagal menambah komentar.");
@@ -387,7 +362,7 @@ async function editComment(betId, commentIndex) {
     try {
         await contract.methods.editComment(betId, commentIndex, newComment).send({ from: userAddress });
         alert("Komentar diperbarui!");
-        toggleComments(betId);
+        toggleComments(betId, event);
     } catch (error) {
         console.error("Gagal edit komentar:", error);
         alert("Gagal mengedit komentar.");
@@ -401,13 +376,13 @@ async function deleteComment(betId, commentIndex) {
     try {
         await contract.methods.deleteComment(betId, commentIndex).send({ from: userAddress });
         alert("Komentar dihapus!");
-        toggleComments(betId);
+        toggleComments(betId, event);
     } catch (error) {
         console.error("Gagal menghapus komentar:", error);
         alert("Gagal menghapus komentar.");
     }
 }
-
+        
 // Initialize saat halaman terbuka
 window.onload = () => {
     if (window.ethereum) {
