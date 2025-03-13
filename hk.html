@@ -101,10 +101,8 @@ button:hover {
         <h2>2. Your Bets</h2>
 <div id="userBets"></div>
 <div class="button-container">
-    <button class="nav-button" id="prevUserBets" onclick="prevUserBets()" disabled>Prev</button>
-<span id="userBetsPageInfo">Page 1 / ?</span>
-<button class="nav-button" id="nextUserBets" onclick="nextUserBets()">Next</button>
-<input type="number" id="jumpUserBets" min="1" placeholder="Go to page" onkeydown="jumpToUserBets(event)">
+    <button class="nav-button" onclick="prevUserBets()">Prev</button>
+    <button class="nav-button" onclick="nextUserBets()">Next</button>
 </div>
 
 <h2>3. Bet History</h2>
@@ -218,14 +216,6 @@ async function loadUserBets() {
 }
 
 // **User Bets Pagination**
-function updateUserBetsPagination() {
-    const totalPages = Math.ceil(reversedBets.length / pageSize);
-    document.getElementById("userBetsPageInfo").textContent = `Page ${userBetsPage + 1} / ${totalPages}`;
-    
-    document.getElementById("prevUserBets").disabled = userBetsPage === 0;
-    document.getElementById("nextUserBets").disabled = userBetsPage >= totalPages - 1;
-}
-
 function prevUserBets() {
     if (userBetsPage > 0) {
         userBetsPage--;
@@ -234,21 +224,8 @@ function prevUserBets() {
 }
 
 function nextUserBets() {
-    const totalPages = Math.ceil(reversedBets.length / pageSize);
-    if (userBetsPage < totalPages - 1) {
-        userBetsPage++;
-        loadUserBets();
-    }
-}
-
-function jumpToUserBets(event) {
-    if (event.key === "Enter") {
-        const page = parseInt(document.getElementById("jumpUserBets").value, 10) - 1;
-        if (!isNaN(page) && page >= 0 && page < Math.ceil(reversedBets.length / pageSize)) {
-            userBetsPage = page;
-            loadUserBets();
-        }
-    }
+    userBetsPage++;
+    loadUserBets();
 }
 
 // **Load Bet History (with Pagination)**
