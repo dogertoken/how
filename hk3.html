@@ -238,72 +238,70 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
-        let allBets = [];
-let currentIndex = 0;
-const itemsPerPage = 4; // Jumlah item per klik tombol
+        let allBets = []; // Menyimpan semua data taruhan
+let displayedCount = 0; // Berapa banyak data yang sudah ditampilkan
+const batchSize = 4; // Jumlah data yang ditampilkan setiap kali load lebih banyak
 
-// Fungsi memuat data dari smart contract
+// Fungsi untuk mengambil data taruhan dari smart contract
 async function loadBetHistory() {
     try {
+        console.log("Memulai pengambilan data..."); // Debug
         const bets = await contract.methods.getAllBets().call();
-        console.log("Data dari smart contract:", bets); // Debugging
+        console.log("Data yang diterima:", bets); // Debugging
 
         if (!bets || bets.length === 0) {
-            console.log("Tidak ada riwayat taruhan.");
+            document.getElementById("betHistory").innerHTML = "<p>Tidak ada riwayat taruhan.</p>";
             return;
         }
 
-        allBets = bets.reverse(); // Urutkan terbaru dulu
-        renderBetHistory(); // Tampilkan data awal
+        allBets = bets.reverse(); // Simpan semua data dalam array (dibalik supaya terbaru di atas)
+        renderBetHistory(); // Tampilkan data pertama kali
     } catch (error) {
-        console.error("Gagal mengambil riwayat taruhan:", error);
+        console.error("Error mengambil data:", error);
     }
 }
 
-// Fungsi untuk menampilkan data secara bertahap
+// Fungsi untuk menampilkan data bertahap
 function renderBetHistory() {
     const betHistoryDiv = document.getElementById("betHistory");
 
-    let endIndex = currentIndex + itemsPerPage;
-    for (let i = currentIndex; i < endIndex && i < allBets.length; i++) {
+    let betList = "";
+    const end = Math.min(displayedCount + batchSize, allBets.length);
+    for (let i = displayedCount; i < end; i++) {
         const bet = allBets[i];
         const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
         const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
-        const status = bet.txHash 
-            ? '<span style="color: green;">Confirmed</span>' 
+        const status = bet.txHash
+            ? '<span style="color: green;">Confirmed</span>'
             : '<span style="color: red;">Pending</span>';
         const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
         const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
 
-        let betElement = document.createElement("div");
-        betElement.innerHTML = `
-            <p>
-                Player: ${shortPlayer}<br> 
-                BetNumber: <span style="color: orange;">${bet.number}</span><br> 
-                BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
-                TX: ${shortTx}<br> 
-                Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
-                Status: ${status}<br>
-                Time: <span style="color: #8e44ad;">${timestamp}</span><br>
-            </p><hr>
-        `;
-        betHistoryDiv.appendChild(betElement);
+        betList += `<p>
+            Player: ${shortPlayer}<br> 
+            BetNumber: <span style="color: orange;">${bet.number}</span><br> 
+            BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
+            TX: ${shortTx}<br> 
+            Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
+            Status: ${status}<br>
+            Time: <span style="color: #8e44ad;">${timestamp}</span><br>
+        </p><hr>`;
     }
 
-    currentIndex += itemsPerPage;
-    
-    // Sembunyikan tombol jika semua data sudah ditampilkan
-    if (currentIndex >= allBets.length) {
-        document.getElementById("loadMoreBtn").style.display = "none";
-    }
+    betHistoryDiv.innerHTML += betList;
+    displayedCount = end;
 }
 
-// Event listener untuk tombol "Muat Lebih Banyak"
-document.getElementById("loadMoreBtn").addEventListener("click", function () {
-    renderBetHistory();
+// Fungsi untuk mendeteksi ketika pengguna scroll ke bawah
+window.addEventListener("scroll", () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) {
+        if (displayedCount < allBets.length) {
+            renderBetHistory();
+        }
+    }
 });
 
-// Panggil fungsi utama saat halaman pertama kali dimuat
+// Panggil fungsi untuk memuat data awal
 loadBetHistory();
         
         async function loadUserBets() {
