@@ -138,14 +138,15 @@ button:hover {
     </div>
 
     <!-- Modal untuk Komentar -->
-    <div id="commentModal" class="modal">
+     <div id="commentModal">
         <div class="modal-content">
-            <h3>Add Comment</h3>
-            <textarea id="commentText" placeholder="Write your comment..."></textarea>
-            <button onclick="submitComment()">Submit</button>
-            <button onclick="closeModal()">Close</button>
+            <h3>Tulis Komentar</h3>
+            <textarea id="commentText" placeholder="Masukkan komentar..."></textarea>
+            <br>
+            <button id="submitCommentBtn" onclick="submitComment()">Kirim</button>
+            <button onclick="closeModal()">Tutup</button>
         </div>
-    </div>
+     </div>
 
     <script src="script.js"></script>
     <script>
@@ -224,19 +225,15 @@ async function placeBet() {
 }
 
 // **Load User Bets (with Pagination)**
-// **Memuat Riwayat Taruhan**
 async function loadBetHistory() {
     try {
         if (!contract) {
-            console.error("Kontrak tidak ditemukan!");
-            alert("Gagal memuat kontrak. Pastikan Metamask terhubung dan jaringan benar.");
+            alert("Kontrak tidak ditemukan!");
             return;
         }
 
         const bets = await contract.methods.getAllBets().call();
-        console.log("Bets loaded:", bets);  // Debugging
-
-        const reversedBets = bets.slice().reverse(); // Membalik urutan bets
+        const reversedBets = bets.slice().reverse();
         const start = betHistoryPage * pageSize;
         const end = Math.min(start + pageSize, reversedBets.length);
 
@@ -266,7 +263,6 @@ async function loadBetHistory() {
     }
 }
 
-// **Navigasi Halaman Taruhan**
 function prevBetHistory() {
     if (betHistoryPage > 0) {
         betHistoryPage--;
@@ -279,7 +275,6 @@ function nextBetHistory() {
     loadBetHistory();
 }
 
-// **Menampilkan Komentar Secara Dinamis**
 async function toggleComments(betId) {
     const commentSection = document.getElementById(`comments-${betId}`);
 
@@ -295,7 +290,6 @@ async function toggleComments(betId) {
         }
 
         const comments = await contract.methods.getComments(betId).call();
-        console.log("Comments loaded:", comments);  // Debugging
         renderComments(betId, comments);
     } catch (error) {
         console.error("Gagal memuat komentar:", error);
@@ -303,12 +297,18 @@ async function toggleComments(betId) {
     }
 }
 
-// **Menampilkan Komentar di UI**
 function renderComments(betId, comments) {
     const commentSection = document.getElementById(`comments-${betId}`);
+
+    if (comments.length === 0) {
+        commentSection.innerHTML = "<p>Belum ada komentar.</p>";
+        return;
+    }
+
     commentSection.innerHTML = comments.map((c, index) => `
         <div class="comment">
-            <b>${c.commenter === userAddress ? "You" : "Anonymous"}:</b> ${c.text}
+            <b>${c.commenter === userAddress ? "You" : c.commenter}:</b> ${c.text}
+            <small>(${new Date(c.timestamp * 1000).toLocaleString()})</small>
             ${c.commenter === userAddress ? `
                 <button onclick="editComment('${betId}', ${index}')">✏️ Edit</button>
                 <button onclick="deleteComment('${betId}', ${index}')">🗑️ Delete</button>
@@ -317,7 +317,6 @@ function renderComments(betId, comments) {
     `).join("");
 }
 
-// **Menyukai Taruhan**
 async function likeBet(betId) {
     try {
         if (!userAddress) {
@@ -326,31 +325,47 @@ async function likeBet(betId) {
         }
 
         console.log("Menyukai bet:", betId);
-        await contract.methods.likeBet(betId).send({ from: userAddress });
-        alert("Liked!");
-        loadBetHistory(); // Reload setelah like
+        const tx = await contract.methods.likeBet(betId).send({ from: userAddress });
+
+        if (tx.status) {
+            alert("Liked!");
+            updateLikeCount(betId);
+        }
     } catch (error) {
         console.error("Gagal like:", error);
         alert("Gagal menyukai taruhan.");
     }
 }
 
-// **Membuka Modal Komentar**
-let activeBetId = "";
+async function updateLikeCount(betId) {
+    try {
+        const bet = await contract.methods.getBetById(betId).call();
+        const likeButton = document.querySelector(`button[onclick="likeBet('${betId}')"]`);
+        if (likeButton) {
+            likeButton.innerHTML = `❤️ Like (${bet.likes})`;
+        }
+    } catch (error) {
+        console.error("Gagal memperbarui jumlah like:", error);
+    }
+}
+
 function openCommentModal(betId) {
     activeBetId = betId;
     document.getElementById("commentModal").style.display = "flex";
 }
 
-// **Menutup Modal**
 function closeModal() {
     document.getElementById("commentModal").style.display = "none";
 }
 
-// **Menambahkan Komentar**
 async function submitComment() {
-    const commentText = document.getElementById("commentText").value;
-    if (!commentText.trim()) return alert("Komentar tidak boleh kosong");
+    const commentText = document.getElementById("commentText").value.trim();
+    if (!commentText) {
+        alert("Komentar tidak boleh kosong!");
+        return;
+    }
+
+    document.getElementById("submitCommentBtn").disabled = true;
 
     try {
         if (!userAddress) {
@@ -358,54 +373,22 @@ async function submitComment() {
             return;
         }
 
-        await contract.methods.addComment(activeBetId, commentText).send({ from: userAddress });
-        alert("Komentar ditambahkan!");
-        closeModal();
-        toggleComments(activeBetId);
+        const tx = await contract.methods.addComment(activeBetId, commentText).send({ from: userAddress });
+
+        if (tx.status) {
+            alert("Komentar ditambahkan!");
+            closeModal();
+            toggleComments(activeBetId);
+        }
     } catch (error) {
         console.error("Gagal menambah komentar:", error);
         alert("Gagal menambah komentar.");
+    } finally {
+        document.getElementById("submitCommentBtn").disabled = false;
     }
 }
 
-// **Mengedit Komentar**
-async function editComment(betId, commentIndex) {
-    const newComment = prompt("Edit komentar:");
-    if (!newComment) return;
-
-    try {
-        if (!userAddress) {
-            alert("Anda harus terhubung dengan Metamask!");
-            return;
-        }
-
-        await contract.methods.editComment(betId, commentIndex, newComment).send({ from: userAddress });
-        alert("Komentar diperbarui!");
-        toggleComments(betId);
-    } catch (error) {
-        console.error("Gagal edit komentar:", error);
-        alert("Gagal mengedit komentar.");
-    }
-}
-
-// **Menghapus Komentar**
-async function deleteComment(betId, commentIndex) {
-    if (!confirm("Yakin ingin menghapus komentar ini?")) return;
-
-    try {
-        if (!userAddress) {
-            alert("Anda harus terhubung dengan Metamask!");
-            return;
-        }
-
-        await contract.methods.deleteComment(betId, commentIndex).send({ from: userAddress });
-        alert("Komentar dihapus!");
-        toggleComments(betId);
-    } catch (error) {
-        console.error("Gagal menghapus komentar:", error);
-        alert("Gagal menghapus komentar.");
-    }
-}
+window.onload = initWeb3;
         
 // Initialize saat halaman terbuka
 window.onload = () => {
