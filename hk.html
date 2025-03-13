@@ -189,11 +189,11 @@ async function loadUserBets() {
     const start = userBetsPage * pageSize;
     const end = Math.min(start + pageSize, reversedBets.length);
 
-    let shortAddress = bet.player.slice(0, 10) + "..." + bet.player.slice(-10);
-    let shortTxHash = bet.txHash.slice(0, 10) + "..." + bet.txHash.slice(-10);
-
     let html = "";
     for (let i = start; i < end; i++) {
+        let shortAddress = reversedBets[i].player.slice(0, 10) + "..." + reversedBets[i].player.slice(-10);
+        let shortTxHash = reversedBets[i].txHash.slice(0, 10) + "..." + reversedBets[i].txHash.slice(-10);
+
         html += `<p>
             Address: ${shortAddress}<br>
             BetNumber: ${reversedBets[i].number}<br>
@@ -206,7 +206,7 @@ async function loadUserBets() {
     }
     document.getElementById("userBets").innerHTML = html;
 }
-        
+
 // **User Bets Pagination**
 function prevUserBets() {
     if (userBetsPage > 0) {
@@ -228,11 +228,11 @@ async function loadBetHistory() {
     const start = betHistoryPage * pageSize;
     const end = Math.min(start + pageSize, reversedBets.length);
 
-    let shortPlayer = bet.player.slice(0, 10) + "..." + bet.player.slice(-10);
-    let shortTxHash = bet.txHash.slice(0, 10) + "..." + bet.txHash.slice(-10);
-
     let html = "";
     for (let i = start; i < end; i++) {
+        let shortPlayer = reversedBets[i].player.slice(0, 10) + "..." + reversedBets[i].player.slice(-10);
+        let shortTxHash = reversedBets[i].txHash.slice(0, 10) + "..." + reversedBets[i].txHash.slice(-10);
+
         html += `<p>
             Player: ${shortPlayer}<br>
             BetNumber: ${reversedBets[i].number}<br>
@@ -245,7 +245,7 @@ async function loadBetHistory() {
     }
     document.getElementById("betHistory").innerHTML = html;
 }
-        
+
 // **Bet History Pagination**
 function prevBetHistory() {
     if (betHistoryPage > 0) {
