@@ -49,7 +49,17 @@
        <button onclick="placeBet()">Place Bet</button>
 
         <h2>Public Bet History</h2>
-        <div id="betHistory"></div>
+        <!-- Kontainer Riwayat -->
+<div id="betHistory"></div>
+
+<!-- Pagination Controls -->
+<div id="pagination">
+    <button onclick="goToPage(1)" id="firstPage">First</button>
+    <button onclick="changePage(-1)" id="prevPage">Previous</button>
+    <span id="pageNumbers"></span>
+    <button onclick="changePage(1)" id="nextPage">Next</button>
+    <button onclick="goToLastPage()" id="lastPage">Last</button>
+</div>
 
         <h2>Your Bet History</h2>
         <div id="userBets"></div>
@@ -237,8 +247,31 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
-        async function loadBetHistory() {
-    const bets = await contract.methods.getAllBets().call();
+       let betData = [];
+let betsPerPage = 10;
+let currentPage = 1;
+let totalPages = 1;
+
+async function loadBetHistory() {
+    let betHistoryDiv = document.getElementById("betHistory");
+    betHistoryDiv.innerHTML = "<p>Memuat history...</p>"; // Tampilan loading
+
+    console.log("Mengambil data riwayat...");
+    betData = await contract.methods.getAllBets().call();
+
+    console.log("Data berhasil diambil:", betData);
+    
+    // Periksa apakah perlu di-reverse (terbaru ke lama)
+    if (betData.length > 0 && betData[0].timestamp < betData[betData.length - 1].timestamp) {
+        betData.reverse();
+    }
+
+    totalPages = Math.ceil(betData.length / betsPerPage);
+    
+    currentPage = 1; // Set halaman pertama
+    displayBets();
+    updatePagination();
+}
     let betList = "";
     for (let i = bets.length - 1; i >= 0; i--) { // Membalik urutan iterasi
         const bet = bets[i];
@@ -262,6 +295,89 @@ document.getElementById("betTimes").addEventListener("input", updateTotalETH);
         }
          document.getElementById("betHistory").innerHTML = betList;
             }
+
+        function displayBets() {
+    let betHistoryDiv = document.getElementById("betHistory");
+    betHistoryDiv.innerHTML = ""; // Reset tampilan
+
+    if (betData.length === 0) {
+        betHistoryDiv.innerHTML = "<p>Tidak ada riwayat taruhan.</p>";
+        return;
+    }
+
+    let start = (currentPage - 1) * betsPerPage;
+    let end = start + betsPerPage;
+    let betsToShow = betData.slice(start, end);
+
+    betsToShow.forEach((bet, index) => {
+        let betElement = document.createElement("p");
+        betElement.textContent = `#${start + index + 1} - ${bet}`;
+        betHistoryDiv.appendChild(betElement);
+    });
+}
+
+function updatePagination() {
+    let pageNumbersDiv = document.getElementById("pageNumbers");
+    pageNumbersDiv.innerHTML = ""; // Reset angka halaman
+
+    if (totalPages <= 1) {
+        document.getElementById("pagination").style.display = "none";
+        return;
+    } else {
+        document.getElementById("pagination").style.display = "block";
+    }
+
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+
+    for (let i = startPage; i <= endPage; i++) {
+        let btn = document.createElement("button");
+        btn.textContent = i;
+        btn.onclick = function () {
+            goToPage(i);
+        };
+
+        if (i === currentPage) {
+            btn.style.fontWeight = "bold";
+            btn.style.backgroundColor = "#ccc";
+        }
+
+        pageNumbersDiv.appendChild(btn);
+    }
+
+    document.getElementById("firstPage").disabled = currentPage === 1;
+    document.getElementById("prevPage").disabled = currentPage === 1;
+    document.getElementById("nextPage").disabled = currentPage === totalPages;
+    document.getElementById("lastPage").disabled = currentPage === totalPages;
+}
+
+function changePage(direction) {
+    if ((direction === -1 && currentPage > 1) || (direction === 1 && currentPage < totalPages)) {
+        currentPage += direction;
+        displayBets();
+        updatePagination();
+    }
+}
+
+function goToPage(page) {
+    currentPage = page;
+    displayBets();
+    updatePagination();
+}
+
+function goToLastPage() {
+    currentPage = totalPages;
+    displayBets();
+    updatePagination();
+}
+
+// Load riwayat saat halaman dibuka
+document.addEventListener("DOMContentLoaded", async function () {
+    console.log("Memuat riwayat...");
+    await loadBetHistory();
+    displayBets();
+    updatePagination();
+});
 
         async function loadUserBets() {
     const accounts = await web3.eth.getAccounts();
