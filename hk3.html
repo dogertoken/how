@@ -51,15 +51,6 @@
         <h2>Public Bet History</h2>
         <div id="betHistory"></div>
 
-<!-- Tombol Pagination -->
-<div id="pagination">
-    <button id="first" onclick="goToPage(1)">First</button>
-    <button id="prev" onclick="prevPage()">Previous</button>
-    <span id="pageNumbers"></span>
-    <button id="next" onclick="nextPage()">Next</button>
-    <button id="last" onclick="goToPage(totalPages)">Last</button>
-</div>
-
         <h2>Your Bet History</h2>
         <div id="userBets"></div>
     </div>
@@ -246,32 +237,16 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
-const itemsPerPage = 5; // Jumlah data per halaman
-let currentPage = 1;
-let totalPages = 1;
-let allBets = []; // Menyimpan semua data taruhan
-
-async function loadBetHistory() {
+        async function loadBetHistory() {
     const bets = await contract.methods.getAllBets().call();
-    allBets = bets.reverse(); // Membalik urutan agar yang terbaru muncul dulu
-    totalPages = Math.ceil(allBets.length / itemsPerPage);
-    renderBetHistory();
-    updatePagination();
-}
-
-function renderBetHistory() {
-    const betHistoryDiv = document.getElementById("betHistory");
-    let start = (currentPage - 1) * itemsPerPage;
-    let end = start + itemsPerPage;
     let betList = "";
-
-    for (let i = start; i < end && i < allBets.length; i++) {
-        const bet = allBets[i];
+    for (let i = bets.length - 1; i >= 0; i--) { // Membalik urutan iterasi
+        const bet = bets[i];
         const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
         const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
         const status = bet.txHash 
-            ? '<span style="color: green;">Confirmed</span>' 
-            : '<span style="color: red;">Pending</span>';
+        ? '<span style="color: green;">Confirmed</span>' 
+        : '<span style="color: red;">Pending</span>';
         const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
         const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
 
@@ -284,48 +259,10 @@ function renderBetHistory() {
             Status: ${status}<br>
             Time: <span style="color: #8e44ad;">${timestamp}</span><br>
         </p><hr>`;
-    }
+        }
+         document.getElementById("betHistory").innerHTML = betList;
+            }
 
-    betHistoryDiv.innerHTML = betList;
-    updatePagination();
-}
-
-function updatePagination() {
-    const pageNumbersDiv = document.getElementById("pageNumbers");
-    pageNumbersDiv.innerHTML = "";
-
-    if (totalPages <= 1) return;
-
-    let startPage = Math.max(1, currentPage - 5);
-    let endPage = Math.min(totalPages, startPage + 9);
-
-    for (let i = startPage; i <= endPage; i++) {
-        let button = document.createElement("button");
-        button.innerText = i;
-        button.onclick = () => goToPage(i);
-        if (i === currentPage) button.classList.add("active");
-        pageNumbersDiv.appendChild(button);
-    }
-
-    document.getElementById("first").disabled = currentPage === 1;
-    document.getElementById("prev").disabled = currentPage === 1;
-    document.getElementById("next").disabled = currentPage === totalPages;
-    document.getElementById("last").disabled = currentPage === totalPages;
-}
-
-function goToPage(page) {
-    if (page >= 1 && page <= totalPages) {
-        currentPage = page;
-        renderBetHistory();
-    }
-}
-
-function prevPage() { if (currentPage > 1) goToPage(currentPage - 1); }
-function nextPage() { if (currentPage < totalPages) goToPage(currentPage + 1); }
-
-// Load history saat halaman dibuka
-loadBetHistory();
-        
         async function loadUserBets() {
     const accounts = await web3.eth.getAccounts();
     const bets = await contract.methods.getUserBets(accounts[0]).call();
