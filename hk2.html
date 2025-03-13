@@ -45,8 +45,7 @@
         <input type="number" id="betTimes" placeholder="x1 / x99" min="1" max="99">
         <p id="betTimesWarning" style="color: red;"></p>
         <p>Total ETH: <span id="totalETH">0.000000</span> ETH</p>
-
-
+        
        <button onclick="placeBet()">Place Bet</button>
 
         <h2>Public Bet History</h2>
@@ -206,19 +205,14 @@ function validateForm() {
     updateTotalETH(betTimes);
 }
 
-function updateTotalETH(betTimes) {
-    // Jika nilai kosong atau invalid, reset ke 0
-    if (!betTimes || isNaN(betTimes) || betTimes < 1 || betTimes > 99) {
-        document.getElementById("totalETH").textContent = "0.000000";
-        return;
-    }
-    
-    let totalETH = (betTimes * 0.000175).toFixed(6); // Harga per bet 0.000175 ETH
+function updateTotalETH() {
+    let betTimes = parseInt(document.getElementById("betTimes").value) || 0;
+    let totalETH = (betTimes * betPrice).toFixed(6); // Pastikan akurasi hingga 6 desimal
     document.getElementById("totalETH").textContent = totalETH;
 }
 
-// Pastikan update saat input berubah
-document.getElementById("betTimes").addEventListener("input", validateBetTimes);
+// Pastikan fungsi ini dipanggil saat input berubah
+document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
 function updateTotalETH(betTimes) {
     if (isNaN(betTimes) || betTimes < 1 || betTimes > 99) {
