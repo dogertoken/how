@@ -160,12 +160,16 @@ async function loadUserBets() {
     const end = Math.min(start + pageSize, reversedBets.length);
     
     let html = "";
-    for (let i = start; i < end; i++) {
-        html += `<p>
-        BetNumber:${reversedBets[i].number}<br>
-        BetAmount:${reversedBets[i].betAmount}<br>
-        Time:${new Date(reversedBets[i].timestamp * 1000).toLocaleString()}<br>
-        </p>`;
+for (let i = start; i < end; i++) {
+    html += `<p>
+        Player: ${reversedBets[i].player}<br>
+        BetNumber: ${reversedBets[i].number}<br>
+        BetAmount: ${reversedBets[i].betAmount}<br>
+        Tx: ${reversedBets[i].txHash}<br>
+        Block: <a href="https://sepolia.basescan.org/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
+        Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
+    </p><br>`;
+}
     }
     document.getElementById("userBets").innerHTML = html;
 }
@@ -192,13 +196,16 @@ async function loadBetHistory() {
     const end = Math.min(start + pageSize, reversedBets.length);
     
     let html = "";
-    for (let i = start; i < end; i++) {
-        html += `<p>
-        BetNumber:${reversedBets[i].number}<br>
-        BetAmount:${reversedBets[i].betAmount}<br>
-        Time:${new Date(reversedBets[i].timestamp * 1000).toLocaleString()}<br>
-        </p>`;
-    }
+for (let i = start; i < end; i++) {
+    html += `<p>
+        Player: ${reversedBets[i].player}<br>
+        BetNumber: ${reversedBets[i].number}<br>
+        BetAmount: ${reversedBets[i].betAmount}<br>
+        Tx: ${reversedBets[i].txHash}<br>
+        Block: <a href="https://sepolia.basescan.org/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
+        Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
+    </p><br>`;
+}
     document.getElementById("userBets").innerHTML = html;
 }
 
