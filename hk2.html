@@ -244,21 +244,24 @@ document.getElementById("betTimes").addEventListener("input", updateTotalETH);
         const bet = bets[i];
         const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
         const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
-        const status = bet.txHash ? "Confirmed" : "Pending";
-
-        // Pendekkan TX hash menjadi 10...10
+        const status = bet.txHash 
+        ? '<span style="color: green;">Confirmed</span>' 
+        : '<span style="color: red;">Pending</span>';
+        const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
         const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
 
         betList += `<p>
-            ${bet.player} - ${bet.number} - ${bet.betAmount} 
-            - TX: ${shortTx} 
-            - Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a> 
-            - Status: ${status} 
-            - Time: ${timestamp}
-        </p>`;
-    }
-    document.getElementById("betHistory").innerHTML = betList;
+            Player: ${shortPlayer}<br> 
+            BetNumber: <span style="color: orange;">${bet.number}</span><br> 
+            BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
+            TX: ${shortTx}<br> 
+            Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
+            Status: ${status}<br>
+            Time: <span style="color: #8e44ad;">${timestamp}</span><br>
+        </p><hr>`;
         }
+         document.getElementById("betHistory").innerHTML = betList;
+            }
 
         async function loadUserBets() {
     const accounts = await web3.eth.getAccounts();
@@ -271,9 +274,11 @@ document.getElementById("betTimes").addEventListener("input", updateTotalETH);
         const status = bet.txHash 
         ? '<span style="color: green;">Confirmed</span>' 
         : '<span style="color: red;">Pending</span>'; // Jika belum ada blockNumber, berarti masih pending
+        const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown"
         const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
 
         betList += `<p>
+            Player: ${shortPlayer}<br>
             BetNumber: <span style="color: orange;">${bet.number}</span><br> 
             BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
             TX: ${shortTx}<br> 
