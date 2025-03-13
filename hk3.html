@@ -52,7 +52,7 @@
         <div id="userBets"></div>
     </div>
 
-        <h2>Public Bet History</h2>
+        <h2>ublic Bet History</h2>
 <div id="betHistory"></div>
 <div id="pagination"></div>
 
@@ -281,80 +281,26 @@ function displayBets(page = 1) {
     betHistoryDiv.innerHTML = betList;
 }
 
-// **Fungsi untuk membuat tombol pagination dengan First, Previous, Numbered, Next, Last**
+// **Fungsi untuk membuat tombol pagination**
 function createPagination() {
     let totalPages = Math.ceil(betData.length / betsPerPage);
     let paginationDiv = document.getElementById("pagination");
     paginationDiv.innerHTML = ""; // Bersihkan pagination sebelumnya
 
-    // Tombol First
-    let firstBtn = document.createElement("button");
-    firstBtn.textContent = "First";
-    firstBtn.onclick = function () {
-        currentPage = 1;
-        displayBets(1);
-        createPagination();
-    };
-    firstBtn.disabled = currentPage === 1;
-    paginationDiv.appendChild(firstBtn);
-
-    // Tombol Previous
-    let prevBtn = document.createElement("button");
-    prevBtn.textContent = "Previous";
-    prevBtn.onclick = function () {
-        if (currentPage > 1) {
-            currentPage--;
-            displayBets(currentPage);
-            createPagination();
-        }
-    };
-    prevBtn.disabled = currentPage === 1;
-    paginationDiv.appendChild(prevBtn);
-
-    // Tombol angka halaman (maksimal tampilkan 5 angka terdekat)
-    let startPage = Math.max(1, currentPage - 2);
-    let endPage = Math.min(totalPages, startPage + 4);
-
-    for (let i = startPage; i <= endPage; i++) {
+    for (let i = 1; i <= totalPages; i++) {
         let btn = document.createElement("button");
         btn.textContent = i;
         btn.onclick = function () {
             currentPage = i;
             displayBets(i);
-            createPagination();
         };
 
         if (i === currentPage) {
             btn.style.fontWeight = "bold";
-            btn.style.backgroundColor = "#ccc";
         }
 
         paginationDiv.appendChild(btn);
     }
-
-    // Tombol Next
-    let nextBtn = document.createElement("button");
-    nextBtn.textContent = "Next";
-    nextBtn.onclick = function () {
-        if (currentPage < totalPages) {
-            currentPage++;
-            displayBets(currentPage);
-            createPagination();
-        }
-    };
-    nextBtn.disabled = currentPage === totalPages;
-    paginationDiv.appendChild(nextBtn);
-
-    // Tombol Last
-    let lastBtn = document.createElement("button");
-    lastBtn.textContent = "Last";
-    lastBtn.onclick = function () {
-        currentPage = totalPages;
-        displayBets(totalPages);
-        createPagination();
-    };
-    lastBtn.disabled = currentPage === totalPages;
-    paginationDiv.appendChild(lastBtn);
 }
 
 // **Panggil pertama kali**
