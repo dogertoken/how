@@ -155,16 +155,25 @@ async function placeBet() {
 async function loadUserBets() {
     if (!userAccount) return;
     const bets = await contract.methods.getUserBets(userAccount).call();
+    const reversedBets = bets.slice().reverse(); // Membalik urutan bets agar yang terbaru di atas
+
     const start = userBetsPage * pageSize;
-    const end = Math.min(start + pageSize, bets.length);
-    
+    const end = Math.min(start + pageSize, reversedBets.length);
+
     let html = "";
     for (let i = start; i < end; i++) {
-        html += `<p>${bets[i].number} | ${bets[i].betAmount} | ${new Date(bets[i].timestamp * 1000).toLocaleString()}</p>`;
+        html += `<p>
+            Player: ${reversedBets[i].player}<br>
+            BetNumber: ${reversedBets[i].number}<br>
+            BetAmount: ${reversedBets[i].betAmount}<br>
+            Block: ${reversedBets[i].blockNumber}<br>
+            Tx: <a href="https://etherscan.io/tx/${reversedBets[i].txHash}" target="_blank">${reversedBets[i].txHash}</a><br>
+            Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
+        </p>`;
     }
     document.getElementById("userBets").innerHTML = html;
 }
-
+        
 // **User Bets Pagination**
 function prevUserBets() {
     if (userBetsPage > 0) {
