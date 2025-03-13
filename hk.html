@@ -182,20 +182,30 @@ async function placeBet() {
         alert("Invalid bet input!");
         return;
     }
+    
+try {
+    await contract.methods.placeBet(number, times, true).send({
+        from: userAccount,
+        value: totalCost
+    });
 
-    try {
-        await contract.methods.placeBet(number, times, true).send({
-            from: userAccount,
-            value: totalCost
-        });
-        document.getElementById("betStatus").innerText = "Bet placed successfully!";
-        loadUserBets();
-    } catch (error) {
-        console.error(error);
-        document.getElementById("betStatus").innerText = "Transaction failed!";
+    let betStatus = document.getElementById("betStatus");
+    betStatus.style.color = "green";
+    betStatus.innerText = "Bet placed successfully!";
+    loadUserBets();
+} catch (error) {
+    console.error(error);
+    let betStatus = document.getElementById("betStatus");
+
+    if (error.message.includes("User denied transaction")) {
+        betStatus.style.color = "orange";
+        betStatus.innerText = "Transaction rejected!";
+    } else {
+        betStatus.style.color = "red";
+        betStatus.innerText = "Transaction failed!";
     }
 }
-
+    
 // **Load User Bets (with Pagination)**
 async function loadUserBets() {
     if (!userAccount) return;
