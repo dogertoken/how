@@ -50,6 +50,7 @@
 
         <h2>Public Bet History</h2>
         <div id="betHistory"></div>
+<button id="loadMoreBtn">Muat Lebih Banyak</button>
 
         <h2>Your Bet History</h2>
         <div id="userBets"></div>
@@ -237,62 +238,73 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
-        let betHistory = [];
-let batchSize = 10; // Jumlah bet yang dimuat tiap batch
-let loadedBets = 0; // Track jumlah bet yang sudah dimuat
+let allBets = [];
+let currentIndex = 0;
+const itemsPerPage = 10; // Jumlah item per klik tombol
 
+// Fungsi memuat data dari smart contract
 async function loadBetHistory() {
     try {
-        if (!contract) return;
-        betHistory = await contract.methods.getAllBets().call(); // Ambil semua bet
+        const bets = await contract.methods.getAllBets().call();
+        console.log("Data dari smart contract:", bets); // Debugging
 
-        // Urutkan berdasarkan timestamp dari yang terbaru ke terlama
-        betHistory.sort((a, b) => b.timestamp - a.timestamp);
+        if (!bets || bets.length === 0) {
+            console.log("Tidak ada riwayat taruhan.");
+            return;
+        }
 
-        loadedBets = 0; // Reset jumlah bet yang dimuat
-        document.getElementById("betHistory").innerHTML = ""; // Kosongkan sebelum load baru
-        loadMoreBets(); // Muat batch pertama
+        allBets = bets.reverse(); // Urutkan terbaru dulu
+        renderBetHistory(); // Tampilkan data awal
     } catch (error) {
-        console.error("Error loading bet history:", error);
+        console.error("Gagal mengambil riwayat taruhan:", error);
     }
 }
 
-function loadMoreBets() {
-    let betList = "";
-    let end = Math.min(loadedBets + batchSize, betHistory.length);
+// Fungsi untuk menampilkan data secara bertahap
+function renderBetHistory() {
+    const betHistoryDiv = document.getElementById("betHistory");
 
-    for (let i = loadedBets; i < end; i++) {
-        const bet = betHistory[i];
+    let endIndex = currentIndex + itemsPerPage;
+    for (let i = currentIndex; i < endIndex && i < allBets.length; i++) {
+        const bet = allBets[i];
         const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
         const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
-        const status = bet.txHash ? '<span style="color: green;">Confirmed</span>' : '<span style="color: red;">Pending</span>';
+        const status = bet.txHash 
+            ? '<span style="color: green;">Confirmed</span>' 
+            : '<span style="color: red;">Pending</span>';
         const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
         const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
 
-        betList += `<p>
-            Player: ${shortPlayer}<br> 
-            BetNumber: <span style="color: orange;">${bet.number}</span><br> 
-            BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
-            TX: ${shortTx}<br> 
-            Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
-            Status: ${status}<br>
-            Time: <span style="color: #8e44ad;">${timestamp}</span><br>
-        </p><hr>`;
+        let betElement = document.createElement("div");
+        betElement.innerHTML = `
+            <p>
+                Player: ${shortPlayer}<br> 
+                BetNumber: <span style="color: orange;">${bet.number}</span><br> 
+                BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
+                TX: ${shortTx}<br> 
+                Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
+                Status: ${status}<br>
+                Time: <span style="color: #8e44ad;">${timestamp}</span><br>
+            </p><hr>
+        `;
+        betHistoryDiv.appendChild(betElement);
     }
 
-    // Tambahkan bet baru di paling atas
-    document.getElementById("betHistory").insertAdjacentHTML("afterbegin", betList);
-    loadedBets = end; // Update jumlah bet yang telah dimuat
+    currentIndex += itemsPerPage;
+    
+    // Sembunyikan tombol jika semua data sudah ditampilkan
+    if (currentIndex >= allBets.length) {
+        document.getElementById("loadMoreBtn").style.display = "none";
+    }
 }
 
-// **Tambahkan event listener untuk infinite scroll**
-window.addEventListener("scroll", function () {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
-        if (loadedBets < betHistory.length) {
-            loadMoreBets(); // Muat lebih banyak saat scroll ke bawah
-        }
-    }
+// Event listener untuk tombol "Muat Lebih Banyak"
+document.getElementById("loadMoreBtn").addEventListener("click", function () {
+    renderBetHistory();
 });
+
+// Panggil fungsi utama saat halaman pertama kali dimuat
+loadBetHistory();
         
         async function loadUserBets() {
     const accounts = await web3.eth.getAccounts();
