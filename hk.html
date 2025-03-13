@@ -160,16 +160,16 @@ async function loadUserBets() {
     const end = Math.min(start + pageSize, reversedBets.length);
     
     let html = "";
-for (let i = start; i < end; i++) {
-    html += `<p>
+    for (let i = start; i < end; i++) {
+        html += `<p>
         Player: ${reversedBets[i].player}<br>
         BetNumber: ${reversedBets[i].number}<br>
         BetAmount: ${reversedBets[i].betAmount}<br>
+        Block: ${reversedBets[i].blockNumber}<br>
         Tx: ${reversedBets[i].txHash}<br>
         Block: <a href="https://sepolia.basescan.org/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
         Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
-    </p><br>`;
-}
+    </p><hr>`;
     }
     document.getElementById("userBets").innerHTML = html;
 }
@@ -189,26 +189,25 @@ function nextUserBets() {
 
 // **Load Bet History (with Pagination)**
 async function loadBetHistory() {
-    if (!userAccount) return;
-    const bets = await contract.methods.getUserBets(userAccount).call();
-    const reversedBets = [...bets].reverse(); // Membalikkan urutan agar yang terbaru di atas
-    const start = userBetsPage * pageSize;
+    const bets = await contract.methods.getAllBets().call();
+    const reversedBets = bets.reverse(); // Membalikkan urutan agar yang terbaru di atas
+    const start = betHistoryPage * pageSize;
     const end = Math.min(start + pageSize, reversedBets.length);
-    
+
     let html = "";
-for (let i = start; i < end; i++) {
-    html += `<p>
+    for (let i = start; i < end; i++) {
+        html += `<p><p>
         Player: ${reversedBets[i].player}<br>
         BetNumber: ${reversedBets[i].number}<br>
         BetAmount: ${reversedBets[i].betAmount}<br>
         Tx: ${reversedBets[i].txHash}<br>
         Block: <a href="https://sepolia.basescan.org/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
         Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
-    </p><br>`;
+    </p><hr>`;
 }
-    document.getElementById("userBets").innerHTML = html;
+    document.getElementById("betHistory").innerHTML = html;
 }
-
+        
 // **Bet History Pagination**
 function prevBetHistory() {
     if (betHistoryPage > 0) {
