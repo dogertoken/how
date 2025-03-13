@@ -48,7 +48,7 @@
         
        <button onclick="placeBet()">Place Bet</button>
 
-        <h2>Public Bet History</h2>
+        <h2>ublic Bet History</h2>
         <div id="betHistory"></div>
 
         <h2>Your Bet History</h2>
@@ -237,39 +237,20 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
-let allBets = []; // Menyimpan semua taruhan
-let currentIndex = 0; // Indeks data yang sedang ditampilkan
-const itemsPerPage = 10; // Jumlah item per load
-let loading = false; // Mencegah loading ganda
+let allBets = [];
+let currentIndex = 0;
+const itemsPerPage = 10; // Jumlah data per load
 
-// Fungsi memuat data dari smart contract
 async function loadBetHistory() {
-    try {
-        const bets = await contract.methods.getAllBets().call();
-        console.log("Data dari smart contract:", bets); // Debugging
-
-        if (!bets || bets.length === 0) {
-            console.log("Tidak ada riwayat taruhan.");
-            return;
-        }
-
-        allBets = bets.reverse(); // Membalik urutan agar yang terbaru muncul dulu
-        renderBetHistory(); // Tampilkan data awal
-    } catch (error) {
-        console.error("Gagal mengambil riwayat taruhan:", error);
-    }
+    const bets = await contract.methods.getAllBets().call();
+    allBets = bets.reverse(); // Membalik urutan agar yang terbaru muncul dulu
+    renderBetHistory(); // Tampilkan data awal
 }
 
-// Fungsi untuk menampilkan data secara bertahap saat scroll
 function renderBetHistory() {
     const betHistoryDiv = document.getElementById("betHistory");
-
-    if (!betHistoryDiv) {
-        console.error("Elemen betHistory tidak ditemukan!");
-        return;
-    }
-
     let endIndex = currentIndex + itemsPerPage;
+    
     for (let i = currentIndex; i < endIndex && i < allBets.length; i++) {
         const bet = allBets[i];
         const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
@@ -295,21 +276,17 @@ function renderBetHistory() {
         betHistoryDiv.appendChild(betElement);
     }
 
-    currentIndex += itemsPerPage;
-    loading = false; // Bisa load lagi
+    currentIndex += itemsPerPage; // Update indeks untuk halaman berikutnya
 }
 
-// Event listener untuk mendeteksi scroll dan load data tambahan
+// Event listener untuk mendeteksi scroll ke bawah
 window.addEventListener("scroll", function () {
-    if (loading) return; // Jangan load kalau masih loading
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
-        console.log("Memuat lebih banyak data...");
-        loading = true;
-        renderBetHistory();
+        renderBetHistory(); // Load data lebih banyak saat mendekati bawah
     }
 });
 
-// Panggil fungsi untuk pertama kali saat halaman dimuat
+// Panggil fungsi utama untuk memuat data
 loadBetHistory();
         
         async function loadUserBets() {
