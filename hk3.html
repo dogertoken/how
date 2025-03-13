@@ -261,42 +261,16 @@ async function loadBetHistory() {
 
     console.log("Data berhasil diambil:", betData);
     
-    // Periksa apakah perlu di-reverse (terbaru ke lama)
-    if (betData.length > 0 && betData[0].timestamp < betData[betData.length - 1].timestamp) {
-        betData.reverse();
-    }
+    // Urutkan dari terbaru ke lama jika perlu
+    betData.reverse();
 
     totalPages = Math.ceil(betData.length / betsPerPage);
-    
     currentPage = 1; // Set halaman pertama
     displayBets();
     updatePagination();
 }
-    let betList = "";
-    for (let i = bets.length - 1; i >= 0; i--) { // Membalik urutan iterasi
-        const bet = bets[i];
-        const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
-        const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
-        const status = bet.txHash 
-        ? '<span style="color: green;">Confirmed</span>' 
-        : '<span style="color: red;">Pending</span>';
-        const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
-        const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
 
-        betList += `<p>
-            Player: ${shortPlayer}<br> 
-            BetNumber: <span style="color: orange;">${bet.number}</span><br> 
-            BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
-            TX: ${shortTx}<br> 
-            Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
-            Status: ${status}<br>
-            Time: <span style="color: #8e44ad;">${timestamp}</span><br>
-        </p><hr>`;
-        }
-         document.getElementById("betHistory").innerHTML = betList;
-            }
-
-        function displayBets() {
+function displayBets() {
     let betHistoryDiv = document.getElementById("betHistory");
     betHistoryDiv.innerHTML = ""; // Reset tampilan
 
@@ -309,11 +283,28 @@ async function loadBetHistory() {
     let end = start + betsPerPage;
     let betsToShow = betData.slice(start, end);
 
+    let betList = "";
     betsToShow.forEach((bet, index) => {
-        let betElement = document.createElement("p");
-        betElement.textContent = `#${start + index + 1} - ${bet}`;
-        betHistoryDiv.appendChild(betElement);
+        let timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
+        let blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
+        let status = bet.txHash 
+            ? '<span style="color: green;">Confirmed</span>' 
+            : '<span style="color: red;">Pending</span>';
+        let shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
+        let shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
+
+        betList += `<p>
+            Player: ${shortPlayer}<br> 
+            BetNumber: <span style="color: orange;">${bet.number}</span><br> 
+            BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
+            TX: ${shortTx}<br> 
+            Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
+            Status: ${status}<br>
+            Time: <span style="color: #8e44ad;">${timestamp}</span><br>
+        </p><hr>`;
     });
+
+    betHistoryDiv.innerHTML = betList;
 }
 
 function updatePagination() {
