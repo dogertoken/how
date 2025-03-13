@@ -50,10 +50,9 @@
 
         <h2>Your Bet History</h2>
         <div id="userBets"></div>
-        <button onclick="prevUserBets()">Prev</button>
-        <button onclick="nextUserBets()">Next</button>
         
         <h2>Public Bet History</h2>
+        <div id="betHistory"></div>
 
     </div>
 
@@ -281,31 +280,4 @@ document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
         betList += `<p>
             Player: ${shortPlayer}<br>
-            BetNumber: <span style="color: orange;">${bet.number}</span><br> 
-            BetAmount: <span style="color: orange;">${bet.betAmount}</span><br>
-            TX: ${shortTx}<br> 
-            Block: <a href="${blockLink}" target="_blank">${bet.blockNumber}</a><br>
-            Status: ${status}<br>
-            Time: <span style="color: #8e44ad;">${timestamp}</span><br>
-        </p><hr>`;
-    }
-    document.getElementById("userBets").innerHTML = betList;
-        }
-
-    // **User Bets Pagination**
-function prevUserBets() {
-    if (userBetsPage > 0) {
-        userBetsPage--;
-        loadUserBets();
-    }
-}
-
-function nextUserBets() {
-    userBetsPage++;
-    loadUserBets();
-}
-
-        window.onload = init;
-    </script>
-</body>
-</html>
+            BetNumber: <span style="color: orange;">${bet
