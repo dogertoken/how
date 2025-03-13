@@ -50,7 +50,7 @@
 
         <h2>Public Bet History</h2>
         <div id="betHistory"></div>
-        <button id="loadMore">Load More</button>
+        <div id="pagination"></div>
         
         <h2>Your Bet History</h2>
         <div id="userBets"></div>
@@ -240,17 +240,20 @@ document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
        let betData = [];  // Simpan data bet global
 let betsPerPage = 10;
-let currentPage = 0;
+let currentPage = 1;  // Halaman awal
 
 async function loadBetHistory() {
     betData = await contract.methods.getAllBets().call(); // Ambil semua bet dari smart contract
-    betData.reverse(); // Balik urutan agar bet terbaru ada di atas
+    betData.reverse(); // Urutkan dari yang terbaru ke yang lama
     displayBets();
+    createPagination();
 }
 
-function displayBets() {
+function displayBets(page = 1) {
     let betHistoryDiv = document.getElementById("betHistory");
-    let start = currentPage * betsPerPage;
+    betHistoryDiv.innerHTML = ""; // Hapus konten lama sebelum menampilkan yang baru
+
+    let start = (page - 1) * betsPerPage;
     let end = start + betsPerPage;
     let betsToShow = betData.slice(start, end);
 
@@ -275,17 +278,84 @@ function displayBets() {
         </p><hr>`;
     }
 
-    betHistoryDiv.innerHTML += betList; // Tambahkan ke div (tidak di-replace)
-    currentPage++; // Naik ke halaman berikutnya
-
-    // Sembunyikan tombol jika sudah menampilkan semua bet
-    if (currentPage * betsPerPage >= betData.length) {
-        document.getElementById("loadMore").style.display = "none";
-    }
+    betHistoryDiv.innerHTML = betList;
 }
 
-// **Tombol "Load More"**
-document.getElementById("loadMore").addEventListener("click", displayBets);
+// **Fungsi untuk membuat tombol pagination dengan First, Previous, Numbered, Next, Last**
+function createPagination() {
+    let totalPages = Math.ceil(betData.length / betsPerPage);
+    let paginationDiv = document.getElementById("pagination");
+    paginationDiv.innerHTML = ""; // Bersihkan pagination sebelumnya
+
+    // Tombol First
+    let firstBtn = document.createElement("button");
+    firstBtn.textContent = "First";
+    firstBtn.onclick = function () {
+        currentPage = 1;
+        displayBets(1);
+        createPagination();
+    };
+    firstBtn.disabled = currentPage === 1;
+    paginationDiv.appendChild(firstBtn);
+
+    // Tombol Previous
+    let prevBtn = document.createElement("button");
+    prevBtn.textContent = "Previous";
+    prevBtn.onclick = function () {
+        if (currentPage > 1) {
+            currentPage--;
+            displayBets(currentPage);
+            createPagination();
+        }
+    };
+    prevBtn.disabled = currentPage === 1;
+    paginationDiv.appendChild(prevBtn);
+
+    // Tombol angka halaman (maksimal tampilkan 5 angka terdekat)
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+
+    for (let i = startPage; i <= endPage; i++) {
+        let btn = document.createElement("button");
+        btn.textContent = i;
+        btn.onclick = function () {
+            currentPage = i;
+            displayBets(i);
+            createPagination();
+        };
+
+        if (i === currentPage) {
+            btn.style.fontWeight = "bold";
+            btn.style.backgroundColor = "#ccc";
+        }
+
+        paginationDiv.appendChild(btn);
+    }
+
+    // Tombol Next
+    let nextBtn = document.createElement("button");
+    nextBtn.textContent = "Next";
+    nextBtn.onclick = function () {
+        if (currentPage < totalPages) {
+            currentPage++;
+            displayBets(currentPage);
+            createPagination();
+        }
+    };
+    nextBtn.disabled = currentPage === totalPages;
+    paginationDiv.appendChild(nextBtn);
+
+    // Tombol Last
+    let lastBtn = document.createElement("button");
+    lastBtn.textContent = "Last";
+    lastBtn.onclick = function () {
+        currentPage = totalPages;
+        displayBets(totalPages);
+        createPagination();
+    };
+    lastBtn.disabled = currentPage === totalPages;
+    paginationDiv.appendChild(lastBtn);
+}
 
 // **Panggil pertama kali**
 loadBetHistory();
