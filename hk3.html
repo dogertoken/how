@@ -137,13 +137,14 @@ button:hover {
     
     </div>
 
+    <!-- Modal untuk Komentar -->
     <div id="commentModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeCommentModal()">&times;</span>
-        <h2>Add Comment</h2>
-        <textarea id="commentText" placeholder="Write a comment..."></textarea>
-        <button id="submitComment">Submit</button>
-    </div>
+        <div class="modal-content">
+            <h3>Add Comment</h3>
+            <textarea id="commentText" placeholder="Write your comment..."></textarea>
+            <button onclick="submitComment()">Submit</button>
+            <button onclick="closeModal()">Close</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
@@ -274,31 +275,19 @@ for (let i = start; i < end; i++) {
     const comments = reversedBets[i].comments || [];
 
     html += `<p>
-        Player: ${reversedBets[i].player}<br>
-        BetNumber: ${reversedBets[i].number}<br>
-        BetAmount: ${reversedBets[i].betAmount}<br>
-        Tx: ${reversedBets[i].txHash}<br>
-        Block: <a href="https://basescan.io/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
-        Status: ${reversedBets[i].status ?? 'Pending'}<br>
-        Time: ${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC<br>
-        
-        <button onclick="likeBet('${betId}')">👍 Like (<span id="likes-${betId}">${likes}</span>)</button>
-        <button onclick="openCommentModal('${betId}')">💬 Comment</button>
-        
-        <div id="comments-${betId}" class="comment-section">
-            ${comments.map((c, index) => `
-                <div class="comment" id="comment-${betId}-${index}">
-                    <b>${c.player}:</b> ${c.text}
-                    ${c.player === currentUser ? `
-                        <button onclick="editComment('${betId}', ${index}, '${c.text}')">✏️ Edit</button>
-                        <button onclick="deleteComment('${betId}', ${index})">🗑️ Delete</button>
-                    ` : ''}
-                </div>
-            `).join("")}
-        </div>
-    </p><hr>`;
-}
-document.getElementById("betHistory").innerHTML = html;
+            Player: ${bet.player}<br>
+            BetNumber: ${bet.number}<br>
+            BetAmount: ${bet.betAmount}<br>
+            Tx: ${bet.txHash}<br>
+            Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
+            Status: Pending<br>
+            Time: ${new Date(bet.timestamp * 1000).toISOString()} UTC<br>
+            <button onclick="toggleComments('${bet.txHash}')">💬 Lihat Komentar</button>
+            <button onclick="likeBet('${bet.txHash}')">❤️ Like</button>
+            <div id="comments-${bet.txHash}" class="comment-section"></div>
+        </p><hr>`;
+    }
+    document.getElementById("betHistory").innerHTML = html;
 }
 
 // **Bet History Pagination**
@@ -315,54 +304,106 @@ function nextBetHistory() {
 }
 
 // Comment Modal
-let currentBetId = null;
+// Lazy loading komentar
+async function toggleComments(betId) {
+    const commentSection = document.getElementById(`comments-${betId}`);
+    
+    if (commentSection.innerHTML.trim() !== "") {
+        commentSection.innerHTML = "";
+        return;
+    }
 
-function openCommentModal(betId) {
-    currentBetId = betId;
-    document.getElementById("commentModal").style.display = "block";
+    try {
+        const comments = await contract.methods.getComments(betId).call();
+        renderComments(betId, comments);
+    } catch (error) {
+        console.error("Failed to load comments:", error);
+    }
 }
 
-function closeCommentModal() {
+// Menampilkan komentar di UI
+function renderComments(betId, comments) {
+    const commentSection = document.getElementById(`comments-${betId}`);
+    commentSection.innerHTML = comments.map((c, index) => `
+        <div class="comment">
+            <b>${c.commenter === userAddress ? "You" : "Anonymous"}:</b> ${c.text}
+            ${c.commenter === userAddress ? `
+                <button onclick="editComment('${betId}', ${index})">✏️ Edit</button>
+                <button onclick="deleteComment('${betId}', ${index})">🗑️ Delete</button>
+            ` : ""}
+        </div>
+    `).join("");
+}
+
+// Menyukai taruhan
+async function likeBet(betId) {
+    try {
+        await contract.methods.likeBet(betId).send({ from: userAddress });
+        alert("Liked!");
+    } catch (error) {
+        console.error("Failed to like:", error);
+    }
+}
+
+// Membuka modal komentar
+let activeBetId = "";
+function openCommentModal(betId) {
+    activeBetId = betId;
+    document.getElementById("commentModal").style.display = "flex";
+}
+
+// Menutup modal
+function closeModal() {
     document.getElementById("commentModal").style.display = "none";
 }
 
-document.getElementById("submitComment").addEventListener("click", () => {
+// Menambahkan komentar
+async function submitComment() {
     const commentText = document.getElementById("commentText").value;
-    if (commentText.trim() !== "") {
-        addComment(currentBetId, commentText);
-        closeCommentModal();
-    }
-});
+    if (!commentText.trim()) return alert("Komentar tidak boleh kosong");
 
-function addComment(betId, text) {
-    // Simpan ke blockchain atau database
-    const newComment = { player: currentUser, text };
-    reversedBets.find(b => b.txHash === betId).comments.push(newComment);
-    renderBetHistory();
-}
-
-function editComment(betId, index, oldText) {
-    const newText = prompt("Edit your comment:", oldText);
-    if (newText) {
-        const bet = reversedBets.find(b => b.txHash === betId);
-        bet.comments[index].text = newText;
-        renderBetHistory();
+    try {
+        await contract.methods.addComment(activeBetId, commentText).send({ from: userAddress });
+        alert("Comment added!");
+        closeModal();
+        toggleComments(activeBetId);
+    } catch (error) {
+        console.error("Failed to add comment:", error);
     }
 }
 
-function deleteComment(betId, index) {
-    if (confirm("Are you sure you want to delete this comment?")) {
-        const bet = reversedBets.find(b => b.txHash === betId);
-        bet.comments.splice(index, 1);
-        renderBetHistory();
+// Mengedit komentar
+async function editComment(betId, commentIndex) {
+    const newComment = prompt("Edit your comment:");
+    if (!newComment) return;
+
+    try {
+        await contract.methods.editComment(betId, commentIndex, newComment).send({ from: userAddress });
+        alert("Comment updated!");
+        toggleComments(betId);
+    } catch (error) {
+        console.error("Failed to edit comment:", error);
     }
 }
 
-function likeBet(betId) {
-    const bet = reversedBets.find(b => b.txHash === betId);
-    bet.likes = (bet.likes || 0) + 1;
-    document.getElementById(`likes-${betId}`).textContent = bet.likes;
+// Menghapus komentar
+async function deleteComment(betId, commentIndex) {
+    if (!confirm("Are you sure you want to delete this comment?")) return;
+
+    try {
+        await contract.methods.deleteComment(betId, commentIndex).send({ from: userAddress });
+        alert("Comment deleted!");
+        toggleComments(betId);
+    } catch (error) {
+        console.error("Failed to delete comment:", error);
+    }
 }
+
+// Inisialisasi
+window.onload = async () => {
+    await connectWallet();
+    await loadBetHistory();
+};
 
 // Initialize saat halaman terbuka
 window.onload = () => {
