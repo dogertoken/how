@@ -48,7 +48,7 @@
         
        <button onclick="placeBet()">Place Bet</button>
 
-        <h2>ublic Bet History</h2>
+        <h2>Public Bet History</h2>
         <div id="betHistory"></div>
 
         <h2>Your Bet History</h2>
@@ -237,42 +237,32 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
-        let allBets = []; // Menyimpan semua data taruhan
-let displayedCount = 0; // Berapa banyak data yang sudah ditampilkan
-const batchSize = 4; // Jumlah data yang ditampilkan setiap kali load lebih banyak
+        let betHistory = [];
+let batchSize = 4; // Jumlah bet yang dimuat tiap batch
+let loadedBets = 0; // Track jumlah bet yang sudah dimuat
 
-// Fungsi untuk mengambil data taruhan dari smart contract
 async function loadBetHistory() {
     try {
-        console.log("Memulai pengambilan data..."); // Debug
-        const bets = await contract.methods.getAllBets().call();
-        console.log("Data yang diterima:", bets); // Debugging
-
-        if (!bets || bets.length === 0) {
-            document.getElementById("betHistory").innerHTML = "<p>Tidak ada riwayat taruhan.</p>";
-            return;
-        }
-
-        allBets = bets.reverse(); // Simpan semua data dalam array (dibalik supaya terbaru di atas)
-        renderBetHistory(); // Tampilkan data pertama kali
+        if (!contract) return;
+        betHistory = await contract.methods.getAllBets().call(); // Ambil semua bet
+        betHistory.reverse(); // Urutkan terbaru ke atas
+        loadedBets = 0; // Reset jumlah bet yang dimuat
+        document.getElementById("betHistory").innerHTML = ""; // Kosongkan sebelum load baru
+        loadMoreBets(); // Muat batch pertama
     } catch (error) {
-        console.error("Error mengambil data:", error);
+        console.error("Error loading bet history:", error);
     }
 }
 
-// Fungsi untuk menampilkan data bertahap
-function renderBetHistory() {
-    const betHistoryDiv = document.getElementById("betHistory");
-
+function loadMoreBets() {
     let betList = "";
-    const end = Math.min(displayedCount + batchSize, allBets.length);
-    for (let i = displayedCount; i < end; i++) {
-        const bet = allBets[i];
+    let end = Math.min(loadedBets + batchSize, betHistory.length);
+
+    for (let i = loadedBets; i < end; i++) {
+        const bet = betHistory[i];
         const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
         const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
-        const status = bet.txHash
-            ? '<span style="color: green;">Confirmed</span>'
-            : '<span style="color: red;">Pending</span>';
+        const status = bet.txHash ? '<span style="color: green;">Confirmed</span>' : '<span style="color: red;">Pending</span>';
         const shortPlayer = bet.player ? `${bet.player.slice(0, 10)}...${bet.player.slice(-10)}` : "Unknown";
         const shortTx = bet.txHash ? `${bet.txHash.slice(0, 10)}...${bet.txHash.slice(-10)}` : "Pending";
 
@@ -287,21 +277,18 @@ function renderBetHistory() {
         </p><hr>`;
     }
 
-    betHistoryDiv.innerHTML += betList;
-    displayedCount = end;
+    document.getElementById("betHistory").insertAdjacentHTML("beforeend", betList);
+    loadedBets = end; // Update jumlah bet yang telah dimuat
 }
 
-// Fungsi untuk mendeteksi ketika pengguna scroll ke bawah
-window.addEventListener("scroll", () => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) {
-        if (displayedCount < allBets.length) {
-            renderBetHistory();
+// **Tambahkan event listener untuk infinite scroll**
+window.addEventListener("scroll", function () {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+        if (loadedBets < betHistory.length) {
+            loadMoreBets(); // Muat lebih banyak saat scroll ke bawah
         }
     }
 });
-
-// Panggil fungsi untuk memuat data awal
-loadBetHistory();
         
         async function loadUserBets() {
     const accounts = await web3.eth.getAccounts();
