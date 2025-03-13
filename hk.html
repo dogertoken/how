@@ -344,19 +344,39 @@ async function loadBetHistory() {
 
     let html = "";
     for (let i = start; i < end; i++) {
-        let shortPlayer = reversedBets[i].player.slice(0, 10) + "..." + reversedBets[i].player.slice(-10);
-        let shortTxHash = reversedBets[i].txHash.slice(0, 10) + "..." + reversedBets[i].txHash.slice(-10);
+        let bet = reversedBets[i];
+        let shortPlayer = bet.player.slice(0, 10) + "..." + bet.player.slice(-10);
+        let shortTxHash = bet.txHash.slice(0, 10) + "..." + bet.txHash.slice(-10);
 
         html += `<p>
             Player: <span style="color: purple;">${shortPlayer}</span><br>
-            BetNumber: <span style="color: green;">${reversedBets[i].number}</span><br>
-            BetAmount: <span style="color: green;">${reversedBets[i].betAmount}</span><br>
+            BetNumber: <span style="color: green;">${bet.number}</span><br>
+            BetAmount: <span style="color: green;">${bet.betAmount}</span><br>
             Tx: ${shortTxHash}<br>
-            Block: <a href="https://basescan.io/block/${reversedBets[i].blockNumber}" target="_blank">${reversedBets[i].blockNumber}</a><br>
-            Time: <span style="color: orange;">${new Date(reversedBets[i].timestamp * 1000).toISOString()} UTC</span><br>
+            Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
+            Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
+            <button onclick="likeBet('${bet.betId}')">❤️ Like</button>
+            <span id="like-${bet.betId}">0</span> Likes
         </p><hr>`;
     }
     document.getElementById("betHistory").innerHTML = html;
+}
+
+// **Fungsi Like Bet via MetaMask**
+async function likeBet(betId) {
+    try {
+        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+        const sender = accounts[0];
+
+        await contract.methods.likeBet(betId).send({ from: sender });
+
+        // Ambil jumlah likes baru (bisa dari blockchain atau update manual)
+        let likeElement = document.getElementById(`like-${betId}`);
+        likeElement.textContent = parseInt(likeElement.textContent) + 1;
+    } catch (error) {
+        console.error("Gagal menyukai bet:", error);
+        alert("Gagal menyukai bet. Pastikan Anda terhubung ke MetaMask!");
+    }
 }
 
 // **Bet History Pagination**
