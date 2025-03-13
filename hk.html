@@ -47,6 +47,22 @@ button:hover {
 #disconnectWallet:hover {
     background-color: #c82333;
 }
+        
+.nav-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 80px; /* Ukuran tombol lebih pendek */
+    padding: 8px;
+    display: inline-block;
+    margin: 5px;
+}
+
+.button-container {
+    display: flex;
+    gap: 10px; /* Jarak antar tombol */
+}
     </style>
 </head>
 <body>
@@ -65,14 +81,18 @@ button:hover {
         <p id="betStatus"></p>
 
         <h2>2. Your Bets</h2>
-        <div id="userBets"></div>
-        <button onclick="prevUserBets()">Prev</button>
-        <button onclick="nextUserBets()">Next</button>
+<div id="userBets"></div>
+<div class="button-container">
+    <button class="nav-button" onclick="prevUserBets()">Prev</button>
+    <button class="nav-button" onclick="nextUserBets()">Next</button>
+</div>
 
-        <h2>3. Bet History</h2>
-        <div id="betHistory"></div>
-<button onclick="prevBetHistory()">prev</button>
-<button onclick="nextBetHistory()">Next</button>
+<h2>3. Bet History</h2>
+<div id="betHistory"></div>
+<div class="button-container">
+    <button class="nav-button" onclick="prevBetHistory()">Prev</button>
+    <button class="nav-button" onclick="nextBetHistory()">Next</button>
+    
     </div>
 
     <script src="script.js"></script>
