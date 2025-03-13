@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+l<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BetHistory DApp</title>
+    <title>Bet History DApp</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.0/web3.min.js"></script>
     <style>
         body {
     font-family: Arial, sans-serif;
@@ -15,162 +15,212 @@
 
 .container {
     max-width: 600px;
-    margin: 50px auto;
-    background: white;
+    margin: auto;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+input, button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    width: 90%;
 }
 
 button {
-    padding: 10px 20px;
-    margin: 5px;
-    border: none;
-    background-color: #008CBA;
+    background-color: #28a745;
     color: white;
+    border: none;
     cursor: pointer;
-    border-radius: 5px;
 }
 
 button:hover {
-    background-color: #005f73;
+    background-color: #218838;
 }
 
-input {
-    padding: 8px;
-    margin: 5px;
-    width: 90%;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+#disconnectWallet {
+    background-color: #dc3545;
 }
 
-#betList {
-    text-align: left;
-    margin-top: 20px;
+#disconnectWallet:hover {
+    background-color: #c82333;
 }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>BetHistory DApp</h1>
-        <button id="connectWallet">Connect Wallet</button>
-        <button id="disconnectWallet" style="display: none;">Disconnect</button>
-        <p id="walletAddress">Not connected</p>
+        <h1>Bet History DApp</h1>
+        
+        <!-- Wallet Connection -->
+        <button id="connectWallet" onclick="connectWallet()">Connect Wallet</button>
+        <button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect</button>
+        <p id="walletAddress"></p>
 
-        <h2>Place a Bet</h2>
+        <h2>1. Place Bet</h2>
         <input type="text" id="betNumber" placeholder="Enter number (1-4 digits)">
-        <input type="number" id="betTimes" placeholder="Bet Amount" min="1">
-        <button id="placeBet">Place Bet</button>
+        <input type="number" id="betTimes" placeholder="Times" min="1">
+        <button onclick="placeBet()">Place Bet</button>
+        <p id="betStatus"></p>
 
-        <h2>et History</h2>
-        <button id="getBets">Load Bets</button>
-        <div id="betList"></div>
+        <h2>2. Your Bets</h2>
+        <div id="userBets"></div>
+        <button onclick="prevUserBets()">Prev</button>
+        <button onclick="nextUserBets()">Next</button>
+
+        <h2>3. Bet History</h2>
+        <div id="betHistory"></div>
+        <button onclick="prevBetHistory()">Prev</button>
+        <button onclick="nextBetHistory()">Next</button>
     </div>
 
-    <script src="app.js"></script>
+    <script src="script.js"></script>
     <script>
-const contractAddress = "0x410F02E143Ba921FEdda48830d545154F5E809ab";
+        const contractAddress = "0x410F02E143Ba921FEdda48830d545154F5E809ab";
         const contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"BetLiked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":false,"internalType":"string","name":"number","type":"string"},{"indexed":false,"internalType":"uint256","name":"betAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"BetPlaced","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"winningNumber","type":"uint256"}],"name":"BetResultSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"comment","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"CommentAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"CommentDeleted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"},{"indexed":false,"internalType":"string","name":"newComment","type":"string"}],"name":"CommentUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ETHClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"WinnerSet","type":"event"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"string","name":"_comment","type":"string"}],"name":"addComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"betComments","outputs":[{"internalType":"address","name":"commenter","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isDeleted","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"betHistory","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"address","name":"","type":"address"}],"name":"betLikes","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"betPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"betResults","outputs":[{"internalType":"uint256","name":"drawId","type":"uint256"},{"internalType":"uint256","name":"winningNumber","type":"uint256"},{"internalType":"bool","name":"isProcessed","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"claimETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"contractBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"deleteComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"uint256","name":"commentIndex","type":"uint256"},{"internalType":"string","name":"newComment","type":"string"}],"name":"editComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAllBets","outputs":[{"components":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"internalType":"struct BetHistory.Bet[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"}],"name":"getComments","outputs":[{"components":[{"internalType":"address","name":"commenter","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isDeleted","type":"bool"}],"internalType":"struct BetHistory.Comment[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserBets","outputs":[{"components":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"internalType":"struct BetHistory.Bet[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"}],"name":"likeBet","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"maxBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"minBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_number","type":"string"},{"internalType":"uint256","name":"_times","type":"uint256"},{"internalType":"bool","name":"_isETH","type":"bool"}],"name":"placeBet","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_winningNumber","type":"uint256"}],"name":"setBetResult","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_winner","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"setWinner","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"userBets","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"winnings","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdrawETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
         const betPrice = 0.000175;
-        
+
 let web3;
 let contract;
-let userAccount = null;
+let userAccount;
+let userBetsPage = 0;
+let betHistoryPage = 0;
+const pageSize = 5;
 
-// **Koneksi ke Wallet**
+// **Connect Wallet**
 async function connectWallet() {
     if (window.ethereum) {
         try {
-            const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-            userAccount = accounts[0];
             web3 = new Web3(window.ethereum);
+            await window.ethereum.request({ method: "eth_requestAccounts" });
+            const accounts = await web3.eth.getAccounts();
+            userAccount = accounts[0];
             contract = new web3.eth.Contract(contractABI, contractAddress);
-            document.getElementById("walletAddress").textContent = `Connected: ${userAccount}`;
+
+            document.getElementById("walletAddress").innerText = `Connected: ${userAccount}`;
             document.getElementById("connectWallet").style.display = "none";
-            document.getElementById("disconnectWallet").style.display = "inline";
+            document.getElementById("disconnectWallet").style.display = "block";
+
+            loadUserBets();
+            loadBetHistory();
         } catch (error) {
-            console.error("Wallet connection failed:", error);
+            console.error(error);
+            alert("Connection failed!");
         }
     } else {
-        alert("Please install MetaMask to use this feature.");
+        alert("Please install MetaMask!");
     }
 }
 
 // **Disconnect Wallet**
 function disconnectWallet() {
     userAccount = null;
-    document.getElementById("walletAddress").textContent = "Not connected";
-    document.getElementById("connectWallet").style.display = "inline";
+    document.getElementById("walletAddress").innerText = "Disconnected";
+    document.getElementById("connectWallet").style.display = "block";
     document.getElementById("disconnectWallet").style.display = "none";
 }
 
-// **Tempat Taruhan**
+// **Place Bet**
 async function placeBet() {
     if (!userAccount) {
-        alert("Connect your wallet first.");
+        alert("Please connect your wallet first!");
         return;
     }
 
-    const betNumber = document.getElementById("betNumber").value.trim();
-    const betTimes = parseInt(document.getElementById("betTimes").value);
-    
-    if (!betNumber || isNaN(betTimes) || betTimes <= 0) {
-        alert("Please enter a valid bet number and amount.");
+    const number = document.getElementById("betNumber").value;
+    const times = parseInt(document.getElementById("betTimes").value);
+    const betPrice = web3.utils.toWei("0.000175", "ether");
+    const totalCost = betPrice * times;
+
+    if (!number || number.length < 1 || number.length > 4 || isNaN(times) || times < 1) {
+        alert("Invalid bet input!");
         return;
     }
-
-    const betPrice = web3.utils.toWei("0.000175", "ether"); 
-    const totalCost = web3.utils.toWei((0.000175 * betTimes).toString(), "ether");
 
     try {
-        await contract.methods.placeBet(betNumber, betTimes, true).send({
+        await contract.methods.placeBet(number, times, true).send({
             from: userAccount,
             value: totalCost
         });
-        alert("Bet placed successfully!");
+        document.getElementById("betStatus").innerText = "Bet placed successfully!";
+        loadUserBets();
     } catch (error) {
-        console.error("Bet placement failed:", error);
-        alert("Transaction failed.");
+        console.error(error);
+        document.getElementById("betStatus").innerText = "Transaction failed!";
     }
 }
 
-// **Ambil Riwayat Taruhan**
-async function getBets() {
-    if (!userAccount) {
-        alert("Connect your wallet first.");
-        return;
+// **Load User Bets (with Pagination)**
+async function loadUserBets() {
+    if (!userAccount) return;
+    const bets = await contract.methods.getUserBets(userAccount).call();
+    const start = userBetsPage * pageSize;
+    const end = Math.min(start + pageSize, bets.length);
+    
+    let html = "";
+    for (let i = start; i < end; i++) {
+        html += `<p>${bets[i].number} | ${bets[i].betAmount} | ${new Date(bets[i].timestamp * 1000).toLocaleString()}</p>`;
     }
+    document.getElementById("userBets").innerHTML = html;
+}
 
-    try {
-        console.log("Fetching bets for:", userAccount);
-        const bets = await contract.methods.getUserBets(userAccount).call();
-        console.log("Bets received:", bets);  // Debugging output
+// **User Bets Pagination**
+function prevUserBets() {
+    if (userBetsPage > 0) {
+        userBetsPage--;
+        loadUserBets();
+    }
+}
 
-        let betList = document.getElementById("betList");
-        betList.innerHTML = "<h3>Your Bets</h3>";
+function nextUserBets() {
+    userBetsPage++;
+    loadUserBets();
+}
 
-        if (!bets || bets.length === 0) {
-            betList.innerHTML += "<p>No bets found.</p>";
-            return;
-        }
+// **Load Bet History (with Pagination)**
+async function loadBetHistory() {
+    const bets = await contract.methods.getAllBets().call();
+    const start = betHistoryPage * pageSize;
+    const end = Math.min(start + pageSize, bets.length);
 
-        bets.forEach((bet, index) => {
-            const betTime = new Date(bet.timestamp * 1000).toLocaleString();
-            betList.innerHTML += `
-                <p><strong>Bet #${index + 1}</strong>: Number: ${bet.number} | Amount: ${bet.betAmount} | Time: ${betTime}</p>
-            `;
+    let html = "";
+    for (let i = start; i < end; i++) {
+        html += `<p>${bets[i].number} | ${bets[i].betAmount} | ${new Date(bets[i].timestamp * 1000).toLocaleString()}</p>`;
+    }
+    document.getElementById("betHistory").innerHTML = html;
+}
+
+// **Bet History Pagination**
+function prevBetHistory() {
+    if (betHistoryPage > 0) {
+        betHistoryPage--;
+        loadBetHistory();
+    }
+}
+
+function nextBetHistory() {
+    betHistoryPage++;
+    loadBetHistory();
+}
+
+// Initialize saat halaman terbuka
+window.onload = () => {
+    if (window.ethereum) {
+        window.ethereum.on("accountsChanged", (accounts) => {
+            if (accounts.length > 0) {
+                userAccount = accounts[0];
+                document.getElementById("walletAddress").innerText = `Connected: ${userAccount}`;
+                document.getElementById("connectWallet").style.display = "none";
+                document.getElementById("disconnectWallet").style.display = "block";
+                loadUserBets();
+                loadBetHistory();
+            } else {
+                disconnectWallet();
+            }
         });
-    } catch (error) {
-        console.error("Failed to fetch bets:", error);
-        alert("Error fetching bets. Check console for details.");
     }
-}
-
-// **Event Listeners**
-document.getElementById("connectWallet").addEventListener("click", connectWallet);
-document.getElementById("disconnectWallet").addEventListener("click", disconnectWallet);
-document.getElementById("placeBet").addEventListener("click", placeBet);
-document.getElementById("getBets").addEventListener("click", getBets);
+};
     </script>
 </body>
 </html>
