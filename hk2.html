@@ -47,7 +47,7 @@
         <p id="betTimesWarning" style="color: red;"></p>
 
         <!-- Menampilkan rincian total ETH yang harus dibayar -->
-        <p>Total ETH: <span id="totalETH">0</span> ETH</p>
+        <p>Total ETH: <span id="totalETH">0.0000</span> ETH</p>
 
        <button onclick="placeBet()">Place Bet</button>
 
@@ -181,8 +181,11 @@ function validateForm() {
     function updateTotalETH() {
     let betTimes = parseInt(document.getElementById("betTimes").value) || 0;
     let totalETH = betTimes * betPrice;
-    document.getElementById("totalETH").textContent = totalETH.toFixed(4); // Menampilkan dengan 4 desimal
+    document.getElementById("totalETH").textContent = totalETH.toFixed(6); // Menampilkan 6 desimal
 }
+
+// Pastikan fungsi ini dipanggil saat input berubah
+document.getElementById("betTimes").addEventListener("input", updateTotalETH);
         
         async function loadBetHistory() {
     const bets = await contract.methods.getAllBets().call();
