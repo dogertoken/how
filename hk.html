@@ -230,6 +230,46 @@ function validateBetTimes() {
         warning.innerText = "";
     }
 }
+
+// Search betHistory Data
+const searchContainer = document.createElement("div");
+searchContainer.innerHTML = `
+    <input type="text" id="searchInput" placeholder="Search Player, Tx, Bet Number..." oninput="searchHistory()">
+    <button id="searchButton" onclick="clearSearch()">❌ Clear</button>
+`;
+document.body.insertBefore(searchContainer, document.getElementById("betHistory"));
+
+function searchHistory() {
+    const searchTerm = document.getElementById("searchInput").value.trim().toLowerCase();
+    const betHistory = document.getElementById("betHistory");
+    const items = betHistory.getElementsByTagName("p"); // Ambil semua elemen <p> dalam betHistory
+
+    let found = false;
+    for (let i = 0; i < items.length; i++) {
+        const text = items[i].textContent.toLowerCase(); 
+        
+        if (text.includes(searchTerm)) {
+            items[i].style.display = "";
+            found = true;
+        } else {
+            items[i].style.display = "none";
+        }
+    }
+
+    if (!found) {
+        betHistory.innerHTML = "<p style='color:red;'>No results found.</p>";
+    }
+}
+
+function clearSearch() {
+    document.getElementById("searchInput").value = "";
+    const betHistory = document.getElementById("betHistory");
+    const items = betHistory.getElementsByTagName("p");
+
+    for (let i = 0; i < items.length; i++) {
+        items[i].style.display = "";
+    }
+}
     
 // **Load User Bets (with Pagination)**
 async function loadUserBets() {
