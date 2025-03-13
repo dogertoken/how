@@ -413,28 +413,6 @@ async function deleteComment(betId, commentIndex) {
     }
 }
 
-// **Inisialisasi & Koneksi Wallet**
-async function connectWallet() {
-    if (window.ethereum) {
-        try {
-            const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-            userAddress = accounts[0];
-            console.log("Connected to:", userAddress);
-            await loadBetHistory();
-        } catch (error) {
-            console.error("Gagal menghubungkan wallet:", error);
-            alert("Gagal menghubungkan MetaMask.");
-        }
-    } else {
-        alert("MetaMask tidak terdeteksi!");
-    }
-}
-
-// **Panggil fungsi saat halaman dimuat**
-window.onload = async () => {
-    await connectWallet();
-};
-
 // Initialize saat halaman terbuka
 window.onload = () => {
     if (window.ethereum) {
