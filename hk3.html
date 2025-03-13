@@ -244,8 +244,8 @@ let betData = [];
 
 async function loadBetHistory() {
     try {
-        betData = await contract.methods.getAllBets().call();
-        betData.reverse(); // Membalik urutan agar yang terbaru tampil dulu
+        const bets = await contract.methods.getAllBets().call();
+        betData = bets.reverse(); // Membalik urutan agar yang terbaru tampil dulu
         displayPage(currentPage);
     } catch (error) {
         console.error("Error loading bet history:", error);
@@ -262,7 +262,8 @@ function displayPage(page) {
     let paginatedItems = betData.slice(start, end);
 
     let betList = "";
-    paginatedItems.forEach(bet => {
+    for (let i = 0; i < paginatedItems.length; i++) {
+        const bet = paginatedItems[i];
         const timestamp = new Date(bet.timestamp * 1000).toISOString().replace("T", " ").replace("Z", " UTC");
         const blockLink = `https://sepolia.basescan.org/block/${bet.blockNumber}`;
         const status = bet.txHash 
@@ -280,7 +281,7 @@ function displayPage(page) {
             Status: ${status}<br>
             Time: <span style="color: #8e44ad;">${timestamp}</span><br>
         </p><hr>`;
-    });
+    }
 
     document.getElementById("betHistory").innerHTML = betList;
     renderPagination();
@@ -327,7 +328,7 @@ function renderPagination() {
     // Tombol Next dan Last
     createPageButton("Next >", currentPage + 1, currentPage === totalPages);
     createPageButton("Last >>", totalPages, currentPage === totalPages);
-                         }
+            }
 
         async function loadUserBets() {
     const accounts = await web3.eth.getAccounts();
