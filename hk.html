@@ -198,21 +198,33 @@ try {
 
 // Number Funcion
 function validateBetNumber() {
-    let betNumber = document.getElementById("betNumber").value;
-    let warning = document.getElementById("betWarning");
+    let betNumberInput = document.getElementById("betNumber");
+    let betWarning = document.getElementById("betWarning");
 
-    if (!/^\d{2,4}$/.test(betNumber)) {
-        warning.innerText = "Bet number must be 2 to 4 digits!";
+    // Hanya angka yang diperbolehkan
+    betNumberInput.value = betNumberInput.value.replace(/\D/g, "");
+
+    if (betNumberInput.value.length < 2) {
+        betWarning.innerText = "Bet number must minimum be 2 digits!";
+    } else if (betNumberInput.value.length > 4) {
+        betWarning.innerText = "Bet number must minimum 4 digits!";
+        betNumberInput.value = betNumberInput.value.slice(0, 4); // Membatasi maksimal 4 digit
     } else {
-        warning.innerText = "";
+        betWarning.innerText = "";
     }
 }
 
 function validateBetTimes() {
-    let betTimes = document.getElementById("betTimes").value;
+    let betTimesInput = document.getElementById("betTimes");
     let warning = document.getElementById("betWarning");
 
-    if (betTimes < 1 || betTimes > 99) {
+    let value = parseInt(betTimesInput.value, 10); // Konversi ke angka
+
+    if (value < 1) {
+        betTimesInput.value = 1;
+        warning.innerText = "Bet times must be between 1 and 99!";
+    } else if (value > 99) {
+        betTimesInput.value = 99;
         warning.innerText = "Bet times must be between 1 and 99!";
     } else {
         warning.innerText = "";
