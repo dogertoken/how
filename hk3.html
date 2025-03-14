@@ -9,77 +9,183 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.0/web3.min.js"></script>
     <style>
     body {
+    display: flex;
+    justify-content: center;  /* Pusatkan secara horizontal */
+    align-items: center;  /* Pusatkan secara vertikal */
+    height: 100vh;  /* Buat agar mengambil seluruh tinggi layar */
+    margin: 0;
     font-family: Ubuntu, sans-serif;
     text-align: center;
-    background-color: #f4f4f4;
+    background-color: #000000; /* Latar belakang hitam pekat */
+    color: #f8f1e4; /* Font putih tulang */
 }
 
 .container {
-    max-width: 600px;
+    width: 100%;
+    max-width: 1200px;
     margin: auto;
     padding: 20px;
-    background: white;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    background: #000000; /* Efek transparan */
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
 }
 
-input, button {
+/* Kolom Input dengan Efek Glassmorphism */
+input {
     display: block;
     margin: 10px auto;
     padding: 10px;
     width: 90%;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
 }
 
+input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Tombol Futuristik (Lebih Pendek) */
 button {
-    background-color: #28a745;
+    display: block;
+    margin: 8px auto;
+    padding: 6px; /* Dipendekin */
+    width: 40%; /* Lebih pendek */
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: none;
+    transition: all 0.3s ease-in-out;
+    background: linear-gradient(135deg, #007bff, #0048ff); /* Biru gradient */
     color: white;
     border: none;
-    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0, 120, 255, 0.3);
 }
 
 button:hover {
-    background-color: #218838;
+    background: linear-gradient(135deg, #0048ff, #007bff);
+    transform: scale(1.05);
+    box-shadow: 0 3px 12px rgba(0, 120, 255, 0.5);
 }
 
+/* Tombol Disconnect (Lebih Pendek) */
 #disconnectWallet {
-    background-color: #dc3545;
+    background: linear-gradient(135deg, #ff0033, #cc0000);
+    box-shadow: 0 3px 8px rgba(255, 0, 51, 0.3);
 }
 
 #disconnectWallet:hover {
-    background-color: #c82333;
-}
-        
-.nav-button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    cursor: pointer;
-    width: 80px; /* Ukuran tombol lebih pendek */
-    padding: 8px;
-    display: inline-block;
-    margin: 5px;
+    background: linear-gradient(135deg, #cc0000, #ff0033);
+    box-shadow: 0 3px 12px rgba(255, 0, 51, 0.5);
 }
 
+/* Container Tombol */
 .button-container {
     display: flex;
-    justify-content: center; /* Pusatkan tombol di tengah */
-    gap: 10px; /* Jarak antar tombol */
+    justify-content: center;
+    gap: 8px;
 }
 
-#userBets {
-    text-align: justify; /* Meratakan teks seperti di buku */
-    hyphens: auto; /* Menambahkan pemenggalan kata jika perlu */
-    line-height: 1.6; /* Jarak antar baris agar lebih nyaman dibaca */
-    max-width: 600px; /* Batasi lebar agar tidak terlalu panjang */
-    margin: auto; /* Pusatkan jika diperlukan */
+/* Ukuran Wallet Address Lebih Kecil */
+#walletAddress {
+    font-size: 12px;
 }
 
-#betHistory {
-    text-align: justify; /* Meratakan teks seperti di buku */
-    hyphens: auto; /* Menambahkan pemenggalan kata jika perlu */
-    line-height: 1.6; /* Jarak antar baris agar lebih nyaman dibaca */
+#betHistory, #userBets {
+    font-size: 13px; /* Ukuran font yang nyaman */
+    text-align: justify; /* Rata kiri-kanan seperti di buku */
+    hyphens: auto; /* Tambahkan pemenggalan kata jika perlu */
+    line-height: 1.8; /* Jarak antar baris agar lebih nyaman dibaca */
     max-width: 600px; /* Batasi lebar agar tidak terlalu panjang */
     margin: auto; /* Pusatkan jika diperlukan */
+    padding: 15px; /* Beri ruang di dalam agar tidak terlalu mepet */
+    text-indent: 20px; /* Tambahkan indentasi di awal paragraf */
+}
+
+table {
+    width: 100%; /* Bisa diperkecil lagi, misalnya 50% jika terlalu lebar */
+    max-width: 900px; /* Agar tabel tidak terlalu besar di layar lebar */
+    border-collapse: collapse;
+    margin: 20px auto; /* 'auto' agar tabel tetap di tengah */
+    font-size: 18px; /* Kecilkan agar tabel lebih compact */
+    text-align: left;
+}
+
+th, td {
+    padding: 8px; /* Kurangi padding agar tabel lebih kecil */
+    border: 1px solid #ddd;
+}
+
+th {
+    background: linear-gradient(135deg, #00b7ff, #007bff);
+    color: white; /* Agar teks lebih kontras */
+}
+
+.footer-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.9); /* Warna hitam transparan */
+    color: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 999;
+}
+
+/* Supaya tombolnya proporsional */
+.footer-nav button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 14px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* Gaya untuk modal */
+.modal {
+  display: none; /* Awalnya modal disembunyikan */
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Transparan gelap */
+}
+
+/* Konten modal */
+.modal-content {
+  background: #000000;
+  color: white;
+  margin: 10% auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 900px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+}
+
+/* Tombol close */
+.close {
+  color: white;
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+}
+.close:hover {
+  color: red;
 }
     </style>
 </head>
@@ -90,30 +196,76 @@ button:hover {
         <!-- Wallet Connection -->
         <button id="connectWallet" onclick="connectWallet()">Connect Wallet</button>
         <button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect</button>
-        <p id="walletAddress" style="display:none;"></p>
-        <p id="walletBalance" style="display:none;">Balance: 0 ETH</p>
+        <p id="walletAddress" style="display:none; color: #ad5cff"></p>
+        <p id="walletBalance" style="display:none; color: #00ca09;">Balance: 0 ETH</p>
 
         <h2>Place Bet</h2>
-        <input type="text" id="betNumber" placeholder="4D 3D or 2D" oninput="validateBetNumber()">
+        <input type="text" id="betNumber" placeholder="4D 3D or 2D" oninput="validateBetNumber()"><br>
         <input type="number" id="betTimes" placeholder="x1 / x99" min="1" max="99" oninput="validateBetTimes(); updateBetPrice()">
         <p id="betWarning" style="color: red;"></p>
-        <p id="betPrice" style="color: blue; font-weight: bold;">Price: 0.000000 ETH</p>
+        <p id="betPrice" style="color: #00FF66; font-weight: bold;">Cost: 0.000000 ETH</p>
         <button onclick="placeBet()">Place Bet</button>
         <p id="betStatus"></p>
-        <h2>Your Bets</h2>
-        <div id="userBets"></div>
-        <div class="button-container">
-        <button class="nav-button" onclick="prevUserBets()">Prev</button>
-        <button class="nav-button" onclick="nextUserBets()">Next</button>
-      </div>
 
        <h2>Public Bet History</h2>
        <div id="betHistory"></div>
        <div class="button-container">
        <button class="nav-button" onclick="prevBetHistory()">Prev</button>
        <button class="nav-button" onclick="nextBetHistory()">Next</button>
-    
+
+       </div>
+        <br>
+
+       <!-- Prize Table -->
+        <div id="prizes" class="section-box">
+        <center><h2>4D ETH Prize Payouts</h2></center>
+            <table>
+                <tr>
+                    <th>Bet Type</th>
+                    <th>Prize Multiplier</th>
+                    <th>Example (0.000175 ETH)</th>
+                </tr>
+                <tr>
+                    <td>4D</td>
+                    <td>50,000%</td>
+                    <td>0.0875 ETH</td>
+                </tr>
+                <tr>
+                    <td>3D</td>
+                    <td>5,000%</td>
+                    <td>0.00875 ETH</td>
+                </tr>
+                <tr>
+                    <td>2D</td>
+                    <td>500%</td>
+                    <td>0.000875 ETH</td>
+                </tr>
+            </table>
+        </div>
+       <br>
+    <br>
+ <br>
+
+        <!-- Modal -->
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>Your Bets</h2>
+    <div id="userBets"></div>
+    <div class="button-container">
+      <button class="nav-button" onclick="prevUserBets()">Prev</button>
+      <button class="nav-button" onclick="nextUserBets()">Next</button>
     </div>
+  </div>
+</div>
+        
+        <footer class="footer-nav">
+        <button><img src="icon.svg alt="Lotto">Menu</button>
+        <button><img src="icon.svg alt="Lotto">4D</button>
+        <button onclick="openModal()"><img src="icon.svg" alt="Lotto">MyBets</button>
+        <button><img src="icon.svg alt="Lotto">Results</button>
+        <button><img src="icon.svg alt="Lotto">Claim</button>
+        </footer>
 
     <script src="script.js"></script>
     <script>
@@ -145,7 +297,7 @@ async function connectWallet() {
 
             // Signature
             const timestamp = new Date().toISOString();
-            const message = `Verifying user for Sepolia Base Testnet\nWallet: ${userAccount}\nTime: ${timestamp}`;
+            const message = `Verifying user, Connect To Lotto Chain HK Play & Win!\nWallet: ${userAccount}\nTime: ${timestamp}`;
             const signature = await web3.eth.personal.sign(message, userAccount, "");
             console.log("Signature:", signature);
 
@@ -188,119 +340,4 @@ async function switchToSepoliaBase() {
                         params: [{
                             chainId: SEPOLIA_BASE_CHAIN_ID,
                             chainName: "Base Sepolia Testnet",
-                            nativeCurrency: SEPOLIA_CURRENCY,
-                            rpcUrls: [SEPOLIA_RPC_URL],
-                            blockExplorerUrls: [SEPOLIA_EXPLORER_URL]
-                        }]
-                    });
-                } else {
-                    throw switchError;
-                }
-            }
-        }
-    } catch (error) {
-        console.error("Failed to switch network:", error);
-        alert("Failed to switch network to Sepolia Base Testnet!");
-    }
-}
-
-// **Disconnect Wallet**
-function disconnectWallet() {
-    userAccount = null;
-    document.getElementById("walletAddress").innerText = "";
-    document.getElementById("walletAddress").style.display = "none";
-    document.getElementById("walletBalance").innerText = "Balance: 0 ETH";
-    document.getElementById("walletBalance").style.display = "none";
-    document.getElementById("connectWallet").style.display = "block";
-    document.getElementById("disconnectWallet").style.display = "none";
-}
-
-// **Update Balance**
-async function updateBalance() {
-    if (userAccount) {
-        let balanceWei = await web3.eth.getBalance(userAccount);
-        let balanceEth = web3.utils.fromWei(balanceWei, "ether");
-        document.getElementById("walletBalance").innerText = `Balance: ${parseFloat(balanceEth).toFixed(4)} ETH`;
-    }
-}
-       
-function updateBetPrice() {
-    let betTimes = document.getElementById("betTimes").value;
-    let ethPrice = (betTimes * 0.000175).toFixed(6); // Hitung harga ETH
-    document.getElementById("betPrice").innerText = `Price: ${ethPrice} ETH`;
-}
-
-// **Place Bet**
-async function placeBet() {
-    if (!userAccount) {
-        alert("Please connect your wallet first!");
-        return;
-    }
-
-    const number = document.getElementById("betNumber").value;
-    const times = parseInt(document.getElementById("betTimes").value);
-    const betPrice = web3.utils.toWei("0.000175", "ether");
-    const totalCost = betPrice * times;
-
-    if (!number || number.length < 1 || number.length > 4 || isNaN(times) || times < 1) {
-        alert("Invalid bet input!");
-        return;
-    }
-    
-try {
-        await contract.methods.placeBet(number, times, true).send({
-            from: userAccount,
-            value: totalCost
-        });
-        document.getElementById("betStatus").innerText = "Bet placed successfully!";
-        loadUserBets();
-    } catch (error) {
-        console.error(error);
-        document.getElementById("betStatus").innerText = "Transaction failed!";
-    }
-}
-
-// Number Funcion
-function validateBetNumber() {
-    let betNumberInput = document.getElementById("betNumber");
-    let betWarning = document.getElementById("betWarning");
-
-    // Hanya angka yang diperbolehkan
-    betNumberInput.value = betNumberInput.value.replace(/\D/g, "");
-
-    if (betNumberInput.value.length < 2) {
-        betWarning.innerText = "Bet number must minimum be 2 digits!";
-    } else if (betNumberInput.value.length > 4) {
-        betWarning.innerText = "Bet number must minimum 4 digits!";
-        betNumberInput.value = betNumberInput.value.slice(0, 4); // Membatasi maksimal 4 digit
-    } else {
-        betWarning.innerText = "";
-    }
-}
-
-function validateBetTimes() {
-    let betTimesInput = document.getElementById("betTimes");
-    let warning = document.getElementById("betWarning");
-
-    let value = parseInt(betTimesInput.value, 10); // Konversi ke angka
-
-    if (value < 1) {
-        betTimesInput.value = 1;
-        warning.innerText = "Bet times must be between 1 and 99!";
-    } else if (value > 99) {
-        betTimesInput.value = 99;
-        warning.innerText = "Bet times must be between 1 and 99!";
-    } else {
-        warning.innerText = "";
-    }
-}
-
-// Search betHistory Data
-// Pastikan elemen betHistory sudah ada sebelum menjalankan script ini
-document.addEventListener("DOMContentLoaded", function () {
-    // Buat elemen pencarian
-    const searchContainer = document.createElement("div");
-    searchContainer.style.marginBottom = "10px"; // Tambahkan margin biar lebih rapi
-    searchContainer.innerHTML = `
-        <input type="text" id="searchInput" placeholder="Search Player, Tx, Bet Number..." oninput="searchHistory()">
-        <button id="searchButton
+                            
