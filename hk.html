@@ -355,7 +355,7 @@ async function loadBetHistory() {
             Tx: ${shortTxHash}<br>
             Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
             Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
-            <button onclick="likeBet('${bet.betId}')">🔥 Like</button>
+            <button onclick="likeBet('${bet.betId}')">♥️ Like</button>
             <span id="like-${bet.betId}">0</span> Likes
         </p><hr>`;
     }
@@ -386,8 +386,18 @@ async function likeBet(betId) {
             return;
         }
 
-        // Kirim transaksi ke blockchain
-        const tx = await contract.methods.likeBet(betId).send({ from: sender });
+        // Set fee 0.000001 ETH (1,000,000,000,000 wei)
+        const gasPrice = await web3.eth.getGasPrice(); // Ambil gas price dari jaringan
+        const gasLimit = 100000; // Sesuaikan dengan smart contract
+        const fee = web3.utils.toWei("0.000001", "ether");
+
+        // Kirim transaksi dengan gas dan fee
+        const tx = await contract.methods.likeBet(betId).send({
+            from: sender,
+            gasPrice: gasPrice,
+            gas: gasLimit,
+            value: fee // Menambahkan 0.000001 ETH sebagai fee
+        });
 
         console.log("Like berhasil dikirim ke blockchain!", tx);
     } catch (error) {
