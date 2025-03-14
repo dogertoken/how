@@ -296,13 +296,13 @@ function clearSearch() {
 }
     
 // **Load User Bets (with Pagination)**
-async function loadBetHistory() {
-            try {
-                const bets = await contract.methods.getAllBets().call();
-                const reversedBets = bets.slice().reverse(); // Membalik urutan bets
+async function loadUserBets() {
+    if (!userAccount) return;
+    const bets = await contract.methods.getUserBets(userAccount).call();
+    const reversedBets = bets.slice().reverse(); // Membalik urutan bets agar yang terbaru di atas
 
-                const start = betHistoryPage * pageSize;
-                const end = Math.min(start + pageSize, reversedBets.length);
+    const start = userBetsPage * pageSize;
+    const end = Math.min(start + pageSize, reversedBets.length);
 
                 let html = "";
                 for (let i = start; i < end; i++) {
@@ -317,118 +317,12 @@ async function loadBetHistory() {
                         Tx: ${shortTxHash}<br>
                         Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
                         Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
-                        <button onclick="toggleCommentBox('${bet.betId}')">💬 Komentar</button>
-                    </p>
-                    <div id="commentBox-${bet.betId}" style="display: none;">
-                        <input type="text" id="comment-${bet.betId}" placeholder="Tulis komentar...">
-                        <button onclick="addComment('${bet.betId}')">Kirim</button>
-                        <div id="comments-${bet.betId}"></div>
-                    </div>
-                    <hr>`;
-
-                    loadComments(bet.betId); // Memuat komentar setiap bet
+                    </p><hr>`;
                 }
-
-                document.getElementById("betHistory").innerHTML = html;
-            } catch (error) {
-                console.error("Gagal memuat riwayat bet:", error);
-            }
+            document.getElementById("userBets").innerHTML = html;
         }
-
-        function toggleCommentBox(betId) {
-            let commentBox = document.getElementById(`commentBox-${betId}`);
-            commentBox.style.display = commentBox.style.display === "none" ? "block" : "none";
-        }
-
-        async function addComment(betId) {
-            try {
-                const commentInput = document.getElementById(`comment-${betId}`);
-                const commentText = commentInput.value.trim();
-                
-                if (!commentText) {
-                    alert("Komentar tidak boleh kosong!");
-                    return;
-                }
-
-                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-                const sender = accounts[0];
-
-                await contract.methods.addComment(betId, commentText).send({ from: sender });
-
-                alert("Komentar berhasil dikirim!");
-                commentInput.value = ""; // Kosongkan input
-                loadComments(betId); // Refresh komentar
-            } catch (error) {
-                console.error("Gagal mengirim komentar:", error);
-                alert(`Gagal mengirim komentar. Error: ${error.message}`);
-            }
-        }
-
-        async function loadComments(betId) {
-            try {
-                const comments = await contract.methods.getComments(betId).call();
-                let html = "";
-
-                for (let i = 0; i < comments.length; i++) {
-                    let comment = comments[i];
-
-                    if (!comment.isDeleted) {
-                        let shortCommenter = comment.commenter.slice(0, 6) + "..." + comment.commenter.slice(-4);
-                        let formattedTime = new Date(comment.timestamp * 1000).toISOString();
-
-                        html += `<p>
-                            <strong>${shortCommenter}</strong>: ${comment.text} <br>
-                            <small style="color: gray;">${formattedTime}</small>
-                            ${comment.commenter.toLowerCase() === (await ethereum.request({ method: "eth_requestAccounts" }))[0].toLowerCase() ? 
-                                `<button onclick="editComment('${betId}', ${i}')">✏️ Edit</button>
-                                 <button onclick="deleteComment('${betId}', ${i}')">🗑️ Hapus</button>` : ""}
-                        </p>`;
-                    }
-                }
-
-                document.getElementById(`comments-${betId}`).innerHTML = html;
-            } catch (error) {
-                console.error("Gagal memuat komentar:", error);
-            }
-        }
-
-        async function editComment(betId, commentIndex) {
-            try {
-                const newComment = prompt("Masukkan komentar baru:");
-                if (!newComment) return;
-
-                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-                const sender = accounts[0];
-
-                await contract.methods.editComment(betId, commentIndex, newComment).send({ from: sender });
-
-                alert("Komentar berhasil diperbarui!");
-                loadComments(betId);
-            } catch (error) {
-                console.error("Gagal mengedit komentar:", error);
-                alert(`Gagal mengedit komentar. Error: ${error.message}`);
-            }
-        }
-
-        async function deleteComment(betId, commentIndex) {
-            try {
-                if (!confirm("Apakah Anda yakin ingin menghapus komentar ini?")) return;
-
-                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-                const sender = accounts[0];
-
-                await contract.methods.deleteComment(betId, commentIndex).send({ from: sender });
-
-                alert("Komentar berhasil dihapus!");
-                loadComments(betId);
-            } catch (error) {
-                console.error("Gagal menghapus komentar:", error);
-                alert(`Gagal menghapus komentar. Error: ${error.message}`);
-            }
-        }
-
-        window.onload = loadBetHistory;
-
+        
+                    
 // **User Bets Pagination**
 function prevUserBets() {
     if (userBetsPage > 0) {
