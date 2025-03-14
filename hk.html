@@ -355,7 +355,7 @@ async function loadBetHistory() {
             Tx: ${shortTxHash}<br>
             Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
             Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
-            <button onclick="likeBet('${bet.betId}')">🚀 Like</button>
+            <button onclick="likeBet('${bet.betId}')">🔥 Like</button>
             <span id="like-${bet.betId}">0</span> Likes
         </p><hr>`;
     }
@@ -365,8 +365,6 @@ async function loadBetHistory() {
 // **Fungsi Like Bet via MetaMask**
 async function likeBet(betId) {
     try {
-        console.log("Bet ID sebelum dikirim:", betId);
-
         if (!window.ethereum) {
             alert("MetaMask tidak terdeteksi!");
             return;
@@ -376,21 +374,22 @@ async function likeBet(betId) {
         const sender = accounts[0];
 
         console.log("Akun Pengirim:", sender);
+        console.log("Bet ID:", betId);
 
-        if (!web3.utils.isHexStrict(betId)) {
-            betId = web3.utils.padLeft(web3.utils.toHex(betId), 64);
+        // Konversi betId ke bytes32
+        betId = web3.utils.padLeft(web3.utils.toHex(betId), 64);
+
+        // Cek apakah akun sudah menyukai bet ini
+        const alreadyLiked = await contract.methods.betLikes(betId, sender).call();
+        if (alreadyLiked) {
+            alert("Anda sudah menyukai bet ini sebelumnya.");
+            return;
         }
 
-        console.log("Bet ID setelah konversi:", betId);
+        // Kirim transaksi ke blockchain
+        const tx = await contract.methods.likeBet(betId).send({ from: sender });
 
-        await contract.methods.likeBet(betId).send({ from: sender });
-
-        console.log("Like berhasil dikirim ke blockchain!");
-
-        let likeElement = document.getElementById(`like-${betId}`);
-        if (likeElement) {
-            likeElement.textContent = parseInt(likeElement.textContent) + 1;
-        }
+        console.log("Like berhasil dikirim ke blockchain!", tx);
     } catch (error) {
         console.error("Error saat menyukai bet:", error);
         alert(`Gagal menyukai bet. Error: ${error.message}`);
