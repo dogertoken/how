@@ -355,7 +355,7 @@ async function loadBetHistory() {
             Tx: ${shortTxHash}<br>
             Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
             Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
-            <button onclick="likeBet('${bet.betId}')">♥️ Like</button>
+            <button onclick="likeBet('${bet.betId}')">🎯 Like</button>
             <span id="like-${bet.betId}">0</span> Likes
         </p><hr>`;
     }
@@ -368,15 +368,22 @@ async function likeBet(betId) {
         const accounts = await ethereum.request({ method: "eth_requestAccounts" });
         const sender = accounts[0];
 
-        // Konversi betId jika belum dalam format 32-byte hex
+        // Pastikan Bet ID dalam format 32-byte hex
         if (!web3.utils.isHexStrict(betId)) {
             betId = web3.utils.padLeft(web3.utils.toHex(betId), 64);
+        }
+
+        // Cek apakah user sudah like sebelumnya
+        const alreadyLiked = await contract.methods.betLikes(betId, sender).call();
+        if (alreadyLiked) {
+            alert("Anda sudah menyukai bet ini.");
+            return;
         }
 
         console.log("Sender:", sender);
         console.log("Bet ID:", betId);
 
-        await contract.methods.likeBet(betId).send({ from: sender });
+        await contract.methods.likeBet(betId).send({ from: sender, gas: 300000 });
 
         let likeElement = document.getElementById(`like-${betId}`);
         likeElement.textContent = parseInt(likeElement.textContent) + 1;
