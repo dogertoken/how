@@ -370,13 +370,13 @@ async function loadUserBets() {
                     let shortTxHash = bet.txHash.slice(0, 10) + "..." + bet.txHash.slice(-10);
 
                     html += `<p>
-                        Player: <span style="color: purple;">${shortPlayer}</span><br>
-                        BetNumber: <span style="color: green;">${bet.number}</span><br>
-                        BetAmount: <span style="color: green;">${bet.betAmount}</span><br>
+                        Player: <span style="color: #8d1aff;">${shortPlayer}</span><br>
+                        BetNumber: <span style="color: #00FF66;">${bet.number}</span><br>
+                        BetAmount: <span style="color: #00FF66;">${bet.betAmount}</span><br>
                         Tx: ${shortTxHash}<br>
                         Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
                         Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
-                    </p><hr style="background-color: #333333; height: 3px; border: none;">`;
+                    </p><hr style="background-color: #333333; height: 1px; border: none;">`;
                 }
             document.getElementById("userBets").innerHTML = html;
         }
@@ -410,13 +410,13 @@ async function loadBetHistory() {
         let shortTxHash = bet.txHash.slice(0, 10) + "..." + bet.txHash.slice(-10);
 
         html += `<p>
-            Player: <span style="color: purple;">${shortPlayer}</span><br>
-            BetNumber: <span style="color: green;">${bet.number}</span><br>
-            BetAmount: <span style="color: green;">${bet.betAmount}</span><br>
+            Player: <span style="color: #8d1aff;">${shortPlayer}</span><br>
+            BetNumber: <span style="color: #00FF66;">${bet.number}</span><br>
+            BetAmount: <span style="color: #00FF66;">${bet.betAmount}</span><br>
             Tx: ${shortTxHash}<br>
             Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
             Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
-        </p><hr style="background-color: #333333; height: 3px; border: none;">`;
+        </p><hr style="background-color: #333333; height: 1px; border: none;">`;
     }
     document.getElementById("betHistory").innerHTML = html;
 }
