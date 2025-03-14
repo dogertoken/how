@@ -8,10 +8,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.0/web3.min.js"></script>
     <style>
+    /* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
 body {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     text-align: center;
-    background: linear-gradient(135deg, #1c1c1c, #3a3a3a);
+    background: #0d0d0d; /* Latar belakang hitam pekat */
     color: white;
     min-height: 100vh;
     display: flex;
@@ -19,19 +22,20 @@ body {
     justify-content: center;
 }
 
+/* Kontainer dengan Efek Glassmorphism */
 .container {
     max-width: 600px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Input dan Button dengan efek 3D */
-input, button {
+/* Input dengan Efek Glow */
+input {
     display: block;
     margin: 10px auto;
     padding: 12px;
@@ -40,42 +44,51 @@ input, button {
     border-radius: 10px;
     font-size: 16px;
     font-weight: 600;
-    transition: all 0.3s ease-in-out;
-}
-
-input {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
     text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
 }
 
 input::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* Tombol Utama */
+/* Tombol Neon Web3 */
 button {
-    background: linear-gradient(135deg, #4CAF50, #1e8e3e);
+    display: block;
+    margin: 10px auto;
+    padding: 12px;
+    width: 90%;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
     color: white;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+    text-transform: uppercase;
+    transition: all 0.3s ease-in-out;
+    background: linear-gradient(135deg, #00c8ff, #0044ff);
+    box-shadow: 0 0 15px rgba(0, 200, 255, 0.5);
 }
 
 button:hover {
-    background: linear-gradient(135deg, #1e8e3e, #4CAF50);
+    background: linear-gradient(135deg, #0044ff, #00c8ff);
     transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 200, 255, 0.8);
 }
 
-/* Tombol Disconnect */
+/* Tombol Disconnect (Merah Neon) */
 #disconnectWallet {
-    background: linear-gradient(135deg, #e74c3c, #c0392b);
-    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+    background: linear-gradient(135deg, #ff0033, #cc0000);
+    box-shadow: 0 0 15px rgba(255, 0, 51, 0.5);
 }
 
 #disconnectWallet:hover {
-    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    background: linear-gradient(135deg, #cc0000, #ff0033);
+    box-shadow: 0 0 20px rgba(255, 0, 51, 0.8);
 }
 
 /* Container Tombol */
@@ -85,7 +98,7 @@ button:hover {
     gap: 10px;
 }
 
-/* Efek Neon untuk Address dan Balance */
+/* Efek Glow untuk Address dan Balance */
 #walletAddress, #walletBalance {
     font-weight: bold;
     font-size: 18px;
@@ -93,13 +106,13 @@ button:hover {
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(5px);
+    box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
+    backdrop-filter: blur(8px);
     display: inline-block;
     margin-top: 10px;
 }
 
-/* Text di History */
+/* Area History */
 #userBets, #betHistory {
     text-align: justify;
     hyphens: auto;
@@ -109,7 +122,7 @@ button:hover {
     padding: 15px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 10px;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
 }
     </style>
 </head>
