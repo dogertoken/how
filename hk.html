@@ -122,6 +122,29 @@ th {
     background: linear-gradient(135deg, #00b7ff, #007bff);
     color: white; /* Agar teks lebih kontras */
 }
+
+.footer-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.9); /* Warna hitam transparan */
+    color: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 999;
+}
+
+/* Supaya tombolnya proporsional */
+.footer-nav button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 14px;
+    padding: 10px;
+    cursor: pointer;
+}
     </style>
 </head>
 <body>
@@ -156,6 +179,7 @@ th {
        <button class="nav-button" onclick="nextBetHistory()">Next</button>
 
        </div>
+        <br>
 
        <!-- Prize Table -->
         <div id="prizes" class="section-box">
@@ -183,6 +207,15 @@ th {
                 </tr>
             </table>
         </div>
+       <br>
+    <br>
+ <br>
+        <footer class="footer-nav">
+        <button>🏠 Home</button>
+        <button>🔍 Search</button>
+        <button>📜 History</button>
+        <button>⚙️ Settings</button>
+        </footer>
 
     <script src="script.js"></script>
     <script>
