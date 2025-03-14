@@ -240,9 +240,15 @@ document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
 // Search Data Result
 document.addEventListener("DOMContentLoaded", function () {
-    // Simpan semua elemen <p> awal ke dalam array agar tidak hilang setelah pencarian
     const betHistory = document.getElementById("betHistory");
-    const allItems = Array.from(betHistory.getElementsByTagName("p")); // Simpan semua elemen <p> ke array
+
+    // Pastikan betHistory sudah memiliki konten sebelum disimpan
+    if (!betHistory) {
+        console.error("Error: Element #betHistory not found!");
+        return;
+    }
+
+    const allItems = Array.from(betHistory.querySelectorAll("p")); // Simpan semua elemen <p>
 
     // Buat elemen pencarian
     const searchContainer = document.createElement("div");
