@@ -90,7 +90,8 @@ button:hover {
         <!-- Wallet Connection -->
         <button id="connectWallet" onclick="connectWallet()">Connect Wallet</button>
         <button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect</button>
-        <p id="walletAddress"></p>
+        <p id="walletAddress" style="display:none;"></p>
+        <p id="walletBalance" style="display:none;">Balance: 0 ETH</p>
 
         <h2>Place Bet</h2>
         <input type="text" id="betNumber" placeholder="4D 3D or 2D" oninput="validateBetNumber()">
@@ -138,9 +139,12 @@ async function connectWallet() {
             contract = new web3.eth.Contract(contractABI, contractAddress);
 
             document.getElementById("walletAddress").innerText = `Connected: ${userAccount}`;
+            document.getElementById("walletAddress").style.display = "block";
+            document.getElementById("walletBalance").style.display = "block";
             document.getElementById("connectWallet").style.display = "none";
             document.getElementById("disconnectWallet").style.display = "block";
 
+            updateBalance();
             loadUserBets();
             loadBetHistory();
         } catch (error) {
@@ -155,9 +159,21 @@ async function connectWallet() {
 // **Disconnect Wallet**
 function disconnectWallet() {
     userAccount = null;
-    document.getElementById("walletAddress").innerText = "Disconnected";
+    document.getElementById("walletAddress").innerText = "";
+    document.getElementById("walletAddress").style.display = "none";
+    document.getElementById("walletBalance").innerText = "Balance: 0 ETH";
+    document.getElementById("walletBalance").style.display = "none";
     document.getElementById("connectWallet").style.display = "block";
     document.getElementById("disconnectWallet").style.display = "none";
+}
+
+// **Update Balance**
+async function updateBalance() {
+    if (userAccount) {
+        let balanceWei = await web3.eth.getBalance(userAccount);
+        let balanceEth = web3.utils.fromWei(balanceWei, "ether");
+        document.getElementById("walletBalance").innerText = `Balance: ${parseFloat(balanceEth).toFixed(4)} ETH`;
+    }
 }
        
 function updateBetPrice() {
@@ -366,8 +382,12 @@ window.onload = () => {
             if (accounts.length > 0) {
                 userAccount = accounts[0];
                 document.getElementById("walletAddress").innerText = `Connected: ${userAccount}`;
+                document.getElementById("walletAddress").style.display = "block";
+                document.getElementById("walletBalance").style.display = "block";
                 document.getElementById("connectWallet").style.display = "none";
                 document.getElementById("disconnectWallet").style.display = "block";
+                
+                updateBalance();
                 loadUserBets();
                 loadBetHistory();
             } else {
