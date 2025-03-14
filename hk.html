@@ -355,7 +355,7 @@ async function loadBetHistory() {
             Tx: ${shortTxHash}<br>
             Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
             Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
-            <button onclick="likeBet('${bet.betId}')">✅ Like</button>
+            <button onclick="likeBet('${bet.betId}')">🚀 Like</button>
             <span id="like-${bet.betId}">0</span> Likes
         </p><hr>`;
     }
@@ -365,6 +365,8 @@ async function loadBetHistory() {
 // **Fungsi Like Bet via MetaMask**
 async function likeBet(betId) {
     try {
+        console.log("Bet ID sebelum dikirim:", betId);
+
         if (!window.ethereum) {
             alert("MetaMask tidak terdeteksi!");
             return;
@@ -372,34 +374,23 @@ async function likeBet(betId) {
 
         const accounts = await ethereum.request({ method: "eth_requestAccounts" });
         const sender = accounts[0];
-        
-        console.log("Sender:", sender);
-        console.log("Bet ID sebelum dikirim:", betId);
 
-        // Konversi betId ke format hex jika belum dalam format bytes32
+        console.log("Akun Pengirim:", sender);
+
         if (!web3.utils.isHexStrict(betId)) {
             betId = web3.utils.padLeft(web3.utils.toHex(betId), 64);
         }
 
         console.log("Bet ID setelah konversi:", betId);
 
-        // Cek apakah user sudah like sebelumnya
-        const alreadyLiked = await contract.methods.betLikes(betId, sender).call();
-        if (alreadyLiked) {
-            alert("Anda sudah menyukai bet ini.");
-            return;
-        }
+        await contract.methods.likeBet(betId).send({ from: sender });
 
-        // Kirim transaksi ke MetaMask
-        const tx = await contract.methods.likeBet(betId).send({ from: sender, gas: 300000 });
+        console.log("Like berhasil dikirim ke blockchain!");
 
-        console.log("Transaksi berhasil:", tx);
-
-        // Update UI setelah transaksi sukses
         let likeElement = document.getElementById(`like-${betId}`);
-        likeElement.textContent = parseInt(likeElement.textContent) + 1;
-
-        alert("Like berhasil dikirim!");
+        if (likeElement) {
+            likeElement.textContent = parseInt(likeElement.textContent) + 1;
+        }
     } catch (error) {
         console.error("Error saat menyukai bet:", error);
         alert(`Gagal menyukai bet. Error: ${error.message}`);
