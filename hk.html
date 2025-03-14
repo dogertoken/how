@@ -13,10 +13,11 @@
     text-align: center;
     background-color: #000000; /* Latar belakang hitam pekat */
     color: #f8f1e4; /* Font putih tulang */
+    padding-bottom: 60px;
 }
 
 .container {
-    max-width: 800px;
+    max-width: 950px;
     margin: auto;
     padding: 20px;
     background: rgba(255, 255, 255, 0.1); /* Efek transparan */
@@ -105,16 +106,17 @@ button:hover {
 }
 
 .bottom-nav {
+.bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: rgba(0, 0, 0, 0.8); /* Warna hitam transparan */
+    background: rgba(0, 0, 0, 0.8); /* Latar belakang semi-transparan */
+    color: white;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-around; /* Meratakan tombol */
     padding: 10px 0;
-    backdrop-filter: blur(10px); /* Efek transparan */
-    z-index: 1000; /* Pastikan di atas konten lain */
+    z-index: 1000; /* Supaya selalu di atas */
 }
 
 .bottom-nav button {
@@ -127,7 +129,7 @@ button:hover {
 }
 
 .bottom-nav button:hover {
-    color: #007bff; /* Warna biru saat hover */
+    color: #00f2ff; /* Warna saat dihover */
 }
     </style>
 </head>
