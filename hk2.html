@@ -240,53 +240,62 @@ document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
 // Search Data Result
 document.addEventListener("DOMContentLoaded", function () {
-    const betHistory = document.getElementById("betHistory");
-
-    // Pastikan betHistory sudah memiliki konten sebelum disimpan
-    if (!betHistory) {
-        console.error("Error: Element #betHistory not found!");
-        return;
-    }
-
-    const allItems = Array.from(betHistory.querySelectorAll("p")); // Simpan semua elemen <p>
-
     // Buat elemen pencarian
     const searchContainer = document.createElement("div");
     searchContainer.style.marginBottom = "10px";
     searchContainer.innerHTML = `
         <input type="text" id="searchInput" placeholder="Search Player, Tx, Bet Number..." oninput="searchHistory()">
         <button id="searchButton" onclick="clearSearch()">❌ Clear</button>
-        <p id="noResults" style="color: red; display: none;">No results found.</p>
     `;
 
     // Sisipkan pencarian sebelum betHistory
-    betHistory.parentNode.insertBefore(searchContainer, betHistory);
+    const betHistoryDiv = document.getElementById("betHistory");
+    betHistoryDiv.parentNode.insertBefore(searchContainer, betHistoryDiv);
 
-    // **Fungsi untuk Mencari Data dalam Riwayat**
-    window.searchHistory = function () {
-        const searchTerm = document.getElementById("searchInput").value.trim().toLowerCase();
-        let found = false;
-
-        allItems.forEach(item => {
-            if (item.textContent.toLowerCase().includes(searchTerm)) {
-                item.style.display = "";
-                found = true;
-            } else {
-                item.style.display = "none";
-            }
-        });
-
-        // Tampilkan "No results found" jika tidak ada hasil
-        document.getElementById("noResults").style.display = found ? "none" : "block";
-    };
-
-    // **Fungsi untuk Menghapus Pencarian dan Menampilkan Semua Data**
-    window.clearSearch = function () {
-        document.getElementById("searchInput").value = "";
-        allItems.forEach(item => item.style.display = ""); // Tampilkan semua kembali
-        document.getElementById("noResults").style.display = "none"; // Sembunyikan pesan
-    };
+    // Tambahkan elemen "No results found" (disembunyikan dulu)
+    const noResults = document.createElement("p");
+    noResults.id = "noResults";
+    noResults.style.color = "red";
+    noResults.style.display = "none";
+    noResults.innerText = "No results found.";
+    betHistoryDiv.appendChild(noResults);
 });
+
+function searchHistory() {
+    const searchTerm = document.getElementById("searchInput").value.trim().toLowerCase();
+    const betHistory = document.getElementById("betHistory");
+    const items = betHistory.getElementsByTagName("p"); // Ambil semua elemen <p>
+
+    let found = false;
+
+    for (let i = 0; i < items.length; i++) {
+        const text = items[i].textContent.toLowerCase(); 
+
+        // Gunakan includes() untuk pencarian umum, regex hanya jika perlu
+        if (text.includes(searchTerm)) { 
+            items[i].style.display = "";
+            found = true;
+        } else {
+            items[i].style.display = "none";
+        }
+    }
+
+    // Tampilkan atau sembunyikan pesan "No results found"
+    document.getElementById("noResults").style.display = found ? "none" : "block";
+}
+
+function clearSearch() {
+    document.getElementById("searchInput").value = "";
+    const betHistory = document.getElementById("betHistory");
+    const items = betHistory.getElementsByTagName("p");
+
+    for (let i = 0; i < items.length; i++) {
+        items[i].style.display = "";
+    }
+
+    // Sembunyikan pesan "No results found"
+    document.getElementById("noResults").style.display = "none";
+}
 
         async function loadBetHistory() {
     const bets = await contract.methods.getAllBets().call();
