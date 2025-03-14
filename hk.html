@@ -8,159 +8,78 @@
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.0/web3.min.js"></script>
     <style>
-    /* Import Font */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Body */
-body {
-    font-family: 'Orbitron', sans-serif;
+    body {
+    font-family: Ubuntu, sans-serif;
     text-align: center;
-    background: #0d0d0d;
-    color: white;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+    background-color: #f4f4f4;
 }
 
-/* Container */
 .container {
-    width: 95%;
-    max-width: 450px;
+    max-width: 600px;
+    margin: auto;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
 }
 
-/* Input */
-input {
+input, button {
     display: block;
-    margin: 8px auto;
+    margin: 10px auto;
     padding: 10px;
-    width: 100%;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 8px rgba(0, 200, 255, 0.3);
+    width: 90%;
 }
 
-/* Placeholder */
-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-}
-
-/* Tombol */
 button {
-    display: block;
-    margin: 8px auto;
-    padding: 10px;
-    width: 100%;
-    max-width: 180px;
-    font-size: 14px;
-    font-weight: bold;
-    text-transform: uppercase;
-    border: none;
-    border-radius: 8px;
+    background-color: #28a745;
     color: white;
+    border: none;
     cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    background: linear-gradient(135deg, #00c8ff, #0044ff);
-    box-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
 }
 
 button:hover {
-    background: linear-gradient(135deg, #0044ff, #00c8ff);
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(0, 200, 255, 0.8);
+    background-color: #218838;
 }
 
-/* Tombol Disconnect */
 #disconnectWallet {
-    background: linear-gradient(135deg, #ff0033, #cc0000);
-    box-shadow: 0 0 10px rgba(255, 0, 51, 0.5);
+    background-color: #dc3545;
 }
 
 #disconnectWallet:hover {
-    background: linear-gradient(135deg, #cc0000, #ff0033);
-    box-shadow: 0 0 15px rgba(255, 0, 51, 0.8);
+    background-color: #c82333;
+}
+        
+.nav-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 80px; /* Ukuran tombol lebih pendek */
+    padding: 8px;
+    display: inline-block;
+    margin: 5px;
 }
 
-/* Tombol Navigasi */
 .button-container {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
+    justify-content: center; /* Pusatkan tombol di tengah */
+    gap: 10px; /* Jarak antar tombol */
 }
 
-/* Address & Balance */
-#walletAddress, #walletBalance {
-    font-weight: bold;
-    font-size: 14px;
-    padding: 8px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 8px rgba(0, 200, 255, 0.3);
-    backdrop-filter: blur(6px);
-    display: inline-block;
-    margin-top: 8px;
+#userBets {
+    text-align: justify; /* Meratakan teks seperti di buku */
+    hyphens: auto; /* Menambahkan pemenggalan kata jika perlu */
+    line-height: 1.6; /* Jarak antar baris agar lebih nyaman dibaca */
+    max-width: 600px; /* Batasi lebar agar tidak terlalu panjang */
+    margin: auto; /* Pusatkan jika diperlukan */
 }
 
-/* History */
-#userBets, #betHistory {
-    text-align: justify;
-    hyphens: auto;
-    line-height: 1.4;
-    font-size: 14px;
-    width: 100%;
-    margin: auto;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    backdrop-filter: blur(8px);
-}
-
-/* RESPONSIVE DESIGN */
-@media (min-width: 600px) {
-    .container {
-        max-width: 500px;
-        padding: 25px;
-    }
-    
-    .button-container {
-        flex-direction: row;
-        justify-content: center;
-    }
-
-    button {
-        max-width: 160px;
-        padding: 12px;
-    }
-}
-
-@media (min-width: 1024px) {
-    .container {
-        max-width: 600px;
-    }
-
-    button {
-        max-width: 180px;
-    }
+#betHistory {
+    text-align: justify; /* Meratakan teks seperti di buku */
+    hyphens: auto; /* Menambahkan pemenggalan kata jika perlu */
+    line-height: 1.6; /* Jarak antar baris agar lebih nyaman dibaca */
+    max-width: 600px; /* Batasi lebar agar tidak terlalu panjang */
+    margin: auto; /* Pusatkan jika diperlukan */
 }
     </style>
 </head>
