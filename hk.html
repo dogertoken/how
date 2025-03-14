@@ -382,7 +382,7 @@ async function loadUserBets() {
                     let shortTxHash = bet.txHash.slice(0, 10) + "..." + bet.txHash.slice(-10);
 
                     html += `<p>
-                        Player: <span style="color: #9933ff;">${shortPlayer}</span><br>
+                        Wallet: <span style="color: #9933ff;">${shortPlayer}</span><br>
                         BetNumber: <span style="color: #00FF66;">${bet.number}</span><br>
                         BetAmount: <span style="color: #00FF66;">${bet.betAmount}</span><br>
                         Tx: ${shortTxHash}<br>
