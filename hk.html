@@ -284,6 +284,33 @@ const SEPOLIA_RPC_URL = "https://sepolia.base.org"; // RPC Sepolia Base
 const SEPOLIA_EXPLORER_URL = "https://sepolia.basescan.org"; // Block Explorer
 const SEPOLIA_CURRENCY = { name: "Ethereum", symbol: "ETH", decimals: 18 };
 
+// **Check Connection Load Page**
+window.addEventListener("load", async () => {
+    if (window.ethereum) {
+        const savedAccount = localStorage.getItem("walletAddress");
+        if (savedAccount) {
+            try {
+                web3 = new Web3(window.ethereum);
+                userAccount = savedAccount;
+                contract = new web3.eth.Contract(contractABI, contractAddress);
+
+                document.getElementById("walletAddress").innerText = `Connected: ${userAccount}`;
+                document.getElementById("walletAddress").style.display = "block";
+                document.getElementById("walletBalance").style.display = "block";
+                document.getElementById("connectWallet").style.display = "none";
+                document.getElementById("disconnectWallet").style.display = "block";
+
+                updateBalance();
+                loadUserBets();
+                loadBetHistory();
+            } catch (error) {
+                console.error("Auto-connect failed:", error);
+                localStorage.removeItem("walletAddress");
+            }
+        }
+    }
+});
+
 // **Connect Wallet**
 async function connectWallet() {
     if (window.ethereum) {
@@ -294,6 +321,9 @@ async function connectWallet() {
 
             const accounts = await web3.eth.getAccounts();
             userAccount = accounts[0];
+
+            // Simpan wallet ke localStorage
+            localStorage.setItem("walletAddress", userAccount);
 
             // Signature
             const timestamp = new Date().toISOString();
@@ -321,44 +351,11 @@ async function connectWallet() {
     }
 }
 
-// **Memaksa Jaringan ke Sepolia Base Testnet**
-async function switchToSepoliaBase() {
-    try {
-        const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
-
-        if (currentChainId !== SEPOLIA_BASE_CHAIN_ID) {
-            try {
-                await window.ethereum.request({
-                    method: "wallet_switchEthereumChain",
-                    params: [{ chainId: SEPOLIA_BASE_CHAIN_ID }]
-                });
-            } catch (switchError) {
-                // Jika jaringan belum ada, tambahkan secara otomatis
-                if (switchError.code === 4902) {
-                    await window.ethereum.request({
-                        method: "wallet_addEthereumChain",
-                        params: [{
-                            chainId: SEPOLIA_BASE_CHAIN_ID,
-                            chainName: "Base Sepolia Testnet",
-                            nativeCurrency: SEPOLIA_CURRENCY,
-                            rpcUrls: [SEPOLIA_RPC_URL],
-                            blockExplorerUrls: [SEPOLIA_EXPLORER_URL]
-                        }]
-                    });
-                } else {
-                    throw switchError;
-                }
-            }
-        }
-    } catch (error) {
-        console.error("Failed to switch network:", error);
-        alert("Failed to switch network to Sepolia Base Testnet!");
-    }
-}
-
 // **Disconnect Wallet**
 function disconnectWallet() {
     userAccount = null;
+    localStorage.removeItem("walletAddress"); // Hapus dari localStorage
+
     document.getElementById("walletAddress").innerText = "";
     document.getElementById("walletAddress").style.display = "none";
     document.getElementById("walletBalance").innerText = "Balance: 0 ETH";
