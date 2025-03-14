@@ -92,6 +92,17 @@ button:hover {
 #walletAddress {
     font-size: 12px;
 }
+
+#betHistory, #userBets {
+    font-size: 13px; /* Ukuran font yang nyaman */
+    text-align: justify; /* Rata kiri-kanan seperti di buku */
+    hyphens: auto; /* Tambahkan pemenggalan kata jika perlu */
+    line-height: 1.8; /* Jarak antar baris agar lebih nyaman dibaca */
+    max-width: 600px; /* Batasi lebar agar tidak terlalu panjang */
+    margin: auto; /* Pusatkan jika diperlukan */
+    padding: 15px; /* Beri ruang di dalam agar tidak terlalu mepet */
+    text-indent: 20px; /* Tambahkan indentasi di awal paragraf */
+}
     </style>
 </head>
 <body>
@@ -111,6 +122,7 @@ button:hover {
         <p id="betPrice" style="color: #00FF66; font-weight: bold;">Cost: 0.000000 ETH</p>
         <button onclick="placeBet()">Place Bet</button>
         <p id="betStatus"></p>
+        
         <h2>Your Bets</h2>
         <div id="userBets"></div>
         <div class="button-container">
