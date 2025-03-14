@@ -196,9 +196,7 @@ th {
         <!-- Wallet Connection -->
         <button id="connectWallet" onclick="connectWallet()">Connect Wallet</button>
         <button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect</button>
-        <p id="walletAddres" style="display:none; color: #ad5cff"></p>
         <p id="walletAddress" style="display:none; color: #ad5cff"></p>
-        <button id="copyWalletBtn" style="display:none;" onclick="copyWallet()">Copy Wallet</button>
         <p id="walletBalance" style="display:none; color: #00ca09;">Balance: 0 ETH</p>
 
         <h2>Place Bet</h2>
@@ -637,18 +635,6 @@ function openModal() {
 
   // Tampilkan modal
   document.getElementById("myModal").style.display = "block";
-}
-
-// Copy Button
-function copyWallet() {
-    const walletAddress = document.getElementById("walletAddress").innerText;
-    if (walletAddress) {
-        navigator.clipboard.writeText(walletAddress).then(() => {
-            alert("Wallet address copied!");
-        }).catch(err => {
-            console.error("Failed to copy: ", err);
-        });
-    }
 }
 
 // Initialize saat halaman terbuka
