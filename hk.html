@@ -151,6 +151,42 @@ th {
     padding: 10px;
     cursor: pointer;
 }
+
+/* Gaya untuk modal */
+.modal {
+  display: none; /* Awalnya modal disembunyikan */
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Transparan gelap */
+}
+
+/* Konten modal */
+.modal-content {
+  background: #1a1a1a;
+  color: white;
+  margin: 10% auto;
+  padding: 20px;
+  width: 60%;
+  max-width: 500px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+}
+
+/* Tombol close */
+.close {
+  color: white;
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+}
+.close:hover {
+  color: red;
+}
     </style>
 </head>
 <body>
@@ -216,11 +252,25 @@ th {
        <br>
     <br>
  <br>
+
+        <!-- Modal -->
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>Your Bets</h2>
+    <div id="userBets"></div>
+    <div class="button-container">
+      <button class="nav-button" onclick="prevUserBets()">Prev</button>
+      <button class="nav-button" onclick="nextUserBets()">Next</button>
+    </div>
+  </div>
+</div>
+        
         <footer class="footer-nav">
-        <button>🏠 Home</button>
-        <button>🔍 Search</button>
-        <button>📜 History</button>
-        <button>⚙️ Settings</button>
+        <button>🏠 Menu</button>
+        <button>🔍 4D</button>
+        <button onclick="openModal()">MyBets</button>
+        <button>⚙️ Claim</button>
         </footer>
 
     <script src="script.js"></script>
@@ -529,6 +579,14 @@ function prevBetHistory() {
 function nextBetHistory() {
     betHistoryPage++;
     loadBetHistory();
+}
+
+function openModal() {
+  document.getElementById("myModal").style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById("myModal").style.display = "none";
 }
 
 // Initialize saat halaman terbuka
