@@ -376,7 +376,7 @@ async function loadUserBets() {
                         Tx: ${shortTxHash}<br>
                         Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
                         Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
-                    </p><hr>`;
+                    </p><hr style="background-color: #333333; height: 3px; border: none;">`;
                 }
             document.getElementById("userBets").innerHTML = html;
         }
@@ -416,7 +416,7 @@ async function loadBetHistory() {
             Tx: ${shortTxHash}<br>
             Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
             Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
-        </p><hr>`;
+        </p><hr style="background-color: #333333; height: 3px; border: none;">`;
     }
     document.getElementById("betHistory").innerHTML = html;
 }
