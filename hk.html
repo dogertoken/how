@@ -196,8 +196,8 @@ th {
         <!-- Wallet Connection -->
         <button id="connectWallet" onclick="connectWallet()">Connect Wallet</button>
         <button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect</button>
-        <p id="walletAddress" style="display:none;"></p>
-        <p id="walletBalance" style="display:none;">Balance: 0 ETH</p>
+        <p id="walletAddress" style="display:none; color: #ad5cff"></p>
+        <p id="walletBalance" style="display:none; color: #00ca09;">Balance: 0 ETH</p>
 
         <h2>Place Bet</h2>
         <input type="text" id="betNumber" placeholder="4D 3D or 2D" oninput="validateBetNumber()"><br>
@@ -510,7 +510,7 @@ async function loadUserBets() {
                     let shortTxHash = bet.txHash.slice(0, 10) + "..." + bet.txHash.slice(-10);
 
                     html += `<p>
-                        Wallet: <span style="color: #9933ff;">${shortPlayer}</span><br>
+                        Wallet: <span style="color: #ad5cff;">${shortPlayer}</span><br>
                         BetNumber: <span style="color: #00FF66;">${bet.number}</span><br>
                         BetAmount: <span style="color: #00FF66;">${bet.betAmount}</span><br>
                         Tx: <span style="color: #fe6666;">${shortTxHash}</span><br>
@@ -550,7 +550,7 @@ async function loadBetHistory() {
         let shortTxHash = bet.txHash.slice(0, 10) + "..." + bet.txHash.slice(-10);
 
         html += `<p>
-            Player: <span style="color: #9933ff;">${shortPlayer}</span><br>
+            Player: <span style="color: #ad5cff;">${shortPlayer}</span><br>
             BetNumber: <span style="color: #00FF66;">${bet.number}</span><br>
             BetAmount: <span style="color: #00FF66;">${bet.betAmount}</span><br>
             Tx: <span style="color: #fe6666;">${shortTxHash}</span><br>
