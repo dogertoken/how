@@ -238,6 +238,50 @@ document.getElementById("betTimes").addEventListener("input", validateBetTimes);
 // Pastikan fungsi ini dipanggil saat input berubah
 document.getElementById("betTimes").addEventListener("input", updateTotalETH);
 
+// Search Data Result
+document.addEventListener("DOMContentLoaded", function () {
+    // Simpan semua elemen <p> awal ke dalam array agar tidak hilang setelah pencarian
+    const betHistory = document.getElementById("betHistory");
+    const allItems = Array.from(betHistory.getElementsByTagName("p")); // Simpan semua elemen <p> ke array
+
+    // Buat elemen pencarian
+    const searchContainer = document.createElement("div");
+    searchContainer.style.marginBottom = "10px";
+    searchContainer.innerHTML = `
+        <input type="text" id="searchInput" placeholder="Search Player, Tx, Bet Number..." oninput="searchHistory()">
+        <button id="searchButton" onclick="clearSearch()">❌ Clear</button>
+        <p id="noResults" style="color: red; display: none;">No results found.</p>
+    `;
+
+    // Sisipkan pencarian sebelum betHistory
+    betHistory.parentNode.insertBefore(searchContainer, betHistory);
+
+    // **Fungsi untuk Mencari Data dalam Riwayat**
+    window.searchHistory = function () {
+        const searchTerm = document.getElementById("searchInput").value.trim().toLowerCase();
+        let found = false;
+
+        allItems.forEach(item => {
+            if (item.textContent.toLowerCase().includes(searchTerm)) {
+                item.style.display = "";
+                found = true;
+            } else {
+                item.style.display = "none";
+            }
+        });
+
+        // Tampilkan "No results found" jika tidak ada hasil
+        document.getElementById("noResults").style.display = found ? "none" : "block";
+    };
+
+    // **Fungsi untuk Menghapus Pencarian dan Menampilkan Semua Data**
+    window.clearSearch = function () {
+        document.getElementById("searchInput").value = "";
+        allItems.forEach(item => item.style.display = ""); // Tampilkan semua kembali
+        document.getElementById("noResults").style.display = "none"; // Sembunyikan pesan
+    };
+});
+
         async function loadBetHistory() {
     const bets = await contract.methods.getAllBets().call();
     let betList = "";
