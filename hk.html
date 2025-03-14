@@ -8,17 +8,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.0/web3.min.js"></script>
     <style>
+    /* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Latar Belakang */
+/* Body */
 body {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     text-align: center;
-    background: #0d0d0d; /* Hitam pekat */
+    background: #0d0d0d;
     color: white;
     min-height: 100vh;
     display: flex;
@@ -27,15 +30,14 @@ body {
     padding: 20px;
 }
 
-/* Container Utama */
+/* Container */
 .container {
-    width: 90%;
-    max-width: 500px;
+    width: 95%;
+    max-width: 450px;
     padding: 20px;
     background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-radius: 15px;
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -43,19 +45,17 @@ body {
 /* Input */
 input {
     display: block;
-    margin: 10px auto;
-    padding: 12px;
+    margin: 8px auto;
+    padding: 10px;
     width: 100%;
     border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 600;
+    border-radius: 8px;
+    font-size: 14px;
     text-align: center;
     background: rgba(255, 255, 255, 0.1);
     color: white;
-    backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
+    box-shadow: 0 0 8px rgba(0, 200, 255, 0.3);
 }
 
 /* Placeholder */
@@ -66,77 +66,80 @@ input::placeholder {
 /* Tombol */
 button {
     display: block;
-    margin: 10px auto;
-    padding: 12px;
+    margin: 8px auto;
+    padding: 10px;
     width: 100%;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
+    max-width: 180px;
+    font-size: 14px;
     font-weight: bold;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 8px;
     color: white;
     cursor: pointer;
-    text-transform: uppercase;
     transition: all 0.3s ease-in-out;
     background: linear-gradient(135deg, #00c8ff, #0044ff);
-    box-shadow: 0 0 15px rgba(0, 200, 255, 0.5);
+    box-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
 }
 
 button:hover {
     background: linear-gradient(135deg, #0044ff, #00c8ff);
     transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(0, 200, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 200, 255, 0.8);
 }
 
 /* Tombol Disconnect */
 #disconnectWallet {
     background: linear-gradient(135deg, #ff0033, #cc0000);
-    box-shadow: 0 0 15px rgba(255, 0, 51, 0.5);
+    box-shadow: 0 0 10px rgba(255, 0, 51, 0.5);
 }
 
 #disconnectWallet:hover {
     background: linear-gradient(135deg, #cc0000, #ff0033);
-    box-shadow: 0 0 20px rgba(255, 0, 51, 0.8);
+    box-shadow: 0 0 15px rgba(255, 0, 51, 0.8);
 }
 
-/* Container Tombol */
+/* Tombol Navigasi */
 .button-container {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 /* Address & Balance */
 #walletAddress, #walletBalance {
     font-weight: bold;
-    font-size: 18px;
-    padding: 10px;
-    border-radius: 10px;
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 8px;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
-    backdrop-filter: blur(8px);
+    box-shadow: 0 0 8px rgba(0, 200, 255, 0.3);
+    backdrop-filter: blur(6px);
     display: inline-block;
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 /* History */
 #userBets, #betHistory {
     text-align: justify;
     hyphens: auto;
-    line-height: 1.6;
+    line-height: 1.4;
+    font-size: 14px;
     width: 100%;
     margin: auto;
-    padding: 15px;
+    padding: 12px;
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    backdrop-filter: blur(8px);
 }
 
 /* RESPONSIVE DESIGN */
-@media (min-width: 768px) {
+@media (min-width: 600px) {
     .container {
-        max-width: 600px;
-        padding: 30px;
+        max-width: 500px;
+        padding: 25px;
     }
     
     .button-container {
@@ -145,14 +148,18 @@ button:hover {
     }
 
     button {
-        width: auto;
-        min-width: 150px;
+        max-width: 160px;
+        padding: 12px;
     }
 }
 
 @media (min-width: 1024px) {
     .container {
-        max-width: 700px;
+        max-width: 600px;
+    }
+
+    button {
+        max-width: 180px;
     }
 }
     </style>
