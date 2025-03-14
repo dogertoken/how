@@ -8,20 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.0/web3.min.js"></script>
     <style>
-    /* Import Font Futuristik */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Latar Belakang Futuristik */
 body {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Ubuntu', sans-serif;
     text-align: center;
-    background: linear-gradient(135deg, #000000, #0a0a0a, #1a1a1a);
+    background: #0d0d0d; /* Latar belakang hitam pekat */
     color: white;
     min-height: 100vh;
     display: flex;
@@ -29,25 +19,24 @@ body {
     justify-content: center;
 }
 
-/* Container dengan Efek Glassmorphism */
+/* Kontainer dengan Efek Glassmorphism */
 .container {
     max-width: 600px;
-    padding: 25px;
+    padding: 20px;
     background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     border-radius: 15px;
-    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05), 0 4px 20px rgba(0, 200, 255, 0.3);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
 }
 
-/* Input dengan Glow */
+/* Input dengan Efek Glow */
 input {
     display: block;
-    margin: 12px auto;
-    padding: 14px;
-    width: 100%;
+    margin: 10px auto;
+    padding: 12px;
+    width: 90%;
     border: none;
     border-radius: 10px;
     font-size: 16px;
@@ -55,60 +44,58 @@ input {
     text-align: center;
     background: rgba(255, 255, 255, 0.1);
     color: white;
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: inset 0 0 10px rgba(0, 200, 255, 0.3), 0 0 8px rgba(0, 200, 255, 0.2);
-    transition: 0.3s ease-in-out;
+    box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
 }
 
-input:focus {
-    box-shadow: 0 0 15px rgba(0, 200, 255, 0.8);
-    outline: none;
-}
-
-/* Placeholder */
 input::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* Tombol Futuristik */
+/* Tombol Neon Web3 */
 button {
     display: block;
-    margin: 12px auto;
-    padding: 14px;
-    width: 100%;
+    margin: 10px auto;
+    padding: 12px;
+    width: 90%;
     border: none;
     border-radius: 10px;
     font-size: 16px;
     font-weight: bold;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    position: relative;
     color: white;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease-in-out;
     background: linear-gradient(135deg, #00c8ff, #0044ff);
-    box-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
-    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 200, 255, 0.5);
 }
 
-/* Efek Hover */
 button:hover {
+    background: linear-gradient(135deg, #0044ff, #00c8ff);
     transform: scale(1.05);
-    box-shadow: 0 0 25px rgba(0, 200, 255, 0.8);
+    box-shadow: 0 0 20px rgba(0, 200, 255, 0.8);
 }
 
 /* Tombol Disconnect (Merah Neon) */
 #disconnectWallet {
     background: linear-gradient(135deg, #ff0033, #cc0000);
-    box-shadow: 0 0 20px rgba(255, 0, 51, 0.5);
+    box-shadow: 0 0 15px rgba(255, 0, 51, 0.5);
 }
 
 #disconnectWallet:hover {
     background: linear-gradient(135deg, #cc0000, #ff0033);
-    box-shadow: 0 0 25px rgba(255, 0, 51, 0.8);
+    box-shadow: 0 0 20px rgba(255, 0, 51, 0.8);
 }
 
-/* Efek Glowing untuk Wallet Info */
+/* Container Tombol */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Efek Glow untuk Address dan Balance */
 #walletAddress, #walletBalance {
     font-weight: bold;
     font-size: 18px;
@@ -116,23 +103,23 @@ button:hover {
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: inset 0 0 10px rgba(0, 200, 255, 0.2), 0 0 15px rgba(0, 200, 255, 0.3);
-    backdrop-filter: blur(12px);
+    box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
+    backdrop-filter: blur(8px);
     display: inline-block;
     margin-top: 10px;
 }
 
-/* History Section */
+/* Area History */
 #userBets, #betHistory {
     text-align: justify;
+    hyphens: auto;
     line-height: 1.6;
     max-width: 600px;
     margin: auto;
     padding: 15px;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 10px;
-    backdrop-filter: blur(15px);
-    box-shadow: inset 0 0 10px rgba(0, 200, 255, 0.2), 0 0 10px rgba(0, 200, 255, 0.3);
+    backdrop-filter: blur(10px);
 }
     </style>
 </head>
