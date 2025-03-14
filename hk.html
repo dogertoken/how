@@ -379,7 +379,7 @@ async function updateBalance() {
 function updateBetPrice() {
     let betTimes = document.getElementById("betTimes").value;
     let ethPrice = (betTimes * 0.000175).toFixed(6); // Hitung harga ETH
-    document.getElementById("betPrice").innerText = `Price: ${ethPrice} ETH`;
+    document.getElementById("betPrice").innerText = `Cost: ${ethPrice} ETH`;
 }
 
 // **Place Bet**
