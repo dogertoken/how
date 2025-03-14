@@ -11,16 +11,18 @@
     body {
     font-family: Ubuntu, sans-serif;
     text-align: center;
-    background-color: #f4f4f4;
+    background-color: #000000; /* Latar belakang hitam pekat */
+    color: #f8f1e4; /* Font putih tulang */
 }
 
 .container {
     max-width: 600px;
     margin: auto;
     padding: 20px;
-    background: white;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1); /* Efek transparan */
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
 }
 
 input, button {
@@ -28,58 +30,40 @@ input, button {
     margin: 10px auto;
     padding: 10px;
     width: 90%;
+    border-radius: 8px;
 }
 
 button {
-    background-color: #28a745;
+    background: linear-gradient(135deg, #007bff, #0048ff); /* Biru gradient */
     color: white;
     border: none;
     cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 120, 255, 0.3);
+    transition: all 0.3s ease-in-out;
 }
 
 button:hover {
-    background-color: #218838;
+    background: linear-gradient(135deg, #0048ff, #007bff);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 120, 255, 0.5);
 }
 
 #disconnectWallet {
-    background-color: #dc3545;
+    background: linear-gradient(135deg, #ff0033, #cc0000);
+    box-shadow: 0 4px 10px rgba(255, 0, 51, 0.3);
 }
 
 #disconnectWallet:hover {
-    background-color: #c82333;
-}
-        
-.nav-button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    cursor: pointer;
-    width: 80px; /* Ukuran tombol lebih pendek */
-    padding: 8px;
-    display: inline-block;
-    margin: 5px;
+    background: linear-gradient(135deg, #cc0000, #ff0033);
+    box-shadow: 0 4px 15px rgba(255, 0, 51, 0.5);
 }
 
 .button-container {
     display: flex;
-    justify-content: center; /* Pusatkan tombol di tengah */
-    gap: 10px; /* Jarak antar tombol */
-}
-
-#userBets {
-    text-align: justify; /* Meratakan teks seperti di buku */
-    hyphens: auto; /* Menambahkan pemenggalan kata jika perlu */
-    line-height: 1.6; /* Jarak antar baris agar lebih nyaman dibaca */
-    max-width: 600px; /* Batasi lebar agar tidak terlalu panjang */
-    margin: auto; /* Pusatkan jika diperlukan */
-}
-
-#betHistory {
-    text-align: justify; /* Meratakan teks seperti di buku */
-    hyphens: auto; /* Menambahkan pemenggalan kata jika perlu */
-    line-height: 1.6; /* Jarak antar baris agar lebih nyaman dibaca */
-    max-width: 600px; /* Batasi lebar agar tidak terlalu panjang */
-    margin: auto; /* Pusatkan jika diperlukan */
+    justify-content: center;
+    gap: 10px;
 }
 
 #walletAddress {
