@@ -105,31 +105,28 @@ button:hover {
     text-indent: 20px; /* Tambahkan indentasi di awal paragraf */
 }
 
-.bottom-nav {
+.footer-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: rgba(0, 0, 0, 0.8); /* Latar belakang semi-transparan */
+    background: rgba(0, 0, 0, 0.9); /* Warna hitam transparan */
     color: white;
     display: flex;
-    justify-content: space-around; /* Meratakan tombol */
+    justify-content: space-around;
     padding: 10px 0;
-    z-index: 1000; /* Supaya selalu di atas */
+    z-index: 999;
 }
 
-.bottom-nav button {
+/* Supaya tombolnya proporsional */
+.footer-nav button {
     background: none;
     border: none;
     color: white;
     font-size: 14px;
     padding: 10px;
     cursor: pointer;
-}
-
-.bottom-nav button:hover {
-    color: #00f2ff; /* Warna saat dihover */
-}
+    }
     </style>
 </head>
 <body>
@@ -163,12 +160,12 @@ button:hover {
        <button class="nav-button" onclick="prevBetHistory()">Prev</button>
        <button class="nav-button" onclick="nextBetHistory()">Next</button>
 
-        <div class="bottom-nav">
-            <button>🏠 Home</button>
-            <button>🔍 Search</button>
-            <button>📜 History</button>
-            <button>⚙️ Settings</button>
-        </div>
+        <footer class="footer-nav">
+        <button>🏠 Home</button>
+        <button>🔍 Search</button>
+        <button>📜 History</button>
+        <button>⚙️ Settings</button>
+        </footer>
     
     </div>
 
