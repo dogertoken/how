@@ -29,7 +29,7 @@
 input {
     display: block;
     margin: 10px auto;
-    padding: 12px;
+    padding: 10px;
     width: 90%;
     font-size: 14px;
     font-weight: 600;
@@ -38,7 +38,7 @@ input {
     color: white;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
+    border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
 }
 
@@ -46,14 +46,14 @@ input::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* Tombol Futuristik */
+/* Tombol Futuristik (Dikecilkan) */
 button {
     display: block;
-    margin: 10px auto;
-    padding: 12px;
-    width: 90%;
-    border-radius: 8px;
-    font-size: 14px;
+    margin: 8px auto;
+    padding: 8px;
+    width: 75%; /* Lebar dikurangi */
+    border-radius: 6px;
+    font-size: 12px; /* Font lebih kecil */
     font-weight: bold;
     cursor: pointer;
     text-transform: uppercase;
@@ -61,35 +61,36 @@ button {
     background: linear-gradient(135deg, #007bff, #0048ff); /* Biru gradient */
     color: white;
     border: none;
-    box-shadow: 0 4px 10px rgba(0, 120, 255, 0.3);
+    box-shadow: 0 3px 8px rgba(0, 120, 255, 0.3);
 }
 
 button:hover {
     background: linear-gradient(135deg, #0048ff, #007bff);
     transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(0, 120, 255, 0.5);
+    box-shadow: 0 3px 12px rgba(0, 120, 255, 0.5);
 }
 
-/* Tombol Disconnect (Merah Gradient) */
+/* Tombol Disconnect (Dikecilkan) */
 #disconnectWallet {
     background: linear-gradient(135deg, #ff0033, #cc0000);
-    box-shadow: 0 4px 10px rgba(255, 0, 51, 0.3);
+    box-shadow: 0 3px 8px rgba(255, 0, 51, 0.3);
 }
 
 #disconnectWallet:hover {
     background: linear-gradient(135deg, #cc0000, #ff0033);
-    box-shadow: 0 4px 15px rgba(255, 0, 51, 0.5);
+    box-shadow: 0 3px 12px rgba(255, 0, 51, 0.5);
 }
 
 /* Container Tombol */
 .button-container {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
 }
 
+/* Ukuran Wallet Address Lebih Kecil */
 #walletAddress {
-    font-size: 12px; /* Ukuran lebih kecil */
+    font-size: 12px;
 }
     </style>
 </head>
