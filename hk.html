@@ -355,7 +355,7 @@ async function loadBetHistory() {
             Tx: ${shortTxHash}<br>
             Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
             Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
-            <button onclick="likeBet('${bet.betId}')">👍 Like</button>
+            <button onclick="likeBet('${bet.betId}')">🔥 Like</button>
             <span id="like-${bet.betId}">0</span> Likes
         </p><hr>`;
     }
@@ -371,18 +371,17 @@ async function likeBet(betId) {
         console.log("Sender:", sender);
         console.log("Bet ID:", betId);
 
-        await contract.methods.likeBet(betId).send({ from: sender });
+        const tx = await contract.methods.likeBet(betId).send({ from: sender });
 
-        let likeElement = document.getElementById(`like-${betId}`);
-        likeElement.textContent = parseInt(likeElement.textContent) + 1;
+        console.log("Transaction:", tx);
+        document.getElementById(`like-${betId}`).textContent++;
 
-        console.log("Like berhasil dikirim!");
     } catch (error) {
-        console.error("Error saat menyukai bet:", error);
-        alert(`Gagal menyukai bet. Error: ${error.message}`);
+        console.error("Error MetaMask:", error);
+        alert(`Error: ${error.message || "Gagal menyukai bet."}`);
     }
 }
-
+        
 // **Bet History Pagination**
 function prevBetHistory() {
     if (betHistoryPage > 0) {
