@@ -103,6 +103,37 @@ button:hover {
     padding: 15px; /* Beri ruang di dalam agar tidak terlalu mepet */
     text-indent: 20px; /* Tambahkan indentasi di awal paragraf */
 }
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.8); /* Warna hitam transparan */
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    backdrop-filter: blur(10px); /* Efek transparan */
+    z-index: 1000; /* Pastikan di atas konten lain */
+}
+
+.bottom-nav button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 14px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.bottom-nav button:hover {
+    color: #007bff; /* Warna biru saat hover */
+}
+
+/* Tambahkan padding bawah ke konten utama agar tidak tertutup */
+.main-content {
+    padding-bottom: 60px; /* Sesuaikan dengan tinggi navbar */
+}
     </style>
 </head>
 <body>
@@ -135,6 +166,17 @@ button:hover {
        <div class="button-container">
        <button class="nav-button" onclick="prevBetHistory()">Prev</button>
        <button class="nav-button" onclick="nextBetHistory()">Next</button>
+
+       <div class="main-content">
+            <p>Ini adalah konten utama.</p>
+        </div>
+
+        <div class="bottom-nav">
+            <button>🏠 Home</button>
+            <button>🔍 Search</button>
+            <button>📜 History</button>
+            <button>⚙️ Settings</button>
+        </div>
     
     </div>
 
