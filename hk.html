@@ -103,6 +103,25 @@ button:hover {
     padding: 15px; /* Beri ruang di dalam agar tidak terlalu mepet */
     text-indent: 20px; /* Tambahkan indentasi di awal paragraf */
 }
+
+table {
+    width: 100%; /* Bisa diperkecil lagi, misalnya 50% jika terlalu lebar */
+    max-width: 500px; /* Agar tabel tidak terlalu besar di layar lebar */
+    border-collapse: collapse;
+    margin: 20px auto; /* 'auto' agar tabel tetap di tengah */
+    font-size: 18px; /* Kecilkan agar tabel lebih compact */
+    text-align: left;
+}
+
+th, td {
+    padding: 8px; /* Kurangi padding agar tabel lebih kecil */
+    border: 1px solid #ddd;
+}
+
+th {
+    background: linear-gradient(135deg, #00b7ff, #007bff);
+    color: white; /* Agar teks lebih kontras */
+}
     </style>
 </head>
 <body>
@@ -135,6 +154,33 @@ button:hover {
        <div class="button-container">
        <button class="nav-button" onclick="prevBetHistory()">Prev</button>
        <button class="nav-button" onclick="nextBetHistory()">Next</button>
+
+       <!-- Prize Table -->
+        <div id="prizes" class="section-box">
+        <center><h2>4D ETH Prize Payouts</h2></center>
+            <table>
+                <tr>
+                    <th>Bet Type</th>
+                    <th>Prize Multiplier</th>
+                    <th>Example (0.000175 ETH)</th>
+                </tr>
+                <tr>
+                    <td>4D</td>
+                    <td>50,000%</td>
+                    <td>0.0875 ETH</td>
+                </tr>
+                <tr>
+                    <td>3D</td>
+                    <td>5,000%</td>
+                    <td>0.00875 ETH</td>
+                </tr>
+                <tr>
+                    <td>2D</td>
+                    <td>500%</td>
+                    <td>0.000875 ETH</td>
+                </tr>
+            </table>
+        </div>
     
     </div>
 
