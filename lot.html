@@ -61,6 +61,16 @@ li {
     margin: 5px;
     border-radius: 5px;
 }
+
+.bet-inputs div {
+    margin-bottom: 30px; /* Atur jarak antar input agar ada 6 garis kosong */
+}
+
+.bet-inputs input {
+    width: 100px; /* Sesuaikan ukuran input jika perlu */
+    padding: 5px;
+    text-align: center;
+}
     </style>
 </head>
 <body>
@@ -78,11 +88,11 @@ li {
         <div id="bet-form">
             <h2>Place Bet</h2>
             <div class="bet-inputs">
-                <input type="text" id="bet1" maxlength="2" placeholder="Bet #1">
-                <input type="text" id="bet2" maxlength="2" placeholder="Bet #2">
-                <input type="text" id="bet3" maxlength="2" placeholder="Bet #3">
-                <input type="text" id="bet4" maxlength="2" placeholder="Bet #4">
-                <input type="text" id="bet5" maxlength="2" placeholder="Bet #5">
+    <div><input type="text" id="bet1" maxlength="2" placeholder="Bet #1"></div>
+    <div><input type="text" id="bet2" maxlength="2" placeholder="Bet #2"></div>
+    <div><input type="text" id="bet3" maxlength="2" placeholder="Bet #3"></div>
+    <div><input type="text" id="bet4" maxlength="2" placeholder="Bet #4"></div>
+    <div><input type="text" id="bet5" maxlength="2" placeholder="Bet #5"></div>
             </div>
             <input type="number" id="betTimes" min="1" placeholder="Bet Times">
             <label><input type="checkbox" id="x2bet"> x2 Bet</label>
