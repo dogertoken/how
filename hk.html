@@ -8,20 +8,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.0/web3.min.js"></script>
     <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Latar Belakang */
 body {
     font-family: 'Ubuntu', sans-serif;
     text-align: center;
-    background: #0d0d0d; /* Latar belakang hitam pekat */
+    background: #0d0d0d; /* Hitam pekat */
     color: white;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 20px;
 }
 
-/* Kontainer dengan Efek Glassmorphism */
+/* Container Utama */
 .container {
-    max-width: 600px;
+    width: 90%;
+    max-width: 500px;
     padding: 20px;
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(15px);
@@ -31,12 +40,12 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Input dengan Efek Glow */
+/* Input */
 input {
     display: block;
     margin: 10px auto;
     padding: 12px;
-    width: 90%;
+    width: 100%;
     border: none;
     border-radius: 10px;
     font-size: 16px;
@@ -49,16 +58,17 @@ input {
     box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
 }
 
+/* Placeholder */
 input::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* Tombol Neon Web3 */
+/* Tombol */
 button {
     display: block;
     margin: 10px auto;
     padding: 12px;
-    width: 90%;
+    width: 100%;
     border: none;
     border-radius: 10px;
     font-size: 16px;
@@ -77,7 +87,7 @@ button:hover {
     box-shadow: 0 0 20px rgba(0, 200, 255, 0.8);
 }
 
-/* Tombol Disconnect (Merah Neon) */
+/* Tombol Disconnect */
 #disconnectWallet {
     background: linear-gradient(135deg, #ff0033, #cc0000);
     box-shadow: 0 0 15px rgba(255, 0, 51, 0.5);
@@ -91,11 +101,11 @@ button:hover {
 /* Container Tombol */
 .button-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     gap: 10px;
 }
 
-/* Efek Glow untuk Address dan Balance */
+/* Address & Balance */
 #walletAddress, #walletBalance {
     font-weight: bold;
     font-size: 18px;
@@ -109,17 +119,41 @@ button:hover {
     margin-top: 10px;
 }
 
-/* Area History */
+/* History */
 #userBets, #betHistory {
     text-align: justify;
     hyphens: auto;
     line-height: 1.6;
-    max-width: 600px;
+    width: 100%;
     margin: auto;
     padding: 15px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 10px;
     backdrop-filter: blur(10px);
+}
+
+/* RESPONSIVE DESIGN */
+@media (min-width: 768px) {
+    .container {
+        max-width: 600px;
+        padding: 30px;
+    }
+    
+    .button-container {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    button {
+        width: auto;
+        min-width: 150px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        max-width: 700px;
+    }
 }
     </style>
 </head>
