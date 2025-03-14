@@ -355,7 +355,7 @@ async function loadBetHistory() {
             Tx: ${shortTxHash}<br>
             Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a><br>
             Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
-            <button onclick="likeBet('${bet.betId}')">♥️ Like</button>
+            <button onclick="likeBet('${bet.betId}')">🎯 Like</button>
             <span id="like-${bet.betId}">0</span> Likes
         </p><hr>`;
     }
@@ -365,41 +365,38 @@ async function loadBetHistory() {
 // **Fungsi Like Bet via MetaMask**
 async function likeBet(betId) {
     try {
-        if (!window.ethereum) {
-            alert("MetaMask tidak terdeteksi!");
-            return;
-        }
-
+        // Hubungkan ke MetaMask
         const accounts = await ethereum.request({ method: "eth_requestAccounts" });
         const sender = accounts[0];
 
-        console.log("Akun Pengirim:", sender);
-        console.log("Bet ID:", betId);
+        // Pastikan betId dalam format bytes32
+        const formattedBetId = web3.utils.padLeft(web3.utils.toHex(betId), 64);
 
-        // Konversi betId ke bytes32
-        betId = web3.utils.padLeft(web3.utils.toHex(betId), 64);
-
-        // Cek apakah akun sudah menyukai bet ini
-        const alreadyLiked = await contract.methods.betLikes(betId, sender).call();
+        // Cek apakah user sudah menyukai bet ini
+        const alreadyLiked = await contract.methods.betLikes(formattedBetId, sender).call();
         if (alreadyLiked) {
             alert("Anda sudah menyukai bet ini sebelumnya.");
             return;
         }
 
-        // Set fee 0.000001 ETH (1,000,000,000,000 wei)
-        const gasPrice = await web3.eth.getGasPrice(); // Ambil gas price dari jaringan
-        const gasLimit = 100000; // Sesuaikan dengan smart contract
-        const fee = web3.utils.toWei("0.000001", "ether");
+        // Tentukan gas price dan gas limit
+        const gasPrice = await web3.eth.getGasPrice();
+        const gasLimit = 100000; // Sesuaikan dengan kontrak
 
-        // Kirim transaksi dengan gas dan fee
-        const tx = await contract.methods.likeBet(betId).send({
+        // Kirim transaksi ke MetaMask
+        const tx = await contract.methods.likeBet(formattedBetId).send({
             from: sender,
             gasPrice: gasPrice,
-            gas: gasLimit,
-            value: fee // Menambahkan 0.000001 ETH sebagai fee
+            gas: gasLimit
         });
 
-        console.log("Like berhasil dikirim ke blockchain!", tx);
+        console.log("Transaksi berhasil:", tx);
+
+        // Perbarui UI
+        let likeElement = document.getElementById(`like-${betId}`);
+        likeElement.textContent = parseInt(likeElement.textContent) + 1;
+
+        alert("Bet berhasil di-like!");
     } catch (error) {
         console.error("Error saat menyukai bet:", error);
         alert(`Gagal menyukai bet. Error: ${error.message}`);
