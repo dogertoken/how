@@ -127,15 +127,28 @@ let userAccount;
 let userBetsPage = 0;
 let betHistoryPage = 0;
 const pageSize = 10;
+const SEPOLIA_BASE_CHAIN_ID = "0x14a34"; // Chain ID Sepolia Base Testnet
+const SEPOLIA_RPC_URL = "https://sepolia.base.org"; // RPC Sepolia Base
+const SEPOLIA_EXPLORER_URL = "https://sepolia.basescan.org"; // Block Explorer
+const SEPOLIA_CURRENCY = { name: "Ethereum", symbol: "ETH", decimals: 18 };
 
 // **Connect Wallet**
 async function connectWallet() {
     if (window.ethereum) {
         try {
             web3 = new Web3(window.ethereum);
+            await switchToSepoliaBase();
             await window.ethereum.request({ method: "eth_requestAccounts" });
+
             const accounts = await web3.eth.getAccounts();
             userAccount = accounts[0];
+
+            // Signature
+            const timestamp = new Date().toISOString();
+            const message = `Verifying user for Sepolia Base Testnet\nWallet: ${userAccount}\nTime: ${timestamp}`;
+            const signature = await web3.eth.personal.sign(message, userAccount, "");
+            console.log("Signature:", signature);
+
             contract = new web3.eth.Contract(contractABI, contractAddress);
 
             document.getElementById("walletAddress").innerText = `Connected: ${userAccount}`;
@@ -153,6 +166,41 @@ async function connectWallet() {
         }
     } else {
         alert("Please install MetaMask!");
+    }
+}
+
+// **Memaksa Jaringan ke Sepolia Base Testnet**
+async function switchToSepoliaBase() {
+    try {
+        const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
+
+        if (currentChainId !== SEPOLIA_BASE_CHAIN_ID) {
+            try {
+                await window.ethereum.request({
+                    method: "wallet_switchEthereumChain",
+                    params: [{ chainId: SEPOLIA_BASE_CHAIN_ID }]
+                });
+            } catch (switchError) {
+                // Jika jaringan belum ada, tambahkan secara otomatis
+                if (switchError.code === 4902) {
+                    await window.ethereum.request({
+                        method: "wallet_addEthereumChain",
+                        params: [{
+                            chainId: SEPOLIA_BASE_CHAIN_ID,
+                            chainName: "Base Sepolia Testnet",
+                            nativeCurrency: SEPOLIA_CURRENCY,
+                            rpcUrls: [SEPOLIA_RPC_URL],
+                            blockExplorerUrls: [SEPOLIA_EXPLORER_URL]
+                        }]
+                    });
+                } else {
+                    throw switchError;
+                }
+            }
+        }
+    } catch (error) {
+        console.error("Failed to switch network:", error);
+        alert("Failed to switch network to Sepolia Base Testnet!");
     }
 }
 
