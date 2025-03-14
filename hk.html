@@ -25,23 +25,43 @@
     backdrop-filter: blur(10px);
 }
 
-input, button {
+/* Kolom Input dengan Efek Glassmorphism */
+input {
     display: block;
     margin: 10px auto;
-    padding: 10px;
+    padding: 12px;
     width: 90%;
-    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1); /* Transparan */
+    color: white;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
 }
 
+input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Tombol Futuristik */
 button {
+    display: block;
+    margin: 10px auto;
+    padding: 12px;
+    width: 90%;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease-in-out;
     background: linear-gradient(135deg, #007bff, #0048ff); /* Biru gradient */
     color: white;
     border: none;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
     box-shadow: 0 4px 10px rgba(0, 120, 255, 0.3);
-    transition: all 0.3s ease-in-out;
 }
 
 button:hover {
@@ -50,6 +70,7 @@ button:hover {
     box-shadow: 0 4px 15px rgba(0, 120, 255, 0.5);
 }
 
+/* Tombol Disconnect (Merah Gradient) */
 #disconnectWallet {
     background: linear-gradient(135deg, #ff0033, #cc0000);
     box-shadow: 0 4px 10px rgba(255, 0, 51, 0.3);
@@ -60,6 +81,7 @@ button:hover {
     box-shadow: 0 4px 15px rgba(255, 0, 51, 0.5);
 }
 
+/* Container Tombol */
 .button-container {
     display: flex;
     justify-content: center;
