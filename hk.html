@@ -187,6 +187,58 @@ th {
 .close:hover {
   color: red;
 }
+
+/* Tombol close */
+.close {
+  color: white;
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+}
+.close:hover {
+  color: red;
+}
+
+/* Gaya untuk tombol close */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Gaya untuk tombol menu */
+#menuBtn {
+    background-color: #ad5cff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+#menuBtn img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+/* Gaya untuk link dalam modal */
+.modal-content a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+.modal-content a:hover {
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
     </style>
 </head>
 <body>
@@ -629,7 +681,8 @@ function nextBetHistory() {
     betHistoryPage++;
     loadBetHistory();
 }
-
+        
+// Open Modal 
 function openModal() {
   document.getElementById("myModal").style.display = "block";
 }
@@ -651,6 +704,22 @@ function openModal() {
   document.getElementById("myModal").style.display = "block";
 }
 
+document.getElementById("menuBtn").addEventListener("click", function () {
+    document.getElementById("menuModal").style.display = "flex";
+});
+
+document.querySelector(".close").addEventListener("click", function () {
+    document.getElementById("menuModal").style.display = "none";
+});
+
+// Menutup modal jika klik di luar kontennya
+window.onclick = function (event) {
+    let modal = document.getElementById("menuModal");
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+};
+        
 // Initialize saat halaman terbuka
 window.onload = () => {
     if (window.ethereum) {
