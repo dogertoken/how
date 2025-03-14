@@ -129,24 +129,6 @@ button:hover {
 .bottom-nav button:hover {
     color: #007bff; /* Warna biru saat hover */
 }
-
-/* Tambahkan padding bawah ke konten utama agar tidak tertutup */
-.main-content {
-    padding-bottom: 60px; /* Sesuaikan dengan tinggi navbar */
-}
-
-.button-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 80px; /* Supaya tidak tertutup navbar */
-}
-
-.nav-button {
-    width: auto; /* Pastikan tombol tidak melebar */
-    padding: 6px 12px; /* Sesuaikan ukuran padding */
-    font-size: 12px; /* Sesuaikan ukuran font */
-}
     </style>
 </head>
 <body>
@@ -179,9 +161,6 @@ button:hover {
        <div class="button-container">
        <button class="nav-button" onclick="prevBetHistory()">Prev</button>
        <button class="nav-button" onclick="nextBetHistory()">Next</button>
-
-       <div class="main-content">
-        </div>
 
         <div class="bottom-nav">
             <button>🏠 Home</button>
