@@ -6,6 +6,7 @@
     <title>Bet History</title>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
     <style>
         body {
     font-family: Ubuntu, sans-serif;
@@ -82,11 +83,37 @@ th {
 #searchInput:focus {
     box-shadow: 0 0 20px rgba(0, 0, 255, 1); /* Cahaya lebih terang saat diklik */
 }
+
+    footer {
+        text-align: center;
+        margin-top: 20px;
+        padding: 15px;
+        background: #111; /* Warna gelap */
+        color: #ddd; /* Warna teks */
+        font-size: 14px;
+    }
+
+    .social-icons {
+        margin-bottom: 10px;
+    }
+
+    .social-icons a {
+        color: white;
+        font-size: 24px;
+        margin: 0 10px;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .social-icons a:hover {
+        color: #1a88ff; /* Efek warna saat hover */
+    }
     </style>
 </head>
 <body>
     <div class="container">
-    <h1 style="color: #F5F5DC;">Search Winners</h1>
+    <h1 style="color: #1a88ff;">Lotto Chain</h1>
+    <h1 style="color: #F5F5DC;">Search (HK) Winners</h1>
     
     <div>
         <input type="number" id="searchInput" placeholder="Search Bet Numbers...">
@@ -105,6 +132,15 @@ th {
         <tbody id="betHistoryTable"></tbody>
     </table>
     </div>
+
+    <!-- Footer -->
+<footer>
+    <div class="social-icons">
+        <a href="https://twitter.com/" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+        <a href="https://t.me/" target="_blank"><i class="fa-brands fa-telegram"></i></a>
+    </div>
+    <p>© 2025 Powered By Lotto Chain. All rights reserved. Play responsibly.</p>
+</footer>
     
     <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
     <script src="script.js"></script>
