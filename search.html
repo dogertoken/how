@@ -134,7 +134,7 @@ async function loadBetHistory() {
                             <td>${bet.number}</td>
                             <td>${bet.betAmount}</td>
                             <td>${new Date(bet.timestamp * 1000).toISOString()}</td>
-                            <td><a href="https://sepolia.basescan.org/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a></td>
+                            <td><a href="https://sepolia.basescan.org/block/${bet.blockNumber}" target="_blank" style="text-decoration: none; color: #1a88ff;">${bet.blockNumber}</a></td>
                         </tr>
                     `;
                     tableBody.innerHTML += row;
