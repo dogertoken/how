@@ -63,11 +63,29 @@ th {
         padding: 8px;
     }
 }
+
+#searchInput {
+    background: rgba(255, 255, 255, 0.2); /* Transparan seperti kaca */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Garis batas tipis */
+    border-radius: 10px; /* Sudut melengkung */
+    padding: 10px 15px;
+    font-size: 16px;
+    color: white;
+    backdrop-filter: blur(10px); /* Efek blur */
+    box-shadow: 0 0 10px rgba(0, 0, 255, 0.6); /* Cahaya biru */
+    outline: none;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+/* Efek saat input difokuskan */
+#searchInput:focus {
+    box-shadow: 0 0 20px rgba(0, 0, 255, 1); /* Cahaya lebih terang saat diklik */
+}
     </style>
 </head>
 <body>
     <div class="container">
-    <h1>Search Winners</h1>
+    <h1 style="color: #F5F5DC;">Search Winners</h1>
     
     <div>
         <input type="number" id="searchInput" placeholder="Search Bet Numbers...">
