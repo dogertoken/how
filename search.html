@@ -117,13 +117,13 @@ async function loadBetHistory() {
     try {
         const bets = await contract.methods.getAllBets().call();
         const tableBody = document.getElementById("betHistoryTable");
-        const searchInput = document.getElementById("searchBetNumber");
+        const searchInput = document.getElementById("searchInput"); // Sesuai dengan HTML
 
         function renderTable(filter = "") {
             tableBody.innerHTML = "";
 
             bets
-                .filter(bet => bet.number.includes(filter)) // Filter berdasarkan betNumber
+                .filter(bet => String(bet.number).includes(filter)) // Konversi ke string untuk pencarian
                 .reverse() // Urutkan agar yang terbaru di atas
                 .forEach(bet => {
                     const row = `
@@ -151,6 +151,7 @@ async function loadBetHistory() {
 
 // Panggil fungsi saat halaman dimuat
 window.addEventListener("load", loadBetHistory);
+        
     </script>
 </body>
 </html>
