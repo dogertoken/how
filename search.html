@@ -116,52 +116,36 @@ async function loadBetHistory() {
     try {
         const bets = await contract.methods.getAllBets().call();
         const tableBody = document.getElementById("betHistoryTable");
-        const searchInput = document.getElementById("searchBetNumber");
-
-        const now = Math.floor(Date.now() / 1000); // Waktu sekarang dalam detik
-        const threeDaysAgo = now - (3 * 24 * 60 * 60); // 3 hari terakhir
-
-        console.log("Now:", now);
-        console.log("Three days ago:", threeDaysAgo);
-        console.log("All bets:", bets);
+        const searchInput = document.getElementById("searchInput");
 
         function renderTable(filter = "") {
             tableBody.innerHTML = "";
+            const now = Math.floor(Date.now() / 1000); // Waktu sekarang dalam detik
+            const twoDaysAgo = now - (2 * 24 * 60 * 60); // 2 hari yang lalu dalam detik
 
-            const filteredBets = bets
-                .filter(bet => {
-                    console.log("Checking bet:", bet.timestamp, "vs", threeDaysAgo);
-                    return Number(bet.timestamp) >= threeDaysAgo; // Pastikan timestamp dalam angka
-                })
-                .filter(bet => bet.number.includes(filter)) // Filter berdasarkan betNumber
-                .reverse(); // Urutkan agar yang terbaru di atas
-
-            console.log("Filtered bets:", filteredBets);
-
-            if (filteredBets.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="5">No bets found</td></tr>`;
-                return;
-            }
-
-            filteredBets.forEach(bet => {
-                const row = `
-                    <tr>
-                        <td>${bet.player}</td>
-                        <td>${bet.number}</td>
-                        <td>${bet.betAmount}</td>
-                        <td>${new Date(bet.timestamp * 1000).toISOString()}</td>
-                        <td><a href="https://sepolia.basescan.org/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a></td>
-                    </tr>
-                `;
-                tableBody.innerHTML += row;
-            });
+            bets
+                .filter(bet => bet.timestamp >= twoDaysAgo) // Hanya bet dalam 2 hari terakhir
+                .filter(bet => String(bet.number).includes(filter)) // Filter berdasarkan input pencarian
+                .reverse() // Urutkan agar yang terbaru di atas
+                .forEach(bet => {
+                    const row = `
+                        <tr>
+                            <td>${bet.player}</td>
+                            <td>${bet.number}</td>
+                            <td>${bet.betAmount}</td>
+                            <td>${new Date(bet.timestamp * 1000).toISOString()}</td>
+                            <td><a href="https://sepolia.basescan.org/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a></td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
         }
 
         searchInput.addEventListener("input", () => {
             renderTable(searchInput.value.trim()); // Update tabel saat input berubah
         });
 
-        renderTable(); // Muat data awal
+        renderTable(); // Muat semua data saat pertama kali halaman dibuka
     } catch (error) {
         console.error("Failed to load bet history:", error);
     }
