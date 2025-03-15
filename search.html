@@ -113,14 +113,15 @@ async function loadBetHistory() {
         const tableBody = document.getElementById("betHistoryTable");
         tableBody.innerHTML = "";
 
-        bets.forEach(bet => {
+        // Balik urutan bet agar yang terbaru di atas
+        bets.reverse().forEach(bet => {
             const row = `
                 <tr>
                     <td>${bet.player}</td>
                     <td>${bet.number}</td>
                     <td>${bet.betAmount}</td>
                     <td>${new Date(bet.timestamp * 1000).toISOString()}</td>
-                    <td>${bet.blockNumber}</td>
+                    <td><a href="https://sepolia.basescan.org/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a></td>
                 </tr>
             `;
             tableBody.innerHTML += row;
