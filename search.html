@@ -199,52 +199,11 @@ th {
         <p id="walletAddress" style="display:none; color: #ad5cff"></p>
         <p id="walletBalance" style="display:none; color: #00ca09;">Balance: 0 ETH</p>
 
-        <h2>Place Bet</h2>
-        <input type="text" id="betNumber" placeholder="4D 3D or 2D" oninput="validateBetNumber()"><br>
-        <input type="number" id="betTimes" placeholder="x1 / x99" min="1" max="99" oninput="validateBetTimes(); updateBetPrice()">
-        <p id="betWarning" style="color: red;"></p>
-        <p id="betPrice" style="color: #00FF66; font-weight: bold;">Cost: 0.000000 ETH</p>
-        <button onclick="placeBet()">Place Bet</button>
-        <p id="betStatus"></p>
-
        <h2>Public Bet History</h2>
        <div id="betHistory"></div>
-       <div class="button-container">
-       <button class="nav-button" onclick="prevBetHistory()">Prev</button>
-       <button class="nav-button" onclick="nextBetHistory()">Next</button>
 
        </div>
         <br>
-
-       <!-- Prize Table -->
-        <div id="prizes" class="section-box">
-        <center><h2>4D ETH Prize Payouts</h2></center>
-            <table>
-                <tr>
-                    <th>Bet Type</th>
-                    <th>Prize Multiplier</th>
-                    <th>Example (0.000175 ETH)</th>
-                </tr>
-                <tr>
-                    <td>4D</td>
-                    <td>50,000%</td>
-                    <td>0.0875 ETH</td>
-                </tr>
-                <tr>
-                    <td>3D</td>
-                    <td>5,000%</td>
-                    <td>0.00875 ETH</td>
-                </tr>
-                <tr>
-                    <td>2D</td>
-                    <td>500%</td>
-                    <td>0.000875 ETH</td>
-                </tr>
-            </table>
-        </div>
-       <br>
-    <br>
- <br>
 
         <!-- Modal -->
 <div id="myModal" class="modal">
@@ -258,29 +217,7 @@ th {
     </div>
   </div>
 </div>
-
-        <!-- Modal -->
-    <div id="menuModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <a href="hk" target="_blank">🇭🇰 Hong Kong (HK)</a>
-            <a href="sgp" target="_blank">🇸🇬 Singapore (SGP)</a>
-            <a href="syd" target="_blank">🇦🇺 Sydney (SYD)</a>
-            <a href="chi" target="_blank">🇨🇳 China (CHI)</a>
-            <a href="mc" target="_blank">🇰🇭 Cambodia (MC)</a>
-            <a href="be" target="_blank">🎯 Bull Eye (BE)</a>
-            <a href="lotter">🎰 LottoBalls (Comingsoon)</a>
-        </div>
-    </div>
-        
-        <footer class="footer-nav">
-        <button id="menuBtn"><img src="icon.svg alt="Lotto">Menu</button>
-        <a href="4d" target="_blank" style="text-decoration: none;"><button><img src="icon.svg" alt="Lotto">4D</button></a>
-        <button onclick="openModal()"><img src="icon.svg" alt="Lotto">MyBets</button>
-        <button><img src="icon.svg alt="Lotto">Results</button>
-        <button><img src="icon.svg alt="Lotto">Claim</button>
-        </footer>
-
+      
     <script src="script.js"></script>
     <script>
         const contractAddress = "0x410F02E143Ba921FEdda48830d545154F5E809ab";
@@ -431,77 +368,6 @@ async function updateBalance() {
     }
 }
        
-function updateBetPrice() {
-    let betTimes = document.getElementById("betTimes").value;
-    let ethPrice = (betTimes * 0.000175).toFixed(6); // Hitung harga ETH
-    document.getElementById("betPrice").innerText = `Cost: ${ethPrice} ETH`;
-}
-
-// **Place Bet**
-async function placeBet() {
-    if (!userAccount) {
-        alert("Please connect your wallet first!");
-        return;
-    }
-
-    const number = document.getElementById("betNumber").value;
-    const times = parseInt(document.getElementById("betTimes").value);
-    const betPrice = web3.utils.toWei("0.000175", "ether");
-    const totalCost = betPrice * times;
-
-    if (!number || number.length < 1 || number.length > 4 || isNaN(times) || times < 1) {
-        alert("Invalid bet input!");
-        return;
-    }
-    
-try {
-        await contract.methods.placeBet(number, times, true).send({
-            from: userAccount,
-            value: totalCost
-        });
-        document.getElementById("betStatus").innerText = "Bet placed successfully!";
-        loadUserBets();
-    } catch (error) {
-        console.error(error);
-        document.getElementById("betStatus").innerText = "Transaction failed!";
-    }
-}
-
-// Number Funcion
-function validateBetNumber() {
-    let betNumberInput = document.getElementById("betNumber");
-    let betWarning = document.getElementById("betWarning");
-
-    // Hanya angka yang diperbolehkan
-    betNumberInput.value = betNumberInput.value.replace(/\D/g, "");
-
-    if (betNumberInput.value.length < 2) {
-        betWarning.innerText = "Bet number must minimum be 2 digits!";
-    } else if (betNumberInput.value.length > 4) {
-        betWarning.innerText = "Bet number must minimum 4 digits!";
-        betNumberInput.value = betNumberInput.value.slice(0, 4); // Membatasi maksimal 4 digit
-    } else {
-        betWarning.innerText = "";
-    }
-}
-
-function validateBetTimes() {
-    let betTimesInput = document.getElementById("betTimes");
-    let warning = document.getElementById("betWarning");
-
-    let value = parseInt(betTimesInput.value, 10); // Konversi ke angka
-
-    if (value < 1) {
-        betTimesInput.value = 1;
-        warning.innerText = "Bet times must be between 1 and 99!";
-    } else if (value > 99) {
-        betTimesInput.value = 99;
-        warning.innerText = "Bet times must be between 1 and 99!";
-    } else {
-        warning.innerText = "";
-    }
-}
-
 // Search betHistory Data
 // Pastikan elemen betHistory sudah ada sebelum menjalankan script ini
 document.addEventListener("DOMContentLoaded", function () {
@@ -549,47 +415,6 @@ function clearSearch() {
         items[i].style.display = "";
     }
 }
-    
-// **Load User Bets (with Pagination)**
-async function loadUserBets() {
-    if (!userAccount) return;
-    const bets = await contract.methods.getUserBets(userAccount).call();
-    const reversedBets = bets.slice().reverse(); // Membalik urutan bets agar yang terbaru di atas
-
-    const start = userBetsPage * pageSize;
-    const end = Math.min(start + pageSize, reversedBets.length);
-
-                let html = "";
-                for (let i = start; i < end; i++) {
-                    let bet = reversedBets[i];
-                    let shortPlayer = bet.player.slice(0, 10) + "..." + bet.player.slice(-10);
-                    let shortTxHash = bet.txHash.slice(0, 10) + "..." + bet.txHash.slice(-10);
-
-                    html += `<p>
-                        Wallet: <span style="color: #ad5cff;">${shortPlayer}</span><br>
-                        BetNumber: <span style="color: #00FF66;">${bet.number}</span><br>
-                        BetAmount: <span style="color: #00FF66;">${bet.betAmount}</span><br>
-                        Tx: <span style="color: #fe6666;">${shortTxHash}</span><br>
-                        Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank" style="color: #1a88ff;">${bet.blockNumber}</a><br>
-                        Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
-                    </p><hr style="background-color: #333333; height: 1px; border: none;">`;
-                }
-            document.getElementById("userBets").innerHTML = html;
-        }
-        
-                    
-// **User Bets Pagination**
-function prevUserBets() {
-    if (userBetsPage > 0) {
-        userBetsPage--;
-        loadUserBets();
-    }
-}
-
-function nextUserBets() {
-    userBetsPage++;
-    loadUserBets();
-}
 
 // **Load Bet History (with Pagination)**
 async function loadBetHistory() {
@@ -615,40 +440,6 @@ async function loadBetHistory() {
         </p><hr style="background-color: #333333; height: 1px; border: none;">`;
     }
     document.getElementById("betHistory").innerHTML = html;
-}
-
-// **Bet History Pagination**
-function prevBetHistory() {
-    if (betHistoryPage > 0) {
-        betHistoryPage--;
-        loadBetHistory();
-    }
-}
-
-function nextBetHistory() {
-    betHistoryPage++;
-    loadBetHistory();
-}
-
-function openModal() {
-  document.getElementById("myModal").style.display = "block";
-}
-
-function closeModal() {
-  document.getElementById("myModal").style.display = "none";
-}
-
-function openModal() {
-  // Ambil elemen userBets
-  let userBets = document.getElementById("userBets");
-
-  // Periksa apakah ada data
-  if (!userBets.innerHTML.trim()) {
-    userBets.innerHTML = "<p>No bet history available.</p>"; // Tambahkan pesan jika kosong
-  }
-
-  // Tampilkan modal
-  document.getElementById("myModal").style.display = "block";
 }
 
 // Initialize saat halaman terbuka
