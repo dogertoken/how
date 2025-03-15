@@ -37,14 +37,25 @@ table {
 
 th, td {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Garis tipis transparan */
     text-align: left;
     font-size: 14px; /* Ukuran lebih kecil agar pas di HP */
 }
 
+/* Glassmorphism + Shadow Biru */
 th {
-    background-color: #3498db;
+    background: linear-gradient(135deg, rgba(245, 245, 220, 0.3), rgba(255, 255, 255, 0.1)); /* Gradient transparan */
     color: white;
+    backdrop-filter: blur(10px); /* Efek kaca */
+    border-radius: 8px; /* Sudut melengkung */
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 255, 0.6); /* Shadow biru */
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+/* Efek hover */
+th:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 255, 1); /* Shadow lebih terang saat hover */
 }
 
 /* Responsif untuk layar kecil */
