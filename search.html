@@ -112,16 +112,28 @@ th:hover {
     }
 
     .social-icons a {
-        color: white;
-        font-size: 24px;
-        margin: 0 10px;
-        text-decoration: none;
-        transition: 0.3s;
-    }
+    background: rgba(255, 255, 255, 0.2); /* Transparan seperti kaca */
+    border-radius: 10px; /* Agar sedikit membulat */
+    padding: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white; /* Warna ikon */
+    font-size: 24px;
+    margin: 0 10px;
+    text-decoration: none;
+    transition: transform 0.5s ease, text-shadow 0.5s ease, box-shadow 0.5s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 255, 0.6); /* Cahaya biru */
+    backdrop-filter: blur(10px); /* Efek blur kaca */
+}
 
-    .social-icons a:hover {
-        color: #1a88ff; /* Efek warna saat hover */
-    }
+/* Efek saat hover */
+.social-icons a:hover {
+    color: #1a88ff; /* Warna biru neon */
+    text-shadow: 0 0 10px #1a88ff, 0 0 20px #1a88ff, 0 0 30px #1a88ff; /* Glow lebih intens */
+    box-shadow: 0 0 20px rgba(0, 0, 255, 1), 0 0 30px rgba(0, 0, 255, 0.8); /* Shadow lebih terang */
+    transform: rotate(360deg); /* Efek berputar */
+}
     </style>
 </head>
 <body>
