@@ -331,16 +331,14 @@ footer {
     </style>
 </head>
 <body>
-    <div class="container">
-    <h1>Lotto Bet DApp</h1>
-    
-    <!-- Wallet Connection -->
-    <center>
-        <button id="connectWallet" onclick="connectWallet()">Connect Wallet</button>
-        <button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect</button>
-    </center>
-    <p id="walletAddress" style="display:none; color: #ad5cff"></p>
-    <p id="walletBalance" style="display:none; color: #00ca09;">Balance: 0 ETH</p>
+   <div class="container">
+        <h1>Lotto Bet DApp</h1>
+        
+        <!-- Wallet Connection -->
+        <center><button id="connectWallet" onclick="connectWallet()">Connect Wallet</button>
+        <button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect</button></center>
+        <p id="walletAddress" style="display:none; color: #ad5cff"></p>
+        <p id="walletBalance" style="display:none; color: #00ca09;">Balance: 0 ETH</p>
 
         <h2>Place Bet</h2>
         <input type="number" id="betNumber" placeholder="4D 3D or 2D" oninput="validateBetNumber()"><br>
@@ -350,19 +348,20 @@ footer {
         <button onclick="placeBet()">Place Bet</button>
         <p id="betStatus"></p>
 
-        <h2>Public Bet History</h2>
-        <button onclick="window.open('search', '_blank')"><img src="icon.svg" alt="Lotto">Search Winners</button><br><br>
-        <hr style="background-color: #333333; height: 1px; border: none;">
-        <div id="betHistory"></div>
-        <div class="button-container">
-            <button class="nav-button" onclick="prevBetHistory()">Prev</button>
-            <button class="nav-button" onclick="nextBetHistory()">Next</button>
-        </div>
+       <h2>Public Bet History</h2>
+       <button onclick="window.open('search', '_blank')"><img src="icon.svg" alt="Lotto">Search Winners</button><br><br>
+       <hr style="background-color: #333333; height: 1px; border: none;">
+       <div id="betHistory"></div>
+       <div class="button-container">
+       <button class="nav-button" onclick="prevBetHistory()">Prev</button>
+       <button class="nav-button" onclick="nextBetHistory()">Next</button>
+
+       </div>
         <br>
 
-        <!-- Prize Table -->
+       <!-- Prize Table -->
         <div id="prizes" class="section-box">
-            <center><h2>4D ETH Prize Payouts</h2></center>
+        <center><h2>4D ETH Prize Payouts</h2></center>
             <table>
                 <tr>
                     <th>Bet Type</th>
@@ -387,15 +386,27 @@ footer {
             </table>
         </div>
 
-        <div id="menu">
-            <button id="menuBtn"><img src="icon.svg" alt="Lotto">Menu</button>
-            <button onclick="window.open('4d', '_blank')"><img src="icon.svg" alt="Lotto">4D</button>
-            <button onclick="openModal()"><img src="icon.svg" alt="Lotto">MyBets</button>
-            <button onclick="window.open('hkball', '_blank')"><img src="icon.svg" alt="Lotto">Results</button>
-            <button onclick="window.open('claim', '_blank')"><img src="icon.svg" alt="Lotto">Claim</button>
-        </div>
+<div id="menu">
+    <button id="menuBtn"><img src="icon.svg" alt="Lotto">Menu</button>
+    <button onclick="window.open('4d', '_blank')"><img src="icon.svg" alt="Lotto">4D</button>
+    <button onclick="openModal()"><img src="icon.svg" alt="Lotto">MyBets</button>
+    <button onclick="window.open('hkball', '_blank')"><img src="icon.svg" alt="Lotto">Results</button>
+    <button onclick="window.open('claim', '_blank')"><img src="icon.svg" alt="Lotto">Claim</button>
+</div> <!-- Penutupan <div> harus ada di sini -->
+
+        <!-- Modal -->
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>Your Bets</h2>
+    <div id="userBets"></div>
+    <div class="button-container">
+      <button class="nav-button" onclick="prevUserBets()">Prev</button>
+      <button class="nav-button" onclick="nextUserBets()">Next</button>
     </div>
-    </div>
+  </div>
+</div>
+
         <!-- Footer -->
 <footer>
     <div class="social-icons">
@@ -403,7 +414,7 @@ footer {
         <a href="https://t.me/" target="_blank"><i class="fa-brands fa-telegram"></i></a>
     </div>
     <p>© 2025 Powered By Lotto Chain. All rights reserved. Play responsibly.</p>
-</footer>
+</footer> 
 
     <script src="script.js"></script>
     <script>
