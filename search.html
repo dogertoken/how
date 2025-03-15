@@ -70,20 +70,24 @@ th {
     background: rgba(255, 255, 255, 0.2); /* Transparan seperti kaca */
     border: 1px solid rgba(255, 255, 255, 0.3); /* Garis batas tipis */
     border-radius: 10px; /* Sudut melengkung */
-    padding: 10px 15px;
+    padding: 10px 15px 10px 40px; /* Ruang untuk ikon di kiri */
     font-size: 16px;
     color: white;
     backdrop-filter: blur(10px); /* Efek blur */
     box-shadow: 0 0 10px rgba(0, 0, 255, 0.6); /* Cahaya biru */
     outline: none;
     transition: box-shadow 0.3s ease-in-out;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%23ffffff" d="M508.5 481.6l-129.9-129.9c31.2-41.8 49.9-93.9 49.9-150.6C428.5 90.4 338.1 0 222.5 0S16.5 90.4 16.5 201.1s90.4 201.1 201.1 201.1c56.7 0 108.8-18.7 150.6-49.9l129.9 129.9c6.2 6.2 16.4 6.2 22.6 0l22.6-22.6c6.3-6.2 6.3-16.4.1-22.6zM60.5 201.1c0-89.5 72.6-162.1 162.1-162.1s162.1 72.6 162.1 162.1-72.6 162.1-162.1 162.1-162.1-72.6-162.1-162.1z"/></svg>'); 
+    background-repeat: no-repeat;
+    background-size: 20px;
+    background-position: 10px center;
 }
 
 /* Efek saat input difokuskan */
 #searchInput:focus {
     box-shadow: 0 0 20px rgba(0, 0, 255, 1); /* Cahaya lebih terang saat diklik */
 }
-
+        
     footer {
         text-align: center;
         margin-top: 20px;
@@ -115,9 +119,7 @@ th {
     <h1 style="color: #1a88ff;">Lotto Chain</h1>
     <h1 style="color: #F5F5DC;">Search (HK) Winners</h1>
     
-    <div>
-        <input type="number" id="searchInput" placeholder="Search Bet Winners Numbers...">
-    </div>
+    <input type="number" id="searchInput" placeholder="Search Bet Numbers...">
 
     <table>
         <thead>
