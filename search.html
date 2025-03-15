@@ -130,10 +130,10 @@ async function loadBetHistory() {
                 .forEach(bet => {
                     const row = `
                         <tr>
-                            <td>${bet.player}</td>
-                            <td>${bet.number}</td>
-                            <td>${bet.betAmount}</td>
-                            <td>${new Date(bet.timestamp * 1000).toISOString()}</td>
+                            <td style="color: #ad5cff; font-weight: bold;">${bet.player}</td>
+                            <td style="color: #00FF66; font-weight: bold;">${bet.number}</td>
+                            <td style="color: #fe6666; font-weight: bold;">${bet.betAmount}</td>
+                            <td style="color: orange; font-weight: bold;">${new Date(bet.timestamp * 1000).toISOString()}</td>
                             <td><a href="https://sepolia.basescan.org/block/${bet.blockNumber}" target="_blank" style="text-decoration: none; color: #1a88ff;">${bet.blockNumber}</a></td>
                         </tr>
                     `;
