@@ -705,26 +705,6 @@ function nextBetHistory() {
     betHistoryPage++;
     loadBetHistory();
 }
-
- // Hide Content
- function connectWallet() {
-    // Simulasi koneksi wallet (Gantilah dengan kode koneksi asli)
-    setTimeout(() => {
-        document.getElementById("connectWallet").style.display = "none"; // Sembunyikan tombol Connect
-        document.getElementById("disconnectWallet").style.display = "inline-block"; // Tampilkan tombol Disconnect
-        document.getElementById("walletAddress").style.display = "block"; // Tampilkan alamat wallet
-        document.getElementById("walletBalance").style.display = "block"; // Tampilkan saldo wallet
-        document.getElementById("content").style.display = "block"; // Tampilkan semua konten yang disembunyikan
-    }, 1000);
-}
-
-function disconnectWallet() {
-    document.getElementById("connectWallet").style.display = "inline-block"; // Tampilkan kembali tombol Connect
-    document.getElementById("disconnectWallet").style.display = "none"; // Sembunyikan tombol Disconnect
-    document.getElementById("walletAddress").style.display = "none"; // Sembunyikan alamat wallet
-    document.getElementById("walletBalance").style.display = "none"; // Sembunyikan saldo wallet
-    document.getElementById("content").style.display = "none"; // Sembunyikan kembali konten
-}
         
 // Open Modal 
 function openModal() {
