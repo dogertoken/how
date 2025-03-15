@@ -64,8 +64,9 @@ input:hover {
 
 /* Tombol Umum */
 button {
-    font-size: 1.2em;
-    padding: 10px 20px;
+    font-size: 1em; /* Ukuran font lebih kecil */
+    padding: 8px 16px; /* Padding dikurangi */
+    width: 150px; /* Lebar tetap agar tidak berubah saat teks berubah */
     border-radius: 0.7em;
     border: none;
     background-color: #000;
@@ -74,6 +75,7 @@ button {
     position: relative;
     box-shadow: 2px 2px 3px #000000b4;
     transition: all 0.3s ease-in-out;
+    text-align: center;
 }
 
 /* Efek Neon Glow */
@@ -109,7 +111,7 @@ button:active {
 button:active::before {
     filter: blur(0.2em);
 }
-        
+
 /* Efek Gelombang saat Diklik */
 button::after {
     content: "";
@@ -144,7 +146,7 @@ button:active::after {
 .button-container {
     display: flex;
     justify-content: center;
-    gap: 8px;
+    gap: 16px; /* Jarak antar tombol diperbesar */
 }
 
 /* Ukuran Wallet Address Lebih Kecil */
