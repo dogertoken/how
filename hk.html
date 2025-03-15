@@ -32,7 +32,7 @@
     backdrop-filter: blur(10px);
 }
 
-/* Kolom Input dengan Efek Glassmorphism + Shadow Gradient Pelangi */
+/* Kolom Input dengan Efek Glassmorphism */
 input {
     display: block;
     margin: 10px auto;
@@ -47,17 +47,19 @@ input {
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
-    transition: box-shadow 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
 }
 
 input::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* Efek Shadow Gradient Pelangi saat Hover */
+/* Efek Neon Biru Glassmorphism saat Hover */
 input:hover {
-    box-shadow: 0 0 15px #ff00ff, 0 0 20px #ff7700, 0 0 25px #00ff00, 
-                0 0 30px #0099ff, 0 0 35px #ff00ff;
+    background: rgba(0, 0, 255, 0.2); /* Biru neon transparan */
+    box-shadow: 0 0 15px rgba(0, 153, 255, 0.8), 
+                0 0 25px rgba(0, 153, 255, 0.6), 
+                0 0 35px rgba(0, 153, 255, 0.4);
 }
 
 /* Tombol Futuristik (Lebih Pendek) */
