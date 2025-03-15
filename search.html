@@ -113,25 +113,22 @@ async function loadBetHistory() {
         const tableBody = document.getElementById("betHistoryTable");
         tableBody.innerHTML = "";
 
-        // Balik urutan bet agar yang terbaru di atas
-        bets.reverse().forEach(bet => {
-            const row = `
-                <tr>
-                    <td>${bet.player}</td>
-                    <td>${bet.number}</td>
-                    <td>${bet.betAmount}</td>
-                    <td>${new Date(bet.timestamp * 1000).toISOString()}</td>
-                    <td><a href="https://sepolia.basescan.org/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a></td>
-                </tr>
+        bets.slice().reverse().forEach(bet => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${bet.player}</td>
+                <td>${bet.number}</td>
+                <td>${bet.betAmount}</td>
+                <td>${new Date(bet.timestamp * 1000).toISOString()}</td>
+                <td><a href="https://sepolia.basescan.org/block/${bet.blockNumber}" target="_blank">${bet.blockNumber}</a></td>
             `;
-            tableBody.innerHTML += row;
+            tableBody.appendChild(row);
         });
     } catch (error) {
         console.error("Failed to load bet history:", error);
     }
 }
 
-// Panggil fungsi saat halaman dimuat
 window.addEventListener("load", loadBetHistory);
     </script>
 </body>
