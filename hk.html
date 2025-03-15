@@ -130,20 +130,21 @@ th {
     color: white; /* Agar teks lebih kontras */
 }
 
-.footer-nav {
+/* Gaya untuk menu navigasi */
+#menu {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: rgba(0, 0, 0, 0.8); /* Glassmorphism efek */
-    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.8); /* Warna semi transparan */
+    padding: 10px 0;
     display: flex;
     justify-content: space-around;
-    padding: 10px 0;
-    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    align-items: center;
+    z-index: 1000;
 }
 
-.footer-nav button {
+#menu button {
     background: none;
     border: none;
     color: white;
@@ -155,15 +156,14 @@ th {
     padding: 5px;
 }
 
-.footer-nav button img {
+#menu button img {
     width: 24px;
     height: 24px;
-    margin-bottom: 5px;
-    filter: brightness(0) invert(1); /* Warna putih */
+    margin-bottom: 4px;
 }
 
-.footer-nav button:hover {
-    color: #1a88ff; /* Efek hover */
+#menu button:hover {
+    color: #1a88ff; /* Efek hover warna biru */
 }
 
 .footer {
@@ -301,17 +301,14 @@ footer {
                 </tr>
             </table>
         </div>
-       <br>
-    <br>
- <br>
 
-    <footer class="footer-nav">
+<div id="menu">
     <button id="menuBtn"><img src="icon.svg" alt="Lotto">Menu</button>
     <button onclick="window.open('4d', '_blank')"><img src="icon.svg" alt="Lotto">4D</button>
     <button onclick="openModal()"><img src="icon.svg" alt="Lotto">MyBets</button>
     <button onclick="window.open('hkball', '_blank')"><img src="icon.svg" alt="Lotto">Results</button>
     <button><img src="icon.svg" alt="Lotto">Claim</button>
-    </footer>
+</div>
 
         <!-- Modal -->
 <div id="myModal" class="modal">
