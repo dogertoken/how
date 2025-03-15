@@ -210,15 +210,67 @@ footer {
     }
 
     #menu {
-    position: relative; /* Supaya tetap di atas footer tanpa fixed */
+    position: relative;
+    left: 0;
     width: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.6); /* Transparan dengan efek gelap */
+    backdrop-filter: blur(10px); /* Efek Glassmorphism */
     padding: 10px 0;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    margin-top: 20px; /* Beri jarak dari konten sebelumnya */
-    }
+    z-index: 1000;
+    box-shadow: 0 -4px 10px rgba(0, 0, 255, 0.3); /* Efek cahaya biru */
+}
+
+#menu button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+}
+
+/* Efek Hover */
+#menu button:hover {
+    color: #1a88ff;
+    transform: scale(1.1);
+}
+
+#menu button::before {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background: #1a88ff;
+    transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
+}
+
+#menu button:hover::before {
+    width: 100%;
+    left: 0;
+}
+
+/* Efek untuk icon */
+#menu button img {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+    filter: drop-shadow(0px 0px 5px rgba(0, 0, 255, 0.5)); /* Cahaya biru */
+    transition: transform 0.3s ease-in-out;
+}
+
+#menu button:hover img {
+    transform: rotate(360deg);
+}
     </style>
 </head>
 <body>
