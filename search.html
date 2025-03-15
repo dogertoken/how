@@ -10,13 +10,16 @@
     font-family: Arial, sans-serif;
     text-align: center;
     background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
     max-width: 800px;
+    width: 90%; /* Agar lebih fleksibel di layar kecil */
     margin: 20px auto;
     background: white;
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -29,6 +32,7 @@ button {
     color: white;
     cursor: pointer;
     border-radius: 5px;
+    font-size: 16px;
 }
 
 button:hover {
@@ -39,16 +43,40 @@ table {
     width: 100%;
     margin-top: 20px;
     border-collapse: collapse;
+    overflow-x: auto; /* Agar bisa di-scroll pada layar kecil */
+    display: block;
+    max-width: 100%;
 }
 
 th, td {
     padding: 10px;
     border: 1px solid #ddd;
+    text-align: left;
+    font-size: 14px; /* Ukuran lebih kecil agar pas di HP */
 }
 
 th {
     background-color: #3498db;
     color: white;
+}
+
+/* Responsif untuk layar kecil */
+@media screen and (max-width: 600px) {
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    th, td {
+        padding: 8px;
+        font-size: 12px; /* Lebih kecil di HP */
+    }
+
+    button {
+        font-size: 14px;
+        padding: 8px;
+    }
 }
     </style>
 </head>
