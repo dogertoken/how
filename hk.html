@@ -70,7 +70,7 @@ button {
  .button-container {
     display: flex;
     justify-content: center;
-    gap: 16px; /* Jarak antar tombol diperbesar */
+    gap: 20px; /* Jarak antar tombol diperbesar */
  }
 
 /* Efek Neon Glow */
@@ -105,6 +105,36 @@ button:active {
 
 button:active::before {
     filter: blur(0.2em);
+}
+
+/* Efek Gelombang saat Diklik */
+button::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 70%);
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    transition: transform 0.5s, opacity 0.5s;
+}
+
+button:active::after {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 1;
+}
+
+/* Tombol Disconnect (Efek Neon Merah) */
+#disconnectWallet {
+    background: linear-gradient(135deg, #ff0033, #cc0000);
+    box-shadow: 0 0 12px rgba(255, 0, 51, 0.6), 0 0 20px rgba(255, 0, 51, 0.4);
+}
+
+#disconnectWallet:hover {
+    background: linear-gradient(135deg, #cc0000, #ff0033);
+    box-shadow: 0 0 20px rgba(255, 0, 51, 0.9), 0 0 30px rgba(255, 0, 51, 0.7);
 }
 
 /* Ukuran Wallet Address Lebih Kecil */
@@ -303,8 +333,8 @@ footer {
         <h1>Lotto Bet DApp</h1>
         
         <!-- Wallet Connection -->
-        <button id="connectWallet" onclick="connectWallet()">Connect Wallet</button>
-        <center><button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect</button></center>
+        <center><button id="connectWallet" onclick="connectWallet()">Connect Wallet</button>
+        <button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect</button></center>
         <p id="walletAddress" style="display:none; color: #ad5cff"></p>
         <p id="walletBalance" style="display:none; color: #00ca09;">Balance: 0 ETH</p>
 
@@ -317,7 +347,7 @@ footer {
         <p id="betStatus"></p>
 
        <h2>Public Bet History</h2>
-       <button onclick="window.open('search', '_blank')"><img src="icon.svg" alt="Lotto">Search Winners</button><br>
+       <button onclick="window.open('search', '_blank')"><img src="icon.svg" alt="Lotto">Search Winners</button><br><br>
        <hr style="background-color: #333333; height: 1px; border: none;">
        <div id="betHistory"></div>
        <div class="button-container">
