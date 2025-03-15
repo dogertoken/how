@@ -117,13 +117,17 @@ async function loadBetHistory() {
     try {
         const bets = await contract.methods.getAllBets().call();
         const tableBody = document.getElementById("betHistoryTable");
-        const searchInput = document.getElementById("searchInput"); // Sesuai dengan HTML
+        const searchInput = document.getElementById("searchBetNumber");
+
+        const now = Math.floor(Date.now() / 1000); // Waktu sekarang dalam detik
+        const threeDaysAgo = now - (3 * 24 * 60 * 60); // 3 hari terakhir
 
         function renderTable(filter = "") {
             tableBody.innerHTML = "";
 
             bets
-                .filter(bet => String(bet.number).includes(filter)) // Konversi ke string untuk pencarian
+                .filter(bet => bet.timestamp >= threeDaysAgo) // Hanya bet dalam 3 hari terakhir
+                .filter(bet => bet.number.includes(filter)) // Filter berdasarkan betNumber
                 .reverse() // Urutkan agar yang terbaru di atas
                 .forEach(bet => {
                     const row = `
@@ -143,7 +147,7 @@ async function loadBetHistory() {
             renderTable(searchInput.value.trim()); // Update tabel saat input berubah
         });
 
-        renderTable(); // Muat semua data saat pertama kali halaman dibuka
+        renderTable(); // Muat data awal
     } catch (error) {
         console.error("Failed to load bet history:", error);
     }
