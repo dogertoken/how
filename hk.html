@@ -64,35 +64,40 @@ input:hover {
 
 /* Tombol Umum */
 button {
-    display: block;
-    margin: 8px auto;
-    padding: 10px 15px; /* Lebih nyaman ditekan */
+    position: relative;
+    font-size: 12px;
+    padding: 10px 15px;
     width: 40%;
     border-radius: 6px;
-    font-size: 12px;
     font-weight: bold;
     cursor: pointer;
-    text-transform: unset;
+    text-transform: none;
     transition: all 0.3s ease-in-out;
-    background: linear-gradient(135deg, #007bff, #0048ff); /* Gradient biru */
+    background-color: #000;
     color: white;
     border: none;
-    box-shadow: 0 0 12px rgba(0, 120, 255, 0.6), 0 0 20px rgba(0, 120, 255, 0.4); /* Shadow neon */
-    position: relative;
+    box-shadow: 0 0 12px rgba(0, 120, 255, 0.6), 0 0 20px rgba(0, 120, 255, 0.4);
     overflow: hidden;
 }
 
-/* Efek Hover */
-button:hover {
-    background: linear-gradient(135deg, #0048ff, #007bff);
-    transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(0, 120, 255, 0.9), 0 0 30px rgba(0, 120, 255, 0.7);
+/* Efek Border Glowing */
+button::before {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    z-index: -1;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #03a9f4, #f441a5);
+    transition: all 0.4s ease;
+    filter: blur(0);
 }
 
-/* Efek Tekan */
-button:active {
-    transform: scale(0.95);
-    box-shadow: 0 0 10px rgba(0, 120, 255, 0.5);
+button:hover::before {
+    filter: blur(1.2em);
+}
+
+button:active::before {
+    filter: blur(0.2em);
 }
 
 /* Efek Gelombang saat Diklik */
