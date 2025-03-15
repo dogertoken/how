@@ -134,23 +134,54 @@ th {
     position: fixed;
     bottom: 0;
     left: 0;
-    width: 98%;
-    background: rgba(0, 0, 0, 0.9); /* Warna hitam transparan */
-    color: white;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.8); /* Glassmorphism efek */
+    backdrop-filter: blur(10px);
     display: flex;
     justify-content: space-around;
     padding: 10px 0;
-    z-index: 999;
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Supaya tombolnya proporsional */
 .footer-nav button {
     background: none;
     border: none;
     color: white;
-    font-size: 12px;
-    padding: 10px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     cursor: pointer;
+    padding: 5px;
+}
+
+.footer-nav button img {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 5px;
+    filter: brightness(0) invert(1); /* Warna putih */
+}
+
+.footer-nav button:hover {
+    color: #1a88ff; /* Efek hover */
+}
+
+.footer {
+    text-align: center;
+    padding: 15px;
+    background: #000;
+    color: #fff;
+}
+
+.social-icons a {
+    color: white;
+    font-size: 24px;
+    margin: 0 10px;
+    transition: 0.3s;
+}
+
+.social-icons a:hover {
+    color: #1a88ff;
 }
 
 /* Gaya untuk modal */
@@ -274,6 +305,14 @@ footer {
     <br>
  <br>
 
+    <footer class="footer-nav">
+    <button id="menuBtn"><img src="icon.svg" alt="Lotto">Menu</button>
+    <button onclick="window.open('4d', '_blank')"><img src="icon.svg" alt="Lotto">4D</button>
+    <button onclick="openModal()"><img src="icon.svg" alt="Lotto">MyBets</button>
+    <button onclick="window.open('hkball', '_blank')"><img src="icon.svg" alt="Lotto">Results</button>
+    <button><img src="icon.svg" alt="Lotto">Claim</button>
+    </footer>
+
         <!-- Modal -->
 <div id="myModal" class="modal">
   <div class="modal-content">
@@ -286,14 +325,6 @@ footer {
     </div>
   </div>
 </div>
-        
-        <footer class="footer-nav">
-        <button id="menuBtn"><img src="icon.svg" alt="Lotto">Menu</button>
-        <button onclick="window.open('4d', '_blank')"><img src="icon.svg" alt="Lotto">4D</button>
-        <button onclick="openModal()"><img src="icon.svg" alt="Lotto">MyBets</button>
-        <button onclick="window.open('hkball', '_blank')"><img src="icon.svg alt="Lotto">Results</button>
-        <button><img src="icon.svg alt="Lotto">Claim</button>
-        </footer>
 
         <!-- Footer -->
 <footer>
