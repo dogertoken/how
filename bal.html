@@ -74,6 +74,61 @@
     border: 3px solid white;
         }
 
+        /* History Section */
+.history-section {
+    text-align: center;
+    margin-top: 50px;
+    padding: 30px; /* Lebih besar dari sebelumnya */
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    width: 100%; /* Membuat lebih lebar */
+    max-width: 1000px; /* Sebelumnya 600px, sekarang lebih besar */
+}
+
+/* Judul Riwayat */
+.history-section h2 {
+    font-size: 2.5rem; /* Lebih besar */
+    text-shadow: 0 0 10px rgba(0, 183, 255, 0.8);
+    margin-bottom: 30px; /* Lebih besar dari sebelumnya */
+}
+
+/* Setiap entri keluaran */
+.history-entry {
+    margin-bottom: 30px; /* Lebih besar */
+}
+
+/* Tanggal Keluaran */
+.history-entry p {
+    font-size: 1.5rem; /* Lebih besar */
+    font-weight: bold;
+    color: #00b7ff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Bola Riwayat */
+.history-balls {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Jarak antar bola diperbesar */
+    margin-top: 15px;
+}
+
+.history-ball {
+    width: 70px; /* Lebih besar */
+    height: 70px; /* Lebih besar */
+    background: radial-gradient(circle at 30% 30%, #0062cc, #004a99);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem; /* Lebih besar */
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 8px 15px rgba(0, 183, 255, 0.6), 0 4px 10px rgba(0, 0, 0, 0.4);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    border: 3px solid #007bff;
+}
+
         /* Animasi bola */
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
