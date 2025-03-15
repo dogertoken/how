@@ -85,7 +85,7 @@ th {
     <h1>Search Winners</h1>
     
     <div>
-        <input type="text" id="searchInput" placeholder="Search Bet Numbers...">
+        <input type="number" id="searchInput" placeholder="Search Bet Numbers...">
     </div>
 
     <table>
@@ -153,6 +153,10 @@ async function loadBetHistory() {
 
 // Panggil fungsi saat halaman dimuat
 window.addEventListener("load", loadBetHistory);
+
+document.getElementById("searchInput").addEventListener("input", function (e) {
+    this.value = this.value.replace(/\D/g, ""); // Hapus karakter non-angka
+});
         
     </script>
 </body>
