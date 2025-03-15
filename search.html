@@ -82,23 +82,25 @@ th {
 </head>
 <body>
     <div class="container">
-        <h1>Search Winners</h1>
-        <table>
-            <input type="text" id="searchInput" placeholder="Cari nomor bet...">
-<button onclick="filterBetHistory()">Search</button>
+    <h1>Search Winners</h1>
+    
+    <div>
+        <input type="text" id="searchInput" placeholder="Cari nomor bet...">
+        <button onclick="filterBetHistory()">Search</button>
+    </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Player</th>
-            <th>Bet Number</th>
-            <th>Bet Amount</th>
-            <th>Timestamp</th>
-            <th>Block</th>
-        </tr>
-    </thead>
-    <tbody id="betHistoryTable"></tbody>
-</table>
+    <table>
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Bet Number</th>
+                <th>Bet Amount</th>
+                <th>Timestamp</th>
+                <th>Block</th>
+            </tr>
+        </thead>
+        <tbody id="betHistoryTable"></tbody>
+    </table>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
