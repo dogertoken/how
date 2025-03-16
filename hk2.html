@@ -204,7 +204,7 @@ th {
     transform: rotate(360deg); /* Efek berputar */
 }
 
-/* Gaya untuk modal */
+/* Gaya umum untuk modal */
 .modal {
   display: none; /* Awalnya modal disembunyikan */
   position: fixed;
@@ -216,14 +216,14 @@ th {
   background-color: rgba(0, 0, 0, 0.5); /* Transparan gelap */
 }
 
-/* Konten modal */
+/* Gaya umum untuk konten modal */
 .modal-content {
-  background: #000000;
+  background: #000;
   color: white;
   margin: 10% auto;
   padding: 20px;
   width: 90%;
-  max-width: 900px;
+  max-width: 600px;
   border-radius: 10px;
   text-align: center;
   box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
@@ -238,6 +238,11 @@ th {
 }
 .close:hover {
   color: red;
+}
+
+/* Gaya khusus untuk modal Menu */
+#menuModal .modal-content {
+  background: #111;
 }
 
 footer {
@@ -387,24 +392,48 @@ footer {
         </div>
 
 <div id="menu">
-    <button id="menuBtn"><img src="icon.svg" alt="Lotto">Menu</button>
-    <button onclick="window.open('4d', '_blank')"><img src="icon.svg" alt="Lotto">4D</button>
-    <button onclick="openModal()"><img src="icon.svg" alt="Lotto">MyBets</button>
-    <button onclick="window.open('hkball', '_blank')"><img src="icon.svg" alt="Lotto">Results</button>
-    <button onclick="window.open('claim', '_blank')"><img src="icon.svg" alt="Lotto">Claim</button>
-</div> <!-- Penutupan <div> harus ada di sini -->
+    <button id="menuBtn" onclick="openModal('menuModal')">
+        <img src="icon.svg" alt="Lotto">Menu
+    </button>
+    <button onclick="window.open('4d', '_blank')">
+        <img src="icon.svg" alt="Lotto">4D
+    </button>
+    <button onclick="openModal('myModal')">
+        <img src="icon.svg" alt="Lotto">MyBets
+    </button>
+    <button onclick="window.open('hkball', '_blank')">
+        <img src="icon.svg" alt="Lotto">Results
+    </button>
+    <button onclick="window.open('claim', '_blank')">
+        <img src="icon.svg" alt="Lotto">Claim
+    </button>
+</div>
 
-        <!-- Modal -->
+<!-- Modal MyBets -->
 <div id="myModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <h2>Your Bets</h2>
-    <div id="userBets"></div>
-    <div class="button-container">
-      <button class="nav-button" onclick="prevUserBets()">Prev</button>
-      <button class="nav-button" onclick="nextUserBets()">Next</button>
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('myModal')">&times;</span>
+        <h2>Your Bets</h2>
+        <div id="userBets"></div>
+        <div class="button-container">
+            <button class="nav-button" onclick="prevUserBets()">Prev</button>
+            <button class="nav-button" onclick="nextUserBets()">Next</button>
+        </div>
     </div>
-  </div>
+</div>
+
+<!-- Modal Menu -->
+<div id="menuModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('menuModal')">&times;</span>
+        <h2>Menu</h2>
+        <a href="hk" target="_blank">🇭🇰 Hong Kong (HK)</a><br>
+        <a href="sgp" target="_blank">🇸🇬 Singapore (SGP)</a><br>
+        <a href="syd" target="_blank">🇦🇺 Sydney (SYD)</a><br>
+        <a href="chi" target="_blank">🇨🇳 China (CHI)</a><br>
+        <a href="mc" target="_blank">🇰🇭 Cambodia (MC)</a><br>
+        <a href="be" target="_blank">🎯 Bull Eye (BE)</a>
+    </div>
 </div>
 
         <!-- Footer -->
@@ -717,27 +746,33 @@ function nextBetHistory() {
     loadBetHistory();
 }
         
-// Open Modal 
-function openModal() {
-  document.getElementById("myModal").style.display = "block";
+// Fungsi untuk membuka modal berdasarkan ID
+function openModal(modalId) {
+    let modal = document.getElementById(modalId);
+    
+    if (modalId === "myModal") {
+        // Ambil elemen userBets
+        let userBets = document.getElementById("userBets");
+
+        // Periksa apakah ada data
+        if (!userBets.innerHTML.trim()) {
+            userBets.innerHTML = "<p>No bet history available.</p>"; // Tambahkan pesan jika kosong
+        }
+    }
+
+    // Tampilkan modal
+    modal.style.display = "block";
 }
 
-function closeModal() {
-  document.getElementById("myModal").style.display = "none";
+// Fungsi untuk menutup modal berdasarkan ID
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
 }
 
-function openModal() {
-  // Ambil elemen userBets
-  let userBets = document.getElementById("userBets");
-
-  // Periksa apakah ada data
-  if (!userBets.innerHTML.trim()) {
-    userBets.innerHTML = "<p>No bet history available.</p>"; // Tambahkan pesan jika kosong
-  }
-
-  // Tampilkan modal
-  document.getElementById("myModal").style.display = "block";
-}
+// Event listener untuk tombol Menu
+document.getElementById("menuBtn").addEventListener("click", function() {
+    openModal("menuModal");
+});
         
 // Initialize saat halaman terbuka
 window.onload = () => {
