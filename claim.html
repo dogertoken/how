@@ -88,6 +88,11 @@ tr:hover {
 </head>
 <body>
     <h2>Claim ETH</h2>
+
+    <button onclick="connectWallet()">🔗 Connect Wallet</button>
+    <p id="walletAddress">Wallet: Not Connected</p>
+    <p id="ownerStatus" style="color: red;"></p>
+    
     <button id="checkEligible" onclick="checkEligibility()">Check Eligible</button>
     <p id="status"></p>
     <p id="ethAmount"></p>
