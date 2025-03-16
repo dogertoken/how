@@ -7,30 +7,61 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/4.0.3/web3.min.js"></script>
     <style>
         body {
-            font-family: Ubuntu, sans-serif;
-            text-align: center;
-            margin: 20px;
-            width: 100%; /* Bisa diperkecil lagi, misalnya 50% jika terlalu lebar */
-            max-width: 900px;
-            
-        }
-        button {
-            padding: 10px;
-            margin: 10px;
-            font-size: 16px;
-            cursor: pointer;
-            
-        }
-        input {
-            padding: 10px;
-            margin: 5px;
-            width: 80%;
-            max-width: 300px;
-        }
-        #status {
-            margin-top: 10px;
-            font-weight: bold;
-        }
+    font-family: Ubuntu, sans-serif;
+    text-align: center;
+    margin: 20px;
+    width: 100%;
+    max-width: 900px;
+    background-color: #0000; /* Latar belakang transparan biru */
+    color: #F8F8FF; /* Putih tulang */
+}
+
+button {
+    padding: 10px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: rgba(0, 0, 50, 0.8); /* Biru gelap semi transparan */
+    color: #F8F8FF;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 150, 255, 0.5); /* Glow biru */
+    transition: 0.3s ease-in-out;
+}
+
+button:hover {
+    box-shadow: 0 0 20px rgba(0, 150, 255, 0.8); /* Glow lebih terang saat hover */
+    transform: scale(1.05);
+}
+
+input {
+    padding: 10px;
+    margin: 5px;
+    width: 80%;
+    max-width: 300px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1); /* Efek glassmorphism */
+    backdrop-filter: blur(10px);
+    color: #F8F8FF;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 150, 255, 0.5);
+    transition: 0.3s ease-in-out;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+input:focus {
+    outline: none;
+    box-shadow: 0 0 20px rgba(0, 150, 255, 0.8);
+}
+
+#status {
+    margin-top: 10px;
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
