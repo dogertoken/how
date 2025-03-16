@@ -826,16 +826,13 @@ function openModal(modalId) {
     let modal = document.getElementById(modalId);
     
     if (modal) {
-        // Jika modal adalah "myModal", cek isi userBets
         if (modalId === "myModal") {
             let userBets = document.getElementById("userBets");
-
             if (!userBets.innerHTML.trim()) {
-                userBets.innerHTML = "<p>No bet history available.</p>"; // Tambahkan pesan jika kosong
+                userBets.innerHTML = "<p style='text-align: center; font-weight: bold; color: red;'>No bet history available.</p>";
             }
         }
 
-        // Tampilkan modal
         modal.style.display = "block";
     }
 }
@@ -843,10 +840,19 @@ function openModal(modalId) {
 // Fungsi untuk menutup modal berdasarkan ID
 function closeModal(modalId) {
     let modal = document.getElementById(modalId);
-    
     if (modal) {
         modal.style.display = "none";
     }
+}
+
+// Fungsi khusus untuk menutup modal MyBets
+function closeMyBets() {
+    closeModal('myModal');
+}
+
+// Fungsi khusus untuk menutup modal Menu
+function closeMenu() {
+    closeModal('menuModal');
 }
         
 // Initialize saat halaman terbuka
