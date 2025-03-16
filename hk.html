@@ -461,16 +461,17 @@ footer {
     <button onclick="window.open('claim', '_blank')"><img src="icon.svg" alt="Lotto">Claim</button>
 </div> <!-- Penutupan <div> harus ada di sini -->
 
-        <!-- Modal -->
+        <!-- Modal MyBets -->
 <div id="myModal" class="modal">
-  <div class="modal-content">
-    <h2>Your Bets</h2>
-    <div id="userBets"></div>
-    <div class="button-container">
-      <button class="nav-button" onclick="prevUserBets()">Prev</button>
-      <button class="nav-button" onclick="nextUserBets()">Next</button>
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('myModal')">&times;</span>
+        <h2>Your Bets</h2>
+        <div id="userBets"></div>
+        <div class="button-container">
+            <button class="nav-button" onclick="prevUserBets()">Prev</button>
+            <button class="nav-button" onclick="nextUserBets()">Next</button>
+        </div>
     </div>
-  </div>
 </div>
 
        <!-- Modal Menu -->
