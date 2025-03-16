@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Winner</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/4.0.3/web3.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        input {
+            padding: 10px;
+            margin: 5px;
+            width: 80%;
+        }
+        #status {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Set Winner</h2>
+
+    <button onclick="connectWallet()">🔗 Connect Wallet</button>
+    <p id="walletAddress">Wallet: Not Connected</p>
+    <p id="ownerStatus" style="color: red;"></p>
+
+    <h3>Masukkan Pemenang</h3>
+    <input type="text" id="winnerAddress" placeholder="Alamat Pemenang">
+    <input type="number" id="winnerAmount" placeholder="Jumlah ETH">
+    <button onclick="setWinner()">✅ Set Winner</button>
+
+    <p id="status"></p>
+
+    <script src="app.js"></script>
+
+    <script>
+      const contractAddress = "ALAMAT_KONTRAK"; // Ganti dengan alamat kontrak yang asli
+const contractABI = [ 
+    {
+        "inputs": [
+            { "internalType": "address", "name": "_winner", "type": "address" },
+            { "internalType": "uint256", "name": "_amount", "type": "uint256" }
+        ],
+        "name": "setWinner",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+        "stateMutability": "view",
+        "type": "function"
+    }
+];
+
+let web3;
+let userAccount;
+let contract;
+let ownerAddress;
+
+// 🔗 Koneksi Wallet
+async function connectWallet() {
+    if (window.ethereum) {
+        try {
+            const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+            userAccount = accounts[0];
+            document.getElementById("walletAddress").innerText = "Wallet: " + userAccount;
+
+            web3 = new Web3(window.ethereum);
+            contract = new web3.eth.Contract(contractABI, contractAddress);
+
+            // Cek apakah pengguna adalah owner
+            ownerAddress = await contract.methods.owner().call();
+            if (userAccount.toLowerCase() === ownerAddress.toLowerCase()) {
+                document.getElementById("ownerStatus").innerText = "✅ Anda adalah Owner!";
+                document.getElementById("ownerStatus").style.color = "green";
+            } else {
+                document.getElementById("ownerStatus").innerText = "🚫 Anda Bukan Owner!";
+                document.getElementById("ownerStatus").style.color = "red";
+            }
+
+        } catch (error) {
+            console.error("Wallet Connection Error:", error);
+        }
+    } else {
+        alert("Metamask tidak ditemukan! Silakan install Metamask.");
+    }
+}
+
+// 🏆 Set Winner (Hanya Owner Bisa)
+async function setWinner() {
+    if (!userAccount) {
+        alert("Harap konekkan wallet terlebih dahulu!");
+        return;
+    }
+
+    if (userAccount.toLowerCase() !== ownerAddress.toLowerCase()) {
+        alert("Hanya owner yang bisa menetapkan pemenang!");
+        return;
+    }
+
+    const winner = document.getElementById("winnerAddress").value;
+    const amount = document.getElementById("winnerAmount").value;
+
+    if (!winner || amount <= 0) {
+        alert("Masukkan alamat pemenang dan jumlah ETH yang valid!");
+        return;
+    }
+
+    try {
+        document.getElementById("status").innerText = "⏳ Mengirim transaksi...";
+        const tx = await contract.methods.setWinner(winner, web3.utils.toWei(amount, "ether"))
+            .send({ from: userAccount });
+
+        document.getElementById("status").innerText = `✅ Pemenang Ditambahkan! Tx: ${tx.transactionHash}`;
+    } catch (error) {
+        console.error("Transaction Error:", error);
+        document.getElementById("status").innerText = "❌ Gagal mengirim transaksi!";
+    }
+}
+    </script>
+
+</body>
+</html>
