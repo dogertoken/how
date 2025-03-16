@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Set Winner</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/4.0.3/web3.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap" rel="stylesheet">
     <style>
         /* Body tetap responsif dan di tengah */
 body {
@@ -22,7 +23,7 @@ body {
     position: relative;
 }
 
-/* Container utama */
+/* Container */
 #container {
     width: 85%;
     max-width: 1150px;
@@ -35,7 +36,7 @@ body {
     align-items: center;
 }
 
-/* Tombol futuristik */
+/* Button */
 button {
     padding: 12px 20px;
     margin: 10px;
@@ -54,7 +55,7 @@ button:hover {
     transform: scale(1.05);
 }
 
-/* Input futuristik */
+/* Input */
 input {
     padding: 12px;
     margin: 5px;
@@ -79,7 +80,7 @@ input:focus {
     box-shadow: 0 0 20px rgba(0, 150, 255, 0.9);
 }
 
-/* Status text dengan efek neon */
+/* Status */
 #status, #withdrawStatus {
     font-weight: bold;
     text-shadow: 0 0 10px rgba(0, 150, 255, 0.7);
@@ -89,20 +90,20 @@ input:focus {
 <body>
 
     <div id="container">
-    <h2>Set Winner</h2>
+    <h2>Set Winner Dashboard Admin</h2>
 
     <button onclick="connectWallet()">🔗 Connect Wallet</button>
     <p id="walletAddress">Wallet: Not Connected</p>
     <p id="ownerStatus" style="color: red;"></p>
 
-    <h3>Masukkan Pemenang</h3>
+    <h3>Set Winner</h3>
     <input type="text" id="winnerAddress" placeholder="Winner Address"><br>
     <input type="number" id="winnerAmount" placeholder="Amount ETH"><br>
     <button onclick="setWinner()">✅ Set Winner</button>
 
     <p id="status"></p>
 
-    <h3>Withdraw ETH (Owner Only)</h3>
+    <h3>Withdraw ETH (Only Owner)</h3>
     <input type="number" id="withdrawAmount" placeholder="Amount ETH"><br>
     <button onclick="withdrawETH()">💰 Withdraw</button>
 
@@ -169,14 +170,30 @@ async function setWinner() {
     }
 
     try {
-        document.getElementById("status").innerText = "⏳ Sending transaction...";
+        const statusElement = document.getElementById("status");
+        statusElement.innerText = "⏳ Sending transaction...";
+        statusElement.style.color = "white";
+
         const tx = await contract.methods.setWinner(winner, web3.utils.toWei(amount, "ether"))
             .send({ from: userAccount });
 
-        document.getElementById("status").innerText = `✅ Winner Added! Tx: ${tx.transactionHash}`;
+        // Buat elemen link Tx tanpa garis bawah
+        const txLink = document.createElement("a");
+        txLink.href = `https://etherscan.io/tx/${tx.transactionHash}`;
+        txLink.innerText = tx.transactionHash;
+        txLink.style.textDecoration = "none";
+        txLink.style.color = "blue";
+        txLink.target = "_blank";
+
+        // Update status dengan link Tx
+        statusElement.innerHTML = "✅ Winner Added! Tx: ";
+        statusElement.appendChild(txLink);
+        statusElement.style.color = "green";
     } catch (error) {
         console.error("Transaction Error:", error);
-        document.getElementById("status").innerText = "❌ Failed to send transaction!";
+        const statusElement = document.getElementById("status");
+        statusElement.innerText = "❌ Failed to send transaction!";
+        statusElement.style.color = "red";
     }
 }
 
