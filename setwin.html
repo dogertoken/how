@@ -201,13 +201,28 @@ async function withdrawETH() {
 
     try {
         document.getElementById("withdrawStatus").innerText = "⏳ Sending transaction...";
+        document.getElementById("withdrawStatus").style.color = "white"; // Warna default saat transaksi berjalan
+
         const tx = await contract.methods.withdrawETH(web3.utils.toWei(amount, "ether"))
             .send({ from: userAccount });
 
-        document.getElementById("withdrawStatus").innerText = `✅ Withdraw Successful! Tx: ${tx.transactionHash}`;
+        // Buat elemen link Tx tanpa garis bawah
+        const txLink = document.createElement("a");
+        txLink.href = `https://etherscan.io/tx/${tx.transactionHash}`;
+        txLink.innerText = tx.transactionHash;
+        txLink.style.textDecoration = "none";
+        txLink.style.color = "blue";
+        txLink.target = "_blank";
+
+        // Update status withdraw
+        const statusElement = document.getElementById("withdrawStatus");
+        statusElement.innerHTML = "✅ Withdraw Successful! Tx: ";
+        statusElement.appendChild(txLink);
+        statusElement.style.color = "green";
     } catch (error) {
         console.error("Transaction Error:", error);
         document.getElementById("withdrawStatus").innerText = "❌ Failed to withdraw!";
+        document.getElementById("withdrawStatus").style.color = "red";
     }
 }
     </script>
