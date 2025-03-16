@@ -134,10 +134,10 @@ async function connectWallet() {
             // Cek apakah pengguna adalah owner
             ownerAddress = await contract.methods.owner().call();
             if (userAccount.toLowerCase() === ownerAddress.toLowerCase()) {
-                document.getElementById("ownerStatus").innerText = "✅ Anda adalah Owner!";
+                document.getElementById("ownerStatus").innerText = "✅ You Is Owner!";
                 document.getElementById("ownerStatus").style.color = "green";
             } else {
-                document.getElementById("ownerStatus").innerText = "🚫 Anda Bukan Owner!";
+                document.getElementById("ownerStatus").innerText = "🚫 You Not Owner!";
                 document.getElementById("ownerStatus").style.color = "red";
             }
 
@@ -149,7 +149,7 @@ async function connectWallet() {
     }
 }
 
-// 🏆 Set Winner (Hanya Owner Bisa)
+// 🏆 Set Winner (Can Just Owner)
 async function setWinner() {
     if (!userAccount) {
         alert("Harap konekkan wallet terlebih dahulu!");
@@ -181,7 +181,7 @@ async function setWinner() {
     }
 }
 
-// 🏦 Withdraw ETH (Hanya Owner Bisa)
+// 🏦 Withdraw ETH (Can Just Owner)
 async function withdrawETH() {
     if (!userAccount) {
         alert("Harap konekkan wallet terlebih dahulu!");
