@@ -3,60 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claim ETH</title>
+    <title>Claim ETH & Riwayat Pemenang</title>
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-      body {
-    font-family: Arial, sans-serif;
+        /* ======= Style Umum ======= */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #121212;
+    color: #ffffff;
     text-align: center;
-    background-color: #222;
-    color: white;
     padding: 20px;
 }
 
 h2 {
-    color: #FFD700;
+    color: #00ffc3;
+    margin-bottom: 15px;
 }
 
+/* ======= Tombol ======= */
 button {
-    background-color: #444;
-    color: white;
+    background: linear-gradient(45deg, #00ff99, #0099ff);
     border: none;
     padding: 10px 20px;
     font-size: 16px;
-    margin: 10px;
+    font-weight: bold;
+    color: white;
     cursor: pointer;
+    border-radius: 8px;
     transition: 0.3s;
-    border-radius: 5px;
 }
 
 button:hover {
-    background-color: #666;
+    background: linear-gradient(45deg, #0099ff, #00ff99);
+    transform: scale(1.05);
 }
 
 button:disabled {
-    background-color: #555;
+    background: #555;
     cursor: not-allowed;
 }
 
-#status {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 20px;
-}
-
-#ethAmount {
-    font-size: 16px;
-    margin-top: 10px;
-}
-
+/* ======= Status ======= */
 .success {
-    color: #00FF00;
+    color: #00ff99;
+    font-weight: bold;
 }
 
 .error {
-    color: #FF4500;
+    color: #ff4444;
+    font-weight: bold;
+}
+
+/* ======= Tabel Riwayat Pemenang ======= */
+table {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: #1e1e1e;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #333;
+}
+
+th {
+    background: #00ffc3;
+    color: #121212;
+}
+
+tr:nth-child(even) {
+    background: #282828;
+}
+
+tr:hover {
+    background: #333;
+    transition: 0.3s;
 }
     </style>
 </head>
@@ -66,6 +92,21 @@ button:disabled {
     <p id="status"></p>
     <p id="ethAmount"></p>
     <button id="claimBtn" onclick="claimETH()" disabled>Claim ETH</button>
+
+    <h2>🏆 Riwayat Pemenang</h2>
+    <button id="refreshWinners" onclick="getWinners()">Refresh Riwayat</button>
+    <table>
+        <thead>
+            <tr>
+                <th>No. Bet</th>
+                <th>Alamat</th>
+                <th>Jumlah Bet</th>
+                <th>Jumlah ETH</th>
+                <th>Waktu (UTC)</th>
+            </tr>
+        </thead>
+        <tbody id="winnersList"></tbody>
+    </table>
 
     <script>
         const contractAddress = "0x123456789abcdef"; // Ganti dengan alamat kontrak
@@ -82,6 +123,7 @@ button:disabled {
                 const accounts = await web3.eth.getAccounts();
                 userAccount = accounts[0];
                 contract = new web3.eth.Contract(contractABI, contractAddress);
+                getWinners(); // Auto-load winners
             } else {
                 alert("Harap instal MetaMask!");
             }
@@ -117,9 +159,49 @@ button:disabled {
                 await contract.methods.claimETH().send({ from: userAccount });
                 alert("Klaim berhasil! ETH telah dikirim ke dompet Anda.");
                 checkEligibility();
+                getWinners(); // Update list setelah klaim
             } catch (error) {
                 alert("Gagal klaim. Coba lagi.");
                 console.error(error);
+            }
+        }
+
+        async function getWinners() {
+            if (!contract) {
+                await initWeb3();
+            }
+
+            try {
+                const allWinners = [];
+                const events = await contract.getPastEvents("WinnerSet", { fromBlock: 0, toBlock: "latest" });
+
+                events.forEach(event => {
+                    let betId = event.returnValues.betId; // Nomor taruhan
+                    let winner = event.returnValues.winner;
+                    let amountBet = web3.utils.fromWei(event.returnValues.amountBet, "ether"); // Jumlah taruhan
+                    let amountWon = web3.utils.fromWei(event.returnValues.amountWon, "ether"); // Jumlah ETH menang
+                    let timestamp = parseInt(event.returnValues.timestamp) * 1000; // Konversi ke ms
+                    let dateUTC = new Date(timestamp).toISOString().replace("T", " ").replace("Z", ""); // Format UTC
+
+                    allWinners.push({ betId, winner, amountBet, amountWon, dateUTC });
+                });
+
+                // Kosongkan tabel sebelum diisi ulang
+                let winnersList = document.getElementById("winnersList");
+                winnersList.innerHTML = "";
+
+                allWinners.forEach(winner => {
+                    let row = `<tr>
+                        <td>${winner.betId}</td>
+                        <td>${winner.winner}</td>
+                        <td>${winner.amountBet} ETH</td>
+                        <td>${winner.amountWon} ETH</td>
+                        <td>${winner.dateUTC}</td>
+                    </tr>`;
+                    winnersList.innerHTML += row;
+                });
+            } catch (error) {
+                console.error("Error fetching winners:", error);
             }
         }
 
