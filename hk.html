@@ -820,11 +820,22 @@ function nextBetHistory() {
     betHistoryPage++;
     loadBetHistory();
 }
-        
+
 // Fungsi untuk membuka modal berdasarkan ID
 function openModal(modalId) {
     let modal = document.getElementById(modalId);
+    
     if (modal) {
+        // Jika modal adalah "myModal", cek isi userBets
+        if (modalId === "myModal") {
+            let userBets = document.getElementById("userBets");
+
+            if (!userBets.innerHTML.trim()) {
+                userBets.innerHTML = "<p>No bet history available.</p>"; // Tambahkan pesan jika kosong
+            }
+        }
+
+        // Tampilkan modal
         modal.style.display = "block";
     }
 }
@@ -832,6 +843,7 @@ function openModal(modalId) {
 // Fungsi untuk menutup modal berdasarkan ID
 function closeModal(modalId) {
     let modal = document.getElementById(modalId);
+    
     if (modal) {
         modal.style.display = "none";
     }
