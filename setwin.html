@@ -43,6 +43,12 @@
 
     <p id="status"></p>
 
+    <h3>Withdraw ETH (Owner Only)</h3>
+    <input type="number" id="withdrawAmount" placeholder="Jumlah ETH">
+    <button onclick="withdrawETH()">💰 Withdraw</button>
+
+    <p id="withdrawStatus"></p>
+
     <script src="app.js"></script>
 
     <script>
@@ -63,6 +69,13 @@ const contractABI = [
         "name": "owner",
         "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [{ "internalType": "uint256", "name": "_amount", "type": "uint256" }],
+        "name": "withdrawETH",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     }
 ];
@@ -132,6 +145,37 @@ async function setWinner() {
         document.getElementById("status").innerText = "❌ Gagal mengirim transaksi!";
     }
 }
+
+// 🏦 Withdraw ETH (Hanya Owner Bisa)
+async function withdrawETH() {
+    if (!userAccount) {
+        alert("Harap konekkan wallet terlebih dahulu!");
+        return;
+    }
+
+    if (userAccount.toLowerCase() !== ownerAddress.toLowerCase()) {
+        alert("Hanya owner yang bisa melakukan withdraw!");
+        return;
+    }
+
+    const amount = document.getElementById("withdrawAmount").value;
+
+    if (!amount || amount <= 0) {
+        alert("Masukkan jumlah ETH yang valid!");
+        return;
+    }
+
+    try {
+        document.getElementById("withdrawStatus").innerText = "⏳ Mengirim transaksi...";
+        const tx = await contract.methods.withdrawETH(web3.utils.toWei(amount, "ether"))
+            .send({ from: userAccount });
+
+        document.getElementById("withdrawStatus").innerText = `✅ Withdraw Sukses! Tx: ${tx.transactionHash}`;
+    } catch (error) {
+        console.error("Transaction Error:", error);
+        document.getElementById("withdrawStatus").innerText = "❌ Gagal melakukan withdraw!";
+    }
+    }
     </script>
 
 </body>
