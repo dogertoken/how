@@ -120,7 +120,7 @@ let userAccount;
 let contract;
 let ownerAddress;
 
-// 🔗 Koneksi Wallet
+// Wallet Connection
 async function connectWallet() {
     if (window.ethereum) {
         try {
@@ -131,33 +131,32 @@ async function connectWallet() {
             web3 = new Web3(window.ethereum);
             contract = new web3.eth.Contract(contractABI, contractAddress);
 
-            // Cek apakah pengguna adalah owner
+            // Check if the user is the owner
             ownerAddress = await contract.methods.owner().call();
             if (userAccount.toLowerCase() === ownerAddress.toLowerCase()) {
-                document.getElementById("ownerStatus").innerText = "✅ You Is Owner!";
+                document.getElementById("ownerStatus").innerText = "✅ You Are the Owner!";
                 document.getElementById("ownerStatus").style.color = "green";
             } else {
-                document.getElementById("ownerStatus").innerText = "🚫 You Not Owner!";
+                document.getElementById("ownerStatus").innerText = "🚫 You Are Not the Owner!";
                 document.getElementById("ownerStatus").style.color = "red";
             }
-
         } catch (error) {
             console.error("Wallet Connection Error:", error);
         }
     } else {
-        alert("Metamask tidak ditemukan! Silakan install Metamask.");
+        alert("Metamask not found! Please install Metamask.");
     }
 }
 
-// 🏆 Set Winner (Can Just Owner)
+// Set Winner (Only The Owner)
 async function setWinner() {
     if (!userAccount) {
-        alert("Harap konekkan wallet terlebih dahulu!");
+        alert("Please connect your wallet first!");
         return;
     }
 
     if (userAccount.toLowerCase() !== ownerAddress.toLowerCase()) {
-        alert("Hanya owner yang bisa menetapkan pemenang!");
+        alert("Only the owner can set the winner!");
         return;
     }
 
@@ -165,52 +164,52 @@ async function setWinner() {
     const amount = document.getElementById("winnerAmount").value;
 
     if (!winner || amount <= 0) {
-        alert("Masukkan alamat pemenang dan jumlah ETH yang valid!");
+        alert("Enter a valid winner address and ETH amount!");
         return;
     }
 
     try {
-        document.getElementById("status").innerText = "⏳ Mengirim transaksi...";
+        document.getElementById("status").innerText = "⏳ Sending transaction...";
         const tx = await contract.methods.setWinner(winner, web3.utils.toWei(amount, "ether"))
             .send({ from: userAccount });
 
-        document.getElementById("status").innerText = `✅ Pemenang Ditambahkan! Tx: ${tx.transactionHash}`;
+        document.getElementById("status").innerText = `✅ Winner Added! Tx: ${tx.transactionHash}`;
     } catch (error) {
         console.error("Transaction Error:", error);
-        document.getElementById("status").innerText = "❌ Gagal mengirim transaksi!";
+        document.getElementById("status").innerText = "❌ Failed to send transaction!";
     }
 }
 
-// 🏦 Withdraw ETH (Can Just Owner)
+// Withdraw ETH (Only The Owner)
 async function withdrawETH() {
     if (!userAccount) {
-        alert("Harap konekkan wallet terlebih dahulu!");
+        alert("Please connect your wallet first!");
         return;
     }
 
     if (userAccount.toLowerCase() !== ownerAddress.toLowerCase()) {
-        alert("Hanya owner yang bisa melakukan withdraw!");
+        alert("Only the owner can withdraw!");
         return;
     }
 
     const amount = document.getElementById("withdrawAmount").value;
 
     if (!amount || amount <= 0) {
-        alert("Masukkan jumlah ETH yang valid!");
+        alert("Enter a valid ETH amount!");
         return;
     }
 
     try {
-        document.getElementById("withdrawStatus").innerText = "⏳ Mengirim transaksi...";
+        document.getElementById("withdrawStatus").innerText = "⏳ Sending transaction...";
         const tx = await contract.methods.withdrawETH(web3.utils.toWei(amount, "ether"))
             .send({ from: userAccount });
 
-        document.getElementById("withdrawStatus").innerText = `✅ Withdraw Sukses! Tx: ${tx.transactionHash}`;
+        document.getElementById("withdrawStatus").innerText = `✅ Withdraw Successful! Tx: ${tx.transactionHash}`;
     } catch (error) {
         console.error("Transaction Error:", error);
-        document.getElementById("withdrawStatus").innerText = "❌ Gagal melakukan withdraw!";
+        document.getElementById("withdrawStatus").innerText = "❌ Failed to withdraw!";
     }
-    }
+}
     </script>
 
 </body>
