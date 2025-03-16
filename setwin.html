@@ -187,13 +187,13 @@ async function setWinner() {
         statusElement.innerHTML = ""; 
 
         const successIcon = document.createElement("img");
-        successIcon.src = "success.png";
+        successIcon.src = "success.svg";
         successIcon.style.width = "20px";
         successIcon.style.verticalAlign = "middle";
         successIcon.style.marginRight = "5px";
 
         const txLink = document.createElement("a");
-        txLink.href = `https://etherscan.io/tx/${tx.transactionHash}`;
+        txLink.href = `https://basescan.org/tx/${tx.transactionHash}`;
         txLink.innerText = tx.transactionHash;
         txLink.style.textDecoration = "none";
         txLink.style.color = "blue";
@@ -210,7 +210,7 @@ async function setWinner() {
         statusElement.innerHTML = "";
 
         const errorIcon = document.createElement("img");
-        errorIcon.src = "error.png";
+        errorIcon.src = "error.svg";
         errorIcon.style.width = "20px";
         errorIcon.style.verticalAlign = "middle";
         errorIcon.style.marginRight = "5px";
@@ -240,30 +240,56 @@ async function withdrawETH() {
         return;
     }
 
-    try {
-        document.getElementById("withdrawStatus").innerText = "⏳ Sending transaction...";
-        document.getElementById("withdrawStatus").style.color = "white"; // Warna default saat transaksi berjalan
+    const statusElement = document.getElementById("withdrawStatus");
 
+    statusElement.innerHTML = "";  
+    const loadingIcon = document.createElement("img");
+    loadingIcon.src = "loading.svg";
+    loadingIcon.style.width = "20px";
+    loadingIcon.style.verticalAlign = "middle";
+    loadingIcon.style.marginRight = "5px";
+
+    statusElement.appendChild(loadingIcon);
+    statusElement.appendChild(document.createTextNode(" Sending transaction..."));
+    statusElement.style.color = "white";
+
+    try {
         const tx = await contract.methods.withdrawETH(web3.utils.toWei(amount, "ether"))
             .send({ from: userAccount });
 
-        // Buat elemen link Tx tanpa garis bawah
+        statusElement.innerHTML = "";  
+
+        const successIcon = document.createElement("img");
+        successIcon.src = "success.svg";
+        successIcon.style.width = "20px";
+        successIcon.style.verticalAlign = "middle";
+        successIcon.style.marginRight = "5px";
+
         const txLink = document.createElement("a");
-        txLink.href = `https://etherscan.io/tx/${tx.transactionHash}`;
+        txLink.href = `https://basescan.org/tx/${tx.transactionHash}`;
         txLink.innerText = tx.transactionHash;
         txLink.style.textDecoration = "none";
         txLink.style.color = "blue";
         txLink.target = "_blank";
 
-        // Update status withdraw
-        const statusElement = document.getElementById("withdrawStatus");
-        statusElement.innerHTML = "✅ Withdraw Successful! Tx: ";
+        statusElement.appendChild(successIcon);
+        statusElement.appendChild(document.createTextNode(" Withdraw Successful! Tx: "));
         statusElement.appendChild(txLink);
         statusElement.style.color = "green";
     } catch (error) {
         console.error("Transaction Error:", error);
-        document.getElementById("withdrawStatus").innerText = "❌ Failed to withdraw!";
-        document.getElementById("withdrawStatus").style.color = "red";
+
+        statusElement.innerHTML = "";
+
+        const errorIcon = document.createElement("img");
+        errorIcon.src = "error.svg";
+        errorIcon.style.width = "20px";
+        errorIcon.style.verticalAlign = "middle";
+        errorIcon.style.marginRight = "5px";
+
+        statusElement.appendChild(errorIcon);
+        statusElement.appendChild(document.createTextNode(" Failed to withdraw!"));
+        statusElement.style.color = "red";
     }
 }
     </script>
