@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim ETH</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #222;
+    color: white;
+    padding: 20px;
+}
+
+h2 {
+    color: #FFD700;
+}
+
+button {
+    background-color: #444;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #666;
+}
+
+button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+#status {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+#ethAmount {
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.success {
+    color: #00FF00;
+}
+
+.error {
+    color: #FF4500;
+}
+    </style>
+</head>
+<body>
+    <h2>Claim ETH</h2>
+    <button id="checkEligible" onclick="checkEligibility()">Check Eligible</button>
+    <p id="status"></p>
+    <p id="ethAmount"></p>
+    <button id="claimBtn" onclick="claimETH()" disabled>Claim ETH</button>
+
+    <script>
+        const contractAddress = "0x123456789abcdef"; // Ganti dengan alamat kontrak
+        const contractABI = [ /* ABI dari kontrak */ ];
+
+        let web3;
+        let contract;
+        let userAccount;
+
+        async function initWeb3() {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                await window.ethereum.request({ method: "eth_requestAccounts" });
+                const accounts = await web3.eth.getAccounts();
+                userAccount = accounts[0];
+                contract = new web3.eth.Contract(contractABI, contractAddress);
+            } else {
+                alert("Harap instal MetaMask!");
+            }
+        }
+
+        async function checkEligibility() {
+            if (!contract || !userAccount) {
+                await initWeb3();
+            }
+
+            try {
+                let winnings = await contract.methods.winnings(userAccount).call();
+                winnings = web3.utils.fromWei(winnings, "ether");
+
+                if (winnings > 0) {
+                    document.getElementById("status").innerHTML = "✅ Selamat, Anda bisa klaim!";
+                    document.getElementById("status").className = "success";
+                    document.getElementById("ethAmount").innerHTML = `Jumlah ETH: ${winnings}`;
+                    document.getElementById("claimBtn").disabled = false;
+                } else {
+                    document.getElementById("status").innerHTML = "❌ Maaf, Anda tidak bisa klaim.";
+                    document.getElementById("status").className = "error";
+                    document.getElementById("ethAmount").innerHTML = "Jumlah ETH: 0";
+                    document.getElementById("claimBtn").disabled = true;
+                }
+            } catch (error) {
+                console.error("Error checking eligibility:", error);
+            }
+        }
+
+        async function claimETH() {
+            try {
+                await contract.methods.claimETH().send({ from: userAccount });
+                alert("Klaim berhasil! ETH telah dikirim ke dompet Anda.");
+                checkEligibility();
+            } catch (error) {
+                alert("Gagal klaim. Coba lagi.");
+                console.error(error);
+            }
+        }
+
+        window.onload = initWeb3;
+    </script>
+</body>
+</html>
