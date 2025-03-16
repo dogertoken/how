@@ -84,6 +84,11 @@ input:focus {
     font-weight: bold;
     text-shadow: 0 0 10px rgba(0, 150, 255, 0.7);
 }
+
+#walletAddress {
+    font-size: 12px;
+    color: #ccc;
+}
     </style>
 </head>
 <body>
@@ -197,6 +202,7 @@ async function setWinner() {
         txLink.innerText = tx.transactionHash;
         txLink.style.textDecoration = "none";
         txLink.style.color = "blue";
+        txLink.style.fontSize = "8px";
         txLink.target = "_blank";
 
         // Update status
@@ -266,10 +272,11 @@ async function withdrawETH() {
         successIcon.style.marginRight = "5px";
 
         const txLink = document.createElement("a");
-        txLink.href = `https://basescan.org/tx/${tx.transactionHash}`;
+        txLink.href = `https://basescan.org/block/${tx.transactionHash}`;
         txLink.innerText = tx.transactionHash;
         txLink.style.textDecoration = "none";
         txLink.style.color = "blue";
+        txLink.style.fontSize = "8px";
         txLink.target = "_blank";
 
         statusElement.appendChild(successIcon);
