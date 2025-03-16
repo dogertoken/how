@@ -254,6 +254,67 @@ footer {
   color: red;
 }
 
+/* === TABEL FUTURISTIK DENGAN GLOW BIRU === */
+.lottery-table, .history-table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+    background: linear-gradient(135deg, rgba(0, 0, 255, 0.2), rgba(0, 0, 50, 0.4));
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 0px 15px rgba(0, 150, 255, 0.7);
+}
+
+.lottery-table th, .history-table th {
+    background: linear-gradient(135deg, rgba(0, 150, 255, 0.6), rgba(0, 50, 150, 0.8));
+    color: white;
+    padding: 12px;
+    text-transform: uppercase;
+    border: 1px solid rgba(0, 150, 255, 0.8);
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.lottery-table td, .history-table td {
+    border: 1px solid rgba(0, 150, 255, 0.5);
+    padding: 15px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+}
+
+/* === EFEK BOLA 3D HIJAU === */
+.lottery-table td,
+.history-table td:not(:first-child) {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #00ff88, #005522);
+    box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.5),
+                0px 0px 15px rgba(0, 255, 150, 0.8);
+    text-shadow: 2px 2px 5px black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    font-family: 'Arial Black', sans-serif;
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Efek hover bola */
+.lottery-table td:hover,
+.history-table td:not(:first-child):hover {
+    transform: scale(1.1);
+    box-shadow: 0px 0px 20px rgba(0, 255, 150, 1);
+}
+
+/* === ANIMASI FUTURISTIK === */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
     #menu {
     position: relative;
     left: 0;
