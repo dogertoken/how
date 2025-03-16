@@ -254,30 +254,90 @@ footer {
   color: red;
 }
 
-/* Gaya tabel utama & history */
+/* === Gaya Tabel Utama & History === */
 .lottery-table, .history-table {
     width: 100%;
     margin: 10px 0;
     border-collapse: collapse;
+    background: rgba(30, 30, 30, 0.9);
+    box-shadow: 0px 0px 10px rgba(0, 255, 150, 0.5);
+    border-radius: 10px;
 }
 
 .lottery-table th, .history-table th {
-    background-color: #444;
+    background-color: #222;
     color: white;
-    padding: 10px;
+    padding: 12px;
+    text-transform: uppercase;
+    border-bottom: 2px solid #00ff88;
 }
 
 .lottery-table td, .history-table td {
-    border: 1px solid #ddd;
+    border: 1px solid #555;
     padding: 10px;
     text-align: center;
-    background-color: #333;
+    background-color: #222;
     color: white;
+    position: relative;
+    height: 50px; /* Pastikan tinggi cukup untuk bola */
 }
 
-/* Agar hasil utama bisa diedit langsung */
-.lottery-table td {
-    cursor: pointer;
+/* === Efek Bola 3D Hijau dengan Ukuran Lebih Kecil === */
+.lottery-table td:not(:first-child), 
+.history-table td:not(:first-child) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Bola dengan ukuran lebih kecil agar muat dalam kotak */
+.lottery-table td:not(:first-child)::before, 
+.history-table td:not(:first-child)::before {
+    content: attr(data-value);
+    width: 35px; /* Lebih kecil dari kotak */
+    height: 35px; /* Sesuai dengan lebar */
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #00ff88, #005522);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.5),
+                0px 0px 8px rgba(0, 255, 150, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: 'Arial Black', sans-serif;
+    text-shadow: 1px 1px 3px black;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+}
+
+/* Efek Hover untuk Bola */
+.lottery-table td:hover::before,
+.history-table td:not(:first-child):hover::before {
+    transform: scale(1.1);
+    box-shadow: 0px 0px 15px rgba(0, 255, 150, 0.9);
+}
+
+/* === Efek Untuk Modal === */
+.modal-content {
+    background: rgba(20, 20, 40, 0.9);
+    backdrop-filter: blur(15px);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 20px rgba(0, 255, 255, 0.5);
+}
+
+/* Efek Tombol Tutup Modal */
+.close {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover {
+    color: #00ff88;
+    transform: scale(1.2);
 }
 
     #menu {
