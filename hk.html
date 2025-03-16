@@ -456,7 +456,7 @@ footer {
 <div id="menu">
     <button onclick="openModal('menuModal')"><img src="icon.svg" alt="Lotto">Menu</button>
     <button onclick="window.open('4d', '_blank')"><img src="icon.svg" alt="Lotto">4D</button>
-    <button onclick="openModal()"><img src="icon.svg" alt="Lotto">MyBets</button>
+    <button onclick="openModal('myModal')"><img src="icon.svg" alt="Lotto">MyBets</button>
     <button onclick="window.open('hkball', '_blank')"><img src="icon.svg" alt="Lotto">Results</button>
     <button onclick="window.open('claim', '_blank')"><img src="icon.svg" alt="Lotto">Claim</button>
 </div> <!-- Penutupan <div> harus ada di sini -->
@@ -823,12 +823,18 @@ function nextBetHistory() {
         
 // Fungsi untuk membuka modal berdasarkan ID
 function openModal(modalId) {
-    document.getElementById(modalId).style.display = "block";
+    let modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = "block";
+    }
 }
 
 // Fungsi untuk menutup modal berdasarkan ID
 function closeModal(modalId) {
-    document.getElementById(modalId).style.display = "none";
+    let modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = "none";
+    }
 }
         
 // Initialize saat halaman terbuka
