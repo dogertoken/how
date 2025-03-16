@@ -732,8 +732,8 @@ function openModal() {
 
   // Periksa apakah ada data
   if (!userBets.innerHTML.trim()) {
-    userBets.innerHTML = "<p>No bet history available.</p>"; // Tambahkan pesan jika kosong
-  }
+      userBets.innerHTML = '<div style="text-align: center;"><p>No bet history available.</p></div>';
+}
 
   // Tampilkan modal
   document.getElementById("myModal").style.display = "block";
