@@ -422,20 +422,6 @@ footer {
     </div>
 </div>
 
-<!-- Modal Menu -->
-<div id="menuModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('menuModal')">&times;</span>
-        <h2>Menu</h2>
-        <a href="hk" target="_blank">🇭🇰 Hong Kong (HK)</a><br>
-        <a href="sgp" target="_blank">🇸🇬 Singapore (SGP)</a><br>
-        <a href="syd" target="_blank">🇦🇺 Sydney (SYD)</a><br>
-        <a href="chi" target="_blank">🇨🇳 China (CHI)</a><br>
-        <a href="mc" target="_blank">🇰🇭 Cambodia (MC)</a><br>
-        <a href="be" target="_blank">🎯 Bull Eye (BE)</a>
-    </div>
-</div>
-
         <!-- Footer -->
 <footer>
     <div class="social-icons">
@@ -768,11 +754,6 @@ function openModal(modalId) {
 function closeModal(modalId) {
     document.getElementById(modalId).style.display = "none";
 }
-
-// Event listener untuk tombol Menu
-document.getElementById("menuBtn").addEventListener("click", function() {
-    openModal("menuModal");
-});
         
 // Initialize saat halaman terbuka
 window.onload = () => {
