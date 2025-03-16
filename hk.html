@@ -317,6 +317,84 @@ footer {
 #menu button:hover img {
     transform: rotate(360deg);
 }
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Modal Content */
+.modal-content {
+    background: #111;
+    color: white;
+    margin: 10% auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.5);
+}
+
+/* Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}
+.close:hover {
+    color: red;
+}
+
+/* Table Styling */
+.menu-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+}
+
+/* Table Rows */
+.menu-table tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Table Cells */
+.menu-table td {
+    padding: 10px;
+    text-align: left;
+    color: white;
+    font-size: 16px;
+}
+
+/* Icons */
+.menu-table img {
+    width: 30px;
+    height: 30px;
+    filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.8));
+}
+
+/* Links */
+.menu-table a {
+    color: cyan;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s ease-in-out;
+}
+
+/* Hover Effect */
+.menu-table a:hover {
+    color: #ff0077;
+    text-shadow: 0 0 10px rgba(255, 0, 119, 0.8);
+}
     </style>
 </head>
 <body>
@@ -401,12 +479,32 @@ footer {
     <div class="modal-content">
         <span class="close" onclick="closeModal('menuModal')">&times;</span>
         <h2>Menu</h2>
-        <a href="hk" target="_blank">🇭🇰 Hong Kong (HK)</a><br>
-        <a href="sgp" target="_blank">🇸🇬 Singapore (SGP)</a><br>
-        <a href="syd" target="_blank">🇦🇺 Sydney (SYD)</a><br>
-        <a href="chi" target="_blank">🇨🇳 China (CHI)</a><br>
-        <a href="mc" target="_blank">🇰🇭 Cambodia (MC)</a><br>
-        <a href="be" target="_blank">🎯 Bull Eye (BE)</a>
+        <table class="menu-table">
+            <tr>
+                <td><img src="contoh.svg" alt="HK"></td>
+                <td><a href="hk" target="_blank">🇭🇰 Hong Kong (HK)</a></td>
+            </tr>
+            <tr>
+                <td><img src="contoh.svg" alt="SGP"></td>
+                <td><a href="sgp" target="_blank">🇸🇬 Singapore (SGP)</a></td>
+            </tr>
+            <tr>
+                <td><img src="contoh.svg" alt="SYD"></td>
+                <td><a href="syd" target="_blank">🇦🇺 Sydney (SYD)</a></td>
+            </tr>
+            <tr>
+                <td><img src="contoh.svg" alt="CHI"></td>
+                <td><a href="chi" target="_blank">🇨🇳 China (CHI)</a></td>
+            </tr>
+            <tr>
+                <td><img src="contoh.svg" alt="MC"></td>
+                <td><a href="mc" target="_blank">🇰🇭 Cambodia (MC)</a></td>
+            </tr>
+            <tr>
+                <td><img src="contoh.svg" alt="BE"></td>
+                <td><a href="be" target="_blank">🎯 Bull Eye (BE)</a></td>
+            </tr>
+        </table>
     </div>
 </div>
 
