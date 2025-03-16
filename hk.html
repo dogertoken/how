@@ -354,6 +354,25 @@ footer {
     color: red;
 }
 
+/* Gaya tabel utama */
+.lottery-table, .history-table {
+    width: 100%;
+    margin: 10px 0;
+    border-collapse: collapse;
+}
+
+.lottery-table th, .history-table th {
+    background-color: #444;
+    color: white;
+    padding: 10px;
+}
+
+.lottery-table td, .history-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
 /* Table Styling */
 .menu-table {
     width: 100%;
@@ -395,6 +414,7 @@ footer {
     color: #ff0077;
     text-shadow: 0 0 10px rgba(255, 0, 119, 0.8);
 }
+
     </style>
 </head>
 <body>
@@ -457,7 +477,7 @@ footer {
     <button onclick="openModal('menuModal')"><img src="icon.svg" alt="Lotto">Menu</button>
     <button onclick="window.open('4d', '_blank')"><img src="icon.svg" alt="Lotto">4D</button>
     <button onclick="openModal('myModal')"><img src="icon.svg" alt="Lotto">MyBets</button>
-    <button onclick="window.open('hkball', '_blank')"><img src="icon.svg" alt="Lotto">Results</button>
+    <button onclick="openModal('resultsModal')"><img src="icon.svg" alt="Lotto"> Results</button>
     <button onclick="window.open('claim', '_blank')"><img src="icon.svg" alt="Lotto">Claim</button>
 </div> <!-- Penutupan <div> harus ada di sini -->
 
@@ -504,6 +524,46 @@ footer {
                 <td><img src="contoh.svg" alt="BE"></td>
                 <td><a href="be" target="_blank">🎯 Bull Eye (BE)</a></td>
             </tr>
+        </table>
+    </div>
+</div>
+
+       <!-- Modal untuk hasil bola -->
+<div id="resultsModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('resultsModal')">&times;</span>
+        <h2>Lottery Results</h2>
+
+        <!-- Tabel Empat Ball Utama -->
+        <table class="lottery-table">
+            <tr>
+                <th>Main Ball 1</th>
+                <th>Main Ball 2</th>
+                <th>Main Ball 3</th>
+                <th>Main Ball 4</th>
+            </tr>
+            <tr>
+                <td id="ball1">-</td>
+                <td id="ball2">-</td>
+                <td id="ball3">-</td>
+                <td id="ball4">-</td>
+            </tr>
+        </table>
+
+        <h3>Last 7 Days Results</h3>
+
+        <!-- Tabel Riwayat Ball 7 Hari -->
+        <table class="history-table">
+            <tr>
+                <th>Date</th>
+                <th>Ball 1</th>
+                <th>Ball 2</th>
+                <th>Ball 3</th>
+                <th>Ball 4</th>
+            </tr>
+            <tbody id="historyResults">
+                <!-- Data akan diisi dengan JS -->
+            </tbody>
         </table>
     </div>
 </div>
@@ -821,6 +881,60 @@ function nextBetHistory() {
     loadBetHistory();
 }
 
+// Simulasi Data Lottery (Main Ball dan Riwayat 7 Hari)
+let mainBalls = [12, 34, 56, 78]; // 4 Ball Utama
+let historyData = [
+    { date: "2024-06-20", balls: [10, 22, 33, 44] },
+    { date: "2024-06-21", balls: [15, 25, 35, 45] },
+    { date: "2024-06-22", balls: [20, 30, 40, 50] },
+    { date: "2024-06-23", balls: [25, 35, 45, 55] },
+    { date: "2024-06-24", balls: [30, 40, 50, 60] },
+    { date: "2024-06-25", balls: [35, 45, 55, 65] },
+    { date: "2024-06-26", balls: [40, 50, 60, 70] }
+];
+
+// Fungsi untuk Menampilkan Data di Tabel
+function updateTable() {
+    // Update Main Ball
+    document.getElementById("ball1").textContent = mainBalls[0];
+    document.getElementById("ball2").textContent = mainBalls[1];
+    document.getElementById("ball3").textContent = mainBalls[2];
+    document.getElementById("ball4").textContent = mainBalls[3];
+
+    // Update Riwayat 7 Hari
+    const historyTable = document.getElementById("historyResults");
+    historyTable.innerHTML = ""; // Hapus data lama
+    historyData.forEach(row => {
+        let newRow = `<tr>
+            <td>${row.date}</td>
+            <td>${row.balls[0]}</td>
+            <td>${row.balls[1]}</td>
+            <td>${row.balls[2]}</td>
+            <td>${row.balls[3]}</td>
+        </tr>`;
+        historyTable.innerHTML += newRow;
+    });
+}
+
+// Fungsi untuk Mengupdate Nomor Ball 1 dan Geser Data ke Bawah
+function updateMainBall1(newBall1) {
+    // Simpan Main Ball Lama ke History (geser semua ke bawah)
+    historyData.pop(); // Hapus data hari ke-7
+    historyData.unshift({ 
+        date: new Date().toISOString().split("T")[0], 
+        balls: [...mainBalls] 
+    });
+
+    // Update Main Ball 1
+    mainBalls[0] = newBall1;
+
+    // Update Tabel
+    updateTable();
+}
+
+// Panggil updateTable() saat halaman pertama kali dibuka
+updateTable();
+
 // Fungsi untuk membuka modal berdasarkan ID
 function openModal(modalId) {
     let modal = document.getElementById(modalId);
@@ -845,14 +959,17 @@ function closeModal(modalId) {
     }
 }
 
-// Fungsi khusus untuk menutup modal MyBets
+// Fungsi khusus untuk menutup modal
 function closeMyBets() {
     closeModal('myModal');
 }
 
-// Fungsi khusus untuk menutup modal Menu
 function closeMenu() {
     closeModal('menuModal');
+}
+
+function closeMenu() {
+    closeModal('resultsModal');
 }
         
 // Initialize saat halaman terbuka
