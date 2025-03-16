@@ -7,45 +7,18 @@
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Reset dasar */
-body {
+        body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
+    margin: 20px;
 }
 
-/* Gaya untuk tombol */
 button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 10px;
-    font-size: 16px;
+    margin: 5px;
+    padding: 10px;
     cursor: pointer;
-    border-radius: 5px;
-    transition: background 0.3s;
 }
 
-button:hover {
-    background-color: #0056b3;
-}
-
-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
-
-/* Gaya untuk wallet */
-#walletAddress {
-    font-size: 18px;
-    font-weight: bold;
-    margin: 10px 0;
-}
-
-/* Gaya untuk status */
 .success {
     color: green;
     font-weight: bold;
@@ -56,58 +29,30 @@ button:disabled {
     font-weight: bold;
 }
 
-/* Gaya untuk tabel pemenang */
 table {
-    width: 100%;
-    max-width: 800px;
+    width: 80%;
     margin: 20px auto;
     border-collapse: collapse;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-thead {
-    background-color: #007bff;
-    color: white;
 }
 
 th, td {
-    padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid black;
+    padding: 8px;
     text-align: center;
 }
 
-tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-tbody tr:hover {
-    background-color: #e9ecef;
-}
-
-/* Responsif */
-@media (max-width: 600px) {
-    table {
-        font-size: 14px;
-    }
-
-    button {
-        width: 100%;
-        padding: 12px;
-    }
+th {
+    background-color: #f2f2f2;
 }
     </style>
 </head>
 <body>
-    <h2>Claim ETH</h2>
-    
-    <!-- Tombol untuk koneksi dan diskoneksi wallet -->
-    <button id="connectBtn" onclick="connectWallet()">🔗 Connect Wallet</button>
-    <button id="disconnectBtn" onclick="disconnectWallet()" style="display: none;">❌ Disconnect Wallet</button>
+    <h2>🔗 Wallet Connection</h2>
+    <button id="connectWallet">Connect Wallet</button>
+    <button id="disconnectWallet" disabled>Disconnect Wallet</button>
     <p id="walletAddress">Wallet: Not Connected</p>
 
+    <h2>💰 Claim ETH</h2>
     <button id="checkEligible" onclick="checkEligibility()">Check Eligible</button>
     <p id="status"></p>
     <p id="ethAmount"></p>
@@ -128,132 +73,144 @@ tbody tr:hover {
         <tbody id="winnersList"></tbody>
     </table>
 
+    <script src="script.js"></script>
     <script>
         const contractAddress = "0x123456789abcdef"; // Ganti dengan alamat kontrak
-        const contractABI = [ /* ABI dari kontrak */ ];
+const contractABI = [ /* ABI dari kontrak */ ];
 
-        let web3;
-        let contract;
-        let userAccount;
+let web3;
+let contract;
+let userAccount = null;
 
-        async function connectWallet() {
-            if (window.ethereum) {
-                try {
-                    web3 = new Web3(window.ethereum);
-                    const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-                    userAccount = accounts[0];
-                    contract = new web3.eth.Contract(contractABI, contractAddress);
+// 🔗 Koneksi Wallet
+document.getElementById("connectWallet").addEventListener("click", async () => {
+    if (window.ethereum) {
+        try {
+            web3 = new Web3(window.ethereum);
+            await window.ethereum.request({ method: "eth_requestAccounts" });
+            const accounts = await web3.eth.getAccounts();
+            userAccount = accounts[0];
 
-                    document.getElementById("walletAddress").innerText = `Wallet: ${shortenAddress(userAccount)}`;
-                    document.getElementById("connectBtn").style.display = "none";
-                    document.getElementById("disconnectBtn").style.display = "inline-block";
-                } catch (error) {
-                    console.error("User rejected connection", error);
-                    document.getElementById("walletAddress").innerText = "Wallet: Connection Failed";
-                }
-            } else {
-                alert("Harap instal MetaMask!");
-            }
+            document.getElementById("walletAddress").innerText = `Wallet: ${userAccount}`;
+            document.getElementById("connectWallet").disabled = true;
+            document.getElementById("disconnectWallet").disabled = false;
+
+            contract = new web3.eth.Contract(contractABI, contractAddress);
+        } catch (error) {
+            console.error("User denied wallet connection:", error);
+            alert("Gagal terhubung ke wallet. Pastikan Anda memberi izin di MetaMask.");
         }
+    } else {
+        alert("MetaMask tidak terdeteksi. Silakan instal MetaMask.");
+    }
+});
 
-        function disconnectWallet() {
-            userAccount = null;
-            document.getElementById("walletAddress").innerText = "Wallet: Not Connected";
-            document.getElementById("connectBtn").style.display = "inline-block";
-            document.getElementById("disconnectBtn").style.display = "none";
+// ❌ Diskoneksi Wallet
+document.getElementById("disconnectWallet").addEventListener("click", () => {
+    userAccount = null;
+    document.getElementById("walletAddress").innerText = "Wallet: Not Connected";
+    document.getElementById("connectWallet").disabled = false;
+    document.getElementById("disconnectWallet").disabled = true;
+});
+
+// ✅ Cek Kelayakan Klaim
+async function checkEligibility() {
+    if (!contract || !userAccount) {
+        alert("Harap sambungkan wallet terlebih dahulu.");
+        return;
+    }
+
+    try {
+        let winnings = await contract.methods.winnings(userAccount).call();
+        winnings = web3.utils.fromWei(winnings, "ether");
+
+        if (winnings > 0) {
+            document.getElementById("status").innerHTML = "✅ Selamat, Anda bisa klaim!";
+            document.getElementById("status").className = "success";
+            document.getElementById("ethAmount").innerHTML = `Jumlah ETH: ${winnings}`;
+            document.getElementById("claimBtn").disabled = false;
+        } else {
+            document.getElementById("status").innerHTML = "❌ Maaf, Anda tidak bisa klaim.";
+            document.getElementById("status").className = "error";
+            document.getElementById("ethAmount").innerHTML = "Jumlah ETH: 0";
+            document.getElementById("claimBtn").disabled = true;
         }
+    } catch (error) {
+        console.error("Error checking eligibility:", error);
+    }
+}
 
-        function shortenAddress(address) {
-            return address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "";
+// 💰 Klaim ETH
+async function claimETH() {
+    if (!contract || !userAccount) {
+        alert("Harap sambungkan wallet terlebih dahulu.");
+        return;
+    }
+
+    try {
+        await contract.methods.claimETH().send({ from: userAccount });
+        alert("Klaim berhasil! ETH telah dikirim ke dompet Anda.");
+        checkEligibility();
+        getWinners(); // Perbarui daftar pemenang
+    } catch (error) {
+        alert("Gagal klaim. Coba lagi.");
+        console.error(error);
+    }
+}
+
+// 🏆 Ambil Riwayat Pemenang
+async function getWinners() {
+    if (!contract) {
+        alert("Harap sambungkan wallet terlebih dahulu.");
+        return;
+    }
+
+    try {
+        const allWinners = [];
+        const events = await contract.getPastEvents("WinnerSet", { fromBlock: 0, toBlock: "latest" });
+
+        events.forEach(event => {
+            let betId = event.returnValues.betId;
+            let winner = event.returnValues.winner;
+            let amountBet = web3.utils.fromWei(event.returnValues.amountBet, "ether");
+            let amountWon = web3.utils.fromWei(event.returnValues.amountWon, "ether");
+            let timestamp = parseInt(event.returnValues.timestamp) * 1000;
+            let dateUTC = new Date(timestamp).toISOString().replace("T", " ").replace("Z", "");
+
+            allWinners.push({ betId, winner, amountBet, amountWon, dateUTC });
+        });
+
+        let winnersList = document.getElementById("winnersList");
+        winnersList.innerHTML = "";
+
+        allWinners.forEach(winner => {
+            let row = `<tr>
+                <td>${winner.betId}</td>
+                <td>${winner.winner}</td>
+                <td>${winner.amountBet} ETH</td>
+                <td>${winner.amountWon} ETH</td>
+                <td>${winner.dateUTC}</td>
+            </tr>`;
+            winnersList.innerHTML += row;
+        });
+    } catch (error) {
+        console.error("Error fetching winners:", error);
+    }
+}
+
+window.onload = async () => {
+    if (window.ethereum) {
+        web3 = new Web3(window.ethereum);
+        const accounts = await web3.eth.getAccounts();
+        if (accounts.length > 0) {
+            userAccount = accounts[0];
+            document.getElementById("walletAddress").innerText = `Wallet: ${userAccount}`;
+            document.getElementById("connectWallet").disabled = true;
+            document.getElementById("disconnectWallet").disabled = false;
+            contract = new web3.eth.Contract(contractABI, contractAddress);
         }
-
-        async function checkEligibility() {
-            if (!contract || !userAccount) {
-                await connectWallet();
-            }
-
-            try {
-                let winnings = await contract.methods.winnings(userAccount).call();
-                winnings = web3.utils.fromWei(winnings, "ether");
-
-                if (winnings > 0) {
-                    document.getElementById("status").innerHTML = "✅ Selamat, Anda bisa klaim!";
-                    document.getElementById("status").className = "success";
-                    document.getElementById("ethAmount").innerHTML = `Jumlah ETH: ${winnings}`;
-                    document.getElementById("claimBtn").disabled = false;
-                } else {
-                    document.getElementById("status").innerHTML = "❌ Maaf, Anda tidak bisa klaim.";
-                    document.getElementById("status").className = "error";
-                    document.getElementById("ethAmount").innerHTML = "Jumlah ETH: 0";
-                    document.getElementById("claimBtn").disabled = true;
-                }
-            } catch (error) {
-                console.error("Error checking eligibility:", error);
-            }
-        }
-
-        async function claimETH() {
-            try {
-                await contract.methods.claimETH().send({ from: userAccount });
-                alert("Klaim berhasil! ETH telah dikirim ke dompet Anda.");
-                checkEligibility();
-                getWinners();
-            } catch (error) {
-                alert("Gagal klaim. Coba lagi.");
-                console.error(error);
-            }
-        }
-
-        async function getWinners() {
-            if (!contract) {
-                await connectWallet();
-            }
-
-            try {
-                const allWinners = [];
-                const events = await contract.getPastEvents("WinnerSet", { fromBlock: 0, toBlock: "latest" });
-
-                events.forEach(event => {
-                    let betId = event.returnValues.betId;
-                    let winner = event.returnValues.winner;
-                    let amountBet = web3.utils.fromWei(event.returnValues.amountBet, "ether");
-                    let amountWon = web3.utils.fromWei(event.returnValues.amountWon, "ether");
-                    let timestamp = parseInt(event.returnValues.timestamp) * 1000;
-                    let dateUTC = new Date(timestamp).toISOString().replace("T", " ").replace("Z", "");
-
-                    allWinners.push({ betId, winner, amountBet, amountWon, dateUTC });
-                });
-
-                let winnersList = document.getElementById("winnersList");
-                winnersList.innerHTML = "";
-
-                allWinners.forEach(winner => {
-                    let row = `<tr>
-                        <td>${winner.betId}</td>
-                        <td>${winner.winner}</td>
-                        <td>${winner.amountBet} ETH</td>
-                        <td>${winner.amountWon} ETH</td>
-                        <td>${winner.dateUTC}</td>
-                    </tr>`;
-                    winnersList.innerHTML += row;
-                });
-            } catch (error) {
-                console.error("Error fetching winners:", error);
-            }
-        }
-
-        if (window.ethereum) {
-            window.ethereum.on("accountsChanged", (accounts) => {
-                if (accounts.length > 0) {
-                    userAccount = accounts[0];
-                    document.getElementById("walletAddress").innerText = `Wallet: ${shortenAddress(userAccount)}`;
-                } else {
-                    disconnectWallet();
-                }
-            });
-        }
-
-        window.onload = connectWallet;
+    }
+};
     </script>
 </body>
 </html>
