@@ -376,7 +376,7 @@ footer {
         </div>
 
 <div id="menu">
-    <button id="menuBtn"><img src="icon.svg" alt="Lotto">Menu</button>
+    <button onclick="openModal('menuModal')"><img src="icon.svg" alt="Lotto">Menu</button>
     <button onclick="window.open('4d', '_blank')"><img src="icon.svg" alt="Lotto">4D</button>
     <button onclick="openModal()"><img src="icon.svg" alt="Lotto">MyBets</button>
     <button onclick="window.open('hkball', '_blank')"><img src="icon.svg" alt="Lotto">Results</button>
@@ -394,6 +394,20 @@ footer {
       <button class="nav-button" onclick="nextUserBets()">Next</button>
     </div>
   </div>
+</div>
+
+       <!-- Modal Menu -->
+<div id="menuModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('menuModal')">&times;</span>
+        <h2>Menu</h2>
+        <a href="hk" target="_blank">🇭🇰 Hong Kong (HK)</a><br>
+        <a href="sgp" target="_blank">🇸🇬 Singapore (SGP)</a><br>
+        <a href="syd" target="_blank">🇦🇺 Sydney (SYD)</a><br>
+        <a href="chi" target="_blank">🇨🇳 China (CHI)</a><br>
+        <a href="mc" target="_blank">🇰🇭 Cambodia (MC)</a><br>
+        <a href="be" target="_blank">🎯 Bull Eye (BE)</a>
+    </div>
 </div>
 
         <!-- Footer -->
@@ -709,26 +723,14 @@ function nextBetHistory() {
     loadBetHistory();
 }
         
-// Open Modal 
-function openModal() {
-  document.getElementById("myModal").style.display = "block";
+// Fungsi untuk membuka modal berdasarkan ID
+function openModal(modalId) {
+    document.getElementById(modalId).style.display = "block";
 }
 
-function closeModal() {
-  document.getElementById("myModal").style.display = "none";
-}
-
-function openModal() {
-  // Ambil elemen userBets
-  let userBets = document.getElementById("userBets");
-
-  // Periksa apakah ada data
-  if (!userBets.innerHTML.trim()) {
-      userBets.innerHTML = '<div style="text-align: center;"><p>No bet history available.</p></div>';
-}
-
-  // Tampilkan modal
-  document.getElementById("myModal").style.display = "block";
+// Fungsi untuk menutup modal berdasarkan ID
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
 }
         
 // Initialize saat halaman terbuka
