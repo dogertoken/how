@@ -230,57 +230,6 @@ footer {
     font-size: 18px;
     font-weight: bold;
 }
-
-/* Hamburger Button */
-.hamburger-menu {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    display: none;
-}
-
-/* Modal Menu */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 250px;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    padding-top: 50px;
-}
-
-.modal-content {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    padding: 20px;
-}
-
-.modal a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 0;
-    display: block;
-}
-
-.close {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 24px;
-    cursor: pointer;
-}
-
-/* Show Hamburger Only on Mobile */
-@media (max-width: 900px) {
-    .hamburger-menu {
-        display: block;
-    }
-}
     </style>
 </head>
 <body>
@@ -290,25 +239,6 @@ footer {
         <img src="logo.png" alt="Lotto Chain Logo" class="nav-logo">
         <span class="nav-title">Lotto Chain</span>
     </div>
-    <div class="nav-right">
-        <button class="hamburger-menu" onclick="toggleMenu()">
-            <i class="fas fa-bars"></i>
-        </button>
-    </div>
-</nav>
-
-<!-- Modal Menu (untuk mode HP) -->
-<div id="monav" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="toggleMenu()">
-            <i class="fas fa-times"></i>
-        </span>
-        <a href="#">Home</a>
-        <a href="#">How to Play</a>
-        <a href="#">Rewards</a>
-        <a href="#">Contact</a>
-    </div>
-</div>
     
     <div class="container">
         <h1>Claim Your Prizes</h1>
@@ -527,15 +457,6 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error(error);
         }
     });
-
-    // Open Modal 
-    function openMoNav() {
-            document.getElementById("monav").style.display = "block";
-        }
-
-        function closeMoNav() {
-            document.getElementById("monav").style.display = "none";
-        }
 
     // 🔹 Menampilkan Tombol "Check Eligibility" Setelah Wallet Terhubung
     document.getElementById("connectWallet").addEventListener("click", async () => {
