@@ -525,7 +525,7 @@ footer {
     </div>
 </div>
 
-       <!-- Modal -->
+       <!-- Claim Modal -->
 <div id="claimModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('claimModal')">&times;</span>
@@ -980,10 +980,35 @@ function nextBetHistory() {
 }
 
 // Claim Function
+// Fungsi untuk membuka modal
+function openModal(id) {
+    document.getElementById(id).style.display = "block";
+}
+
+// Fungsi untuk menutup modal
+function closeModal(id) {
+    document.getElementById(id).style.display = "none";
+}
+
+// Tutup modal jika klik di luar area modal
+window.onclick = function(event) {
+    let modal = document.getElementById("claimModal");
+    if (event.target === modal) {
+        closeModal("claimModal");
+    }
+}
+
+// Fungsi untuk mengecek kelayakan klaim
 document.getElementById("checkEligibility").addEventListener("click", async () => {
     try {
+        if (!window.signer || !window.contract) {
+            alert("Wallet belum terhubung!");
+            return;
+        }
+
         let userAddress = await signer.getAddress();
         let amount = await contract.winnings(userAddress);
+
         let eligibilityStatus = document.getElementById("eligibilityStatus");
         let claimAmount = document.getElementById("claimAmount");
         let claimETHButton = document.getElementById("claimETH");
@@ -1002,6 +1027,7 @@ document.getElementById("checkEligibility").addEventListener("click", async () =
     }
 });
 
+// Fungsi untuk klaim ETH
 document.getElementById("claimETH").addEventListener("click", async () => {
     try {
         let claimStatus = document.getElementById("claimStatus");
@@ -1089,7 +1115,7 @@ function closeMenu() {
     closeModal('menuModal');
 }
 
-function closeMenu() {
+function closeResult() {
     closeModal('resultModal');
 }
         
