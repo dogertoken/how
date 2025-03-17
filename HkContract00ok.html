@@ -36,6 +36,7 @@ contract BetHistory {
     mapping(bytes32 => mapping(address => bool)) public betLikes;
     mapping(bytes32 => Comment[]) public betComments;
     mapping(address => uint256) public winnings;
+    mapping(bytes32 => address) public betWinners;
 
     event BetPlaced(
         address indexed player,
@@ -48,11 +49,11 @@ contract BetHistory {
     );
 
     event BetResultSet(uint256 drawId, uint256 winningNumber);
-    event BetLiked(bytes32 betId, address indexed user);
+    event BetLiked(bytes32 indexed betId, address indexed liker);
     event CommentAdded(bytes32 betId, address indexed user, string comment, uint256 timestamp);
     event CommentUpdated(bytes32 betId, address indexed user, uint256 commentIndex, string newComment);
     event CommentDeleted(bytes32 betId, address indexed user, uint256 commentIndex);
-    event WinnerSet(address indexed winner, uint256 amount);
+    event WinnerSet(bytes32 betId, address indexed winner, uint256 amount);
     event ETHClaimed(address indexed winner, uint256 amount);
 
     modifier onlyOwner() {
@@ -94,7 +95,7 @@ contract BetHistory {
     userBets[msg.sender].push(newBet);
 
     emit BetPlaced(msg.sender, betId, _number, _times, block.timestamp, blockNumber, txHash);
-}
+  }
 
     function setBetResult(uint256 _drawId, uint256 _winningNumber) external onlyOwner {
         betResults[_drawId] = BetResult({
@@ -106,12 +107,12 @@ contract BetHistory {
         emit BetResultSet(_drawId, _winningNumber);
     }
 
-    function setWinner(address _winner, uint256 _amount) external onlyOwner {
+    function setWinner(bytes32 betId, address _winner, uint256 _amount) external onlyOwner {
         require(_amount > 0, "Invalid amount");
         require(address(this).balance >= _amount, "Insufficient contract balance");
 
         winnings[_winner] += _amount;
-        emit WinnerSet(_winner, _amount);
+        emit WinnerSet(betId, _winner, _amount);
     }
 
     function claimETH() external {
