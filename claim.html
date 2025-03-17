@@ -116,7 +116,7 @@ document.getElementById("connectWallet").addEventListener("click", async () => {
         const localTime = new Date().toLocaleString();
 
         // Membuat pesan signature
-        const message = `Welcome! Connecting wallet to our dApp.\n\nAddress: ${userAddress}\nLocal Time: ${localTime}`;
+        const message = `Login verification in Lotto Chain DApps\n\nAddress: ${userAddress}\nLocal Time: ${localTime}`;
         const signature = await signer.signMessage(message);
 
         console.log("Signature:", signature); // Bisa dikirim ke backend untuk verifikasi
