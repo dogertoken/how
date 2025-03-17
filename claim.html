@@ -95,28 +95,45 @@ let provider, signer, contract;
 
 // 🔹 Fungsi Koneksi Wallet
 document.getElementById("connectWallet").addEventListener("click", async () => {
-    if (window.ethereum) {
+    if (!window.ethereum) {
+        alert("Metamask not detected!");
+        return;
+    }
+
+    try {
+        // Inisialisasi provider
         provider = new ethers.providers.Web3Provider(window.ethereum);
+
+        // Meminta akses akun MetaMask
         await provider.send("eth_requestAccounts", []);
+
+        // Mendapatkan signer
         signer = provider.getSigner();
+
+        // Menghubungkan kontrak
         contract = new ethers.Contract(contractAddress, contractABI, signer);
 
+        // Menunggu hingga alamat berhasil diambil
         const userAddress = await signer.getAddress();
         const balance = await provider.getBalance(userAddress);
 
+        // Menampilkan informasi di UI
         document.getElementById("networkStatus").innerHTML = `<img src="check.png" width="16" height="16"> Connected to Sepolia Base Testnet`;
         document.getElementById("walletAddress").innerHTML = `Address: ${userAddress}`;
         document.getElementById("walletBalance").innerHTML = `Balance: ${ethers.utils.formatEther(balance)} ETH`;
 
+        // Menampilkan tombol dan menyembunyikan yang tidak perlu
         document.getElementById("walletAddress").classList.remove("hidden");
         document.getElementById("walletBalance").classList.remove("hidden");
         document.getElementById("connectWallet").classList.add("hidden");
         document.getElementById("disconnectWallet").classList.remove("hidden");
         document.getElementById("checkEligibility").classList.remove("hidden");
 
+        // Cek dan switch jaringan ke Sepolia Base Testnet
         await switchToSepoliaBase();
-    } else {
-        alert("Metamask not detected!");
+    } catch (error) {
+        console.error("Error connecting wallet:", error);
+        alert("Failed to connect wallet. Please try again.");
     }
 });
 
