@@ -147,6 +147,7 @@ th:hover {
         <thead>
             <tr>
                 <th>Player</th>
+                <th>Bet ID</th>
                 <th>Bet Number</th>
                 <th>Bet Amount</th>
                 <th>Timestamp</th>
@@ -198,6 +199,7 @@ async function loadBetHistory() {
                     const row = `
                         <tr>
                             <td style="color: #ad5cff; font-weight: bold;">${bet.player}</td>
+                            <td style="color: #ffcc00; font-weight: bold;">${bet.betId}</td>
                             <td style="color: #00FF66; font-weight: bold;">${bet.number}</td>
                             <td style="color: #fe6666; font-weight: bold;">${bet.betAmount}</td>
                             <td style="color: orange; font-weight: bold;">${new Date(bet.timestamp * 1000).toISOString()}</td>
