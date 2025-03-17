@@ -198,11 +198,14 @@ footer {
     <div class="container">
         <h1>Claim Your Prizes</h1>
 
-        <!-- Tombol Connect/Disconnect Wallet -->
-        <button id="connectWallet" class="btn">Connect Wallet</button>
-        <button id="disconnectWallet" class="btn hidden">Disconnect</button>
-        <p id="walletStatus"></p>
+        <!-- Wallet Connection -->
+        <center><button id="connectWallet" onclick="connectWallet()">Connect Wallet</button>
+        <button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect</button></center>
+        <p id="walletAddress" style="display:none; color: #ad5cff"></p>
+        <p id="walletBalance" style="display:none; color: #00ca09;">Balance: 0 ETH</p>
 
+        <h2>Claim Your Prizes</h2>
+        
         <!-- Cek Eligibility -->
         <button id="checkEligibility" class="btn">Check Eligibility</button>
         <p id="eligibilityStatus"></p>
