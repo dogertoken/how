@@ -181,16 +181,16 @@ document.getElementById("claimETH").addEventListener("click", async () => {
     }
 });
 
-// 🏆 Ambil Riwayat Pemenang
-async function getWinners() {
-    if (!contract) {
-        alert("Harap sambungkan wallet terlebih dahulu.");
-        return;
-    }
+const provider = new ethers.providers.JsonRpcProvider("https://sepolia.base.org"); // Ganti dengan RPC jaringan yang sesuai
+const contractPublic = new ethers.Contract(contractAddress, contractABI, provider);
 
+// 🏆 Ambil Riwayat Pemenang tanpa perlu konek wallet
+async function getWinners() {
     try {
         const allWinners = [];
-        const events = await contract.queryFilter("WinnerSet", 0, "latest");
+        const events = await contractPublic.queryFilter("WinnerSet", 0, "latest");
+
+        console.log("Total event ditemukan:", events.length); // Debugging
 
         events.forEach(event => {
             let betId = event.args.betId.toString();
@@ -239,7 +239,12 @@ function listenForNewWinners() {
 
         winnersList.innerHTML = row + winnersList.innerHTML; // Tambahkan data terbaru di atas
     });
-            }
+
+    console.log("Listening for new winners...");
+}
+
+// Panggil `getWinners()` saat halaman dimuat agar publik bisa melihat riwayat pemenang
+window.onload = getWinners;
     </script>
 </body>
 </html>
