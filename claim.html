@@ -147,7 +147,8 @@ document.getElementById("connectWallet").addEventListener("click", async () => {
         await switchToSepoliaBase();
 
     } catch (error) {
-        console.error("Error connecting wallet:"
+        console.error("Error connecting wallet:", error);
+        alert("Failed to connect wallet. Please try again.");
     }
 });
 
