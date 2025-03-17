@@ -156,17 +156,20 @@ async function switchToSepoliaBase() {
     try {
         const chainId = await window.ethereum.request({ method: 'eth_chainId' });
 
-        if (chainId.toLowerCase() !== sepoliaBaseChainId) {
-            await window.ethereum.request({
-                method: "wallet_switchEthereumChain",
-                params: [{ chainId: sepoliaBaseChainId }]
-            });
-
-            updateStatus("Switched to Sepolia Base Testnet", "green");
-        } else {
+        if (chainId.toLowerCase() === sepoliaBaseChainId) {
             updateStatus("Already on Sepolia Base Testnet", "green");
+            return; // Jangan lanjutkan eksekusi jika sudah di jaringan yang benar
         }
+
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: sepoliaBaseChainId }]
+        });
+
+        updateStatus("Switched to Sepolia Base Testnet", "green");
+
     } catch (error) {
+        console.error("Error switching network:", error);
         updateStatus("Switch to Sepolia Base Testnet required!", "red");
     }
 }
