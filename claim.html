@@ -153,18 +153,21 @@ function closeModal(id) {
 
 // Paksa pengguna pindah ke Sepolia Base Testnet
 async function switchToSepoliaBase() {
-    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+    try {
+        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
 
-    if (chainId !== sepoliaBaseChainId) {
-        try {
+        if (chainId.toLowerCase() !== sepoliaBaseChainId) {
             await window.ethereum.request({
                 method: "wallet_switchEthereumChain",
                 params: [{ chainId: sepoliaBaseChainId }]
             });
+
             updateStatus("Switched to Sepolia Base Testnet", "green");
-        } catch (error) {
-            updateStatus("Switch to Sepolia Base Testnet required!", "red");
+        } else {
+            updateStatus("Already on Sepolia Base Testnet", "green");
         }
+    } catch (error) {
+        updateStatus("Switch to Sepolia Base Testnet required!", "red");
     }
 }
 
