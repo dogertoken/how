@@ -15,7 +15,8 @@
     font-weight: bold;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
     text-align: center;
-    margin: 20px auto;
+    margin: 50px auto; /* Ubah dari 20px ke 50px */
+    padding-top: 50px; /* Tambahkan padding atas */
     width: 100%;
     max-width: 1000px;
     background-color: #000;
@@ -24,7 +25,7 @@
     flex-direction: column;
     align-items: center;
     overflow-x: hidden;
-}
+    }
         
 .container {
     width: 100%;
@@ -198,9 +199,68 @@ footer {
 #walletBalance {
     color: green;
 }
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: #000;
+    color: #ccc;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.navbar .logo {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
+
+.navbar .logo img {
+    height: 30px;
+    margin-right: 10px;
+}
+
+.navbar .hamburger {
+    font-size: 24px;
+    cursor: pointer;
+    display: none;
+}
+
+/* Tampilkan hamburger hanya di HP */
+@media (max-width: 768px) {
+    .navbar .hamburger {
+        display: block;
+    }
+}
     </style>
 </head>
 <body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            <img src="logo.png" alt="Lotto Chain Logo">
+            Lotto Chain
+        </div>
+        <div class="hamburger" onclick="openMoNav()">&#9776;</div>
+    </div>
+
+    <!-- Modal untuk Menu Hamburger -->
+    <div id="monav" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeMoNav()">&times;</span>
+            <a href="#">Home</a>
+            <a href="#">Betting</a>
+            <a href="#">Claim Rewards</a>
+            <a href="#">Settings</a>
+        </div>
+    </div>
+    
     <div class="container">
         <h1>Claim Your Prizes</h1>
         <h3>Lotto Chain Decentralizer Betting</h3>
@@ -418,6 +478,15 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error(error);
         }
     });
+
+    // Open Modal 
+    function openMoNav() {
+            document.getElementById("monav").style.display = "block";
+        }
+
+        function closeMoNav() {
+            document.getElementById("monav").style.display = "none";
+        }
 
     // 🔹 Menampilkan Tombol "Check Eligibility" Setelah Wallet Terhubung
     document.getElementById("connectWallet").addEventListener("click", async () => {
