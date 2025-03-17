@@ -203,8 +203,7 @@ footer {
 /* Navbar Style */
 #monav {
     width: 100%;
-    max-width: 1000px;
-    background-color: #111;
+    background-color: rgba(17, 17, 17, 0.9); /* Warna transparan */
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
@@ -213,12 +212,16 @@ footer {
     position: fixed;
     top: 0;
     left: 0;
+    right: 0;
     z-index: 1000;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .nav-left {
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 .nav-logo {
@@ -239,34 +242,36 @@ footer {
         <img src="logo.png" alt="Lotto Chain Logo" class="nav-logo">
         <span class="nav-title">Lotto Chain</span>
     </div>
-    
-    <div class="container">
-        <h1>Claim Your Prizes</h1>
-        <h3>Lotto Chain Decentralizer Betting</h3>
-        <br><br>
-        <button id="connectWallet" class="btn">Connect Wallet</button>
-        <button id="disconnectWallet" class="btn hidden">Disconnect</button>
-        <br><br>
-        
-        <p class="status" style="color: green" id="networkStatus">
-    <span style="color: #1a88ff;">
-        <img src="loading.png" width="16" height="16"> Checking network...
-    </span>
-        </p>
-        
-        <p id="walletAddress" class="hidden"></p>
-        <p id="walletBalance" class="hidden"></p>
-        <p id="signatureInfo" class="hidden"></p>
-        <br>
+</nav>
 
-        <p id="eligibilityStatus"></p><br>
-        <p id="claimAmount"></p><br>
-        <button id="checkEligibility" class="btn hidden">Check Eligibility</button>
-        <button id="claimETH" class="btn hidden">Claim ETH</button><br>
-        <p id="claimStatus"></p>
-    </div>
+<!-- Konten Utama -->
+<main class="container">
+    <h1>Claim Your Prizes</h1>
+    <h3>Lotto Chain Decentralizer Betting</h3>
+    <br><br>
+    <button id="connectWallet" class="btn">Connect Wallet</button>
+    <button id="disconnectWallet" class="btn hidden">Disconnect</button>
+    <br><br>
 
-    <!-- Footer -->
+    <p class="status" style="color: green" id="networkStatus">
+        <span style="color: #1a88ff;">
+            <img src="loading.png" width="16" height="16"> Checking network...
+        </span>
+    </p>
+
+    <p id="walletAddress" class="hidden"></p>
+    <p id="walletBalance" class="hidden"></p>
+    <p id="signatureInfo" class="hidden"></p>
+    <br>
+
+    <p id="eligibilityStatus"></p><br>
+    <p id="claimAmount"></p><br>
+    <button id="checkEligibility" class="btn hidden">Check Eligibility</button>
+    <button id="claimETH" class="btn hidden">Claim ETH</button><br>
+    <p id="claimStatus"></p>
+</main>
+
+<!-- Footer -->
 <footer>
     <div class="social-icons">
         <a href="https://twitter.com/" target="_blank"><i class="fa-brands fa-twitter"></i></a>
@@ -276,7 +281,7 @@ footer {
         <a href="" target="_blank"><i class="fa-brands fa-youtube"></i></a>
     </div>
     <p>© 2025 Powered By Lotto Chain. All rights reserved. Play responsibly.</p>
-</footer> 
+</footer>
 
     <script src="script.js"></script>
     <script>
