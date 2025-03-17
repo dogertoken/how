@@ -9,6 +9,7 @@ contract BetHistory {
 
     struct Bet {
         address player;
+        bytes32 betId;
         string number;
         uint256 betAmount;
         uint256 timestamp;
@@ -37,6 +38,7 @@ contract BetHistory {
     mapping(bytes32 => Comment[]) public betComments;
     mapping(address => uint256) public winnings;
     mapping(bytes32 => address) public betWinners;
+    mapping(bytes32 => Bet) public bets;
 
     event BetPlaced(
         address indexed player,
@@ -76,18 +78,21 @@ contract BetHistory {
     uint256 totalCost = _times * betPrice;
     require(msg.value == totalCost, "Incorrect ETH amount");
 
+    // Buat betId unik
     bytes32 betId = keccak256(abi.encodePacked(msg.sender, block.timestamp, block.number));
     uint256 blockNumber = block.number;
-    bytes32 txHash = blockhash(block.number - 1);
 
-    // **Simpan sebagai string agar nol di depan tidak hilang**
+    // txHash tidak bisa langsung diperoleh di dalam smart contract
+    bytes32 txHash = bytes32(0); // Default sebagai placeholder
+
     Bet memory newBet = Bet({
         player: msg.sender,
-        number: _number, // **Gunakan string**
+        betId: betId,
+        number: _number, // Gunakan string
         betAmount: _times,
         timestamp: block.timestamp,
         blockNumber: blockNumber,
-        txHash: txHash,
+        txHash: txHash, // txHash bisa diisi di frontend
         isETH: _isETH
     });
 
