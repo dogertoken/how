@@ -529,7 +529,7 @@ footer {
 <div id="claimModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('claimModal')">&times;</span>
-        <h2>Check Eligibility</h2>
+        <h2>Claim Your Prizes</h2>
         <p id="eligibilityStatus"></p>
         <p id="claimAmount"></p>
         <button id="checkEligibility" class="btn">Check Eligibility</button>
@@ -980,17 +980,17 @@ function nextBetHistory() {
 }
 
 // Claim Function
-// Fungsi untuk membuka modal
+// Function to open modal
 function openModal(id) {
     document.getElementById(id).style.display = "block";
 }
 
-// Fungsi untuk menutup modal
+// Function to close modal
 function closeModal(id) {
     document.getElementById(id).style.display = "none";
 }
 
-// Tutup modal jika klik di luar area modal
+// Close modal when clicking outside the modal
 window.onclick = function(event) {
     let modal = document.getElementById("claimModal");
     if (event.target === modal) {
@@ -998,14 +998,9 @@ window.onclick = function(event) {
     }
 }
 
-// Fungsi untuk mengecek kelayakan klaim
+// Function to check claim status
 document.getElementById("checkEligibility").addEventListener("click", async () => {
     try {
-        if (!window.signer || !window.contract) {
-            alert("Wallet belum terhubung!");
-            return;
-        }
-
         let userAddress = await signer.getAddress();
         let amount = await contract.winnings(userAddress);
 
@@ -1014,36 +1009,36 @@ document.getElementById("checkEligibility").addEventListener("click", async () =
         let claimETHButton = document.getElementById("claimETH");
 
         if (amount.gt(0)) {
-            eligibilityStatus.innerHTML = `<img src="check.png" width="16" height="16"> <span style="color: #00FF66;">Anda eligible!</span>`;
-            claimAmount.innerHTML = `Jumlah: <span style="color: #00FF66;">${ethers.utils.formatEther(amount)} ETH</span>`;
+            eligibilityStatus.innerHTML = `<img src="check.png" width="16" height="16"> <span style="color: #00FF66;">Congratulations! You won, claim your prizes!</span>`;
+            claimAmount.innerHTML = `Total Prize: <span style="color: #00FF66;">${ethers.utils.formatEther(amount)} ETH</span>`;
             claimETHButton.classList.remove("hidden");
         } else {
-            eligibilityStatus.innerHTML = `<img src="cross.png" width="16" height="16"> <span style="color: red;">Anda tidak eligible!</span>`;
-            claimAmount.innerHTML = `Jumlah: <span style="color: red;">0 ETH</span>`;
+            eligibilityStatus.innerHTML = `<img src="cross.png" width="16" height="16"> <span style="color: red;">Sorry, you didn't win this time. Try again!</span>`;
+            claimAmount.innerHTML = `Total Prize: <span style="color: red;">0 ETH</span>`;
             claimETHButton.classList.add("hidden");
         }
     } catch (error) {
-        console.error("Gagal mengecek kelayakan klaim:", error);
+        console.error("Failed to check claim status:", error);
     }
 });
 
-// Fungsi untuk klaim ETH
+// Function to claim ETH
 document.getElementById("claimETH").addEventListener("click", async () => {
     try {
         let claimStatus = document.getElementById("claimStatus");
-        claimStatus.innerHTML = `<img src="loading.png" width="16" height="16"> <span style="color: #ccc;">Memproses klaim...</span>`;
+        claimStatus.innerHTML = `<img src="loading.png" width="16" height="16"> <span style="color: #ccc;">Processing your claim...</span>`;
 
         let tx = await contract.claimETH();
         await tx.wait();
 
-        claimStatus.innerHTML = `<img src="check.png" width="16" height="16"> <span style="color: #00FF66;">Klaim berhasil!</span>`;
-        alert("ETH berhasil diklaim!");
+        claimStatus.innerHTML = `<img src="check.png" width="16" height="16"> <span style="color: #00FF66;">Claim successful!</span>`;
+        alert("Prizes ETH successfully claimed!");
 
-        // Refresh status eligibility
+        // Refresh claim status
         document.getElementById("checkEligibility").click();
     } catch (error) {
-        document.getElementById("claimStatus").innerHTML = `<img src="cross.png" width="16" height="16"> <span style="color: red;">Klaim gagal!</span>`;
-        alert("Gagal mengklaim ETH!");
+        document.getElementById("claimStatus").innerHTML = `<img src="cross.png" width="16" height="16"> <span style="color: red;">Claim failed!</span>`;
+        alert("Failed to claim prizes!");
         console.error(error);
     }
 });
