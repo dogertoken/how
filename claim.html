@@ -185,7 +185,7 @@ document.getElementById("claimETH").addEventListener("click", async () => {
 });
 
 // Provider publik untuk membaca data blockchain tanpa koneksi wallet
-const publicProvider = new ethers.providers.JsonRpcProvider("https://sepolia.base.org");
+const publicProvider = new ethers.providers.JsonRpcProvider("https://base-sepolia.drpc.org");
 const contractPublic = new ethers.Contract(contractAddress, contractABI, publicProvider);
 
 // 🏆 Ambil Riwayat Pemenang tanpa perlu konek wallet
