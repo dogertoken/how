@@ -200,107 +200,114 @@ footer {
     color: green;
 }
 
-/* Navbar */
-.navbar {
+/* Navbar Style */
+#monav {
+    width: 100%;
+    background-color: #111;
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background: #000;
-    color: #ccc;
+    color: white;
     position: fixed;
-    width: 100%;
     top: 0;
     left: 0;
     z-index: 1000;
 }
 
-.navbar .logo {
+.nav-left {
     display: flex;
     align-items: center;
-    font-size: 18px;
 }
 
-.navbar .logo img {
-    height: 30px;
+.nav-logo {
+    height: 40px;
     margin-right: 10px;
 }
 
-.navbar .hamburger {
+.nav-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Hamburger Button */
+.hamburger-menu {
+    background: none;
+    border: none;
+    color: white;
     font-size: 24px;
     cursor: pointer;
     display: none;
 }
 
-/* Tampilkan hamburger hanya di HP */
-@media (max-width: 768px) {
-    .navbar .hamburger {
-        display: block;
-    }
-}
-
-/* Modal */
+/* Modal Menu */
 .modal {
     display: none;
     position: fixed;
-    z-index: 1001;
-    left: 0;
     top: 0;
-    width: 100%;
+    right: 0;
+    width: 250px;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.9);
+    padding-top: 50px;
 }
 
 .modal-content {
-    background-color: #111;
-    color: #ccc;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
     padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 300px;
-    margin: 100px auto;
-    text-align: center;
 }
 
-.modal-content a {
-    display: block;
-    padding: 10px;
-    color: #1a88ff;
+.modal a {
+    color: white;
     text-decoration: none;
-}
-
-.modal-content a:hover {
-    background: #222;
+    padding: 10px 0;
+    display: block;
 }
 
 .close {
-    color: red;
-    float: right;
+    position: absolute;
+    top: 10px;
+    right: 20px;
     font-size: 24px;
     cursor: pointer;
+}
+
+/* Show Hamburger Only on Mobile */
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: block;
+    }
 }
     </style>
 </head>
 <body>
     <!-- Navbar -->
-    <div class="navbar">
-        <div class="logo">
-            <img src="logo.png" alt="Lotto Chain Logo">
-            Lotto Chain
-        </div>
-        <div class="hamburger" onclick="openMoNav()">&#9776;</div>
+<nav id="monav">
+    <div class="nav-left">
+        <img src="logo.png" alt="Lotto Chain Logo" class="nav-logo">
+        <span class="nav-title">Lotto Chain</span>
     </div>
+    <div class="nav-right">
+        <button class="hamburger-menu" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</nav>
 
-    <!-- Modal untuk Menu Hamburger -->
-    <div id="monav" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeMoNav()">&times;</span>
-            <a href="#">Home</a>
-            <a href="#">Betting</a>
-            <a href="#">Claim Rewards</a>
-            <a href="#">Settings</a>
-        </div>
+<!-- Modal Menu (untuk mode HP) -->
+<div id="menuModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </span>
+        <a href="#">Home</a>
+        <a href="#">How to Play</a>
+        <a href="#">Rewards</a>
+        <a href="#">Contact</a>
     </div>
+</div>
     
     <div class="container">
         <h1>Claim Your Prizes</h1>
