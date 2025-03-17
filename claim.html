@@ -334,12 +334,12 @@ async function switchToSepoliaBase() {
                     }]
                 });
 
-                document.getElementById("networkStatus").innerHTML = `<img src="check.png" width="16" height="16"> Sepolia Base Testnet added & switched!`;
+                document.getElementById("networkStatus").innerHTML = `<img src="check.png" width="16" height="16"> <span style="color: green;">Sepolia Base Testnet added & switched!</span>`;
             } catch (addError) {
-                document.getElementById("networkStatus").innerHTML = `<img src="cross.png" width="16" height="16"> Please add Sepolia Base Testnet manually!`;
+                document.getElementById("networkStatus").innerHTML = `<img src="cross.png" width="16" height="16"> <span style="color: orange;">Please add Sepolia Base Testnet manually!</span>`;
             }
         } else {
-            document.getElementById("networkStatus").innerHTML = `<img src="cross.png" width="16" height="16"> Switch to Sepolia Base Testnet required!`;
+            document.getElementById("networkStatus").innerHTML = `<img src="cross.png" width="16" height="16"> <span style="color: red;">Switch to Sepolia Base Testnet required!</span>`;
         }
     }
 }
