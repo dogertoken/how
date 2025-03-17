@@ -44,8 +44,8 @@ h1, h2 {
 
 /* Gaya utama untuk tombol */
 .btn {
-    font-size: 0.7em;
-    padding: 6px 12px;
+    font-size: 1em;
+    padding: 10px 16px;
     border-radius: 0.7em;
     border: none;
     background-color: #000;
@@ -136,7 +136,44 @@ h1, h2 {
 img {
     vertical-align: middle;
     margin-right: 5px;
-}    
+}
+
+footer {
+        text-align: center;
+        margin-top: 20px;
+        padding: 10px;
+        background: #111; /* Warna gelap */
+        color: #ddd; /* Warna teks */
+        font-size: 12px;
+    }
+
+    .social-icons {
+        margin-bottom: 10px;
+    }
+
+    .social-icons a {
+    background: rgba(255, 255, 255, 0.2); /* Transparan seperti kaca */
+    border-radius: 10px; /* Agar sedikit membulat */
+    padding: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white; /* Warna ikon */
+    font-size: 15px;
+    margin: 0 5px;
+    text-decoration: none;
+    transition: transform 0.5s ease, text-shadow 0.5s ease, box-shadow 0.5s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 255, 0.6); /* Cahaya biru */
+    backdrop-filter: blur(10px); /* Efek blur kaca */
+}
+
+/* Efek saat hover */
+.social-icons a:hover {
+    color: #1a88ff; /* Warna biru neon */
+    text-shadow: 0 0 10px #1a88ff, 0 0 20px #1a88ff, 0 0 30px #1a88ff; /* Glow lebih intens */
+    box-shadow: 0 0 20px rgba(0, 0, 255, 1), 0 0 30px rgba(0, 0, 255, 0.8); /* Shadow lebih terang */
+    transform: rotate(360deg); /* Efek berputar */
+}
     </style>
 </head>
 <body>
@@ -161,6 +198,18 @@ img {
         <button id="claimETH" class="btn hidden">Claim ETH</button>
         <p id="claimStatus"></p>
     </div>
+
+    <!-- Footer -->
+<footer>
+    <div class="social-icons">
+        <a href="https://twitter.com/" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+        <a href="https://t.me/" target="_blank"><i class="fa-brands fa-telegram"></i></a>
+        <a href="" target="_blank"><i class="fa-brands fa-discord"></i></a>
+        <a href="" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+        <a href="" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+    </div>
+    <p>© 2025 Powered By Lotto Chain. All rights reserved. Play responsibly.</p>
+</footer> 
 
     <script src="script.js"></script>
     <script>
