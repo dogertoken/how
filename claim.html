@@ -147,8 +147,19 @@ document.getElementById("connectWallet").addEventListener("click", async () => {
         await switchToSepoliaBase();
 
     } catch (error) {
-        console.error("Error connecting wallet:", error);
-        alert("Failed to connect wallet. Please try again.");
+        console.error("Error connecting wallet:", error.message, error.code, error);
+
+        // Tangani error spesifik agar alert tidak muncul sembarangan
+        if (error.code === 4001) {
+            // User rejected request
+            console.warn("User rejected the connection request.");
+        } else if (error.code === -32002) {
+            // Pending connection request
+            console.warn("Connection request is already pending.");
+        } else {
+            // Hanya tampilkan alert jika benar-benar gagal
+            alert("Failed to connect wallet. Please try again.");
+        }
     }
 });
 
@@ -158,7 +169,7 @@ document.getElementById("disconnectWallet").addEventListener("click", () => {
     signer = null;
     contract = null;
 
-    document.getElementById("networkStatus").innerHTML = `<img src="cross.png" width="16" height="16"> Disconnected`;
+    document.getElementById("networkStatus").innerHTML = `<img src="cross.png" width="16" height="16"> <span style="color: red;">Disconnected</span>`;
     document.getElementById("walletAddress").classList.add("hidden");
     document.getElementById("walletBalance").classList.add("hidden");
     document.getElementById("connectWallet").classList.remove("hidden");
