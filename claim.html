@@ -203,7 +203,7 @@ footer {
 /* Navbar Style */
 #monav {
     width: 100%;
-    background-color: rgba(17, 17, 17, 0.9); /* Warna transparan */
+    background-color: #111;
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
@@ -212,16 +212,12 @@ footer {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
     z-index: 1000;
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .nav-left {
     display: flex;
     align-items: center;
-    width: 100%;
 }
 
 .nav-logo {
@@ -233,6 +229,57 @@ footer {
     font-size: 18px;
     font-weight: bold;
 }
+
+/* Hamburger Button */
+.hamburger-menu {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: none;
+}
+
+/* Modal Menu */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 250px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    padding-top: 50px;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    padding: 20px;
+}
+
+.modal a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 0;
+    display: block;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Show Hamburger Only on Mobile */
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: block;
+    }
+}
     </style>
 </head>
 <body>
@@ -242,7 +289,25 @@ footer {
         <img src="logo.png" alt="Lotto Chain Logo" class="nav-logo">
         <span class="nav-title">Lotto Chain</span>
     </div>
+    <div class="nav-right">
+        <button class="hamburger-menu" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
 </nav>
+
+<!-- Modal Menu (untuk mode HP) -->
+<div id="monav" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </span>
+        <a href="#">Home</a>
+        <a href="#">How to Play</a>
+        <a href="#">Rewards</a>
+        <a href="#">Contact</a>
+    </div>
+</div>
 
 <!-- Konten Utama -->
 <main class="container">
@@ -462,6 +527,15 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error(error);
         }
     });
+
+    // Open Modal
+    function openMoNav() {
+            document.getElementById("monav").style.display = "block";
+        }
+
+        function closeMoNav() {
+            document.getElementById("monav").style.display = "none";
+        }
 
     // 🔹 Menampilkan Tombol "Check Eligibility" Setelah Wallet Terhubung
     document.getElementById("connectWallet").addEventListener("click", async () => {
