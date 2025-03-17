@@ -413,6 +413,28 @@ document.getElementById("claimETH").addEventListener("click", async () => {
         console.error(error);
     }
 });
+
+        // Initialize saat halaman terbuka
+window.onload = () => {
+    if (window.ethereum) {
+        window.ethereum.on("accountsChanged", (accounts) => {
+            if (accounts.length > 0) {
+                userAccount = accounts[0];
+                document.getElementById("walletAddress").innerText = `Connected: ${userAccount}`;
+                document.getElementById("walletAddress").style.display = "block";
+                document.getElementById("walletBalance").style.display = "block";
+                document.getElementById("connectWallet").style.display = "none";
+                document.getElementById("disconnectWallet").style.display = "block";
+                
+                updateBalance();
+                loadUserBets();
+                loadBetHistory();
+            } else {
+                disconnectWallet();
+            }
+        });
+    }
+};
     </script>
 </body>
 </html>
