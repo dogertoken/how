@@ -450,7 +450,7 @@ footer {
 </head>
 <body>
    <div class="container">
-        <h1>Lotto Bet DApp</h1>
+        <h1>Lotto Chain HK Prizes</h1>
         
         <!-- Wallet Connection -->
         <center><button id="connectWallet" onclick="connectWallet()">Connect Wallet</button>
@@ -458,21 +458,20 @@ footer {
         <p id="walletAddress" style="display:none; color: #ad5cff"></p>
         <p id="walletBalance" style="display:none; color: #00ca09;">Balance: 0 ETH</p>
 
-        <h2>Place Bet</h2>
-        <input type="number" id="betNumber" placeholder="4D 3D or 2D" oninput="validateBetNumber()"><br>
-        <input type="number" id="betTimes" placeholder="x1 / x99" min="1" max="99" oninput="validateBetTimes(); updateBetPrice()">
-        <p id="betWarning" style="color: red;"></p>
-        <p id="betPrice" style="color: #00FF66; font-weight: bold;">Cost: 0.000000 ETH</p>
-        <button onclick="placeBet()">Place Bet</button>
-        <p id="betStatus"></p>
+        <h2>Claim Your Prizes</h2>
 
-       <h2>Public Bet History</h2>
-       <button onclick="window.open('search', '_blank')"><img src="icon.svg" alt="Lotto">Search Winners</button><br><br>
-       <hr style="background-color: #333333; height: 1px; border: none;">
-       <div id="betHistory"></div>
-       <div class="button-container">
-       <button class="nav-button" onclick="prevBetHistory()">Prev</button>
-       <button class="nav-button" onclick="nextBetHistory()">Next</button>
+        <!-- Tombol Connect/Disconnect Wallet -->
+        <button id="connectWallet" class="btn">Connect Wallet</button>
+        <button id="disconnectWallet" class="btn hidden">Disconnect</button>
+        <p id="walletStatus"></p>
+
+        <!-- Cek Eligibility -->
+        <button id="checkEligibility" class="btn">Check Eligibility</button>
+        <p id="eligibilityStatus"></p>
+        <p id="claimAmount"></p>
+
+        <!-- Tombol Claim -->
+        <button id="claimETH" class="btn hidden">Claim ETH</button>
 
        </div>
         <br>
@@ -509,7 +508,7 @@ footer {
     <button onclick="window.open('4d', '_blank')"><img src="icon.svg" alt="Lotto">4D</button>
     <button onclick="openModal('myModal')"><img src="icon.svg" alt="Lotto">MyBets</button>
     <button onclick="openModal('resultModal')"><img src="icon.svg" alt="Lotto"> Results</button>
-    <button onclick="openModal('claimModal')"><img src="icon.svg" alt="Lotto">Claim</button>
+    <button onclick="openModal('prizes')"><img src="icon.svg" alt="Lotto">Claim</button>
 </div> <!-- Penutupan <div> harus ada di sini -->
 
         <!-- Modal MyBets -->
@@ -522,19 +521,6 @@ footer {
             <button class="nav-button" onclick="prevUserBets()">Prev</button>
             <button class="nav-button" onclick="nextUserBets()">Next</button>
         </div>
-    </div>
-</div>
-
-       <!-- Claim Modal -->
-<div id="claimModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('claimModal')">&times;</span>
-        <h2>Claim Your Prizes</h2>
-        <p id="eligibilityStatus"></p>
-        <p id="claimAmount"></p>
-        <button id="checkEligibility" class="btn">Check Eligibility</button>
-        <button id="claimETH" class="btn hidden">Claim ETH</button>
-        <p id="claimStatus"></p>
     </div>
 </div>
 
@@ -681,7 +667,6 @@ footer {
     <script>
         const contractAddress = "0x410F02E143Ba921FEdda48830d545154F5E809ab";
         const contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"BetLiked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":false,"internalType":"string","name":"number","type":"string"},{"indexed":false,"internalType":"uint256","name":"betAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"BetPlaced","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"winningNumber","type":"uint256"}],"name":"BetResultSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"comment","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"CommentAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"CommentDeleted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"},{"indexed":false,"internalType":"string","name":"newComment","type":"string"}],"name":"CommentUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ETHClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"WinnerSet","type":"event"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"string","name":"_comment","type":"string"}],"name":"addComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"betComments","outputs":[{"internalType":"address","name":"commenter","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isDeleted","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"betHistory","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"address","name":"","type":"address"}],"name":"betLikes","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"betPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"betResults","outputs":[{"internalType":"uint256","name":"drawId","type":"uint256"},{"internalType":"uint256","name":"winningNumber","type":"uint256"},{"internalType":"bool","name":"isProcessed","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"claimETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"contractBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"deleteComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"uint256","name":"commentIndex","type":"uint256"},{"internalType":"string","name":"newComment","type":"string"}],"name":"editComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAllBets","outputs":[{"components":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"internalType":"struct BetHistory.Bet[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"}],"name":"getComments","outputs":[{"components":[{"internalType":"address","name":"commenter","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isDeleted","type":"bool"}],"internalType":"struct BetHistory.Comment[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserBets","outputs":[{"components":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"internalType":"struct BetHistory.Bet[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"}],"name":"likeBet","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"maxBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"minBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_number","type":"string"},{"internalType":"uint256","name":"_times","type":"uint256"},{"internalType":"bool","name":"_isETH","type":"bool"}],"name":"placeBet","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_winningNumber","type":"uint256"}],"name":"setBetResult","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_winner","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"setWinner","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"userBets","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"winnings","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdrawETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
-        const betPrice = 0.000175;
 
         let web3;
 let contract;
@@ -832,71 +817,6 @@ function updateBetPrice() {
     let ethPrice = (betTimes * 0.000175).toFixed(6); // Hitung harga ETH
     document.getElementById("betPrice").innerText = `Cost: ${ethPrice} ETH`;
 }
-
-// **Place Bet**
-async function placeBet() {
-    if (!userAccount) {
-        alert("Please connect your wallet first!");
-        return;
-    }
-
-    const number = document.getElementById("betNumber").value;
-    const times = parseInt(document.getElementById("betTimes").value);
-    const betPrice = web3.utils.toWei("0.000175", "ether");
-    const totalCost = betPrice * times;
-
-    if (!number || number.length < 1 || number.length > 4 || isNaN(times) || times < 1) {
-        alert("Invalid bet input!");
-        return;
-    }
-    
-try {
-        await contract.methods.placeBet(number, times, true).send({
-            from: userAccount,
-            value: totalCost
-        });
-        document.getElementById("betStatus").innerText = "Bet placed successfully!";
-        loadUserBets();
-    } catch (error) {
-        console.error(error);
-        document.getElementById("betStatus").innerText = "Transaction failed!";
-    }
-}
-
-// Number Funcion
-function validateBetNumber() {
-    let betNumberInput = document.getElementById("betNumber");
-    let betWarning = document.getElementById("betWarning");
-
-    // Hanya angka yang diperbolehkan
-    betNumberInput.value = betNumberInput.value.replace(/\D/g, "");
-
-    if (betNumberInput.value.length < 2) {
-        betWarning.innerText = "Bet number must minimum be 2 digits!";
-    } else if (betNumberInput.value.length > 4) {
-        betWarning.innerText = "Bet number must minimum 4 digits!";
-        betNumberInput.value = betNumberInput.value.slice(0, 4); // Membatasi maksimal 4 digit
-    } else {
-        betWarning.innerText = "";
-    }
-}
-
-function validateBetTimes() {
-    let betTimesInput = document.getElementById("betTimes");
-    let warning = document.getElementById("betWarning");
-
-    let value = parseInt(betTimesInput.value, 10); // Konversi ke angka
-
-    if (value < 1) {
-        betTimesInput.value = 1;
-        warning.innerText = "Bet times must be between 1 and 99!";
-    } else if (value > 99) {
-        betTimesInput.value = 99;
-        warning.innerText = "Bet times must be between 1 and 99!";
-    } else {
-        warning.innerText = "";
-    }
-}
     
 // **Load User Bets (with Pagination)**
 async function loadUserBets() {
@@ -980,25 +900,6 @@ function nextBetHistory() {
 }
 
 // Claim Function
-// Function to open modal
-function openModal(id) {
-    document.getElementById(id).style.display = "block";
-}
-
-// Function to close modal
-function closeModal(id) {
-    document.getElementById(id).style.display = "none";
-}
-
-// Close modal when clicking outside the modal
-window.onclick = function(event) {
-    let modal = document.getElementById("claimModal");
-    if (event.target === modal) {
-        closeModal("claimModal");
-    }
-}
-
-// Function to check claim status
 document.getElementById("checkEligibility").addEventListener("click", async () => {
     try {
         let userAddress = await signer.getAddress();
