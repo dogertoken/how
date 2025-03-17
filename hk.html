@@ -528,19 +528,6 @@ footer {
     </div>
 </div>
 
-       <!-- Claim Modal -->
-<div id="claimModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('claimModal')">&times;</span>
-        <h2>Claim Your Prizes</h2>
-        <p id="eligibilityStatus"></p>
-        <p id="claimAmount"></p>
-        <button id="checkEligibility" class="btn">Check Eligibility</button>
-        <button id="claimETH" class="btn hidden">Claim ETH</button>
-        <p id="claimStatus"></p>
-    </div>
-</div>
-
        <!-- Menu Modal -->
 <div id="menuModal" class="modal">
     <div class="modal-content">
@@ -981,70 +968,6 @@ function nextBetHistory() {
     betHistoryPage++;
     loadBetHistory();
 }
-
-// Claim Function
-// Function to open modal
-function openModal(id) {
-    document.getElementById(id).style.display = "block";
-}
-
-// Function to close modal
-function closeModal(id) {
-    document.getElementById(id).style.display = "none";
-}
-
-// Close modal when clicking outside the modal
-window.onclick = function(event) {
-    let modal = document.getElementById("claimModal");
-    if (event.target === modal) {
-        closeModal("claimModal");
-    }
-}
-
-// Function to check claim status
-document.getElementById("checkEligibility").addEventListener("click", async () => {
-    try {
-        let userAddress = await signer.getAddress();
-        let amount = await contract.winnings(userAddress);
-
-        let eligibilityStatus = document.getElementById("eligibilityStatus");
-        let claimAmount = document.getElementById("claimAmount");
-        let claimETHButton = document.getElementById("claimETH");
-
-        if (amount.gt(0)) {
-            eligibilityStatus.innerHTML = `<img src="check.png" width="16" height="16"> <span style="color: #00FF66;">Congratulations! You won, claim your prizes!</span>`;
-            claimAmount.innerHTML = `Total Prize: <span style="color: #00FF66;">${ethers.utils.formatEther(amount)} ETH</span>`;
-            claimETHButton.classList.remove("hidden");
-        } else {
-            eligibilityStatus.innerHTML = `<img src="cross.png" width="16" height="16"> <span style="color: red;">Sorry, you didn't win this time. Try again!</span>`;
-            claimAmount.innerHTML = `Total Prize: <span style="color: red;">0 ETH</span>`;
-            claimETHButton.classList.add("hidden");
-        }
-    } catch (error) {
-        console.error("Failed to check claim status:", error);
-    }
-});
-
-// Function to claim ETH
-document.getElementById("claimETH").addEventListener("click", async () => {
-    try {
-        let claimStatus = document.getElementById("claimStatus");
-        claimStatus.innerHTML = `<img src="loading.png" width="16" height="16"> <span style="color: #ccc;">Processing your claim...</span>`;
-
-        let tx = await contract.claimETH();
-        await tx.wait();
-
-        claimStatus.innerHTML = `<img src="check.png" width="16" height="16"> <span style="color: #00FF66;">Claim successful!</span>`;
-        alert("Prizes ETH successfully claimed!");
-
-        // Refresh claim status
-        document.getElementById("checkEligibility").click();
-    } catch (error) {
-        document.getElementById("claimStatus").innerHTML = `<img src="cross.png" width="16" height="16"> <span style="color: red;">Claim failed!</span>`;
-        alert("Failed to claim prizes!");
-        console.error(error);
-    }
-});
 
 // Fungsi untuk memperbarui riwayat ketika Ball 1 diperbarui
 document.addEventListener("DOMContentLoaded", function() {
