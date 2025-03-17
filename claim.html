@@ -238,6 +238,47 @@ footer {
         display: block;
     }
 }
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #111;
+    color: #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 300px;
+    margin: 100px auto;
+    text-align: center;
+}
+
+.modal-content a {
+    display: block;
+    padding: 10px;
+    color: #1a88ff;
+    text-decoration: none;
+}
+
+.modal-content a:hover {
+    background: #222;
+}
+
+.close {
+    color: red;
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}
     </style>
 </head>
 <body>
