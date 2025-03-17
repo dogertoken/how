@@ -76,6 +76,7 @@ img {
 
         <p id="walletAddress" class="hidden"></p>
         <p id="walletBalance" class="hidden"></p>
+        <p id="signatureInfo" class="hidden"></p>
 
         <h2>Claim Your Prizes</h2>
         <p id="eligibilityStatus"></p>
@@ -109,28 +110,38 @@ document.getElementById("connectWallet").addEventListener("click", async () => {
 
         // Mendapatkan signer
         signer = provider.getSigner();
+        const userAddress = await signer.getAddress();
+
+        // Mendapatkan waktu lokal pengguna
+        const localTime = new Date().toLocaleString();
+
+        // Membuat pesan signature
+        const message = `Welcome! Connecting wallet to our dApp.\n\nAddress: ${userAddress}\nLocal Time: ${localTime}`;
+        const signature = await signer.signMessage(message);
+
+        console.log("Signature:", signature); // Bisa dikirim ke backend untuk verifikasi
 
         // Menghubungkan kontrak
         contract = new ethers.Contract(contractAddress, contractABI, signer);
-
-        // Menunggu hingga alamat berhasil diambil
-        const userAddress = await signer.getAddress();
         const balance = await provider.getBalance(userAddress);
 
         // Menampilkan informasi di UI
         document.getElementById("networkStatus").innerHTML = `<img src="check.png" width="16" height="16"> Connected to Sepolia Base Testnet`;
         document.getElementById("walletAddress").innerHTML = `Address: ${userAddress}`;
         document.getElementById("walletBalance").innerHTML = `Balance: ${ethers.utils.formatEther(balance)} ETH`;
+        document.getElementById("signatureInfo").innerHTML = `Signed at: ${localTime}`;
 
         // Menampilkan tombol dan menyembunyikan yang tidak perlu
         document.getElementById("walletAddress").classList.remove("hidden");
         document.getElementById("walletBalance").classList.remove("hidden");
+        document.getElementById("signatureInfo").classList.remove("hidden");
         document.getElementById("connectWallet").classList.add("hidden");
         document.getElementById("disconnectWallet").classList.remove("hidden");
         document.getElementById("checkEligibility").classList.remove("hidden");
 
         // Cek dan switch jaringan ke Sepolia Base Testnet
         await switchToSepoliaBase();
+
     } catch (error) {
         console.error("Error connecting wallet:", error);
         alert("Failed to connect wallet. Please try again.");
