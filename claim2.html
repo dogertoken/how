@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bet History DApp</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.0/web3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js" crossorigin="anonymous"></script>
+    <style>
+body {
+    font-family: Ubuntu, sans-serif;
+    text-align: center;
+    margin: 20px auto;
+    width: 100%;
+    max-width: 1000px;
+    background-color: #000;
+    color: #F8F8FF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+        
+.container {
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+    background: #000000; /* Efek transparan */
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+/* Kolom Input dengan Efek Glassmorphism */
+input {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    width: 90%;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
+    transition: all 0.4s ease-in-out;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Efek Neon Biru Glassmorphism saat Hover */
+input:hover {
+    background: rgba(0, 0, 255, 0.2); /* Biru neon transparan */
+    box-shadow: 0 0 15px rgba(0, 153, 255, 0.8), 
+                0 0 25px rgba(0, 153, 255, 0.6), 
+                0 0 35px rgba(0, 153, 255, 0.4);
+}
+
+button {
+    font-size: 0.7em;
+    padding: 6px 12px;
+    border-radius: 0.7em;
+    border: none;
+    background-color: #000;
+    color: #fff;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 0, 255, 0.6);
+    transition: all 0.3s ease-in-out;
+    font-family: Ubuntu, sans-serif;
+}
+
+ .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Jarak antar tombol diperbesar */
+ }
+
+/* Efek Neon Glow */
+button::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 0.9em;
+    background: linear-gradient(90deg, #03a9f4, #f441a5);
+    z-index: -1;
+    filter: blur(0);
+    transition: filter 0.4s ease, opacity 0.4s ease;
+    opacity: 1;
+}
+
+/* Efek Hover */
+button:hover::before {
+    filter: blur(1.2em);
+    opacity: 1;
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Efek Tekan */
+button:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+button:active::before {
+    filter: blur(0.2em);
+}
+
+/* Efek Gelombang saat Diklik */
+button::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 70%);
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    transition: transform 0.5s, opacity 0.5s;
+}
+
+button:active::after {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 1;
+}
+
+/* Tombol Disconnect (Efek Neon Merah) */
+#disconnectWallet {
+    background: linear-gradient(135deg, #ff0033, #cc0000);
+    box-shadow: 0 0 12px rgba(255, 0, 51, 0.6), 0 0 20px rgba(255, 0, 51, 0.4);
+}
+
+#disconnectWallet:hover {
+    background: linear-gradient(135deg, #cc0000, #ff0033);
+    box-shadow: 0 0 20px rgba(255, 0, 51, 0.9), 0 0 30px rgba(255, 0, 51, 0.7);
+}
+
+/* Ukuran Wallet Address Lebih Kecil */
+#walletAddress {
+    font-size: 12px;
+}
+
+#betHistory, #userBets {
+    font-size: 13px; /* Ukuran font yang nyaman */
+    text-align: justify; /* Rata kiri-kanan seperti di buku */
+    hyphens: auto; /* Tambahkan pemenggalan kata jika perlu */
+    line-height: 1.8; /* Jarak antar baris agar lebih nyaman dibaca */
+    max-width: 600px; /* Batasi lebar agar tidak terlalu panjang */
+    margin: auto; /* Pusatkan jika diperlukan */
+    padding: 15px; /* Beri ruang di dalam agar tidak terlalu mepet */
+    text-indent: 20px; /* Tambahkan indentasi di awal paragraf */
+}
+
+table {
+    width: 100%; /* Bisa diperkecil lagi, misalnya 50% jika terlalu lebar */
+    max-width: 900px; /* Agar tabel tidak terlalu besar di layar lebar */
+    border-collapse: collapse;
+    margin: 20px auto; /* 'auto' agar tabel tetap di tengah */
+    font-size: 18px; /* Kecilkan agar tabel lebih compact */
+    text-align: left;
+}
+
+th, td {
+    padding: 8px; /* Kurangi padding agar tabel lebih kecil */
+    border: 1px solid #ddd;
+}
+
+th {
+    background: linear-gradient(135deg, rgba(245, 245, 220, 0.3), rgba(255, 255, 255, 0.1));
+    color: white;
+}
+        
+footer {
+        text-align: center;
+        margin-top: 20px;
+        padding: 10px;
+        background: #111; /* Warna gelap */
+        color: #ddd; /* Warna teks */
+        font-size: 12px;
+    }
+
+    .social-icons {
+        margin-bottom: 10px;
+    }
+
+    .social-icons a {
+    background: rgba(255, 255, 255, 0.2); /* Transparan seperti kaca */
+    border-radius: 10px; /* Agar sedikit membulat */
+    padding: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white; /* Warna ikon */
+    font-size: 15px;
+    margin: 0 5px;
+    text-decoration: none;
+    transition: transform 0.5s ease, text-shadow 0.5s ease, box-shadow 0.5s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 255, 0.6); /* Cahaya biru */
+    backdrop-filter: blur(10px); /* Efek blur kaca */
+}
+
+/* Efek saat hover */
+.social-icons a:hover {
+    color: #1a88ff; /* Warna biru neon */
+    text-shadow: 0 0 10px #1a88ff, 0 0 20px #1a88ff, 0 0 30px #1a88ff; /* Glow lebih intens */
+    box-shadow: 0 0 20px rgba(0, 0, 255, 1), 0 0 30px rgba(0, 0, 255, 0.8); /* Shadow lebih terang */
+    transform: rotate(360deg); /* Efek berputar */
+}
+
+/* Gaya untuk modal */
+.modal {
+  display: none; /* Awalnya modal disembunyikan */
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Transparan gelap */
+}
+
+/* Konten modal */
+.modal-content {
+  background: #000000;
+  color: white;
+  margin: 10% auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 900px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+}
+
+/* Tombol close */
+.close {
+  color: white;
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+}
+.close:hover {
+  color: red;
+}
+
+/* Gaya tabel utama & history */
+.lottery-table, .history-table {
+    width: 100%;
+    margin: 10px 0;
+    border-collapse: collapse;
+}
+
+.lottery-table th, .history-table th {
+    background-color: #000000;
+    color: white;
+    padding: 10px;
+}
+
+.lottery-table td, .history-table td {
+    border: 1px solid #000000;
+    padding: 10px;
+    text-align: center;
+    background-color: #000000;
+    color: white;
+}
+
+/* Agar hasil utama bisa diedit langsung */
+.lottery-table td {
+    cursor: pointer;
+}
+
+.lottery-table td, .history-table td {
+    color: #00ca09;
+}
+        
+    #menu {
+    position: relative;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Transparan dengan efek gelap */
+    backdrop-filter: blur(10px); /* Efek Glassmorphism */
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 -4px 10px rgba(0, 0, 255, 0.3); /* Efek cahaya biru */
+    font-family: Ubuntu, sans-serif;
+}
+
+#menu button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+}
+
+/* Efek Hover */
+#menu button:hover {
+    color: #1a88ff;
+    transform: scale(1.1);
+}
+
+#menu button::before {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background: #1a88ff;
+    transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
+}
+
+#menu button:hover::before {
+    width: 100%;
+    left: 0;
+}
+
+/* Efek untuk icon */
+#menu button img {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+    filter: drop-shadow(0px 0px 5px rgba(0, 0, 255, 0.5)); /* Cahaya biru */
+    transition: transform 0.3s ease-in-out;
+}
+
+#menu button:hover img {
+    transform: rotate(360deg);
+}
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Modal Content */
+.modal-content {
+    background: #111;
+    color: white;
+    margin: 10% auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 900px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.5);
+}
+
+/* Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}
+.close:hover {
+    color: red;
+}
+
+/* Gaya tabel utama */
+.lottery-table, .history-table {
+    width: 100%;
+    margin: 10px 0;
+    border-collapse: collapse;
+}
+
+.lottery-table th, .history-table th {
+    background-color: #444;
+    color: white;
+    padding: 10px;
+}
+
+.lottery-table td, .history-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Table Styling */
+.menu-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+}
+
+/* Table Rows */
+.menu-table tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Table Cells */
+.menu-table td {
+    padding: 10px;
+    text-align: left;
+    color: white;
+    font-size: 16px;
+}
+
+/* Icons */
+.menu-table img {
+    width: 30px;
+    height: 30px;
+    filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.8));
+}
+
+/* Links */
+.menu-table a {
+    color: cyan;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s ease-in-out;
+}
+
+/* Hover Effect */
+.menu-table a:hover {
+    color: #ff0077;
+    text-shadow: 0 0 10px rgba(255, 0, 119, 0.8);
+}
+
+    </style>
+</head>
+<body>
+   <div class="container">
+        <h1>Lotto Bet DApp</h1>
+        
+        <!-- Wallet Connection -->
+        <center><button id="connectWallet" onclick="connectWallet()">Connect Wallet</button>
+        <button id="disconnectWallet" onclick="disconnectWallet()" style="display:none;">Disconnect</button></center>
+        <p id="walletAddress" style="display:none; color: #ad5cff"></p>
+        <p id="walletBalance" style="display:none; color: #00ca09;">Balance: 0 ETH</p>
+
+        <h2>Place Bet</h2>
+        <input type="number" id="betNumber" placeholder="4D 3D or 2D" oninput="validateBetNumber()"><br>
+        <input type="number" id="betTimes" placeholder="x1 / x99" min="1" max="99" oninput="validateBetTimes(); updateBetPrice()">
+        <p id="betWarning" style="color: red;"></p>
+        <p id="betPrice" style="color: #00FF66; font-weight: bold;">Cost: 0.000000 ETH</p>
+        <button onclick="placeBet()">Place Bet</button>
+        <p id="betStatus"></p>
+
+       <h2>Public Bet History</h2>
+       <button onclick="window.open('search', '_blank')"><img src="icon.svg" alt="Lotto">Search Winners</button><br><br>
+       <hr style="background-color: #333333; height: 1px; border: none;">
+       <div id="betHistory"></div>
+       <div class="button-container">
+       <button class="nav-button" onclick="prevBetHistory()">Prev</button>
+       <button class="nav-button" onclick="nextBetHistory()">Next</button>
+
+       </div>
+        <br>
+
+       <!-- Prize Table -->
+        <div id="prizes" class="section-box">
+        <center><h2>4D ETH Prize Payouts</h2></center>
+            <table>
+                <tr>
+                    <th>Bet Type</th>
+                    <th>Prize Multiplier</th>
+                    <th>Example (0.000175 ETH)</th>
+                </tr>
+                <tr>
+                    <td>4D</td>
+                    <td>50,000%</td>
+                    <td>0.0875 ETH</td>
+                </tr>
+                <tr>
+                    <td>3D</td>
+                    <td>5,000%</td>
+                    <td>0.00875 ETH</td>
+                </tr>
+                <tr>
+                    <td>2D</td>
+                    <td>500%</td>
+                    <td>0.000875 ETH</td>
+                </tr>
+            </table>
+        </div>
+
+<div id="menu">
+    <button onclick="openModal('menuModal')"><img src="icon.svg" alt="Lotto">Menu</button>
+    <button onclick="window.open('4d', '_blank')"><img src="icon.svg" alt="Lotto">4D</button>
+    <button onclick="openModal('myModal')"><img src="icon.svg" alt="Lotto">MyBets</button>
+    <button onclick="openModal('resultModal')"><img src="icon.svg" alt="Lotto"> Results</button>
+    <button onclick="openModal('claimModal')"><img src="icon.svg" alt="Lotto">Claim</button>
+</div> <!-- Penutupan <div> harus ada di sini -->
+
+        <!-- Modal MyBets -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('myModal')">&times;</span>
+        <h2>Your Bets</h2>
+        <div id="userBets"></div>
+        <div class="button-container">
+            <button class="nav-button" onclick="prevUserBets()">Prev</button>
+            <button class="nav-button" onclick="nextUserBets()">Next</button>
+        </div>
+    </div>
+</div>
+
+       <!-- Claim Modal -->
+<div id="claimModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('claimModal')">&times;</span>
+        <h2>Claim Your Prizes</h2>
+        <p id="eligibilityStatus"></p>
+        <p id="claimAmount"></p>
+        <button id="checkEligibility" class="btn">Check Eligibility</button>
+        <button id="claimETH" class="btn hidden">Claim ETH</button>
+        <p id="claimStatus"></p>
+    </div>
+</div>
+
+       <!-- Menu Modal -->
+<div id="menuModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('menuModal')">&times;</span>
+        <h2>Menu</h2>
+        <table class="menu-table">
+            <tr>
+                <td><img src="contoh.svg" alt="HK"></td>
+                <td><a href="hk" target="_blank">🇭🇰 Hong Kong (HK)</a></td>
+            </tr>
+            <tr>
+                <td><img src="contoh.svg" alt="SGP"></td>
+                <td><a href="sgp" target="_blank">🇸🇬 Singapore (SGP)</a></td>
+            </tr>
+            <tr>
+                <td><img src="contoh.svg" alt="SYD"></td>
+                <td><a href="syd" target="_blank">🇦🇺 Sydney (SYD)</a></td>
+            </tr>
+            <tr>
+                <td><img src="contoh.svg" alt="CHI"></td>
+                <td><a href="chi" target="_blank">🇨🇳 China (CHI)</a></td>
+            </tr>
+            <tr>
+                <td><img src="contoh.svg" alt="MC"></td>
+                <td><a href="mc" target="_blank">🇰🇭 Cambodia (MC)</a></td>
+            </tr>
+            <tr>
+                <td><img src="contoh.svg" alt="BE"></td>
+                <td><a href="be" target="_blank">🎯 Bull Eye (BE)</a></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+       <!-- Modal untuk menampilkan hasil -->
+<div id="resultModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('resultModal')">&times;</span>
+        <h2>Hong Kong (HK) Results Today</h2>
+
+        <!-- Tabel Utama (Empat Ball Utama) -->
+        <table class="lottery-table">
+            <thead>
+                <tr>
+                    <th style="color: #ffffff;">4D</th>
+                    <th style="color: #ffffff;">3D</th>
+                    <th style="color: #ffffff;">2D></th>
+                    <th style="color: #ffffff;"><2D</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td contenteditable="true">12</td>
+                    <td contenteditable="true">34</td>
+                    <td contenteditable="true">56</td>
+                    <td contenteditable="true">78</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Riwayat Hasil 7 Hari Terakhir -->
+        <h3>History (Last 7 Days)</h3>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th style="color: #ffffff;">Date</th>
+                    <th style="color: #ffffff;">4D</th>
+                    <th style="color: #ffffff;">3D</th>
+                    <th style="color: #ffffff;">2D></th>
+                    <th style="color: #ffffff;"><2D</th>
+                </tr>
+            </thead>
+            <tbody id="historyBody">
+                <tr>
+                    <td style="color: orange;">2024-10-01</td>
+                    <td>11</td>
+                    <td>22</td>
+                    <td>33</td>
+                    <td>44</td>
+                </tr>
+                <tr>
+                    <td style="color: orange;">2024-09-30</td>
+                    <td>55</td>
+                    <td>66</td>
+                    <td>77</td>
+                    <td>88</td>
+                </tr>
+                <tr>
+                    <td style="color: orange;">2024-09-29</td>
+                    <td>12</td>
+                    <td>23</td>
+                    <td>34</td>
+                    <td>45</td>
+                </tr>
+                <tr>
+                    <td style="color: orange;">2024-09-28</td>
+                    <td>67</td>
+                    <td>78</td>
+                    <td>89</td>
+                    <td>90</td>
+                </tr>
+                <tr>
+                    <td style="color: orange;">2024-09-27</td>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                </tr>
+                <tr>
+                    <td style="color: orange;">2024-09-26</td>
+                    <td>13</td>
+                    <td>24</td>
+                    <td>35</td>
+                    <td>46</td>
+                </tr>
+                <tr>
+                    <td style="color: orange;">2024-09-25</td>
+                    <td>99</td>
+                    <td>88</td>
+                    <td>77</td>
+                    <td>66</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+        <!-- Footer -->
+<footer>
+    <div class="social-icons">
+        <a href="https://twitter.com/" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+        <a href="https://t.me/" target="_blank"><i class="fa-brands fa-telegram"></i></a>
+        <a href="" target="_blank"><i class="fa-brands fa-discord"></i></a>
+        <a href="" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+        <a href="" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+    </div>
+    <p>© 2025 Powered By Lotto Chain. All rights reserved. Play responsibly.</p>
+</footer> 
+
+    <script src="script.js"></script>
+    <script>
+        const contractAddress = "0x410F02E143Ba921FEdda48830d545154F5E809ab";
+        const contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"BetLiked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":false,"internalType":"string","name":"number","type":"string"},{"indexed":false,"internalType":"uint256","name":"betAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"BetPlaced","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"winningNumber","type":"uint256"}],"name":"BetResultSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"comment","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"CommentAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"CommentDeleted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"},{"indexed":false,"internalType":"string","name":"newComment","type":"string"}],"name":"CommentUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ETHClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"WinnerSet","type":"event"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"string","name":"_comment","type":"string"}],"name":"addComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"betComments","outputs":[{"internalType":"address","name":"commenter","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isDeleted","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"betHistory","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"address","name":"","type":"address"}],"name":"betLikes","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"betPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"betResults","outputs":[{"internalType":"uint256","name":"drawId","type":"uint256"},{"internalType":"uint256","name":"winningNumber","type":"uint256"},{"internalType":"bool","name":"isProcessed","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"claimETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"contractBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"deleteComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"uint256","name":"commentIndex","type":"uint256"},{"internalType":"string","name":"newComment","type":"string"}],"name":"editComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAllBets","outputs":[{"components":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"internalType":"struct BetHistory.Bet[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"}],"name":"getComments","outputs":[{"components":[{"internalType":"address","name":"commenter","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isDeleted","type":"bool"}],"internalType":"struct BetHistory.Comment[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserBets","outputs":[{"components":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"internalType":"struct BetHistory.Bet[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"}],"name":"likeBet","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"maxBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"minBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_number","type":"string"},{"internalType":"uint256","name":"_times","type":"uint256"},{"internalType":"bool","name":"_isETH","type":"bool"}],"name":"placeBet","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_winningNumber","type":"uint256"}],"name":"setBetResult","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_winner","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"setWinner","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"userBets","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"winnings","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdrawETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
+        const betPrice = 0.000175;
+
+        let web3;
+let contract;
+let userAccount;
+let userBetsPage = 0;
+let betHistoryPage = 0;
+const pageSize = 10;
+const SEPOLIA_BASE_CHAIN_ID = "0x14a34"; // Chain ID Sepolia Base Testnet
+const SEPOLIA_RPC_URL = "https://sepolia.base.org"; // RPC Sepolia Base
+const SEPOLIA_EXPLORER_URL = "https://sepolia.basescan.org"; // Block Explorer
+const SEPOLIA_CURRENCY = { name: "Ethereum", symbol: "ETH", decimals: 18 };
+
+// **Check Connection on Page Load**
+window.addEventListener("load", async () => {
+    if (window.ethereum) {
+        const savedAccount = localStorage.getItem("walletAddress");
+        if (savedAccount) {
+            try {
+                web3 = new Web3(window.ethereum);
+                await switchToSepoliaBase(); // Pindah ke jaringan Sepolia jika belum
+                const accounts = await web3.eth.getAccounts();
+                if (accounts.length > 0) {
+                    userAccount = accounts[0];
+                    contract = new web3.eth.Contract(contractABI, contractAddress);
+
+                    document.getElementById("walletAddress").innerText = `Connected: ${userAccount}`;
+                    document.getElementById("walletAddress").style.display = "block";
+                    document.getElementById("walletBalance").style.display = "block";
+                    document.getElementById("connectWallet").style.display = "none";
+                    document.getElementById("disconnectWallet").style.display = "block";
+
+                    updateBalance();
+                    loadUserBets();
+                    loadBetHistory();
+                }
+            } catch (error) {
+                console.error("Auto-connect failed:", error);
+                localStorage.removeItem("walletAddress");
+            }
+        }
+    } else {
+        alert("MetaMask is not installed!");
+    }
+});
+
+// **Connect Wallet**
+async function connectWallet() {
+    if (window.ethereum) {
+        try {
+            web3 = new Web3(window.ethereum);
+            await switchToSepoliaBase();
+
+            // Request access to accounts
+            const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+
+            if (accounts.length === 0) {
+                throw new Error("No accounts found. Please connect your wallet.");
+            }
+
+            userAccount = accounts[0];
+            localStorage.setItem("walletAddress", userAccount);
+
+            // Signature Verification
+            const timestamp = new Date().toISOString();
+            const message = `Verifying user Connect To Lotto Chain HK Play & Win!\nWallet: ${userAccount}\nTime: ${timestamp}`;
+            const signature = await web3.eth.personal.sign(message, userAccount, "");
+            console.log("Signature:", signature);
+
+            contract = new web3.eth.Contract(contractABI, contractAddress);
+
+            document.getElementById("walletAddress").innerText = `Connected: ${userAccount}`;
+            document.getElementById("walletAddress").style.display = "block";
+            document.getElementById("walletBalance").style.display = "block";
+            document.getElementById("connectWallet").style.display = "none";
+            document.getElementById("disconnectWallet").style.display = "block";
+
+            updateBalance();
+            loadUserBets();
+            loadBetHistory();
+        } catch (error) {
+            console.error("Connection failed:", error);
+            alert(`Connection failed: ${error.message}`);
+        }
+    } else {
+        alert("Please install MetaMask!");
+    }
+}
+
+// **Switch to Sepolia Base Testnet**
+async function switchToSepoliaBase() {
+    try {
+        const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
+
+        if (currentChainId !== SEPOLIA_BASE_CHAIN_ID) {
+            try {
+                await window.ethereum.request({
+                    method: "wallet_switchEthereumChain",
+                    params: [{ chainId: SEPOLIA_BASE_CHAIN_ID }]
+                });
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    // Add the network if it doesn't exist
+                    await window.ethereum.request({
+                        method: "wallet_addEthereumChain",
+                        params: [{
+                            chainId: SEPOLIA_BASE_CHAIN_ID,
+                            chainName: "Base Sepolia Testnet",
+                            nativeCurrency: SEPOLIA_CURRENCY,
+                            rpcUrls: [SEPOLIA_RPC_URL],
+                            blockExplorerUrls: [SEPOLIA_EXPLORER_URL]
+                        }]
+                    });
+                } else {
+                    throw switchError;
+                }
+            }
+        }
+    } catch (error) {
+        console.error("Failed to switch network:", error);
+        alert("Failed to switch network to Sepolia Base Testnet!");
+    }
+}
+
+// **Disconnect Wallet**
+function disconnectWallet() {
+    userAccount = null;
+    localStorage.removeItem("walletAddress");
+
+    document.getElementById("walletAddress").innerText = "";
+    document.getElementById("walletAddress").style.display = "none";
+    document.getElementById("walletBalance").innerText = "Balance: 0 ETH";
+    document.getElementById("walletBalance").style.display = "none";
+    document.getElementById("connectWallet").style.display = "block";
+    document.getElementById("disconnectWallet").style.display = "none";
+}
+
+// **Update Balance**
+async function updateBalance() {
+    if (userAccount) {
+        let balanceWei = await web3.eth.getBalance(userAccount);
+        let balanceEth = web3.utils.fromWei(balanceWei, "ether");
+        document.getElementById("walletBalance").innerText = `Balance: ${parseFloat(balanceEth).toFixed(4)} ETH`;
+    }
+}
+       
+function updateBetPrice() {
+    let betTimes = document.getElementById("betTimes").value;
+    let ethPrice = (betTimes * 0.000175).toFixed(6); // Hitung harga ETH
+    document.getElementById("betPrice").innerText = `Cost: ${ethPrice} ETH`;
+}
+
+// **Place Bet**
+async function placeBet() {
+    if (!userAccount) {
+        alert("Please connect your wallet first!");
+        return;
+    }
+
+    const number = document.getElementById("betNumber").value;
+    const times = parseInt(document.getElementById("betTimes").value);
+    const betPrice = web3.utils.toWei("0.000175", "ether");
+    const totalCost = betPrice * times;
+
+    if (!number || number.length < 1 || number.length > 4 || isNaN(times) || times < 1) {
+        alert("Invalid bet input!");
+        return;
+    }
+    
+try {
+        await contract.methods.placeBet(number, times, true).send({
+            from: userAccount,
+            value: totalCost
+        });
+        document.getElementById("betStatus").innerText = "Bet placed successfully!";
+        loadUserBets();
+    } catch (error) {
+        console.error(error);
+        document.getElementById("betStatus").innerText = "Transaction failed!";
+    }
+}
+
+// Number Funcion
+function validateBetNumber() {
+    let betNumberInput = document.getElementById("betNumber");
+    let betWarning = document.getElementById("betWarning");
+
+    // Hanya angka yang diperbolehkan
+    betNumberInput.value = betNumberInput.value.replace(/\D/g, "");
+
+    if (betNumberInput.value.length < 2) {
+        betWarning.innerText = "Bet number must minimum be 2 digits!";
+    } else if (betNumberInput.value.length > 4) {
+        betWarning.innerText = "Bet number must minimum 4 digits!";
+        betNumberInput.value = betNumberInput.value.slice(0, 4); // Membatasi maksimal 4 digit
+    } else {
+        betWarning.innerText = "";
+    }
+}
+
+function validateBetTimes() {
+    let betTimesInput = document.getElementById("betTimes");
+    let warning = document.getElementById("betWarning");
+
+    let value = parseInt(betTimesInput.value, 10); // Konversi ke angka
+
+    if (value < 1) {
+        betTimesInput.value = 1;
+        warning.innerText = "Bet times must be between 1 and 99!";
+    } else if (value > 99) {
+        betTimesInput.value = 99;
+        warning.innerText = "Bet times must be between 1 and 99!";
+    } else {
+        warning.innerText = "";
+    }
+}
+    
+// **Load User Bets (with Pagination)**
+async function loadUserBets() {
+    if (!userAccount) return;
+    const bets = await contract.methods.getUserBets(userAccount).call();
+    const reversedBets = bets.slice().reverse(); // Membalik urutan bets agar yang terbaru di atas
+
+    const start = userBetsPage * pageSize;
+    const end = Math.min(start + pageSize, reversedBets.length);
+
+                let html = "";
+                for (let i = start; i < end; i++) {
+                    let bet = reversedBets[i];
+                    let shortPlayer = bet.player.slice(0, 10) + "..." + bet.player.slice(-10);
+                    let shortTxHash = bet.txHash.slice(0, 10) + "..." + bet.txHash.slice(-10);
+
+                    html += `<p>
+                        Wallet: <span style="color: #ad5cff;">${shortPlayer}</span><br>
+                        BetID: <span style="color: #ffcc00;">${bet.betId}</span><br>
+                        BetNumber: <span style="color: #00FF66;">${bet.number}</span><br>
+                        BetAmount: <span style="color: #00FF66;">${bet.betAmount}</span><br>
+                        Tx: <span style="color: #fe6666;">${shortTxHash}</span><br>
+                        Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank" style="color: #1a88ff;">${bet.blockNumber}</a><br>
+                        Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
+                    </p><hr style="background-color: #333333; height: 1px; border: none;">`;
+                }
+            document.getElementById("userBets").innerHTML = html;
+        }
+        
+                    
+// **User Bets Pagination**
+function prevUserBets() {
+    if (userBetsPage > 0) {
+        userBetsPage--;
+        loadUserBets();
+    }
+}
+
+function nextUserBets() {
+    userBetsPage++;
+    loadUserBets();
+}
+
+// **Load Bet History (with Pagination)**
+async function loadBetHistory() {
+    const bets = await contract.methods.getAllBets().call();
+    const reversedBets = bets.slice().reverse(); // Membalik urutan bets
+
+    const start = betHistoryPage * pageSize;
+    const end = Math.min(start + pageSize, reversedBets.length);
+
+    let html = "";
+    for (let i = start; i < end; i++) {
+        let bet = reversedBets[i];
+        let shortPlayer = bet.player.slice(0, 10) + "..." + bet.player.slice(-10);
+        let shortTxHash = bet.txHash.slice(0, 10) + "..." + bet.txHash.slice(-10);
+
+        html += `<p>Player: <span style="color: #ad5cff;">${shortPlayer}</span><br>
+            BetID: <span style="color: #ffcc00;">${bet.betId}</span><br> <!-- Tambahkan BetID -->
+            BetNumber: <span style="color: #00FF66;">${bet.number}</span><br>
+            BetAmount: <span style="color: #00FF66;">${bet.betAmount}</span><br>
+            Tx: <span style="color: #fe6666;">${shortTxHash}</span><br>
+            Block: <a href="https://basescan.io/block/${bet.blockNumber}" target="_blank" style="color: #1a88ff;">${bet.blockNumber}</a><br>
+            Time: <span style="color: orange;">${new Date(bet.timestamp * 1000).toISOString()} UTC</span><br>
+        </p><hr style="background-color: #333333; height: 1px; border: none;">`; 
+    }
+    document.getElementById("betHistory").innerHTML = html;
+}
+
+// **Bet History Pagination**
+function prevBetHistory() {
+    if (betHistoryPage > 0) {
+        betHistoryPage--;
+        loadBetHistory();
+    }
+}
+
+function nextBetHistory() {
+    betHistoryPage++;
+    loadBetHistory();
+}
+
+// Claim Function
+// Function to open modal
+function openModal(id) {
+    document.getElementById(id).style.display = "block";
+}
+
+// Function to close modal
+function closeModal(id) {
+    document.getElementById(id).style.display = "none";
+}
+
+// Close modal when clicking outside the modal
+window.onclick = function(event) {
+    let modal = document.getElementById("claimModal");
+    if (event.target === modal) {
+        closeModal("claimModal");
+    }
+}
+
+// Function to check claim status
+document.getElementById("checkEligibility").addEventListener("click", async () => {
+    try {
+        let userAddress = await signer.getAddress();
+        let amount = await contract.winnings(userAddress);
+
+        let eligibilityStatus = document.getElementById("eligibilityStatus");
+        let claimAmount = document.getElementById("claimAmount");
+        let claimETHButton = document.getElementById("claimETH");
+
+        if (amount.gt(0)) {
+            eligibilityStatus.innerHTML = `<img src="check.png" width="16" height="16"> <span style="color: #00FF66;">Congratulations! You won, claim your prizes!</span>`;
+            claimAmount.innerHTML = `Total Prize: <span style="color: #00FF66;">${ethers.utils.formatEther(amount)} ETH</span>`;
+            claimETHButton.classList.remove("hidden");
+        } else {
+            eligibilityStatus.innerHTML = `<img src="cross.png" width="16" height="16"> <span style="color: red;">Sorry, you didn't win this time. Try again!</span>`;
+            claimAmount.innerHTML = `Total Prize: <span style="color: red;">0 ETH</span>`;
+            claimETHButton.classList.add("hidden");
+        }
+    } catch (error) {
+        console.error("Failed to check claim status:", error);
+    }
+});
+
+// Function to claim ETH
+document.getElementById("claimETH").addEventListener("click", async () => {
+    try {
+        let claimStatus = document.getElementById("claimStatus");
+        claimStatus.innerHTML = `<img src="loading.png" width="16" height="16"> <span style="color: #ccc;">Processing your claim...</span>`;
+
+        let tx = await contract.claimETH();
+        await tx.wait();
+
+        claimStatus.innerHTML = `<img src="check.png" width="16" height="16"> <span style="color: #00FF66;">Claim successful!</span>`;
+        alert("Prizes ETH successfully claimed!");
+
+        // Refresh claim status
+        document.getElementById("checkEligibility").click();
+    } catch (error) {
+        document.getElementById("claimStatus").innerHTML = `<img src="cross.png" width="16" height="16"> <span style="color: red;">Claim failed!</span>`;
+        alert("Failed to claim prizes!");
+        console.error(error);
+    }
+});
+
+// Fungsi untuk memperbarui riwayat ketika Ball 1 diperbarui
+document.addEventListener("DOMContentLoaded", function() {
+    let ball1 = document.querySelector(".lottery-table td:first-child");
+
+    ball1.addEventListener("input", function() {
+        updateHistory(ball1.innerText.trim());
+    });
+});
+
+function updateHistory(newBall1) {
+    let historyTable = document.getElementById("historyBody");
+    let rows = historyTable.getElementsByTagName("tr");
+
+    // Ambil nilai dari baris pertama untuk di-shift ke bawah
+    let previousBall1 = rows[0].children[1].innerText;
+    let previousBall2 = rows[0].children[2].innerText;
+    let previousBall3 = rows[0].children[3].innerText;
+    let previousBall4 = rows[0].children[4].innerText;
+
+    // Geser data ke bawah
+    for (let i = rows.length - 1; i > 0; i--) {
+        rows[i].children[1].innerText = rows[i - 1].children[1].innerText;
+        rows[i].children[2].innerText = rows[i - 1].children[2].innerText;
+        rows[i].children[3].innerText = rows[i - 1].children[3].innerText;
+        rows[i].children[4].innerText = rows[i - 1].children[4].innerText;
+    }
+
+    // Perbarui data di baris pertama dengan data terbaru
+    rows[0].children[1].innerText = newBall1;
+    rows[0].children[2].innerText = previousBall1;
+    rows[0].children[3].innerText = previousBall2;
+    rows[0].children[4].innerText = previousBall3;
+}
+
+// Fungsi untuk membuka modal berdasarkan ID
+function openModal(modalId) {
+    let modal = document.getElementById(modalId);
+    
+    if (modal) {
+        if (modalId === "myModal") {
+            let userBets = document.getElementById("userBets");
+            if (!userBets.innerHTML.trim()) {
+                userBets.innerHTML = "<p style='text-align: center; font-weight: bold; color: red;'>No bet history available.</p>";
+            }
+        }
+
+        modal.style.display = "block";
+    }
+}
+
+// Fungsi untuk menutup modal berdasarkan ID
+function closeModal(modalId) {
+    let modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+// Fungsi khusus untuk menutup modal
+function closeMyBets() {
+    closeModal('myModal');
+}
+
+function closeMenu() {
+    closeModal('menuModal');
+}
+
+function closeResult() {
+    closeModal('resultModal');
+}
+        
+// Initialize saat halaman terbuka
+window.onload = () => {
+    if (window.ethereum) {
+        window.ethereum.on("accountsChanged", (accounts) => {
+            if (accounts.length > 0) {
+                userAccount = accounts[0];
+                document.getElementById("walletAddress").innerText = `Connected: ${userAccount}`;
+                document.getElementById("walletAddress").style.display = "block";
+                document.getElementById("walletBalance").style.display = "block";
+                document.getElementById("connectWallet").style.display = "none";
+                document.getElementById("disconnectWallet").style.display = "block";
+                
+                updateBalance();
+                loadUserBets();
+                loadBetHistory();
+            } else {
+                disconnectWallet();
+            }
+        });
+    }
+};
+    </script>
+</body>
+</html>
