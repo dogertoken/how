@@ -530,10 +530,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Open Modal
-    function toggleMenu() {
-    const menuDrawer = document.getElementById("menuDrawer");
-    menuDrawer.classList.toggle("show");
+function toggleMenu() {
+    let menuDrawer = document.getElementById("menuDrawer");
+    
+    // Cek apakah modal sedang ditampilkan
+    if (menuDrawer.style.display === "flex") {
+        menuDrawer.style.display = "none"; // Sembunyikan modal
+    } else {
+        menuDrawer.style.display = "flex"; // Tampilkan modal
     }
+}
 
     // 🔹 Menampilkan Tombol "Check Eligibility" Setelah Wallet Terhubung
     document.getElementById("connectWallet").addEventListener("click", async () => {
