@@ -195,14 +195,17 @@ footer {
 <body>
     <div class="container">
         <h1>Claim Your Prizes</h1>
+        <br>
+        <button id="connectWallet" class="btn">Connect Wallet</button>
+        <button id="disconnectWallet" class="btn hidden">Disconnect</button>
+        <br>
+        
         <p class="status" style="color: green" id="networkStatus">
     <span style="color: #1a88ff;">
         <img src="loading.png" width="16" height="16"> Checking network...
     </span>
-        </p>
-        <button id="connectWallet" class="btn">Connect Wallet</button>
-        <button id="disconnectWallet" class="btn hidden">Disconnect</button>
-
+        </p><br>
+        
         <p id="walletAddress" class="hidden"></p>
         <p id="walletBalance" class="hidden"></p>
         <p id="signatureInfo" class="hidden"></p>
