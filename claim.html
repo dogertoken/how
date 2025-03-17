@@ -63,63 +63,95 @@ button:hover {
     font-size: 14px;
     color: #555;
 }
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%;
+    text-align: center;
+}
+
+.close {
+    color: red;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover {
+    cursor: pointer;
+}
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Claim ETH</h1>
+
         <button id="connectWallet">Connect Wallet</button>
         <button id="disconnectWallet" style="display:none;">Disconnect Wallet</button>
+
+        <p id="statusMessage" class="status"></p>
         <p id="walletAddress" class="info"></p>
-        
-        <button id="checkEligible" style="display:none;">Check Eligibility</button>
-        <p id="eligibilityStatus" class="status"></p>
-        <p id="ethBalance" class="balance">0 ETH</p>
-        
-        <button id="claimEth" style="display:none;">Claim ETH</button>
+
+        <button id="checkEligibility" style="display:none;">Check Eligibility</button>
+
+        <div id="eligibilityStatus" class="status"></div>
+        <p id="claimAmount" class="balance">Total Prize: <span>0 ETH</span></p>
+
+        <button id="openModal" style="display:none;">Claim ETH</button>
+    </div>
+
+    <!-- Modal -->
+    <div id="claimModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('claimModal')">&times;</span>
+            <h2>Claim ETH</h2>
+            <p id="claimStatus"></p>
+            <button id="claimETH">Claim Now</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
     <script>
         const contractAddress = "0x410F02E143Ba921FEdda48830d545154F5E809ab"; // Ganti dengan alamat kontrak asli
 const contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"BetLiked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":false,"internalType":"string","name":"number","type":"string"},{"indexed":false,"internalType":"uint256","name":"betAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"BetPlaced","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"winningNumber","type":"uint256"}],"name":"BetResultSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"comment","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"CommentAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"CommentDeleted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"},{"indexed":false,"internalType":"string","name":"newComment","type":"string"}],"name":"CommentUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ETHClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"WinnerSet","type":"event"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"string","name":"_comment","type":"string"}],"name":"addComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"betComments","outputs":[{"internalType":"address","name":"commenter","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isDeleted","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"betHistory","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"address","name":"","type":"address"}],"name":"betLikes","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"betPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"betResults","outputs":[{"internalType":"uint256","name":"drawId","type":"uint256"},{"internalType":"uint256","name":"winningNumber","type":"uint256"},{"internalType":"bool","name":"isProcessed","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"claimETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"contractBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"deleteComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"uint256","name":"commentIndex","type":"uint256"},{"internalType":"string","name":"newComment","type":"string"}],"name":"editComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAllBets","outputs":[{"components":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"internalType":"struct BetHistory.Bet[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"}],"name":"getComments","outputs":[{"components":[{"internalType":"address","name":"commenter","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isDeleted","type":"bool"}],"internalType":"struct BetHistory.Comment[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserBets","outputs":[{"components":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"internalType":"struct BetHistory.Bet[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"}],"name":"likeBet","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"maxBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"minBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_number","type":"string"},{"internalType":"uint256","name":"_times","type":"uint256"},{"internalType":"bool","name":"_isETH","type":"bool"}],"name":"placeBet","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_winningNumber","type":"uint256"}],"name":"setBetResult","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_winner","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"setWinner","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"userBets","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"winnings","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdrawETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
-
+        
 const sepoliaBaseChainId = "0x14A34"; // Chain ID Sepolia Base Testnet
 
 let provider, signer, contract, userAddress;
 
-// Koneksi Wallet
-document.getElementById("connectWallet").addEventListener("click", async () => {
-    if (window.ethereum) {
-        provider = new ethers.providers.Web3Provider(window.ethereum);
-        await provider.send("eth_requestAccounts", []);
-        signer = provider.getSigner();
-        userAddress = await signer.getAddress();
-        
-        document.getElementById("walletAddress").innerText = `Connected: ${userAddress}`;
-        document.getElementById("connectWallet").style.display = "none";
-        document.getElementById("disconnectWallet").style.display = "inline-block";
-        document.getElementById("checkEligible").style.display = "inline-block";
+// Fungsi menampilkan status di frontend
+function updateStatus(message, color = "#ccc") {
+    const statusElement = document.getElementById("statusMessage");
+    statusElement.innerText = message;
+    statusElement.style.color = color;
+}
 
-        await switchToSepoliaBase();
-    } else {
-        alert("MetaMask is not installed!");
-    }
-});
+// Fungsi buka modal
+function openModal(id) {
+    document.getElementById(id).style.display = "block";
+}
 
-// Fungsi Disconnect Wallet
-document.getElementById("disconnectWallet").addEventListener("click", () => {
-    userAddress = null;
-    document.getElementById("walletAddress").innerText = "";
-    document.getElementById("connectWallet").style.display = "inline-block";
-    document.getElementById("disconnectWallet").style.display = "none";
-    document.getElementById("checkEligible").style.display = "none";
-    document.getElementById("eligibilityStatus").innerText = "";
-    document.getElementById("ethBalance").innerText = "0 ETH";
-    document.getElementById("claimEth").style.display = "none";
-});
+// Fungsi tutup modal
+function closeModal(id) {
+    document.getElementById(id).style.display = "none";
+}
 
-// Paksa Beralih ke Sepolia Base Testnet
+// Paksa pengguna pindah ke Sepolia Base Testnet
 async function switchToSepoliaBase() {
     const chainId = await window.ethereum.request({ method: 'eth_chainId' });
 
@@ -129,74 +161,69 @@ async function switchToSepoliaBase() {
                 method: "wallet_switchEthereumChain",
                 params: [{ chainId: sepoliaBaseChainId }]
             });
+            updateStatus("Switched to Sepolia Base Testnet", "green");
         } catch (error) {
-            if (error.code === 4902) {
-                await window.ethereum.request({
-                    method: "wallet_addEthereumChain",
-                    params: [{
-                        chainId: sepoliaBaseChainId,
-                        chainName: "Base Sepolia Testnet",
-                        rpcUrls: ["https://sepolia.base.org"],
-                        nativeCurrency: {
-                            name: "ETH",
-                            symbol: "ETH",
-                            decimals: 18
-                        },
-                        blockExplorerUrls: ["https://sepolia.basescan.org"]
-                    }]
-                });
-            } else {
-                alert("You need to switch to the Sepolia Base Testnet!");
-            }
+            updateStatus("Switch to Sepolia Base Testnet required!", "red");
         }
     }
 }
 
-// Fungsi Cek Eligibility
-document.getElementById("checkEligible").addEventListener("click", async () => {
-    if (!userAddress) return alert("Connect wallet first!");
+// Koneksi Wallet
+document.getElementById("connectWallet").addEventListener("click", async () => {
+    if (window.ethereum) {
+        updateStatus("Connecting to wallet...", "#007bff");
 
-    contract = new ethers.Contract(contractAddress, contractABI, signer);
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        signer = provider.getSigner();
+        userAddress = await signer.getAddress();
 
-    try {
-        const balance = await contract.winnings(userAddress);
-        const ethBalance = ethers.utils.formatEther(balance);
+        document.getElementById("walletAddress").innerText = `Connected: ${userAddress}`;
+        document.getElementById("connectWallet").style.display = "none";
+        document.getElementById("disconnectWallet").style.display = "inline-block";
+        document.getElementById("checkEligibility").style.display = "inline-block";
 
-        if (balance.gt(0)) {
-            document.getElementById("eligibilityStatus").innerText = "Eligible for claim!";
-            document.getElementById("eligibilityStatus").className = "status green";
-            document.getElementById("ethBalance").innerText = `${ethBalance} ETH`;
-            document.getElementById("ethBalance").className = "balance green";
-            document.getElementById("claimEth").style.display = "inline-block";
-        } else {
-            document.getElementById("eligibilityStatus").innerText = "Not eligible for claim!";
-            document.getElementById("eligibilityStatus").className = "status red";
-            document.getElementById("ethBalance").innerText = "0 ETH";
-            document.getElementById("ethBalance").className = "balance red";
-            document.getElementById("claimEth").style.display = "none";
-        }
-    } catch (error) {
-        console.error("Error checking eligibility:", error);
+        updateStatus("Wallet connected!", "green");
+
+        await switchToSepoliaBase();
+    } else {
+        updateStatus("MetaMask is not installed!", "red");
     }
 });
 
-// Fungsi Claim ETH
-document.getElementById("claimEth").addEventListener("click", async () => {
-    if (!userAddress) return alert("Connect wallet first!");
+// Disconnect Wallet
+document.getElementById("disconnectWallet").addEventListener("click", () => {
+    userAddress = null;
+    document.getElementById("walletAddress").innerText = "";
+    document.getElementById("connectWallet").style.display = "inline-block";
+    document.getElementById("disconnectWallet").style.display = "none";
+    document.getElementById("checkEligibility").style.display = "none";
+    document.getElementById("eligibilityStatus").innerText = "";
+    document.getElementById("claimAmount").innerText = "Total Prize: 0 ETH";
+    document.getElementById("openModal").style.display = "none";
+    updateStatus("Disconnected from wallet.", "#ccc");
+});
 
+// Cek Kelayakan Claim
+document.getElementById("checkEligibility").addEventListener("click", async () => {
     contract = new ethers.Contract(contractAddress, contractABI, signer);
+    let amount = await contract.winnings(userAddress);
 
-    try {
-        const signature = await signer.signMessage("Claiming ETH from DApp");
-        const tx = await contract.claimETH();
-        await tx.wait();
-
-        alert("ETH successfully claimed!");
-        document.getElementById("checkEligible").click();
-    } catch (error) {
-        console.error("Claim failed:", error);
-        alert("Failed to claim ETH!");
+    if (amount.gt(0)) {
+        document.getElementById("eligibilityStatus").innerHTML = `<img src="check.png"> <span style="color: green;">Congratulations!</span>`;
+        document.getElementById("claimAmount").innerHTML = `Total Prize: ${ethers.utils.formatEther(amount)} ETH`;
+        document.getElementById("openModal").style.display = "inline-block";
+    } else {
+        document.getElementById("eligibilityStatus").innerHTML = `<img src="cross.png"> <span style="color: red;">Not Eligible!</span>`;
     }
+});
+
+// Claim ETH
+document.getElementById("claimETH").addEventListener("click", async () => {
+    let tx = await contract.claimETH();
+    await tx.wait();
+    alert("Claim successful!");
+    closeModal("claimModal");
 });
     </script>
 </body>
