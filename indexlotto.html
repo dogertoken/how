@@ -42,6 +42,59 @@ header {
     -webkit-text-fill-color: transparent;
 }
 
+/* Sembunyikan menu default di HP */
+nav {
+    display: none;
+}
+
+/* Tombol hamburger hanya di HP */
+.menu-toggle {
+    display: block;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Modal background */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+}
+
+/* Modal content */
+.modal-content {
+    background: white;
+    width: 80%;
+    margin: 20% auto;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* Tombol close modal */
+.close {
+    font-size: 24px;
+    float: right;
+    cursor: pointer;
+}
+
+/* Desktop mode: tampilkan navbar, sembunyikan modal */
+@media screen and (min-width: 768px) {
+    nav {
+        display: block;
+    }
+    .menu-toggle, .modal {
+        display: none;
+    }
+}
+
 nav ul {
     list-style: none;
     display: flex;
@@ -115,7 +168,8 @@ footer {
 <body>
     <header>
     <div class="logo">Lotto<span>Chain</span></div>
-    <nav>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <nav id="nav-menu">
         <ul>
             <li><a href="#about">Tentang</a></li>
             <li><a href="#features">Fitur</a></li>
@@ -126,6 +180,21 @@ footer {
         </ul>
     </nav>
 </header>
+
+<!-- Modal untuk menu di HP -->
+<div id="modal-menu" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="toggleMenu()">&times;</span>
+        <ul>
+            <li><a href="#about" onclick="toggleMenu()">Tentang</a></li>
+            <li><a href="#features" onclick="toggleMenu()">Fitur</a></li>
+            <li><a href="#markets" onclick="toggleMenu()">Pasaran</a></li>
+            <li><a href="#roadmap" onclick="toggleMenu()">Roadmap</a></li>
+            <li><a href="#faq" onclick="toggleMenu()">FAQ</a></li>
+            <li><a href="#" class="wallet-btn">🚀 Connect Wallet</a></li>
+        </ul>
+    </div>
+</div>
 
 <section class="hero">
     <h1>🚀 Lotto Chain – Lotre Blockchain dengan Hasil Resmi & Transparan</h1>
@@ -216,6 +285,16 @@ async function fetchBlockchainData() {
 
 // Panggil fungsi saat halaman dimuat
 window.onload = fetchBlockchainData;
+    </script>
+    <script>
+function toggleMenu() {
+    var modal = document.getElementById("modal-menu");
+    if (modal.style.display === "block") {
+        modal.style.display = "none";
+    } else {
+        modal.style.display = "block";
+    }
+}
     </script>
 </body>
 </html>
