@@ -90,6 +90,131 @@ nav ul li a:hover {
     border-radius: 5px;
 }
 
+/* ===== ABOUT ===== */
+#about {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#about p {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* ===== BENEFITS ===== */
+#benefits p {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    text-align: center;
+    font-size: 16px;
+    background: #eef2ff;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+/* ===== MARKETS ===== */
+#markets table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#markets th, #markets td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+#markets th {
+    background: #007bff;
+    color: white;
+}
+
+/* ===== STATS ===== */
+#stats {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    text-align: center;
+}
+
+#stats p {
+    background: #eef2ff;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* ===== ROADMAP ===== */
+#roadmap {
+    position: relative;
+    padding-left: 40px;
+}
+
+#roadmap::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    width: 5px;
+    height: 100%;
+    background: #007bff;
+    border-radius: 10px;
+}
+
+#roadmap p {
+    position: relative;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+#roadmap p::before {
+    content: " ";
+    position: absolute;
+    left: -15px;
+    top: 10px;
+    width: 10px;
+    height: 10px;
+    background: #007bff;
+    border-radius: 50%;
+}
+
+/* ===== FAQ ===== */
+.faq-item {
+    background: #f8f9fa;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.faq-item:hover {
+    background: #e2e6ea;
+}
+
+.faq-item .answer {
+    display: none;
+    padding-top: 10px;
+    font-size: 14px;
+}
+
+.faq-item.active .answer {
+    display: block;
+}
+
 /* ===== MODAL NAVIGATION ===== */
 .modal {
     display: none;
@@ -106,8 +231,8 @@ nav ul li a:hover {
 
 /* Modal content */
 .modal-content {
-    background: white;
-    width: 90%;
+    background: rgba(255, 255, 255, 0.08);
+    width: 95%;
     max-width: 400px;
     padding: 25px;
     border-radius: 10px;
@@ -279,15 +404,29 @@ footer {
            <i class="fa-solid fa-coins"></i> Biaya Rendah</p>
     </section>
 
-    <section id="markets" class="content-section">
-        <h2><i class="fa-solid fa-globe"></i> Pasaran yang Didukung</h2>
-        <p><i class="fa-solid fa-location-dot"></i> Hongkong | 
-           <i class="fa-solid fa-location-dot"></i> Singapura | 
-           <i class="fa-solid fa-location-dot"></i> Sydney | 
-           <i class="fa-solid fa-location-dot"></i> China | 
-           <i class="fa-solid fa-location-dot"></i> Kamboja | 
-           <i class="fa-solid fa-bullseye"></i> Bull Eye</p>
-    </section>
+    <table>
+    <tr>
+        <th>Pasaran</th>
+    </tr>
+    <tr>
+        <td><i class="fa-solid fa-location-dot"></i> Hongkong</td>
+    </tr>
+    <tr>
+        <td><i class="fa-solid fa-location-dot"></i> Singapura</td>
+    </tr>
+    <tr>
+        <td><i class="fa-solid fa-location-dot"></i> Sydney</td>
+    </tr>
+    <tr>
+        <td><i class="fa-solid fa-location-dot"></i> China</td>
+    </tr>
+    <tr>
+        <td><i class="fa-solid fa-location-dot"></i> Kamboja</td>
+    </tr>
+    <tr>
+        <td><i class="fa-solid fa-bullseye"></i> Bull Eye</td>
+    </tr>
+    </table>
 
     <section id="stats" class="content-section">
         <h2><i class="fa-solid fa-chart-line"></i> Live Statistik</h2>
@@ -304,15 +443,26 @@ footer {
            <i class="fa-solid fa-layer-group"></i> Q4 2025 – Ekspansi Ekosistem</p>
     </section>
 
-    <section id="faq" class="content-section">
-        <h2><i class="fa-solid fa-question-circle"></i> FAQ (Pertanyaan Umum)</h2>
-        <p><b>Apakah Lotto Chain bisa dipercaya?</b><br>
-           <i class="fa-solid fa-check"></i> Ya! Hasil dari pasaran resmi dan tercatat di blockchain.</p>
-        <p><b>Bagaimana cara bermain?</b><br>
-           <i class="fa-solid fa-check"></i> Hubungkan wallet, pilih pasaran, pasang taruhan.</p>
-        <p><b>Bagaimana hadiah dikirim?</b><br>
-           <i class="fa-solid fa-check"></i> Pembayaran otomatis ke wallet melalui smart contract.</p>
-    </section>
+    <div class="faq-item">
+    <p><b>Apakah Lotto Chain bisa dipercaya?</b> <i class="fa-solid fa-chevron-down"></i></p>
+    <div class="answer">
+        <p><i class="fa-solid fa-check"></i> Ya! Hasil dari pasaran resmi dan tercatat di blockchain.</p>
+    </div>
+</div>
+
+<div class="faq-item">
+    <p><b>Bagaimana cara bermain?</b> <i class="fa-solid fa-chevron-down"></i></p>
+    <div class="answer">
+        <p><i class="fa-solid fa-check"></i> Hubungkan wallet, pilih pasaran, pasang taruhan.</p>
+    </div>
+</div>
+
+<div class="faq-item">
+    <p><b>Bagaimana hadiah dikirim?</b> <i class="fa-solid fa-chevron-down"></i></p>
+    <div class="answer">
+        <p><i class="fa-solid fa-check"></i> Pembayaran otomatis ke wallet melalui smart contract.</p>
+    </div>
+</div>
 
 </div>
 
@@ -348,6 +498,8 @@ async function fetchBlockchainData() {
         document.getElementById("winner").innerText = "Gagal memuat";
     }
 }
+
+// Accordion
 
 // Panggil fungsi saat halaman dimuat
 window.onload = fetchBlockchainData;
