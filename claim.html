@@ -197,7 +197,7 @@ footer {
 }
 
 #walletBalance {
-    color: green;
+    color: #00ca09;
 }
 
 /* Navbar */
@@ -332,7 +332,7 @@ footer {
     <button id="disconnectWallet" class="btn hidden">Disconnect</button>
     <br><br>
 
-    <p class="status" style="color: green" id="networkStatus">
+    <p class="status" style="color: #00ca09" id="networkStatus">
         <span style="color: #1a88ff;">
             <img src="loading.png" width="16" height="16"> Checking network...
         </span>
@@ -441,7 +441,7 @@ document.getElementById("disconnectWallet").addEventListener("click", () => {
     signer = null;
     contract = null;
 
-    document.getElementById("networkStatus").innerHTML = `<img src="cross.svg" width="16" height="16"> <span style="color: red;">Disconnected</span>`;
+    document.getElementById("networkStatus").innerHTML = `<img src="cross.svg" width="16" height="16"> <span style="color: #ff3333;">Disconnected</span>`;
     document.getElementById("walletAddress").classList.add("hidden");
     document.getElementById("walletBalance").classList.add("hidden");
     document.getElementById("connectWallet").classList.remove("hidden");
@@ -480,12 +480,12 @@ async function switchToSepoliaBase() {
                     }]
                 });
 
-                document.getElementById("networkStatus").innerHTML = `<img src="check.svg" width="16" height="16"> <span style="color: green;">Sepolia Base Testnet added & switched!</span>`;
+                document.getElementById("networkStatus").innerHTML = `<img src="check.svg" width="16" height="16"> <span style="color: #00ca09;">Sepolia Base Testnet added & switched!</span>`;
             } catch (addError) {
-                document.getElementById("networkStatus").innerHTML = `<img src="cross.svg" width="16" height="16"> <span style="color: orange;">Please add Sepolia Base Testnet manually!</span>`;
+                document.getElementById("networkStatus").innerHTML = `<img src="cross.svg" width="16" height="16"> <span style="color: #ffa700;">Please add Sepolia Base Testnet manually!</span>`;
             }
         } else {
-            document.getElementById("networkStatus").innerHTML = `<img src="cross.svg" width="16" height="16"> <span style="color: red;">Switch to Sepolia Base Testnet required!</span>`;
+            document.getElementById("networkStatus").innerHTML = `<img src="cross.svg" width="16" height="16"> <span style="color: #ff3333;">Switch to Sepolia Base Testnet required!</span>`;
         }
     }
 }
@@ -504,11 +504,11 @@ document.addEventListener("DOMContentLoaded", function () {
             let claimETHButton = document.getElementById("claimETH");
 
             if (amount.gt(0)) {
-                eligibilityStatus.innerHTML = `<img src="check.svg" width="16" height="16"> <span style="color: #00FF66;">Congratulations! You eligible won! Claim Your prizes</span>`;
-                claimAmount.innerHTML = `Total Prize: <span style="color: #00FF66;">${ethers.utils.formatEther(amount)} ETH</span>`;
+                eligibilityStatus.innerHTML = `<img src="check.svg" width="16" height="16"> <span style="color: #00ca09;">Congratulations! You eligible won! Claim Your prizes</span>`;
+                claimAmount.innerHTML = `Total Prize: <span style="color: #00ca09;">${ethers.utils.formatEther(amount)} ETH</span>`;
                 claimETHButton.classList.remove("hidden"); // 🔹 Menampilkan tombol klaim
             } else {
-                eligibilityStatus.innerHTML = `<img src="cross.svg" width="16" height="16"> <span style="color: red;">Sorry Your are not eligible. Try playing again!</span>`;
+                eligibilityStatus.innerHTML = `<img src="cross.svg" width="16" height="16"> <span style="color: #ff3333;">Sorry Your are not eligible. Try playing again!</span>`;
                 claimAmount.innerHTML = `Total Prize: <span style="color: red;">0 ETH</span>`;
                 claimETHButton.classList.add("hidden");
             }
@@ -529,14 +529,14 @@ document.addEventListener("DOMContentLoaded", function () {
             await tx.wait();
 
             // ✅ Status: Berhasil
-            claimStatus.innerHTML = `<img src="check.svg" width="16" height="16"> <span style="color: #00FF66;">Prizes claim successful!</span>`;
+            claimStatus.innerHTML = `<img src="check.svg" width="16" height="16"> <span style="color: #00ca09;">Prizes claim successful!</span>`;
             alert("Prizes ETH successfully claimed!");
 
             // Refresh status klaim
             document.getElementById("checkEligibility").click();
         } catch (error) {
             // ❌ Status: Gagal
-            claimStatus.innerHTML = `<img src="cross.svg" width="16" height="16"> <span style="color: red;">Claim failed!</span>`;
+            claimStatus.innerHTML = `<img src="cross.svg" width="16" height="16"> <span style="color: #ff3333;">Claim failed!</span>`;
             alert("Failed to claim prizes!");
             console.error(error);
         }
