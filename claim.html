@@ -225,15 +225,47 @@ footer {
     height: 40px;
     margin-right: 10px;
 }
+
+/* Teks Lotto Chain */
+.logo span {
+    font-size: 24px; /* Ukuran lebih besar */
+    font-weight: bold;
+    color: #00ff66; /* Warna hijau neon */
+    margin-left: 10px;
+}
+
+/* Menu Links */
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #ccc;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #00ff66;
+}
     </style>
 </head>
 <body>
     <!-- Navbar -->
 <nav class="navbar">
     <div class="logo">
-        <img src="lg.svg" alt="Lotto Chain Logo" class="logo-img">
+        <img src="logo.png" alt="Lotto Chain Logo" class="logo-img">
         <span>Lotto Chain</span>
     </div>
+    <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
+    <ul class="nav-links" id="navMenu">
+        <a href="#features">4D Pools</a>
+        <a href="#prizes">Prizes</a>
+        <a href="lottery">LottoBalls (LB)</a>
+        <a href="hk">Hong Kong (HK)</a>
+        <a href="syd">Sydney (SYD)</a>
+    </ul>
 </nav>
     
 <main class="container">
