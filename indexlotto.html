@@ -545,6 +545,42 @@ async function fetchBlockchainData() {
     }
 }
 
+// Navbar Modal
+function toggleMenu() {
+    const modal = document.getElementById("modal-menu");
+
+    // Periksa status modal saat ini
+    if (modal.style.display === "none" || modal.style.display === "") {
+        modal.style.display = "flex";
+        localStorage.setItem("modalStatus", "open"); // Simpan status modal terbuka
+    } else {
+        modal.style.display = "none";
+        localStorage.setItem("modalStatus", "closed"); // Simpan status modal tertutup
+    }
+}
+
+// Cek status modal saat halaman dimuat
+document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("modal-menu");
+    const modalStatus = localStorage.getItem("modalStatus");
+
+    // Jika sebelumnya ditutup, pastikan tetap tertutup
+    if (modalStatus === "closed") {
+        modal.style.display = "none";
+    } else {
+        modal.style.display = "none"; // Default tetap tertutup
+    }
+});
+
+// Tutup modal jika klik di luar modal-content
+window.addEventListener("click", function (e) {
+    const modal = document.getElementById("modal-menu");
+    if (e.target === modal) {
+        modal.style.display = "none";
+        localStorage.setItem("modalStatus", "closed"); // Simpan status modal tertutup
+    }
+});
+
 // Accordion
 document.querySelectorAll('.faq-item').forEach(item => {
     item.addEventListener('click', function() {
@@ -554,27 +590,6 @@ document.querySelectorAll('.faq-item').forEach(item => {
     
 // Panggil fungsi saat halaman dimuat
 window.onload = fetchBlockchainData;
-    </script>
-    <script>
-function toggleMenu() {
-    const modal = document.getElementById("modal-menu");
-
-    // Toggle tampilan modal
-    if (modal.style.display === "none" || modal.style.display === "") {
-        modal.style.display = "flex";
-    } else {
-        modal.style.display = "none";
-    }
-}
-
-// Tutup modal jika klik di luar modal-content
-window.addEventListener("click", function (e) {
-    const modal = document.getElementById("modal-menu");
-    if (e.target === modal) {
-        modal.style.display = "none";
-    }
-});
-    </script>
-
+</script>
 </body>
 </html>
