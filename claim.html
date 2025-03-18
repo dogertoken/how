@@ -206,7 +206,7 @@ footer {
     justify-content: space-between;
     align-items: center;
     background: #111;
-    padding: 15px 20px;
+    padding: 10px 20px;
     color: white;
     position: fixed;
     top: 0;
@@ -217,66 +217,81 @@ footer {
 
 /* Logo */
 .logo {
-    font-size: 20px;
-    font-weight: bold;
+    display: flex;
+    align-items: center;
 }
 
-/* Hamburger */
-.hamburger {
-    display: none; /* Default: disembunyikan di mode PC */
-    font-size: 28px;
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out, color 0.3s;
+.logo-img {
+    height: 40px;
+    margin-right: 10px;
 }
 
-/* Efek hover untuk Hamburger */
-.hamburger:hover {
-    transform: rotate(90deg) scale(1.2);
-    color: #00ff66; /* Warna hijau saat dihover */
-}
-
-/* Navigasi Link */
+/* Menu Links */
 .nav-links {
     display: flex;
     gap: 20px;
 }
 
 .nav-links a {
-    color: white;
     text-decoration: none;
-    font-size: 18px;
-    transition: color 0.3s;
+    color: white;
+    transition: 0.3s;
 }
 
 .nav-links a:hover {
-    color: #00ff66; /* Warna hijau saat dihover */
+    color: #00ff66;
 }
 
-/* Media Query: Mobile Mode */
+/* Hamburger Button */
+.hamburger {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* Efek Hover Hamburger */
+.hamburger:hover {
+    transform: rotate(90deg) scale(1.2);
+    color: #00ff66;
+}
+
+/* Responsive - Mobile */
 @media (max-width: 768px) {
     .hamburger {
-        display: block; /* Muncul di mode mobile */
+        display: block;
     }
 
     .nav-links {
-        display: none; /* Sembunyikan menu utama di mode mobile */
+        display: none;
         flex-direction: column;
         position: absolute;
         top: 60px;
         right: 0;
         background: #222;
         width: 200px;
-        padding: 15px;
-        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+        transition: transform 0.3s ease-in-out;
     }
 
     .nav-links.show {
-        display: flex; /* Muncul saat tombol hamburger ditekan */
+        display: flex;
+        flex-direction: column;
+        transform: translateX(0);
+        animation: slideIn 0.3s ease-in-out;
     }
+}
 
-    .nav-links a {
-        display: block;
-        padding: 10px;
+/* Animasi Slide-in Menu */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
     </style>
