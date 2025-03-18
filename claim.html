@@ -211,7 +211,7 @@ footer {
     position: fixed;
     top: 0;
     left: 0;
-    width: 90%;
+    width: 100%;
     z-index: 1000;
 }
 
@@ -225,77 +225,6 @@ footer {
     height: 40px;
     margin-right: 10px;
 }
-
-/* Menu Links */
-.nav-links {
-    display: flex;
-    gap: 20px;
-    list-style: none;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: white;
-    transition: 0.3s;
-}
-
-.nav-links a:hover {
-    color: #00ff66;
-}
-
-/* Hamburger Button */
-.hamburger {
-    display: none;
-    font-size: 24px;
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-/* Efek Hover Hamburger */
-.hamburger:hover {
-    transform: rotate(90deg) scale(1.2);
-    color: #00ff66;
-}
-
-/* Responsive - Mobile */
-@media (max-width: 768px) {
-    .hamburger {
-        display: block;
-    }
-
-    .nav-links {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: 60px;
-        right: 0;
-        background: #222;
-        width: 200px;
-        padding: 10px;
-        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
-        transition: all 0.3s ease-in-out;
-        opacity: 0;
-        visibility: hidden;
-    }
-
-    /* Tampilkan menu saat hamburger ditekan */
-    .nav-links.show {
-        opacity: 1;
-        visibility: visible;
-    }
-}
-
-/* Animasi Slide-in Menu */
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
     </style>
 </head>
 <body>
@@ -305,15 +234,6 @@ footer {
         <img src="logo.png" alt="Lotto Chain Logo" class="logo-img">
         <span>Lotto Chain</span>
     </div>
-    <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
-    <ul class="nav-links" id="navMenu">
-        <li><a href="#features">4D Pools</a></li>
-        <li><a href="#prizes">Prizes</a></li>
-        <li><a href="lottery">LottoBalls (LB)</a></li>
-        <li><a href="hk">Hong Kong (HK)</a></li>
-        <li><a href="syd">Sydney (SYD)</a></li>
-    </ul>
-</nav>
     
 <main class="container">
     <h1>Claim Your Prizes</h1>
@@ -532,12 +452,6 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error(error);
         }
     });
-
-    // Modal
-    function toggleMenu() {
-    var menu = document.getElementById("navMenu");
-    menu.classList.toggle("show");
-    }
 
     // 🔹 Menampilkan Tombol "Check Eligibility" Setelah Wallet Terhubung
     document.getElementById("connectWallet").addEventListener("click", async () => {
