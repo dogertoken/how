@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotto Chain - Lotre Blockchain</title>
+    <title>Lotto Chain</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-  
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
 * {
     margin: 0;
@@ -29,7 +30,7 @@ header {
     align-items: center;
     justify-content: space-between;
     padding: 15px 10%;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     position: sticky;
     top: 0;
@@ -47,11 +48,11 @@ header {
     -webkit-text-fill-color: transparent;
 }
 
+/* ===== NAVBAR ===== */
 nav {
     display: none;
 }
 
-/* Menu button (Mobile) */
 .menu-toggle {
     font-size: 24px;
     background: none;
@@ -60,12 +61,11 @@ nav {
     color: #ffffff;
 }
 
-/* Desktop mode */
+/* Desktop Mode */
 @media screen and (min-width: 768px) {
     nav {
         display: flex;
     }
-    
     .menu-toggle {
         display: none;
     }
@@ -90,7 +90,7 @@ nav ul li a:hover {
     border-radius: 5px;
 }
 
-/* ===== MODAL ===== */
+/* ===== MODAL NAVIGATION ===== */
 .modal {
     display: none;
     position: fixed;
@@ -100,7 +100,6 @@ nav ul li a:hover {
     height: 100%;
     background: rgba(0, 0, 0, 0.6);
     z-index: 1000;
-    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -126,9 +125,20 @@ nav ul li a:hover {
     color: #000;
 }
 
+/* ===== SECTION BOXES ===== */
+.section-box {
+    width: 80%;
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+}
+
 /* ===== HERO SECTION ===== */
 .hero {
-    padding: 120px 10%;
+    padding: 100px 10%;
     text-align: center;
 }
 
@@ -140,7 +150,7 @@ h1 {
     -webkit-text-fill-color: transparent;
 }
 
-/* ===== BUTTON STYLING ===== */
+/* ===== BUTTON STYLE ===== */
 .cta-btn {
     display: inline-block;
     margin-top: 25px;
@@ -158,19 +168,7 @@ h1 {
     background: #f441a5;
 }
 
-/* ===== CONTENT SECTION ===== */
-.content-section {
-    padding: 80px 10%;
-    text-align: center;
-}
-
-h2 {
-    font-size: 32px;
-    margin-bottom: 20px;
-    font-weight: bold;
-}
-
-/* ===== GRID SYSTEM ===== */
+/* ===== GRID SECTION ===== */
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -186,6 +184,13 @@ h2 {
     background: rgba(255, 255, 255, 0.1);
     box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
     transition: 0.3s;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
 }
 
 .feature-box:hover {
@@ -199,20 +204,28 @@ footer {
     background: rgba(255, 255, 255, 0.08);
     font-size: 14px;
 }
+
+/* ===== FONT AWESOME STYLES ===== */
+.feature-box i {
+    font-size: 30px;
+    margin-bottom: 10px;
+    color: #03a9f4;
+}
     </style>
 </head>
 <body>
-    <header>
+
+<header>
     <div class="logo">Lotto<span>Chain</span></div>
-    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <button class="menu-toggle" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
     <nav id="nav-menu">
         <ul>
-            <li><a href="#about">Tentang</a></li>
-            <li><a href="#features">Fitur</a></li>
-            <li><a href="#markets">Pasaran</a></li>
-            <li><a href="#roadmap">Roadmap</a></li>
-            <li><a href="#faq">FAQ</a></li>
-            <li><a href="#" class="wallet-btn">🚀 Connect Wallet</a></li>
+            <li><a href="#about"><i class="fa-solid fa-info-circle"></i> Tentang</a></li>
+            <li><a href="#features"><i class="fa-solid fa-star"></i> Fitur</a></li>
+            <li><a href="#markets"><i class="fa-solid fa-globe"></i> Pasaran</a></li>
+            <li><a href="#roadmap"><i class="fa-solid fa-road"></i> Roadmap</a></li>
+            <li><a href="#faq"><i class="fa-solid fa-question-circle"></i> FAQ</a></li>
+            <li><a href="#" class="wallet-btn"><i class="fa-solid fa-wallet"></i> Connect Wallet</a></li>
         </ul>
     </nav>
 </header>
@@ -220,78 +233,95 @@ footer {
 <!-- Modal untuk menu di HP -->
 <div id="modal-menu" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="toggleMenu()">&times;</span>
+        <span class="close" onclick="toggleMenu()"><i class="fa-solid fa-times"></i></span>
         <ul>
-            <li><a href="#about" onclick="toggleMenu()">Tentang</a></li>
-            <li><a href="#features" onclick="toggleMenu()">Fitur</a></li>
-            <li><a href="#markets" onclick="toggleMenu()">Pasaran</a></li>
-            <li><a href="#roadmap" onclick="toggleMenu()">Roadmap</a></li>
-            <li><a href="#faq" onclick="toggleMenu()">FAQ</a></li>
-            <li><a href="#" class="wallet-btn">🚀 Connect Wallet</a></li>
+            <li><a href="#about" onclick="toggleMenu()"><i class="fa-solid fa-info-circle"></i> Tentang</a></li>
+            <li><a href="#features" onclick="toggleMenu()"><i class="fa-solid fa-star"></i> Fitur</a></li>
+            <li><a href="#markets" onclick="toggleMenu()"><i class="fa-solid fa-globe"></i> Pasaran</a></li>
+            <li><a href="#roadmap" onclick="toggleMenu()"><i class="fa-solid fa-road"></i> Roadmap</a></li>
+            <li><a href="#faq" onclick="toggleMenu()"><i class="fa-solid fa-question-circle"></i> FAQ</a></li>
+            <li><a href="#" class="wallet-btn"><i class="fa-solid fa-wallet"></i> Connect Wallet</a></li>
         </ul>
     </div>
 </div>
 
 <section class="hero">
-    <h1>🚀 Lotto Chain – Lotre Blockchain dengan Hasil Resmi & Transparan</h1>
+    <h1><i class="fa-solid fa-rocket"></i> Lotto Chain – Lotre Blockchain dengan Hasil Resmi & Transparan</h1>
     <p>Lotto Chain adalah platform lotre berbasis blockchain yang transparan, aman, dan terpercaya.</p>
-    <a href="#" class="cta-btn">🎟️ Beli Tiket Sekarang</a>
+    <a href="#" class="cta-btn"><i class="fa-solid fa-ticket"></i> Beli Tiket Sekarang</a>
 </section>
 
-<div class="container"> <!-- Container dimulai di sini -->
+<div class="container">
 
     <section id="about" class="content-section">
-        <h2>Bagaimana Lotto Chain Bekerja?</h2>
-        <p>✅ Pilih Pasaran & Taruhan<br>✅ Hasil Resmi dari sumber terpercaya<br>✅ Pembayaran Otomatis ke wallet Anda</p>
+        <h2><i class="fa-solid fa-circle-info"></i> Bagaimana Lotto Chain Bekerja?</h2>
+        <p><i class="fa-solid fa-check"></i> Pilih Pasaran & Taruhan<br>
+           <i class="fa-solid fa-check"></i> Hasil Resmi dari sumber terpercaya<br>
+           <i class="fa-solid fa-check"></i> Pembayaran Otomatis ke wallet Anda</p>
     </section>
 
     <section id="features" class="content-section">
-        <h2>Fitur Utama Lotto Chain</h2>
+        <h2><i class="fa-solid fa-star"></i> Fitur Utama Lotto Chain</h2>
         <div class="grid">
-            <div class="feature-box">✅ Hasil Resmi</div>
-            <div class="feature-box">✅ Transparan & Terdesentralisasi</div>
-            <div class="feature-box">✅ Pembayaran Instan</div>
-            <div class="feature-box">✅ Bermain dengan Kripto</div>
-            <div class="feature-box">✅ Tanpa Registrasi</div>
+            <div class="feature-box"><i class="fa-solid fa-certificate"></i> Hasil Resmi</div>
+            <div class="feature-box"><i class="fa-solid fa-unlock"></i> Transparan & Terdesentralisasi</div>
+            <div class="feature-box"><i class="fa-solid fa-bolt"></i> Pembayaran Instan</div>
+            <div class="feature-box"><i class="fa-solid fa-coins"></i> Bermain dengan Kripto</div>
+            <div class="feature-box"><i class="fa-solid fa-user-secret"></i> Tanpa Registrasi</div>
         </div>
     </section>
 
     <section id="benefits" class="content-section">
-        <h2>Keuntungan Menggunakan Lotto Chain</h2>
-        <p>🎯 Tanpa Kecurangan | 🎯 Pembayaran Otomatis | 🎯 Bermain Kapan Saja | 🎯 Biaya Rendah</p>
+        <h2><i class="fa-solid fa-gift"></i> Keuntungan Menggunakan Lotto Chain</h2>
+        <p><i class="fa-solid fa-shield-halved"></i> Tanpa Kecurangan | 
+           <i class="fa-solid fa-bolt"></i> Pembayaran Otomatis | 
+           <i class="fa-solid fa-clock"></i> Bermain Kapan Saja | 
+           <i class="fa-solid fa-coins"></i> Biaya Rendah</p>
     </section>
 
     <section id="markets" class="content-section">
-        <h2>Pasaran yang Didukung</h2>
-        <p>🔹 Hongkong | 🔹 Singapura | 🔹 Sydney | 🔹 China | 🔹 Kamboja | 🔹 Bull Eye</p>
+        <h2><i class="fa-solid fa-globe"></i> Pasaran yang Didukung</h2>
+        <p><i class="fa-solid fa-location-dot"></i> Hongkong | 
+           <i class="fa-solid fa-location-dot"></i> Singapura | 
+           <i class="fa-solid fa-location-dot"></i> Sydney | 
+           <i class="fa-solid fa-location-dot"></i> China | 
+           <i class="fa-solid fa-location-dot"></i> Kamboja | 
+           <i class="fa-solid fa-bullseye"></i> Bull Eye</p>
     </section>
 
     <section id="stats" class="content-section">
-        <h2>📊 Live Statistik</h2>
-        <p>🔹 Total Pemain: <span id="players">15,200</span> | 🔹 Total Hadiah: <span id="payout">250 ETH</span></p>
-        <p>🔹 Pemenang Terakhir: <span id="winner">0xA5F...9B3D</span></p>
+        <h2><i class="fa-solid fa-chart-line"></i> Live Statistik</h2>
+        <p><i class="fa-solid fa-users"></i> Total Pemain: <span id="players">15,200</span> | 
+           <i class="fa-solid fa-wallet"></i> Total Hadiah: <span id="payout">250 ETH</span></p>
+        <p><i class="fa-solid fa-trophy"></i> Pemenang Terakhir: <span id="winner">0xA5F...9B3D</span></p>
     </section>
 
     <section id="roadmap" class="content-section">
-        <h2>🚀 Roadmap Lotto Chain</h2>
-        <p>📍 Q1 2025 – Audit & Pengembangan Smart Contract<br>📍 Q2 2025 – Peluncuran Testnet<br>📍 Q3 2025 – Mainnet & Integrasi Pasaran<br>📍 Q4 2025 – Ekspansi Ekosistem</p>
+        <h2><i class="fa-solid fa-road"></i> Roadmap Lotto Chain</h2>
+        <p><i class="fa-solid fa-flag-checkered"></i> Q1 2025 – Audit & Pengembangan Smart Contract<br>
+           <i class="fa-solid fa-rocket"></i> Q2 2025 – Peluncuran Testnet<br>
+           <i class="fa-solid fa-globe"></i> Q3 2025 – Mainnet & Integrasi Pasaran<br>
+           <i class="fa-solid fa-layer-group"></i> Q4 2025 – Ekspansi Ekosistem</p>
     </section>
 
     <section id="faq" class="content-section">
-        <h2>FAQ (Pertanyaan Umum)</h2>
-        <p><b>Apakah Lotto Chain bisa dipercaya?</b><br>✅ Ya! Hasil dari pasaran resmi dan tercatat di blockchain.</p>
-        <p><b>Bagaimana cara bermain?</b><br>✅ Hubungkan wallet, pilih pasaran, pasang taruhan.</p>
-        <p><b>Bagaimana hadiah dikirim?</b><br>✅ Pembayaran otomatis ke wallet melalui smart contract.</p>
+        <h2><i class="fa-solid fa-question-circle"></i> FAQ (Pertanyaan Umum)</h2>
+        <p><b>Apakah Lotto Chain bisa dipercaya?</b><br>
+           <i class="fa-solid fa-check"></i> Ya! Hasil dari pasaran resmi dan tercatat di blockchain.</p>
+        <p><b>Bagaimana cara bermain?</b><br>
+           <i class="fa-solid fa-check"></i> Hubungkan wallet, pilih pasaran, pasang taruhan.</p>
+        <p><b>Bagaimana hadiah dikirim?</b><br>
+           <i class="fa-solid fa-check"></i> Pembayaran otomatis ke wallet melalui smart contract.</p>
     </section>
 
-</div> <!-- Container ditutup di sini -->
+</div>
 
 <footer>
     <p>&copy; 2025 Lotto Chain. All rights reserved.</p>
 </footer>
-  
-    <script src="script.js"></script>
-    <script>
+
+<script src="script.js"></script>
+<script>
       // Konfigurasi Smart Contract
 const contractAddress = "0x410F02E143Ba921FEdda48830d545154F5E809ab"; // Ganti dengan alamat smart contract asli
 const contractABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"BetLiked","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"player","type":"address"},{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":false,"internalType":"string","name":"number","type":"string"},{"indexed":false,"internalType":"uint256","name":"betAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"blockNumber","type":"uint256"},{"indexed":false,"internalType":"bytes32","name":"txHash","type":"bytes32"}],"name":"BetPlaced","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"drawId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"winningNumber","type":"uint256"}],"name":"BetResultSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"string","name":"comment","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"CommentAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"CommentDeleted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bytes32","name":"betId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"commentIndex","type":"uint256"},{"indexed":false,"internalType":"string","name":"newComment","type":"string"}],"name":"CommentUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ETHClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"winner","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"WinnerSet","type":"event"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"string","name":"_comment","type":"string"}],"name":"addComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"betComments","outputs":[{"internalType":"address","name":"commenter","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isDeleted","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"betHistory","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"address","name":"","type":"address"}],"name":"betLikes","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"betPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"betResults","outputs":[{"internalType":"uint256","name":"drawId","type":"uint256"},{"internalType":"uint256","name":"winningNumber","type":"uint256"},{"internalType":"bool","name":"isProcessed","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"claimETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"contractBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"uint256","name":"commentIndex","type":"uint256"}],"name":"deleteComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"},{"internalType":"uint256","name":"commentIndex","type":"uint256"},{"internalType":"string","name":"newComment","type":"string"}],"name":"editComment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getAllBets","outputs":[{"components":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"internalType":"struct BetHistory.Bet[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"}],"name":"getComments","outputs":[{"components":[{"internalType":"address","name":"commenter","type":"address"},{"internalType":"string","name":"text","type":"string"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"isDeleted","type":"bool"}],"internalType":"struct BetHistory.Comment[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserBets","outputs":[{"components":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"internalType":"struct BetHistory.Bet[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"betId","type":"bytes32"}],"name":"likeBet","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"maxBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"minBet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_number","type":"string"},{"internalType":"uint256","name":"_times","type":"uint256"},{"internalType":"bool","name":"_isETH","type":"bool"}],"name":"placeBet","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_drawId","type":"uint256"},{"internalType":"uint256","name":"_winningNumber","type":"uint256"}],"name":"setBetResult","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_winner","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"setWinner","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"userBets","outputs":[{"internalType":"address","name":"player","type":"address"},{"internalType":"string","name":"number","type":"string"},{"internalType":"uint256","name":"betAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"blockNumber","type":"uint256"},{"internalType":"bytes32","name":"txHash","type":"bytes32"},{"internalType":"bool","name":"isETH","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"winnings","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"withdrawETH","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];      
@@ -332,5 +362,6 @@ function toggleMenu() {
     }
 }
     </script>
+
 </body>
 </html>
