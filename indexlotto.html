@@ -225,6 +225,9 @@ nav ul li a:hover {
     height: 100%;
     background: rgba(0, 0, 0, 0.6);
     z-index: 1000;
+
+    /* Pusatkan modal */
+    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -238,6 +241,21 @@ nav ul li a:hover {
     border-radius: 10px;
     text-align: center;
     position: relative;
+    
+    /* Tambahkan animasi fade-in */
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animasi muncul */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* Tombol close modal */
