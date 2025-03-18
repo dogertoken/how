@@ -73,45 +73,38 @@ contract BetHistory {
     }
 
     function placeBet(string memory _number, uint256 _times, bool _isETH) external payable {
-    // Validasi input
-    require(bytes(_number).length >= 1 && bytes(_number).length <= 4, "Invalid number length");
-    uint256 totalCost = _times * betPrice;
-    require(msg.value == totalCost, "Incorrect ETH amount");
+        require(bytes(_number).length >= 1 && bytes(_number).length <= 4, "Invalid number length");
+        uint256 totalCost = _times * betPrice;
+        require(msg.value == totalCost, "Incorrect ETH amount");
 
-    // Buat taruhan baru
-    bytes32 betId = keccak256(abi.encodePacked(msg.sender, block.timestamp, block.number));
-    Bet memory newBet = Bet({
-        player: msg.sender,
-        betId: betId,
-        number: _number,
-        betAmount: _times,
-        timestamp: block.timestamp,
-        blockNumber: block.number,
-        txHash: blockhash(block.number - 1),
-        isETH: _isETH
-    });
+        bytes32 betId = keccak256(abi.encodePacked(msg.sender, block.timestamp, block.number));
+        Bet memory newBet = Bet({
+            player: msg.sender,
+            betId: betId,
+            number: _number,
+            betAmount: _times,
+            timestamp: block.timestamp,
+            blockNumber: block.number,
+            txHash: blockhash(block.number - 1),
+            isETH: _isETH
+        });
 
-    betHistory.push(newBet);
-    userBets[msg.sender].push(newBet);
+        betHistory.push(newBet);
+        userBets[msg.sender].push(newBet);
 
-    emit BetPlaced(msg.sender, betId, _number, _times, block.timestamp, block.number, blockhash(block.number - 1));
+        emit BetPlaced(msg.sender, betId, _number, _times, block.timestamp, block.number, blockhash(block.number - 1));
+        emit TotalPlayersUpdated(betHistory.length);
+        emit TotalPayoutUpdated(totalPayout());
+    }
 
-    // Emit event di sini setelah taruhan baru ditambahkan
-    emit TotalPlayersUpdated(betHistory.length);
-    emit TotalPayoutUpdated(totalPayout());
-}
+    function setWinner(address _winner, uint256 _amount) external onlyOwner {
+        require(_amount > 0, "Invalid amount");
+        require(address(this).balance >= _amount, "Insufficient contract balance");
 
-function setWinner(address _winner, uint256 _amount) external onlyOwner {
-    require(_amount > 0, "Invalid amount");
-    require(address(this).balance >= _amount, "Insufficient contract balance");
-
-    winnings[_winner] += _amount;
-
-    emit WinnerSet(_winner, _amount);
-
-    // Emit event untuk memperbarui pemenang terakhir
-    emit LastWinnerUpdated(_winner);
-}
+        winnings[_winner] += _amount;
+        emit WinnerSet(bytes32(0), _winner, _amount);
+        emit LastWinnerUpdated(_winner);
+    }
 
     function setBetResult(uint256 _drawId, uint256 _winningNumber) external onlyOwner {
         betResults[_drawId] = BetResult({
@@ -121,14 +114,6 @@ function setWinner(address _winner, uint256 _amount) external onlyOwner {
         });
 
         emit BetResultSet(_drawId, _winningNumber);
-    }
-
-    function setWinner(bytes32 betId, address _winner, uint256 _amount) external onlyOwner {
-        require(_amount > 0, "Invalid amount");
-        require(address(this).balance >= _amount, "Insufficient contract balance");
-
-        winnings[_winner] += _amount;
-        emit WinnerSet(betId, _winner, _amount);
     }
 
     function claimETH() external {
@@ -144,6 +129,7 @@ function setWinner(address _winner, uint256 _amount) external onlyOwner {
 
     function likeBet(bytes32 betId) external {
         require(!betLikes[betId][msg.sender], "You already liked this bet");
+
         betLikes[betId][msg.sender] = true;
         emit BetLiked(betId, msg.sender);
     }
@@ -205,7 +191,7 @@ function setWinner(address _winner, uint256 _amount) external onlyOwner {
         for (uint256 i = 0; i < betHistory.length; i++) {
             total += betHistory[i].betAmount;
         }
-        return total * betPrice; // Total payout dalam ETH
+        return total * betPrice;
     }
 
     function lastWinner() public view returns (address) {
