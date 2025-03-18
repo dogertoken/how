@@ -250,6 +250,57 @@ footer {
     transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #111;
+    padding: 10px 20px;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+/* Menu Links */
+.nav-links {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #00ff66;
+}
+
+/* Hamburger Button */
+.hamburger {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
 /* Efek Hover Hamburger */
 .hamburger:hover {
     transform: rotate(90deg) scale(1.2);
@@ -263,7 +314,7 @@ footer {
     }
 
     .nav-links {
-        display: none;
+        display: flex;
         flex-direction: column;
         position: absolute;
         top: 60px;
@@ -272,14 +323,15 @@ footer {
         width: 200px;
         padding: 10px;
         box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
-        transition: transform 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+        opacity: 0;
+        visibility: hidden;
     }
 
+    /* Tampilkan menu saat hamburger ditekan */
     .nav-links.show {
-        display: flex;
-        flex-direction: column;
-        transform: translateX(0);
-        animation: slideIn 0.3s ease-in-out;
+        opacity: 1;
+        visibility: visible;
     }
 }
 
@@ -305,11 +357,11 @@ footer {
     </div>
     <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
     <ul class="nav-links" id="navMenu">
-        <a href="#features">4D Pools</a>
-        <a href="#prizes">Prizes</a>
-        <a href="lottery">LottoBalls (LB)</a>
-        <a href="hk">Hong Kong (HK)</a>
-        <a href="syd">Sydney (SYD)</a>
+        <li><a href="#features">4D Pools</a></li>
+        <li><a href="#prizes">Prizes</a></li>
+        <li><a href="lottery">LottoBalls (LB)</a></li>
+        <li><a href="hk">Hong Kong (HK)</a></li>
+        <li><a href="syd">Sydney (SYD)</a></li>
     </ul>
 </nav>
     
@@ -533,7 +585,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Modal
     function toggleMenu() {
-    document.getElementById("navMenu").classList.toggle("show");
+    var menu = document.getElementById("navMenu");
+    menu.classList.toggle("show");
     }
 
     // 🔹 Menampilkan Tombol "Check Eligibility" Setelah Wallet Terhubung
