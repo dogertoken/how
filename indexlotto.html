@@ -118,20 +118,20 @@ nav ul li a:hover {
     border-radius: 8px;
 }
 
-/* ===== MARKETS ===== */
+/* ===== TABLE ===== */
 #markets table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
 }
 
-#markets th, #markets td {
+#markets table th, #markets table td {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: center;
 }
 
-#markets th {
+#markets table th {
     background: #007bff;
     color: white;
 }
@@ -217,7 +217,7 @@ nav ul li a:hover {
 
 /* ===== MODAL NAVIGATION ===== */
 .modal {
-    display: none;
+    display: none; /* Pastikan modal tersembunyi saat awal */
     position: fixed;
     top: 0;
     left: 0;
@@ -225,28 +225,28 @@ nav ul li a:hover {
     height: 100%;
     background: rgba(0, 0, 0, 0.6);
     z-index: 1000;
-
+    
     /* Pusatkan modal */
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* Modal content */
+/* Modal Box */
 .modal-content {
     background: rgba(255, 255, 255, 0.08);
-    width: 95%;
-    max-width: 400px;
-    padding: 25px;
+    width: 90%;
+    max-width: 350px;
+    padding: 20px;
     border-radius: 10px;
     text-align: center;
     position: relative;
     
-    /* Tambahkan animasi fade-in */
+    /* Animasi */
     animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Animasi muncul */
+/* Animasi Muncul */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -258,14 +258,48 @@ nav ul li a:hover {
     }
 }
 
-/* Tombol close modal */
+/* Tombol Close */
 .close {
     font-size: 24px;
     position: absolute;
     top: 10px;
     right: 15px;
     cursor: pointer;
-    color: #000;
+    color: white;
+}
+
+/* Styling Menu dalam Modal */
+.modal-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.modal-content ul li {
+    padding: 10px 0;
+}
+
+.modal-content ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content ul li a i {
+    margin-right: 8px;
+}
+
+/* Button Menu */
+.menu-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
 }
 
 /* ===== SECTION BOXES ===== */
@@ -360,23 +394,17 @@ footer {
 
 <header>
     <div class="logo">Lotto<span>Chain</span></div>
-    <button class="menu-toggle" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
-    <nav id="nav-menu">
-        <ul>
-            <li><a href="#about"><i class="fa-solid fa-info-circle"></i> Tentang</a></li>
-            <li><a href="#features"><i class="fa-solid fa-star"></i> Fitur</a></li>
-            <li><a href="#markets"><i class="fa-solid fa-globe"></i> Pasaran</a></li>
-            <li><a href="#roadmap"><i class="fa-solid fa-road"></i> Roadmap</a></li>
-            <li><a href="#faq"><i class="fa-solid fa-question-circle"></i> FAQ</a></li>
-            <li><a href="#" class="wallet-btn"><i class="fa-solid fa-wallet"></i> Connect Wallet</a></li>
-        </ul>
-    </nav>
+    <button class="menu-toggle" onclick="toggleMenu()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
 </header>
 
 <!-- Modal untuk menu di HP -->
 <div id="modal-menu" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="toggleMenu()"><i class="fa-solid fa-times"></i></span>
+        <span class="close" onclick="toggleMenu()">
+            <i class="fa-solid fa-times"></i>
+        </span>
         <ul>
             <li><a href="#about" onclick="toggleMenu()"><i class="fa-solid fa-info-circle"></i> Tentang</a></li>
             <li><a href="#features" onclick="toggleMenu()"><i class="fa-solid fa-star"></i> Fitur</a></li>
@@ -524,13 +552,23 @@ window.onload = fetchBlockchainData;
     </script>
     <script>
 function toggleMenu() {
-    var modal = document.getElementById("modal-menu");
-    if (modal.style.display === "block") {
-        modal.style.display = "none";
+    const modal = document.getElementById("modal-menu");
+
+    // Toggle tampilan modal
+    if (modal.style.display === "none" || modal.style.display === "") {
+        modal.style.display = "flex";
     } else {
-        modal.style.display = "block";
+        modal.style.display = "none";
     }
 }
+
+// Tutup modal jika klik di luar modal-content
+window.addEventListener("click", function (e) {
+    const modal = document.getElementById("modal-menu");
+    if (e.target === modal) {
+        modal.style.display = "none";
+    }
+});
     </script>
 
 </body>
