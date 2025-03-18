@@ -158,6 +158,102 @@ img {
     margin-right: 5px;
 }
 
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #111;
+    padding: 10px 20px;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 950px;
+    z-index: 1000;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+/* Menu Links */
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #00ff66;
+}
+
+/* Hamburger Button */
+.hamburger {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* Efek Hover Hamburger */
+.hamburger:hover {
+    transform: rotate(90deg) scale(1.2);
+    color: #00ff66;
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: #222;
+        width: 200px;
+        padding: 10px;
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .nav-links.show {
+        display: flex;
+        flex-direction: column;
+        transform: translateX(0);
+        animation: slideIn 0.3s ease-in-out;
+    }
+}
+
+/* Animasi Slide-in Menu */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 footer {
         text-align: center;
         margin-top: 20px;
