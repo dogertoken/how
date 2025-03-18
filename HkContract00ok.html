@@ -39,6 +39,8 @@ contract BetHistory {
     mapping(address => uint256) public winnings;
     mapping(bytes32 => address) public betWinners;
     mapping(bytes32 => Bet) public bets;
+    mapping(address => uint256) public totalBetsByPlayer;
+    mapping(uint256 => uint256) public totalPayoutPerDraw;
 
     event BetPlaced(
         address indexed player,
@@ -57,6 +59,9 @@ contract BetHistory {
     event CommentDeleted(bytes32 betId, address indexed user, uint256 commentIndex);
     event WinnerSet(bytes32 betId, address indexed winner, uint256 amount);
     event ETHClaimed(address indexed winner, uint256 amount);
+    event TotalPlayersUpdated(uint256 totalPlayers);
+    event TotalPayoutUpdated(uint256 totalPayout);
+    event LastWinnerUpdated(address indexed winner);
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can call this function");
@@ -68,39 +73,45 @@ contract BetHistory {
     }
 
     function placeBet(string memory _number, uint256 _times, bool _isETH) external payable {
+    // Validasi input
     require(bytes(_number).length >= 1 && bytes(_number).length <= 4, "Invalid number length");
-    
-    // Pastikan hanya mengandung angka (0-9)
-    for (uint256 i = 0; i < bytes(_number).length; i++) {
-        require(bytes(_number)[i] >= 0x30 && bytes(_number)[i] <= 0x39, "Invalid character");
-    }
-
     uint256 totalCost = _times * betPrice;
     require(msg.value == totalCost, "Incorrect ETH amount");
 
-    // Buat betId unik
+    // Buat taruhan baru
     bytes32 betId = keccak256(abi.encodePacked(msg.sender, block.timestamp, block.number));
-    uint256 blockNumber = block.number;
-
-    // txHash tidak bisa langsung diperoleh di dalam smart contract
-    bytes32 txHash = bytes32(0); // Default sebagai placeholder
-
     Bet memory newBet = Bet({
         player: msg.sender,
         betId: betId,
-        number: _number, // Gunakan string
+        number: _number,
         betAmount: _times,
         timestamp: block.timestamp,
-        blockNumber: blockNumber,
-        txHash: txHash, // txHash bisa diisi di frontend
+        blockNumber: block.number,
+        txHash: blockhash(block.number - 1),
         isETH: _isETH
     });
 
     betHistory.push(newBet);
     userBets[msg.sender].push(newBet);
 
-    emit BetPlaced(msg.sender, betId, _number, _times, block.timestamp, blockNumber, txHash);
-  }
+    emit BetPlaced(msg.sender, betId, _number, _times, block.timestamp, block.number, blockhash(block.number - 1));
+
+    // Emit event di sini setelah taruhan baru ditambahkan
+    emit TotalPlayersUpdated(betHistory.length);
+    emit TotalPayoutUpdated(totalPayout());
+}
+
+function setWinner(address _winner, uint256 _amount) external onlyOwner {
+    require(_amount > 0, "Invalid amount");
+    require(address(this).balance >= _amount, "Insufficient contract balance");
+
+    winnings[_winner] += _amount;
+
+    emit WinnerSet(_winner, _amount);
+
+    // Emit event untuk memperbarui pemenang terakhir
+    emit LastWinnerUpdated(_winner);
+}
 
     function setBetResult(uint256 _drawId, uint256 _winningNumber) external onlyOwner {
         betResults[_drawId] = BetResult({
@@ -183,6 +194,25 @@ contract BetHistory {
 
     function contractBalance() external view returns (uint256) {
         return address(this).balance;
+    }
+
+    function totalPlayers() public view returns (uint256) {
+        return betHistory.length;
+    }
+
+    function totalPayout() public view returns (uint256) {
+        uint256 total;
+        for (uint256 i = 0; i < betHistory.length; i++) {
+            total += betHistory[i].betAmount;
+        }
+        return total * betPrice; // Total payout dalam ETH
+    }
+
+    function lastWinner() public view returns (address) {
+        if (betHistory.length == 0) {
+            return address(0);
+        }
+        return betHistory[betHistory.length - 1].player;
     }
 
     function withdrawETH(uint256 _amount) external onlyOwner {
