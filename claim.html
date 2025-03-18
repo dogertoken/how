@@ -242,7 +242,7 @@ footer {
 
 /* Modal Menu */
 .modal {
-    display: none;
+    display: none; /* Awalnya disembunyikan */
     position: fixed;
     top: 0;
     right: 0;
@@ -250,8 +250,19 @@ footer {
     height: 100%;
     background: rgba(0, 0, 0, 0.9);
     padding-top: 50px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Pastikan muncul di atas elemen lain */
+    transition: transform 0.3s ease-in-out;
 }
 
+/* Menampilkan modal dengan class "show" */
+.modal.show {
+    display: flex;
+}
+
+/* Kontainer Menu */
 .modal-content {
     display: flex;
     flex-direction: column;
@@ -259,6 +270,7 @@ footer {
     padding: 20px;
 }
 
+/* Link Menu */
 .modal a {
     color: white;
     text-decoration: none;
@@ -266,12 +278,30 @@ footer {
     display: block;
 }
 
+/* Tombol Close */
 .close {
     position: absolute;
     top: 10px;
     right: 20px;
     font-size: 24px;
     cursor: pointer;
+    z-index: 2100; /* Agar tombol close bisa diklik */
+}
+
+/* Tombol Hamburger */
+.hamburger-menu {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Efek Hover */
+.hamburger-menu:hover {
+    transform: rotate(90deg) scale(1.2);
+    color: #00ff66;
 }
 
 /* Show Hamburger Only on Mobile */
@@ -531,11 +561,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Modal
     function toggleMenu() {
     var menu = document.getElementById("menuModal");
-    if (menu.style.display === "block") {
-        menu.style.display = "none";
-    } else {
-        menu.style.display = "block";
-    }
+    menu.classList.toggle("show");
     }
 
     // 🔹 Menampilkan Tombol "Check Eligibility" Setelah Wallet Terhubung
